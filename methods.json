@@ -152,5 +152,24 @@
          
          }
       }
+   },
+   {
+      "class":"forestry.api.apiculture.IBeeModifier",
+      "obfuscated":{
+      },
+      "methods":{
+         "isHellish":{
+
+         },
+         "isSunlightSimulated":{
+	 
+         },
+         "isSelfLighted":{
+         
+         },
+         "isSealed":{
+         
+         }
+      }
    }
 ]
