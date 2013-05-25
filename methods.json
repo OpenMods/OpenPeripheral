@@ -81,7 +81,50 @@
 
          }
       }
+   },
+   {
+      "class":"buildcraft.core.IMachine",
+      "obfuscated":{
+
+      },
+      "methods":{
+         "isActive":{
+
+         },
+         "manageLiquids":{
+
+         },
+         "manageSolids":{
+
+         },
+         "allowActions":{
+
+         }
+      }
+   },
+   {
+      "class":"appeng.api.me.tiles.IGridMachine",
+      "obfuscated":{
+
+      },
+      "methods":{
+         "getPowerDrainPerTick":{
+
+         }
+      }
+   },
+   {
+      "class":"appeng.api.me.tiles.IPriorityTile",
+      "obfuscated":{
+
+      },
+      "methods":{
+         "getPriority":{
+
+         },
+         "setPriority":{
+
+         }
+      }
    }
-   
-   
 ]
