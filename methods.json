@@ -171,5 +171,21 @@
          
          }
       }
+   },
+   {
+      "class":"forestry.core.interfaces.IClimatised",
+      "obfuscated":{
+      },
+      "methods":{
+         "isClimatized":{
+
+         },
+         "getExactTemperature":{
+	 
+         },
+         "getExactHumidity":{
+         
+         }
+      }
    }
 ]
