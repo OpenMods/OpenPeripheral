@@ -50,14 +50,38 @@
       }
    },
    {
-      "class":"net.minecraft.tileentity.TileEntityFurnace",
+      "class":"net.minecraft.tileentity.TileEntityComparator",
       "obfuscated":{
-         "func_70027_ad":"isBurning"
+         "func_96100_a":"getOutputSignal"
       },
       "methods":{
-         "isBurning":{
+         "getOutputSignal":{
+
+         }
+      }
+   },
+   {
+      "class":"net.minecraft.tileentity.TileEntityBrewingStand",
+      "obfuscated":{
+         "func_70355_t_":"getBrewTime"
+      },
+      "methods":{
+         "getBrewTime":{
+
+         }
+      }
+   },
+   {
+      "class":"net.minecraft.tileentity.TileEntityRecordPlayer",
+      "obfuscated":{
+         "func_96097_a":"getRecord"
+      },
+      "methods":{
+         "getRecord":{
 
          }
       }
    }
+   
+   
 ]
