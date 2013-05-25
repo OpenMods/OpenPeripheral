@@ -200,5 +200,15 @@
 	 
          }
       }
+   },
+   {
+      "class":"forestry.mail.IMailContainer",
+      "obfuscated":{
+      },
+      "methods":{
+         "hasMail":{
+
+         }
+      }
    }
 ]
