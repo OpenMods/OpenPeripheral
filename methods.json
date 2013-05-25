@@ -187,5 +187,18 @@
          
          }
       }
+   },
+   {
+      "class":"forestry.api.genetics.IFruitBearer",
+      "obfuscated":{
+      },
+      "methods":{
+         "hasFruit":{
+
+         },
+         "getRipeness":{
+	 
+         }
+      }
    }
 ]
