@@ -37,12 +37,15 @@ public class OpenPeripheral
 	public static ArrayList<MethodDefinition> peripheralMethods = new ArrayList<MethodDefinition>();
 	public static HashMap<Class, ArrayList<MethodDefinition>> methodCache = new HashMap<Class, ArrayList<MethodDefinition>>();
 	
+	public static HashMap<String, IReplacement> replacements = new HashMap<String,IReplacement>();
+	
 	@Instance( value = "OpenPeripheral" )
 	public static OpenPeripheral instance;
 
 	@Mod.PreInit
 	public void preInit( FMLPreInitializationEvent evt )
 	{
+		initializeReplacements();
 	}
 
 	@Mod.Init
@@ -50,7 +53,7 @@ public class OpenPeripheral
 	{
 		URL url;
 		try {
-			url = new URL("http://localhost/classes.txt");
+			url = new URL("https://raw.github.com/mikeemoo/OpenPeripheral/master/methods.json");
 			URLConnection con = url.openConnection();
 			Reader r = new InputStreamReader(con.getInputStream(), "UTF-8");
 		    JdomParser parser = new JdomParser();
@@ -78,6 +81,12 @@ public class OpenPeripheral
 		if (clazz == null) {
 			return;
 		}
+
+		HashMap<String, String> obfuscatedNames = new HashMap<String, String>();
+		for (JsonField field : node.getNode("obfuscated").getFieldList()) {
+			obfuscatedNames.put(field.getName().getText(), field.getValue().getText());
+		}
+		
 		ArrayList<String> allowedMethods = new ArrayList<String>();
 		HashMap<String, JsonNode> jsonMethods = new HashMap<String, JsonNode>();
 		for (JsonField field : node.getNode("methods").getFieldList()) {
@@ -86,7 +95,10 @@ public class OpenPeripheral
 		
 		for (Method method : clazz.getMethods()) {
 			if (jsonMethods.containsKey(method.getName())) {
-				peripheralMethods.add(new MethodDefinition(method, jsonMethods.get(method.getName())));
+				peripheralMethods.add(new MethodDefinition(method.getName(), method, jsonMethods.get(method.getName())));
+			}else if (obfuscatedNames.containsKey(method.getName())) {
+				String obfuscatedName = obfuscatedNames.get(method.getName());
+				peripheralMethods.add(new MethodDefinition(obfuscatedName, method, jsonMethods.get(obfuscatedName)));	
 			}
 		}
 	}
@@ -105,5 +117,33 @@ public class OpenPeripheral
 		}
 		return methodCache.get(clazz);
 		
+	}
+	
+	private void initializeReplacements() {
+		replacements.put("x", new IReplacement() {
+			@Override
+			public Object replace(TileEntity tile) {
+				return tile.xCoord;
+			}
+		});
+		replacements.put("y", new IReplacement() {
+			@Override
+			public Object replace(TileEntity tile) {
+				return tile.yCoord;
+			}
+		});
+		replacements.put("z", new IReplacement() {
+			@Override
+			public Object replace(TileEntity tile) {
+				return tile.zCoord;
+			}
+		});
+		replacements.put("world", new IReplacement() {
+			@Override
+			public Object replace(TileEntity tile) {
+				return tile.worldObj;
+			}
+		});
+
 	}
 }

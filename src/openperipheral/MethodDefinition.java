@@ -17,9 +17,9 @@ public class MethodDefinition {
 	private String name;
 	private Class clazz;
 	public HashMap<Integer, String> replacements = new HashMap<Integer,String>();
-	public MethodDefinition(Method method, JsonNode json) {
+	public MethodDefinition(String name, Method method, JsonNode json) {
 		
-		this.name = method.getName();
+		this.name = name;
 		this.method = method;
 		this.clazz = method.getDeclaringClass();
 		

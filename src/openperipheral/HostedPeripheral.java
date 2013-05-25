@@ -55,16 +55,8 @@ public class HostedPeripheral implements IHostedPeripheral {
 
 		for (Entry<Integer, String> entry : definition.getReplacements().entrySet()) {
 			int index = entry.getKey();
-			String val = entry.getValue();
-			if (val.equals("world")) {
-				args.add(index, tile.worldObj);
-			}else if (val.equals("x")) {
-				args.add(index, tile.xCoord);
-			}else if (val.equals("y")) {
-				args.add(index, tile.yCoord);
-			}else if (val.equals("z")) {
-				args.add(index, tile.zCoord);
-			}
+			String val = String.valueOf(entry.getValue());
+			args.add(index, OpenPeripheral.replacements.get(val).replace(tile));
 		}
 		
 		if (args.size() != requiredParameters.length) {
@@ -73,17 +65,21 @@ public class HostedPeripheral implements IHostedPeripheral {
 		
 		int offset = 0;
 		for (Class requiredParameter : requiredParameters) {
+			
 			Object argumentToCheck = args.get(offset);
+
 			if (requiredParameter == int.class && argumentToCheck instanceof Double){
+			
 				args.set(offset, (int)(double)(Double)argumentToCheck);
 			
 			}else if (requiredParameter == int.class && argumentToCheck instanceof Integer) {
+
 				args.set(offset, (int)(Integer)argumentToCheck);
-			
-			} else if (!requiredParameter.isAssignableFrom(argumentToCheck.getClass())) {
-			
+				
+			}else if (!requiredParameter.isAssignableFrom(argumentToCheck.getClass())) {
 				throw new Exception("Invalid parameter types");
 			}
+			
 			offset++;
 		}
 		
@@ -92,7 +88,7 @@ public class HostedPeripheral implements IHostedPeripheral {
 				tile.worldObj, new Callable() {
 					@Override
 					public Object call() throws Exception {
-						return method.invoke(tile, argsToUse);
+						return TypeUtils.convertToSuitableType(method.invoke(tile, argsToUse));
 					}
 				});
 

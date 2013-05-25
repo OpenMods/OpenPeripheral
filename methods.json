@@ -1,0 +1,63 @@
+[
+   {
+      "class":"net.minecraft.inventory.IInventory",
+      "obfuscated":{
+         "func_70303_b":"getInvName",
+         "func_70301_a":"getStackInSlot",
+         "func_70302_i_":"getSizeInventory"
+      },
+      "methods":{
+         "getInvName":{
+
+         },
+         "getStackInSlot":{
+
+         },
+         "getSizeInventory":{
+
+         }
+      }
+   },
+   {
+      "class":"net.minecraft.tileentity.TileEntity",
+      "obfuscated":{
+         "func_70322_n":"getBlockMetadata"
+      },
+      "methods":{
+         "getBlockMetadata":{
+
+         }
+      }
+   },
+   {
+      "class":"net.minecraft.tileentity.TileEntityNote",
+      "obfuscated":{
+         "func_70414_a":"triggerNote",
+         "func_70413_a":"changePitch"
+      },
+      "methods":{
+         "triggerNote":{
+            "replacements":{
+               "0":"world",
+               "1":"x",
+               "2":"y",
+               "3":"z"
+            }
+         },
+         "changePitch":{
+
+         }
+      }
+   },
+   {
+      "class":"net.minecraft.tileentity.TileEntityFurnace",
+      "obfuscated":{
+         "func_70027_ad":"isBurning"
+      },
+      "methods":{
+         "isBurning":{
+
+         }
+      }
+   }
+]
