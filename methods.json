@@ -136,5 +136,21 @@
 	 
          }
       }
+   },
+   {
+      "class":"forestry.api.apiculture.IBeeHousing",
+      "obfuscated":{
+      },
+      "methods":{
+         "getQueen":{
+
+         },
+         "getDrone":{
+	 
+         },
+         "canBreed":{
+         
+         }
+      }
    }
 ]
