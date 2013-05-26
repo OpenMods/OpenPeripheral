@@ -339,6 +339,19 @@
       }
    },
    {
+      "class":"ic2.core.block.machine.tileentity.TileEntityMatter",
+      "obfuscated":{
+      },
+      "methods":{
+         "getProgressAsString":{
+
+         },
+         "amplificationIsAvailable": {
+         
+         }
+      }
+   },
+   {
       "class":"thermalexpansion.block.device.TileEnergyCell",
       "obfuscated":{
       },
