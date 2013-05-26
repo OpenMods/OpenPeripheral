@@ -307,6 +307,22 @@
       }
    },
    {
+      "class":"ic2.api.reactor.IReactor",
+      "obfuscated":{
+      },
+      "methods":{
+         "getMaxHeat":{
+
+         },
+         "getOutput":{
+
+         },
+         "getHeat":{
+
+         }
+      }
+   },
+   {
       "class":"ic2.api.tile.IEnergyStorage",
       "obfuscated":{
       },
