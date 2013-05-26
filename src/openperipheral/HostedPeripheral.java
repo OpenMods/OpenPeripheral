@@ -37,7 +37,12 @@ public class HostedPeripheral implements IHostedPeripheral {
 	
 	@Override
 	public String getType() {
-		return tile.getBlockType().getUnlocalizedName();
+		String t = tile.getBlockType().getUnlocalizedName();
+		int i = t.lastIndexOf('.');
+		if (i > 0) {
+		    t = t.substring(i+1);
+		}
+		return t;
 	}
 
 	@Override
