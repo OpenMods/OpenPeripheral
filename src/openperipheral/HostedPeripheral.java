@@ -20,12 +20,22 @@ import dan200.computer.api.IHostedPeripheral;
 
 public class HostedPeripheral implements IHostedPeripheral {
 
+	static class MySecurityManager extends SecurityManager {
+        public String getCallerClassName(int callStackDepth) {
+            return getClassContext()[callStackDepth].getName();
+        }
+    }
+
+    private final static MySecurityManager mySecurityManager =
+        new MySecurityManager();
+	
 	private TileEntity tile;
 	private ArrayList<MethodDefinition> definitions;
 	private String[] methodNames;
 	
 	public HostedPeripheral(TileEntity tile) {
 		this.tile = tile;
+		
 		definitions = OpenPeripheral.getMethodsForClass(tile.getClass());
 		
 		methodNames = new String[definitions.size()];
@@ -53,11 +63,11 @@ public class HostedPeripheral implements IHostedPeripheral {
 	@Override
 	public Object[] callMethod(IComputerAccess computer, int methodId,
 			final Object[] arguments) throws Exception {
-		
+
 		ArrayList<Object> args = new ArrayList(Arrays.asList(arguments));
 		
 		MethodDefinition definition = definitions.get(methodId);
-		
+
 		if (!definition.isMethod()) {
 			
 			return getOrSetProperty(computer, methodId, definition, args);
@@ -81,20 +91,30 @@ public class HostedPeripheral implements IHostedPeripheral {
 		fixArguments(requiredParameters, args);
 		
 		final Object[] argsToUse = args.toArray(new Object[args.size()]);
-		Future callback = TickHandler.addTickCallback(
-				tile.worldObj, new Callable() {
-					@Override
-					public Object call() throws Exception {
-						if (method.getReturnType() == void.class) {
-							method.invoke(tile, argsToUse);
-							return true;
-						}else {
-							return TypeUtils.convertToSuitableType(method.invoke(tile, argsToUse));
+		
+		if (mySecurityManager.getCallerClassName(2) != "dan200.computer.shared.TileEntityCable$RemotePeripheralWrapper") {
+			Future callback = TickHandler.addTickCallback(
+					tile.worldObj, new Callable() {
+						@Override
+						public Object call() throws Exception {
+							if (method.getReturnType() == void.class) {
+								method.invoke(tile, argsToUse);
+								return true;
+							}else {
+								return TypeUtils.convertToSuitableType(method.invoke(tile, argsToUse));
+							}
 						}
-					}
-				});
-
-		return new Object[] { callback.get() };
+					});
+	
+			return new Object[] { callback.get() };
+		}else {
+			if (method.getReturnType() == void.class) {
+				method.invoke(tile, argsToUse);
+				return new Object[] { true };
+			}else {
+				return new Object[] { TypeUtils.convertToSuitableType(method.invoke(tile, argsToUse)) };
+			}
+		}
 	}
 
 	private void fixArguments(Class[] requiredParameters, ArrayList<Object> args) throws Exception {
