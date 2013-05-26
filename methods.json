@@ -352,6 +352,16 @@
       }
    },
    {
+      "class":"ic2.core.block.machine.tileentity.TileEntityInduction",
+      "obfuscated":{
+      },
+      "methods":{
+         "getHeat":{
+
+         }
+      }
+   },
+   {
       "class":"thermalexpansion.block.device.TileEnergyCell",
       "obfuscated":{
       },
