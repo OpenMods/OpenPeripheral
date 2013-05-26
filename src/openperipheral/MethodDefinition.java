@@ -1,5 +1,6 @@
 package openperipheral;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
@@ -14,8 +15,11 @@ import argo.jdom.JsonStringNode;
 public class MethodDefinition {
 
 	private Method method;
+	private Field field;
 	private String name;
 	private Class clazz;
+	private boolean isGet;
+	private boolean isMethod = true;
 	public HashMap<Integer, String> replacements = new HashMap<Integer,String>();
 	public MethodDefinition(String name, Method method, JsonNode json) {
 		
@@ -32,6 +36,26 @@ public class MethodDefinition {
 				}
 			}
 		}
+	}
+	
+	public MethodDefinition(String name, Field field, boolean isGet) {
+		this.name = name;
+		this.field = field;
+		this.isGet = isGet;
+		this.clazz = field.getDeclaringClass();
+		isMethod = false;
+	}
+	
+	public boolean isMethod() {
+		return isMethod;
+	}
+	
+	public Field getField() {
+		return field;
+	}
+	
+	public boolean isGet() {
+		return isGet;
 	}
 	
 	public HashMap<Integer, String> getReplacements() {

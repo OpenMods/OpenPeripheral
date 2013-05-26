@@ -85,6 +85,7 @@
    {
       "class":"net.minecraftforge.liquids.ITankContainer",
       "obfuscated":{
+
       },
       "methods":{
          "getTanks":{
@@ -95,6 +96,7 @@
    {
       "class":"buildcraft.core.IMachine",
       "obfuscated":{
+
       },
       "methods":{
          "isActive":{
@@ -114,6 +116,7 @@
    {
       "class":"appeng.api.me.tiles.IGridMachine",
       "obfuscated":{
+
       },
       "methods":{
          "getPowerDrainPerTick":{
@@ -124,6 +127,7 @@
    {
       "class":"appeng.api.me.tiles.ITileInterfaceApi",
       "obfuscated":{
+
       },
       "methods":{
          "apiCurrentAvailableSpace":{
@@ -134,119 +138,126 @@
    {
       "class":"appeng.api.me.tiles.IConfigureableTile",
       "obfuscated":{
+
       },
       "methods":{
          "getConfigurations":{
 
          },
          "getConfiguration":{
-	 
+
          },
          "setConfiguration":{
-	 
+
          },
          "getConfiguationOptions":{
-	 
+
          },
          "nextConfiguration":{
-	 
+
          }
-         
       }
    },
    {
       "class":"appeng.api.me.tiles.IPriorityTile",
       "obfuscated":{
+
       },
       "methods":{
          "getPriority":{
 
          },
          "setPriority":{
-	 
+
          }
       }
    },
    {
       "class":"appeng.api.me.tiles.IColoredMETile",
       "obfuscated":{
+
       },
       "methods":{
          "isColored":{
 
          },
          "getColor":{
-	 
+
          }
       }
    },
    {
       "class":"forestry.api.apiculture.IBeeHousing",
       "obfuscated":{
+
       },
       "methods":{
          "getQueen":{
 
          },
          "getDrone":{
-	 
+
          },
          "canBreed":{
-         
+
          }
       }
    },
    {
       "class":"forestry.api.apiculture.IBeeModifier",
       "obfuscated":{
+
       },
       "methods":{
          "isHellish":{
 
          },
          "isSunlightSimulated":{
-	 
+
          },
          "isSelfLighted":{
-         
+
          },
          "isSealed":{
-         
+
          }
       }
    },
    {
       "class":"forestry.core.interfaces.IClimatised",
       "obfuscated":{
+
       },
       "methods":{
          "isClimatized":{
 
          },
          "getExactTemperature":{
-	 
+
          },
          "getExactHumidity":{
-         
+
          }
       }
    },
    {
       "class":"forestry.api.genetics.IFruitBearer",
       "obfuscated":{
+
       },
       "methods":{
          "hasFruit":{
 
          },
          "getRipeness":{
-	 
+
          }
       }
    },
    {
       "class":"forestry.mail.IMailContainer",
       "obfuscated":{
+
       },
       "methods":{
          "hasMail":{
@@ -257,6 +268,7 @@
    {
       "class":"ic2.api.energy.tile.IEnergyConductor",
       "obfuscated":{
+
       },
       "methods":{
          "getConductionLoss":{
@@ -276,6 +288,7 @@
    {
       "class":"ic2.api.energy.tile.IEnergySink",
       "obfuscated":{
+
       },
       "methods":{
          "demandsEnergy":{
@@ -289,6 +302,7 @@
    {
       "class":"ic2.api.energy.tile.IEnergySource",
       "obfuscated":{
+
       },
       "methods":{
          "getMaxEnergyOutput":{
@@ -299,6 +313,7 @@
    {
       "class":"ic2.api.energy.tile.IEnergyTile",
       "obfuscated":{
+
       },
       "methods":{
          "isAddedToEnergyNet":{
@@ -309,6 +324,7 @@
    {
       "class":"ic2.api.reactor.IReactor",
       "obfuscated":{
+
       },
       "methods":{
          "getMaxHeat":{
@@ -325,6 +341,7 @@
    {
       "class":"ic2.api.tile.IEnergyStorage",
       "obfuscated":{
+
       },
       "methods":{
          "getStored":{
@@ -341,19 +358,21 @@
    {
       "class":"ic2.core.block.machine.tileentity.TileEntityMatter",
       "obfuscated":{
+
       },
       "methods":{
          "getProgressAsString":{
 
          },
-         "amplificationIsAvailable": {
-         
+         "amplificationIsAvailable":{
+
          }
       }
    },
    {
       "class":"ic2.core.block.machine.tileentity.TileEntityInduction",
       "obfuscated":{
+
       },
       "methods":{
          "getHeat":{
@@ -364,6 +383,7 @@
    {
       "class":"thermalexpansion.block.device.TileEnergyCell",
       "obfuscated":{
+
       },
       "methods":{
          "getEnergy":{
@@ -371,6 +391,20 @@
          },
          "getMaxEnergy":{
 
+         }
+      }
+   },
+   {
+      "class":"thaumcraft.common.blocks.jars.TileJarBrain",
+      "obfuscated":{
+
+      },
+      "methods":{
+
+      },
+      "properties":{
+         "xp":{
+            "get":"getXP"
          }
       }
    }

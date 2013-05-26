@@ -1,5 +1,6 @@
 package openperipheral;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,6 +52,13 @@ public class HostedPeripheral implements IHostedPeripheral {
 		ArrayList<Object> args = new ArrayList(Arrays.asList(arguments));
 		
 		MethodDefinition definition = definitions.get(methodId);
+		
+		if (!definition.isMethod()) {
+			
+			return getOrSetProperty(computer, methodId, definition, args);
+			
+		}
+		
 		final Method method = definition.getMethod();
 		
 		Class[] requiredParameters = method.getParameterTypes();
@@ -65,6 +73,21 @@ public class HostedPeripheral implements IHostedPeripheral {
 			throw new Exception("Invalid number of parameters.");
 		}
 		
+		fixArguments(requiredParameters, args);
+		
+		final Object[] argsToUse = args.toArray(new Object[args.size()]);
+		Future callback = TickHandler.addTickCallback(
+				tile.worldObj, new Callable() {
+					@Override
+					public Object call() throws Exception {
+						return TypeUtils.convertToSuitableType(method.invoke(tile, argsToUse));
+					}
+				});
+
+		return new Object[] { callback.get() };
+	}
+
+	private void fixArguments(Class[] requiredParameters, ArrayList<Object> args) throws Exception {
 		int offset = 0;
 		for (Class requiredParameter : requiredParameters) {
 			
@@ -92,17 +115,43 @@ public class HostedPeripheral implements IHostedPeripheral {
 			
 			offset++;
 		}
-		
-		final Object[] argsToUse = args.toArray(new Object[args.size()]);
-		Future callback = TickHandler.addTickCallback(
-				tile.worldObj, new Callable() {
-					@Override
-					public Object call() throws Exception {
-						return TypeUtils.convertToSuitableType(method.invoke(tile, argsToUse));
-					}
-				});
+	}
 
-		return new Object[] { callback.get() };
+	private Object[] getOrSetProperty(IComputerAccess computer, int methodId,
+			MethodDefinition definition, ArrayList<Object> args) throws Exception {
+		
+		final Field field = definition.getField();
+		
+		if (args.size() != (definition.isGet() ? 0 : 1)) {
+			throw new Exception("Invalid number of parameters.");
+		}
+		
+		Class required = field.getType();
+		
+		if (!definition.isGet()) {
+			fixArguments(new Class[] { required }, args);
+			final Object arg = args.get(0);
+			Future callback = TickHandler.addTickCallback(
+					tile.worldObj, new Callable() {
+						@Override
+						public Object call() throws Exception {
+							field.set(tile, arg);
+							return true;
+						}
+					});
+
+			return new Object[] { callback.get() };
+		}else {
+			Future callback = TickHandler.addTickCallback(
+					tile.worldObj, new Callable() {
+						@Override
+						public Object call() throws Exception {
+							return TypeUtils.convertToSuitableType(field.get(tile));
+						}
+					});
+
+			return new Object[] { callback.get() };
+		}
 	}
 
 	@Override

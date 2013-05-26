@@ -12,22 +12,16 @@ import net.minecraftforge.liquids.LiquidStack;
 public class TypeUtils {
 	
 	public static Object convertToSuitableType(Object o) {
-		if (o instanceof ILiquidTank[]) {
-			HashMap map = new HashMap();
-			int index = 1;
-			for (ILiquidTank t : (ILiquidTank[])o) {
-				map.put(index++, convertToSuitableType(t));
-			}
-			return map;
-		}else if (o instanceof ILiquidTank) {
+		
+		if (o instanceof ILiquidTank) {
 			return tankToMap((ILiquidTank)o);
 		}else if (o instanceof ItemStack) {
 			return itemstackToMap((ItemStack)o);
-		}else if (o instanceof ItemStack[]) {
+		}else if (o.getClass().isArray()) {
 			HashMap map = new HashMap();
 			int index = 1;
-			for (Object obj : (ItemStack[])o) {
-				map.put(index++, convertToSuitableType(obj));
+			for (Object t : (Object[])o) {
+				map.put(index++, convertToSuitableType(t));
 			}
 			return map;
 		}else if (o instanceof List) {
