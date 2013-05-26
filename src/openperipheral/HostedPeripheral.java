@@ -80,7 +80,12 @@ public class HostedPeripheral implements IHostedPeripheral {
 				tile.worldObj, new Callable() {
 					@Override
 					public Object call() throws Exception {
-						return TypeUtils.convertToSuitableType(method.invoke(tile, argsToUse));
+						if (method.getReturnType() == void.class) {
+							method.invoke(tile, argsToUse);
+							return true;
+						}else {
+							return TypeUtils.convertToSuitableType(method.invoke(tile, argsToUse));
+						}
 					}
 				});
 

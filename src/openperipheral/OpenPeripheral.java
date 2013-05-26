@@ -38,7 +38,7 @@ import cpw.mods.fml.relauncher.Side;
 import dan200.computer.api.ComputerCraftAPI;
 
 
-@Mod( modid = "OpenPeripheral", name = "OpenPeripheral", version = "0.0.4")
+@Mod( modid = "OpenPeripheral", name = "OpenPeripheral", version = "0.0.5")
 public class OpenPeripheral
 {
 	

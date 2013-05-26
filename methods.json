@@ -407,5 +407,54 @@
             "get":"getXP"
          }
       }
+   },
+   {
+      "class":"powercrystals.minefactoryreloaded.tile.base.TileEntityFactoryPowered",
+      "obfuscated":{
+
+      },
+      "methods":{
+         "getIdleTicks":{
+
+         },
+         "getIdleTicksMax":{
+
+         },
+         "getWorkMax":{
+
+         },
+         "getWorkDone":{
+
+         },
+         "getEnergyStored":{
+
+         },
+         "getEnergyStoredMax":{
+
+         }
+      }
+   },
+   {
+      "class":"powercrystals.minefactoryreloaded.tile.machine.TileEntityAutoJukebox",
+      "obfuscated":{
+
+      },
+      "methods":{
+         "getCanCopy":{
+
+         },
+         "getCanPlay":{
+
+         },
+         "copyRecord":{
+
+         },
+         "playRecord":{
+
+         },
+         "stopRecord":{
+
+         }
+      }
    }
 ]
