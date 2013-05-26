@@ -210,5 +210,73 @@
 
          }
       }
+   },
+   {
+      "class":"ic2.api.energy.tile.IEnergyConductor",
+      "obfuscated":{
+      },
+      "methods":{
+         "getConductionLoss":{
+
+         },
+         "getInsulationEnergyAbsorption":{
+
+         },
+         "getInsulationBreakdownEnergy":{
+
+         },
+         "getConductorBreakdownEnergy":{
+
+         }
+      }
+   },
+   {
+      "class":"ic2.api.energy.tile.IEnergySink",
+      "obfuscated":{
+      },
+      "methods":{
+         "demandsEnergy":{
+
+         },
+         "getMaxSafeInput":{
+
+         }
+      }
+   },
+   {
+      "class":"ic2.api.energy.tile.IEnergySource",
+      "obfuscated":{
+      },
+      "methods":{
+         "getMaxEnergyOutput":{
+
+         }
+      }
+   },
+   {
+      "class":"ic2.api.energy.tile.IEnergyTile",
+      "obfuscated":{
+      },
+      "methods":{
+         "isAddedToEnergyNet":{
+
+         }
+      }
+   },
+   {
+      "class":"ic2.api.tile.IEnergyStorage",
+      "obfuscated":{
+      },
+      "methods":{
+         "getStored":{
+
+         },
+         "getCapacity":{
+
+         },
+         "getOutput":{
+
+         }
+      }
    }
 ]
