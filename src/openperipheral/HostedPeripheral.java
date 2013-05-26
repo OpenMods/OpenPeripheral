@@ -9,9 +9,11 @@ import java.util.Map.Entry;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeDirection;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IHostedPeripheral;
 
@@ -67,8 +69,16 @@ public class HostedPeripheral implements IHostedPeripheral {
 		for (Class requiredParameter : requiredParameters) {
 			
 			Object argumentToCheck = args.get(offset);
-
-			if (requiredParameter == int.class && argumentToCheck instanceof Double){
+			
+			if (requiredParameter == ForgeDirection.class && argumentToCheck instanceof String) {
+				
+				args.set(offset, TypeUtils.stringToDirection((String)argumentToCheck));
+				
+			} else if (requiredParameter == ItemStack.class && argumentToCheck instanceof Map) {
+				
+				args.set(offset, TypeUtils.mapToItemStack((Map)argumentToCheck));
+				
+			}else if (requiredParameter == int.class && argumentToCheck instanceof Double){
 			
 				args.set(offset, (int)(double)(Double)argumentToCheck);
 			

@@ -83,6 +83,16 @@
       }
    },
    {
+      "class":"net.minecraftforge.liquids.ITankContainer",
+      "obfuscated":{
+      },
+      "methods":{
+         "getTanks":{
+
+         }
+      }
+   },
+   {
       "class":"buildcraft.core.IMachine",
       "obfuscated":{
       },
@@ -109,6 +119,39 @@
          "getPowerDrainPerTick":{
 
          }
+      }
+   },
+   {
+      "class":"appeng.api.me.tiles.ITileInterfaceApi",
+      "obfuscated":{
+      },
+      "methods":{
+         "apiCurrentAvailableSpace":{
+
+         }
+      }
+   },
+   {
+      "class":"appeng.api.me.tiles.IConfigureableTile",
+      "obfuscated":{
+      },
+      "methods":{
+         "getConfigurations":{
+
+         },
+         "getConfiguration":{
+	 
+         },
+         "setConfiguration":{
+	 
+         },
+         "getConfiguationOptions":{
+	 
+         },
+         "nextConfiguration":{
+	 
+         }
+         
       }
    },
    {
@@ -275,6 +318,19 @@
 
          },
          "getOutput":{
+
+         }
+      }
+   },
+   {
+      "class":"thermalexpansion.block.device.TileEnergyCell",
+      "obfuscated":{
+      },
+      "methods":{
+         "getEnergy":{
+
+         },
+         "getMaxEnergy":{
 
          }
       }
