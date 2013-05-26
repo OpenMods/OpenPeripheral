@@ -456,5 +456,19 @@
 
          }
       }
+   },
+   {
+      "class":"powercrystals.minefactoryreloaded.tile.machine.TileEntityAutoEnchanter",
+      "obfuscated":{
+
+      },
+      "methods":{
+         "setTargetLevel":{
+
+         },
+         "getTargetLevel":{
+
+         }
+      }
    }
 ]
