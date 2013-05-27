@@ -12,6 +12,7 @@ public class PeripheralHandler implements IPeripheralHandler {
 	
 	@Override
 	public IHostedPeripheral getPeripheral(TileEntity tile) {
+
 		if (!peripherals.containsKey(tile)) {
 			peripherals.put(tile, new HostedPeripheral(tile));
 		}

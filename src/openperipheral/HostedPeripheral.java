@@ -10,6 +10,9 @@ import java.util.Map.Entry;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
+import openperipheral.definition.DefinitionMethod;
+import openperipheral.definition.DefinitionMethod.CallType;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -26,33 +29,42 @@ public class HostedPeripheral implements IHostedPeripheral {
         }
     }
 
-    private final static MySecurityManager mySecurityManager =
-        new MySecurityManager();
+    private final static MySecurityManager mySecurityManager = new MySecurityManager();
 	
-	private TileEntity tile;
-	private ArrayList<MethodDefinition> definitions;
+	private World worldObj;
+	private Class klass;
+	private int x;
+	private int y;
+	private int z;
+	private String name;
+	private ArrayList<DefinitionMethod> methods;
 	private String[] methodNames;
 	
 	public HostedPeripheral(TileEntity tile) {
-		this.tile = tile;
 		
-		definitions = OpenPeripheral.getMethodsForClass(tile.getClass());
+		klass = tile.getClass();
+		worldObj = tile.worldObj;
+		x = tile.xCoord;
+		y = tile.yCoord;
+		z = tile.zCoord;
+		methods = OpenPeripheral.getMethodsForClass(klass);
+		ArrayList<String> mNames = new ArrayList<String>();
+		for (DefinitionMethod method : methods) {
+			mNames.add(method.getLuaName());
+		}
+		methodNames = mNames.toArray(new String[mNames.size()]);
 		
-		methodNames = new String[definitions.size()];
-		int i = 0;
-		for (MethodDefinition method : definitions) {
-			methodNames[i++] = method.getName();
+		/* get the name */
+		name = tile.getBlockType().getUnlocalizedName();
+		int i = name.lastIndexOf('.');
+		if (i > 0) {
+			name = name.substring(i + 1);
 		}
 	}
 	
 	@Override
 	public String getType() {
-		String t = tile.getBlockType().getUnlocalizedName();
-		int i = t.lastIndexOf('.');
-		if (i > 0) {
-		    t = t.substring(i+1);
-		}
-		return t;
+		return name;
 	}
 
 	@Override
@@ -62,140 +74,62 @@ public class HostedPeripheral implements IHostedPeripheral {
 
 	@Override
 	public Object[] callMethod(IComputerAccess computer, int methodId,
-			final Object[] arguments) throws Exception {
-
+			Object[] arguments) throws Exception {
+		
 		boolean isCableCall = mySecurityManager.getCallerClassName(2) == "dan200.computer.shared.TileEntityCable$RemotePeripheralWrapper";
 		
-		ArrayList<Object> args = new ArrayList(Arrays.asList(arguments));
+		final DefinitionMethod methodDefinition = methods.get(methodId);
 		
-		MethodDefinition definition = definitions.get(methodId);
-
-		if (!definition.isMethod()) {
+		if (methodDefinition != null) {
 			
-			return getOrSetProperty(computer, methodId, definition, args, isCableCall);
+			boolean isCallable = true;
 			
-		}
-		
-		final Method method = definition.getMethod();
-		
-		Class[] requiredParameters = method.getParameterTypes();
+			ArrayList<Object> args = new ArrayList(Arrays.asList(arguments));
 
-		for (Entry<Integer, String> entry : definition.getReplacements().entrySet()) {
-			int index = entry.getKey();
-			String val = String.valueOf(entry.getValue());
-			args.add(index, OpenPeripheral.replacements.get(val).replace(tile));
-		}
-		
-		if (args.size() != requiredParameters.length) {
-			throw new Exception("Invalid number of parameters.");
-		}
-		
-		fixArguments(requiredParameters, args);
-		
-		final Object[] argsToUse = args.toArray(new Object[args.size()]);
-		
-		if (!isCableCall) {
-			Future callback = TickHandler.addTickCallback(
-					tile.worldObj, new Callable() {
-						@Override
-						public Object call() throws Exception {
-							if (method.getReturnType() == void.class) {
-								method.invoke(tile, argsToUse);
-								return true;
-							}else {
-								return TypeUtils.convertToSuitableType(method.invoke(tile, argsToUse));
-							}
+			Class[] requiredParameters = methodDefinition.getRequiredParameters();
+			
+			if (args.size() != requiredParameters.length){
+				throw new Exception("Invalid number of parameters. Expected " + requiredParameters.length);
+			}
+			
+			for (int i = 0; i < requiredParameters.length; i++) {
+				args.set(i, TypeConversionRegistry.fromLua(args.get(i), requiredParameters[i]));
+			}
+
+			for (int i = 0; i < args.size(); i++) {
+				ArrayList<IRestriction> restrictions = methodDefinition.getRestrictions(i);
+				if (restrictions != null) {
+					for (IRestriction restriction : restrictions) {
+						if (!restriction.isValid(args.get(i))) {
+							throw new Exception(restriction.getErrorMessage(i + 1));
 						}
-					});
-	
-			return new Object[] { callback.get() };
-		}else {
-			if (method.getReturnType() == void.class) {
-				method.invoke(tile, argsToUse);
-				return new Object[] { true };
-			}else {
-				return new Object[] { TypeUtils.convertToSuitableType(method.invoke(tile, argsToUse)) };
-			}
-		}
-	}
-
-	private void fixArguments(Class[] requiredParameters, ArrayList<Object> args) throws Exception {
-		int offset = 0;
-		for (Class requiredParameter : requiredParameters) {
-			
-			Object argumentToCheck = args.get(offset);
-			
-			if (requiredParameter == ForgeDirection.class && argumentToCheck instanceof String) {
-				
-				args.set(offset, TypeUtils.stringToDirection((String)argumentToCheck));
-				
-			} else if (requiredParameter == ItemStack.class && argumentToCheck instanceof Map) {
-				
-				args.set(offset, TypeUtils.mapToItemStack((Map)argumentToCheck));
-				
-			}else if (requiredParameter == int.class && argumentToCheck instanceof Double){
-			
-				args.set(offset, (int)(double)(Double)argumentToCheck);
-			
-			}else if (requiredParameter == int.class && argumentToCheck instanceof Integer) {
-
-				args.set(offset, (int)(Integer)argumentToCheck);
-				
-			}else if (!requiredParameter.isAssignableFrom(argumentToCheck.getClass())) {
-				throw new Exception("Invalid parameter types");
+					}
+				}
 			}
 			
-			offset++;
-		}
-	}
+			final TileEntity tile = worldObj.getBlockTileEntity(x, y, z);
 
-	private Object[] getOrSetProperty(IComputerAccess computer, int methodId,
-			MethodDefinition definition, ArrayList<Object> args, boolean isCableCall) throws Exception {
-		
-		final Field field = definition.getField();
-		
-		if (args.size() != (definition.isGet() ? 0 : 1)) {
-			throw new Exception("Invalid number of parameters.");
-		}
-		
-		Class required = field.getType();
-
-		if (isCableCall) {
-			if (!definition.isGet()) {
-				fixArguments(new Class[] { required }, args);
-				final Object arg = args.get(0);
-				field.set(tile, arg);
-				return new Object[] { true };
-			}else {
-				return new Object[] { TypeUtils.convertToSuitableType(field.get(tile)) };
-			}
+			final Object[] argsToUse = args.toArray(new Object[args.size()]);
 			
-		}else {
-			if (!definition.isGet()) {
-				fixArguments(new Class[] { required }, args);
-				final Object arg = args.get(0);
-				Future callback = TickHandler.addTickCallback(
-						tile.worldObj, new Callable() {
-							@Override
-							public Object call() throws Exception {
-								field.set(tile, arg);
-								return true;
-							}
-						});
-	
-				return new Object[] { callback.get() };
+			if (isCableCall) {
+				return new Object[] { 
+						TypeConversionRegistry.toLua(methodDefinition.execute(tile, argsToUse))
+				};
 			}else {
 				Future callback = TickHandler.addTickCallback(
 						tile.worldObj, new Callable() {
 							@Override
 							public Object call() throws Exception {
-								return TypeUtils.convertToSuitableType(field.get(tile));
+								return TypeConversionRegistry.toLua(
+										TypeConversionRegistry.toLua(methodDefinition.execute(tile, argsToUse))
+								);
 							}
 						});
-	
+
 				return new Object[] { callback.get() };
 			}
 		}
+		return null;
 	}
 
 	@Override
@@ -205,8 +139,6 @@ public class HostedPeripheral implements IHostedPeripheral {
 
 	@Override
 	public void attach(IComputerAccess computer) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
