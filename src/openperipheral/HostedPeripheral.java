@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -85,14 +86,32 @@ public class HostedPeripheral implements IHostedPeripheral {
 
 			Class[] requiredParameters = methodDefinition.getRequiredParameters();
 			
+			HashMap<Integer, String> toReplace = methodDefinition.getReplacements();
+			for (Entry<Integer, String> replacement : toReplace.entrySet()) {
+				String r = replacement.getValue();
+				Object v = null;
+				if (r.equals("x")) {
+					v = x;
+				}else if (r.equals("y")) {
+					v = y;
+				}else if (r.equals("z")) {
+					v = z;
+				}else if (r.equals("world")) {
+					v = worldObj;
+				}
+				if (v != null) {
+					args.add(replacement.getKey(), v);
+				}
+			}
+			
 			if (args.size() != requiredParameters.length){
-				throw new Exception("Invalid number of parameters. Expected " + requiredParameters.length);
+				throw new Exception("Invalid number of parameters. Expected " + (requiredParameters.length - toReplace.size()));
 			}
 			
 			for (int i = 0; i < requiredParameters.length; i++) {
 				Object converted = TypeConversionRegistry.fromLua(args.get(i), requiredParameters[i]);
 				if (converted == null) {
-					throw new Exception("Invalid parameter");
+					throw new Exception("Invalid parameter number " + (i+1));
 				}
 				args.set(i, converted);
 			}

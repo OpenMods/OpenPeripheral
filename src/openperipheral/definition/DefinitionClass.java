@@ -27,7 +27,6 @@ public class DefinitionClass {
 		
 		if  (json.isNode("methods")) {
 			for (JsonNode methodNode : json.getNode("methods").getElements()) {
-				System.out.println("found a methods node");
 				DefinitionMethod method = new DefinitionMethod(javaClass, methodNode);
 				if (method.isValid()) {
 					methods.add(method);
@@ -41,7 +40,6 @@ public class DefinitionClass {
 	}
 
 	public ArrayList<DefinitionMethod> getMethods() {
-		System.out.println("methods size = "+methods.size());
 		return methods;
 	}
 }

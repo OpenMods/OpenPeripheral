@@ -17,20 +17,16 @@ public class TypeConversionRegistry {
 				return response;
 			}
 		}
-		return null;
+		return obj;
 	}
 	
 	public static Object toLua(Object obj) {
 		for (ITypeConverter converter : converters) {
 			Object response = converter.toLua(obj);
 			if (response != null) {
-				System.out.println("response");
-				System.out.println(response);
 				return response;
 			}
 		}
-		System.out.println("obj");
-		System.out.println(obj);
 		return obj;
 	}
 }

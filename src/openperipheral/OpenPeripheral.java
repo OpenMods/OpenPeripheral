@@ -17,7 +17,10 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import openperipheral.converter.ConverterArray;
 import openperipheral.converter.ConverterDouble;
+import openperipheral.converter.ConverterForgeDirection;
+import openperipheral.converter.ConverterILiquidTank;
 import openperipheral.converter.ConverterItemStack;
 import openperipheral.definition.DefinitionClass;
 import openperipheral.definition.DefinitionMethod;
@@ -48,7 +51,7 @@ import cpw.mods.fml.relauncher.Side;
 import dan200.computer.api.ComputerCraftAPI;
 
 
-@Mod( modid = "OpenPeripheral", name = "OpenPeripheral", version = "0.0.7")
+@Mod( modid = "OpenPeripheral", name = "OpenPeripheral", version = "0.1.0")
 public class OpenPeripheral
 {
 
@@ -88,9 +91,12 @@ public class OpenPeripheral
 				return new RestrictionMaximum(json);
 			}
 		});
-		
+
+		TypeConversionRegistry.registryTypeConverter(new ConverterArray());
 		TypeConversionRegistry.registryTypeConverter(new ConverterDouble());
 		TypeConversionRegistry.registryTypeConverter(new ConverterItemStack());
+		TypeConversionRegistry.registryTypeConverter(new ConverterILiquidTank());
+		TypeConversionRegistry.registryTypeConverter(new ConverterForgeDirection());
 		
 		JsonRootNode rootNode = loadJSON();
 		
@@ -111,10 +117,7 @@ public class OpenPeripheral
 	public static ArrayList<DefinitionMethod> getMethodsForClass(Class klass) {
 		
 		ArrayList<DefinitionMethod> methods = new ArrayList<DefinitionMethod>();
-		System.out.println(classList.size());
 		for (Entry<Class, DefinitionClass> entry : classList.entrySet()) {
-			System.out.println(entry.getKey());
-			System.out.println(klass);
 			if (entry.getKey().isAssignableFrom(klass)) {
 				methods.addAll(entry.getValue().getMethods());
 			}

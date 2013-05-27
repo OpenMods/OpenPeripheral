@@ -20,7 +20,7 @@ public class ConverterArray implements ITypeConverter {
 			int index = 1;
 			Object[] objArray = (Object[])o;
 			for (int i = 0; i < objArray.length; i++) {
-				ret.put(i++, TypeConversionRegistry.toLua(objArray[i]));
+				ret.put(index++, TypeConversionRegistry.toLua(objArray[i]));
 			}
 			return ret;
 		}

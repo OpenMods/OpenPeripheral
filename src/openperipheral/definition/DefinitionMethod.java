@@ -31,11 +31,14 @@ public class DefinitionMethod {
 	private Field field = null;
 	private Method method = null;
 	
+	private HashMap<Integer, String> replacements;
+	
 	private HashMap<Integer, ArrayList<IRestriction>> restrictions;
 	
 	public DefinitionMethod(Class klazz, JsonNode json) {
 		
 		restrictions = new HashMap<Integer, ArrayList<IRestriction>>();
+		replacements = new HashMap<Integer, String>();
 		
 		name = json.getStringValue("name");
 		
@@ -45,6 +48,12 @@ public class DefinitionMethod {
 		
 		if (json.isNode("propertyName")) {
 			propertyName = json.getStringValue("propertyName");
+		}
+		
+		if (json.isNode("replacements")) {
+			for (JsonField replacementField : json.getNode("replacements").getFieldList()) {
+				replacements.put(Integer.parseInt(replacementField.getName().getText()), replacementField.getValue().getText());
+			}
 		}
 		
 		if (json.isNode("callType")) {
@@ -122,6 +131,10 @@ public class DefinitionMethod {
 	
 	public CallType getCallType() {
 		return callType;
+	}
+	
+	public HashMap<Integer, String> getReplacements() {
+		return replacements;
 	}
 	
 	public Class[] getRequiredParameters() {
