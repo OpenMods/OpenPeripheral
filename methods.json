@@ -487,5 +487,16 @@
 
          }
       }
+   },
+   {
+      "class":"mods.railcraft.common.util.misc.IAnchor",
+      "obfuscated":{
+
+      },
+      "methods":{
+         "getAnchorFuel":{
+
+         }
+      }
    }
 ]

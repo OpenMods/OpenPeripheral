@@ -64,13 +64,15 @@ public class HostedPeripheral implements IHostedPeripheral {
 	public Object[] callMethod(IComputerAccess computer, int methodId,
 			final Object[] arguments) throws Exception {
 
+		boolean isCableCall = mySecurityManager.getCallerClassName(2) == "dan200.computer.shared.TileEntityCable$RemotePeripheralWrapper";
+		
 		ArrayList<Object> args = new ArrayList(Arrays.asList(arguments));
 		
 		MethodDefinition definition = definitions.get(methodId);
 
 		if (!definition.isMethod()) {
 			
-			return getOrSetProperty(computer, methodId, definition, args);
+			return getOrSetProperty(computer, methodId, definition, args, isCableCall);
 			
 		}
 		
@@ -92,7 +94,7 @@ public class HostedPeripheral implements IHostedPeripheral {
 		
 		final Object[] argsToUse = args.toArray(new Object[args.size()]);
 		
-		if (mySecurityManager.getCallerClassName(2) != "dan200.computer.shared.TileEntityCable$RemotePeripheralWrapper") {
+		if (!isCableCall) {
 			Future callback = TickHandler.addTickCallback(
 					tile.worldObj, new Callable() {
 						@Override
@@ -148,7 +150,7 @@ public class HostedPeripheral implements IHostedPeripheral {
 	}
 
 	private Object[] getOrSetProperty(IComputerAccess computer, int methodId,
-			MethodDefinition definition, ArrayList<Object> args) throws Exception {
+			MethodDefinition definition, ArrayList<Object> args, boolean isCableCall) throws Exception {
 		
 		final Field field = definition.getField();
 		
@@ -157,30 +159,42 @@ public class HostedPeripheral implements IHostedPeripheral {
 		}
 		
 		Class required = field.getType();
-		
-		if (!definition.isGet()) {
-			fixArguments(new Class[] { required }, args);
-			final Object arg = args.get(0);
-			Future callback = TickHandler.addTickCallback(
-					tile.worldObj, new Callable() {
-						@Override
-						public Object call() throws Exception {
-							field.set(tile, arg);
-							return true;
-						}
-					});
 
-			return new Object[] { callback.get() };
+		if (isCableCall) {
+			if (!definition.isGet()) {
+				fixArguments(new Class[] { required }, args);
+				final Object arg = args.get(0);
+				field.set(tile, arg);
+				return new Object[] { true };
+			}else {
+				return new Object[] { TypeUtils.convertToSuitableType(field.get(tile)) };
+			}
+			
 		}else {
-			Future callback = TickHandler.addTickCallback(
-					tile.worldObj, new Callable() {
-						@Override
-						public Object call() throws Exception {
-							return TypeUtils.convertToSuitableType(field.get(tile));
-						}
-					});
-
-			return new Object[] { callback.get() };
+			if (!definition.isGet()) {
+				fixArguments(new Class[] { required }, args);
+				final Object arg = args.get(0);
+				Future callback = TickHandler.addTickCallback(
+						tile.worldObj, new Callable() {
+							@Override
+							public Object call() throws Exception {
+								field.set(tile, arg);
+								return true;
+							}
+						});
+	
+				return new Object[] { callback.get() };
+			}else {
+				Future callback = TickHandler.addTickCallback(
+						tile.worldObj, new Callable() {
+							@Override
+							public Object call() throws Exception {
+								return TypeUtils.convertToSuitableType(field.get(tile));
+							}
+						});
+	
+				return new Object[] { callback.get() };
+			}
 		}
 	}
 
