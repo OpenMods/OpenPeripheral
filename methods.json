@@ -498,5 +498,19 @@
 
          }
       }
+   },
+   {
+      "class":"mods.railcraft.common.util.misc.IEnergyDevice",
+      "obfuscated":{
+
+      },
+      "methods":{
+         "getEnergy":{
+
+         },
+         "getCapacity":{
+
+         }
+      }
    }
 ]
