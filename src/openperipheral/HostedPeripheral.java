@@ -41,7 +41,6 @@ public class HostedPeripheral implements IHostedPeripheral {
 	private String[] methodNames;
 	
 	public HostedPeripheral(TileEntity tile) {
-		
 		klass = tile.getClass();
 		worldObj = tile.worldObj;
 		x = tile.xCoord;
@@ -82,8 +81,6 @@ public class HostedPeripheral implements IHostedPeripheral {
 		
 		if (methodDefinition != null) {
 			
-			boolean isCallable = true;
-			
 			ArrayList<Object> args = new ArrayList(Arrays.asList(arguments));
 
 			Class[] requiredParameters = methodDefinition.getRequiredParameters();
@@ -93,9 +90,13 @@ public class HostedPeripheral implements IHostedPeripheral {
 			}
 			
 			for (int i = 0; i < requiredParameters.length; i++) {
-				args.set(i, TypeConversionRegistry.fromLua(args.get(i), requiredParameters[i]));
+				Object converted = TypeConversionRegistry.fromLua(args.get(i), requiredParameters[i]);
+				if (converted == null) {
+					throw new Exception("Invalid parameter");
+				}
+				args.set(i, converted);
 			}
-
+			
 			for (int i = 0; i < args.size(); i++) {
 				ArrayList<IRestriction> restrictions = methodDefinition.getRestrictions(i);
 				if (restrictions != null) {
@@ -120,9 +121,7 @@ public class HostedPeripheral implements IHostedPeripheral {
 						tile.worldObj, new Callable() {
 							@Override
 							public Object call() throws Exception {
-								return TypeConversionRegistry.toLua(
-										TypeConversionRegistry.toLua(methodDefinition.execute(tile, argsToUse))
-								);
+								return TypeConversionRegistry.toLua(methodDefinition.execute(tile, argsToUse));
 							}
 						});
 

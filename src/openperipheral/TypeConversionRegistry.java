@@ -24,9 +24,13 @@ public class TypeConversionRegistry {
 		for (ITypeConverter converter : converters) {
 			Object response = converter.toLua(obj);
 			if (response != null) {
+				System.out.println("response");
+				System.out.println(response);
 				return response;
 			}
 		}
-		return null;
+		System.out.println("obj");
+		System.out.println(obj);
+		return obj;
 	}
 }

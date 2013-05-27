@@ -112,12 +112,11 @@ public class DefinitionMethod {
 		}else {
 			
 			for (Method m : klazz.getDeclaredMethods()) {
-				if (m.getName() == name || m.getName() == obfuscated) {
+				if (m.getName().equals(name) || m.getName().equals(obfuscated)) {
 					method = m;
 					break;
 				}
 			}
-			
 		}
 	}
 	

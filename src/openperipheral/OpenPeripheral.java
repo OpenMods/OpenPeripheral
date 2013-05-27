@@ -17,6 +17,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import openperipheral.converter.ConverterDouble;
+import openperipheral.converter.ConverterItemStack;
 import openperipheral.definition.DefinitionClass;
 import openperipheral.definition.DefinitionMethod;
 import openperipheral.definition.DefinitionMod;
@@ -87,20 +89,18 @@ public class OpenPeripheral
 			}
 		});
 		
+		TypeConversionRegistry.registryTypeConverter(new ConverterDouble());
+		TypeConversionRegistry.registryTypeConverter(new ConverterItemStack());
+		
 		JsonRootNode rootNode = loadJSON();
 		
 		if (rootNode != null) {
 		    for (JsonNode modNode : rootNode.getElements()) {
 		    	DefinitionMod definition = new DefinitionMod(modNode);
-		    	if (ModLoader.isModLoaded(definition.getModId())) {
-		    		definitions.add(definition);
+		    	if (definition.getModId().equals("") || ModLoader.isModLoaded(definition.getModId())) {
 		    		classList.putAll(definition.getValidClasses());
 		    	}
 		    }
-		}
-		
-		for (DefinitionMod modDef : definitions) {
-			classList.putAll(modDef.getValidClasses());
 		}
 
 		TickRegistry.registerTickHandler(new TickHandler(), Side.SERVER);
@@ -111,8 +111,10 @@ public class OpenPeripheral
 	public static ArrayList<DefinitionMethod> getMethodsForClass(Class klass) {
 		
 		ArrayList<DefinitionMethod> methods = new ArrayList<DefinitionMethod>();
-		
+		System.out.println(classList.size());
 		for (Entry<Class, DefinitionClass> entry : classList.entrySet()) {
+			System.out.println(entry.getKey());
+			System.out.println(klass);
 			if (entry.getKey().isAssignableFrom(klass)) {
 				methods.addAll(entry.getValue().getMethods());
 			}

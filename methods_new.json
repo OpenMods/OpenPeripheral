@@ -1,0 +1,33 @@
+[
+  {
+    "modId": "",
+    "classes": [
+      {
+      	"className": "net.minecraft.inventory.IInventory",
+      	"methods": [
+      	  {
+      	    "name": "getInvName",
+      	    "obfuscated": "func_70303_b"
+      	  },
+      	  {
+      	    "name": "getStackInSlot",
+      	    "obfuscated": "func_70301_a"
+      	  },
+      	  {
+      	    "name": "getSizeInventory",
+      	    "obfuscated": "func_70302_i_"
+      	  }
+      	]
+      },
+      {
+      	"className": "net.minecraft.tileentity.TileEntity",
+      	"methods": [
+      	  {
+      	    "name": "getBlockMetadata",
+      	    "obfuscated": "func_70322_n"
+      	  }
+      	]
+      }
+    ]
+  }
+]
