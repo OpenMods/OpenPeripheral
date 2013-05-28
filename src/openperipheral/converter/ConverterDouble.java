@@ -6,8 +6,12 @@ public class ConverterDouble implements ITypeConverter {
 
 	@Override
 	public Object fromLua(Object o, Class required) {
-		if (required == int.class && o instanceof Double){
-			return ((Double)o).intValue();
+		if ((required == Integer.class || required == int.class || required == byte.class) && o instanceof Double){
+			Integer v = ((Double)o).intValue();
+			if (required == byte.class) {
+				return v.byteValue();
+			}
+			return (int)v;
 		}
 		return null;
 	}

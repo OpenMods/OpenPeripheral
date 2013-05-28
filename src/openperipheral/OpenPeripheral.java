@@ -1,57 +1,49 @@
 package openperipheral;
 
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map.Entry;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import openperipheral.converter.ConverterArray;
-import openperipheral.converter.ConverterDouble;
-import openperipheral.converter.ConverterForgeDirection;
-import openperipheral.converter.ConverterILiquidTank;
-import openperipheral.converter.ConverterItemStack;
-import openperipheral.definition.DefinitionClass;
-import openperipheral.definition.DefinitionMethod;
-import openperipheral.definition.DefinitionMod;
-import openperipheral.definition.ModList;
-import openperipheral.restriction.RestrictionMaximum;
-import openperipheral.restriction.RestrictionMinimum;
-
-import argo.jdom.JdomParser;
-import argo.jdom.JsonField;
-import argo.jdom.JsonNode;
-import argo.jdom.JsonRootNode;
 
 import net.minecraft.src.ModLoader;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
-import cpw.mods.fml.common.FMLCommonHandler;
+import openperipheral.converter.ConverterArray;
+import openperipheral.converter.ConverterDouble;
+import openperipheral.converter.ConverterForgeDirection;
+import openperipheral.converter.ConverterILiquidTank;
+import openperipheral.converter.ConverterItemStack;
+import openperipheral.converter.appliedenergistics.ConverterIMEInventory;
+import openperipheral.converter.buildcraft.ConverterPowerProvider;
+import openperipheral.converter.forestry.ConverterEnumHumidity;
+import openperipheral.converter.forestry.ConverterEnumTemperature;
+import openperipheral.converter.forestry.ConverterFruitFamily;
+import openperipheral.converter.thaumcraft.ConverterEnumTag;
+import openperipheral.converter.thaumcraft.ConverterObjectTags;
+import openperipheral.definition.DefinitionClass;
+import openperipheral.definition.DefinitionMethod;
+import openperipheral.definition.DefinitionMod;
+import openperipheral.definition.ModList;
+import openperipheral.restriction.RestrictionChoice;
+import openperipheral.restriction.RestrictionMaximum;
+import openperipheral.restriction.RestrictionMinimum;
+import argo.jdom.JdomParser;
+import argo.jdom.JsonNode;
+import argo.jdom.JsonRootNode;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.ModContainer;
-import cpw.mods.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.TickRegistry;
-import cpw.mods.fml.relauncher.FMLRelauncher;
 import cpw.mods.fml.relauncher.Side;
 import dan200.computer.api.ComputerCraftAPI;
 
 
-@Mod( modid = "OpenPeripheral", name = "OpenPeripheral", version = "0.1.0")
+@Mod( modid = "OpenPeripheral", name = "OpenPeripheral", version = "0.1.0", dependencies = "after:BuildCraft|Core;after:AppliedEnergistics;after:Forestry;after:IC2;after:ThermalExpansion;after:Thaumcraft;after:MineFactoryReloaded;after:Railcraft")
 public class OpenPeripheral
 {
 
@@ -91,6 +83,13 @@ public class OpenPeripheral
 				return new RestrictionMaximum(json);
 			}
 		});
+		
+		RestrictionFactory.registerRestrictionHandler("choice", new IRestrictionHandler() {
+			@Override
+			public IRestriction createFromJson(JsonNode json) {
+				return new RestrictionChoice(json);
+			}
+		});
 
 		TypeConversionRegistry.registryTypeConverter(new ConverterArray());
 		TypeConversionRegistry.registryTypeConverter(new ConverterDouble());
@@ -98,16 +97,35 @@ public class OpenPeripheral
 		TypeConversionRegistry.registryTypeConverter(new ConverterILiquidTank());
 		TypeConversionRegistry.registryTypeConverter(new ConverterForgeDirection());
 		
+		if (ModLoader.isModLoaded(Mods.APPLIED_ENERGISTICS)){
+			TypeConversionRegistry.registryTypeConverter(new ConverterIMEInventory());
+		}
+		if (ModLoader.isModLoaded(Mods.FORESTRY)){
+			TypeConversionRegistry.registryTypeConverter(new ConverterEnumHumidity());
+			TypeConversionRegistry.registryTypeConverter(new ConverterEnumTemperature());
+			TypeConversionRegistry.registryTypeConverter(new ConverterFruitFamily());
+		}
+		if (ModLoader.isModLoaded(Mods.BUILDCRAFT)) {
+			TypeConversionRegistry.registryTypeConverter(new ConverterPowerProvider());
+		}
+		if (ModLoader.isModLoaded(Mods.THAUMCRAFT)) {
+			TypeConversionRegistry.registryTypeConverter(new ConverterObjectTags());
+			TypeConversionRegistry.registryTypeConverter(new ConverterEnumTag());
+		}
 		JsonRootNode rootNode = loadJSON();
 		
 		if (rootNode != null) {
 		    for (JsonNode modNode : rootNode.getElements()) {
 		    	DefinitionMod definition = new DefinitionMod(modNode);
-		    	if (definition.getModId().equals("") || ModLoader.isModLoaded(definition.getModId())) {
-		    		classList.putAll(definition.getValidClasses());
-		    	}
+		    	classList.putAll(definition.getValidClasses());
+				/*		    	
+				if (definition.getModId().equals("") || ModLoader.isModLoaded(definition.getModId())) {
+						    		
+				}
+				*/
 		    }
 		}
+		
 
 		TickRegistry.registerTickHandler(new TickHandler(), Side.SERVER);
 		ComputerCraftAPI.registerExternalPeripheral(TileEntity.class, new PeripheralHandler());

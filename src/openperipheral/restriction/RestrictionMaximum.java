@@ -1,7 +1,7 @@
 package openperipheral.restriction;
 
-import argo.jdom.JsonNode;
 import openperipheral.IRestriction;
+import argo.jdom.JsonNode;
 
 public class RestrictionMaximum implements IRestriction {
 
@@ -13,7 +13,10 @@ public class RestrictionMaximum implements IRestriction {
 	
 	@Override
 	public boolean isValid(Object value) {
-		return (Integer)value < maximum;
+		if (value instanceof Byte){
+			return (Byte)value <= maximum;
+		}
+		return (Integer)value <= maximum;
 	}
 
 	@Override

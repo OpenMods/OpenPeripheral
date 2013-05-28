@@ -3,7 +3,6 @@ package openperipheral;
 import java.util.HashMap;
 
 import argo.jdom.JsonField;
-import argo.jdom.JsonNode;
 
 public class RestrictionFactory {
 

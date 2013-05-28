@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraft.item.ItemStack;
-
 import openperipheral.ITypeConverter;
 
 public class ConverterItemStack implements ITypeConverter {

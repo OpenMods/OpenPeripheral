@@ -1,24 +1,16 @@
 package openperipheral;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
-import openperipheral.definition.DefinitionMethod;
-import openperipheral.definition.DefinitionMethod.CallType;
-
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
+import openperipheral.definition.DefinitionMethod;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IHostedPeripheral;
 
@@ -43,6 +35,7 @@ public class HostedPeripheral implements IHostedPeripheral {
 	
 	public HostedPeripheral(TileEntity tile) {
 		klass = tile.getClass();
+
 		worldObj = tile.worldObj;
 		x = tile.xCoord;
 		y = tile.yCoord;
@@ -128,7 +121,7 @@ public class HostedPeripheral implements IHostedPeripheral {
 			}
 			
 			final TileEntity tile = worldObj.getBlockTileEntity(x, y, z);
-
+			
 			final Object[] argsToUse = args.toArray(new Object[args.size()]);
 			
 			if (isCableCall) {

@@ -5,13 +5,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import net.minecraft.tileentity.TileEntity;
-
 import openperipheral.IRestriction;
 import openperipheral.RestrictionFactory;
-
 import argo.jdom.JsonField;
 import argo.jdom.JsonNode;
 
@@ -30,6 +27,7 @@ public class DefinitionMethod {
 	
 	private Field field = null;
 	private Method method = null;
+	private int argumentCount = -1;
 	
 	private HashMap<Integer, String> replacements;
 	
@@ -50,6 +48,10 @@ public class DefinitionMethod {
 			propertyName = json.getStringValue("propertyName");
 		}
 		
+		if (json.isNode("argumentCount")) {
+			argumentCount = Integer.parseInt(json.getNumberValue("argumentCount"));
+		}
+		
 		if (json.isNode("replacements")) {
 			for (JsonField replacementField : json.getNode("replacements").getFieldList()) {
 				replacements.put(Integer.parseInt(replacementField.getName().getText()), replacementField.getValue().getText());
@@ -58,11 +60,11 @@ public class DefinitionMethod {
 		
 		if (json.isNode("callType")) {
 			String _callType = json.getStringValue("callType");
-			if (_callType == "method") {
+			if (_callType.equals("method")) {
 				callType = CallType.METHOD;
-			}else if (_callType == "get") {
+			}else if (_callType.equals("get")) {
 				callType = CallType.GET_PROPERTY;
-			}else if (_callType == "set") {
+			}else if (_callType.equals("set")) {
 				callType = CallType.SET_PROPERTY;
 			}
 		}
@@ -102,7 +104,6 @@ public class DefinitionMethod {
 		}
 		
 		if (callType == CallType.GET_PROPERTY || callType == CallType.SET_PROPERTY) {
-			
 			try {
 				field = klazz.getDeclaredField(propertyName);
 			} catch (Exception e) {
@@ -119,11 +120,13 @@ public class DefinitionMethod {
 				field.setAccessible(true);
 			}
 		}else {
-			
 			for (Method m : klazz.getDeclaredMethods()) {
-				if (m.getName().equals(name) || m.getName().equals(obfuscated)) {
+				if ((m.getName().equals(name) || m.getName().equals(obfuscated)) &&
+						(argumentCount == -1 || m.getParameterTypes().length == argumentCount)) {
+					
 					method = m;
 					break;
+				
 				}
 			}
 		}
