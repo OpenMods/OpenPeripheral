@@ -15,12 +15,14 @@ public class RestrictionMinimum implements IRestriction {
 	public boolean isValid(Object value) {
 		if (value instanceof Byte) {
 			return (Byte)value >= minimum;
+		}else if (value instanceof Double) {
+			return (Double)value >= minimum;
 		}
 		return (Integer)value >= minimum;
 	}
 
 	@Override
 	public String getErrorMessage(int paramOffset) {
-		return String.format("Arguments %s must be higher than %s", paramOffset, minimum);
+		return String.format("Arguments %s must no less than than %s", paramOffset, minimum);
 	}
 }

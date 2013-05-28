@@ -410,6 +410,27 @@
                   "name":"getOutput"
                }
             ]
+         },
+         {
+            "className":"ic2.core.block.machine.tileentity.TileEntityMatter",
+            "methods":[
+               {
+                  "name":"getProgressAsString"
+               },
+               {
+                  "name":"isAmplificationAvailable",
+                  "obfuscated":"amplificationIsAvailable"
+               }
+            ]
+         },
+         {
+            "className":"ic2.core.block.machine.tileentity.TileEntityInduction",
+            "methods":[
+               {
+                  "name":"getHeat",
+                  "obfuscated":"getHeatAsString"
+               }
+            ]
          }
       ]
    },
@@ -443,13 +464,13 @@
                },
                {
                   "name":"getEnergySend",
-                  "propertyName": "energySend",
-                  "callType": "get"
+                  "propertyName":"energySend",
+                  "callType":"get"
                },
                {
                   "name":"getEnergyReceive",
-                  "propertyName": "energyReceive",
-                  "callType": "get"
+                  "propertyName":"energyReceive",
+                  "callType":"get"
                }
             ]
          },
@@ -470,8 +491,8 @@
                },
                {
                   "name":"getFrequency",
-                  "propertyName": "frequency",
-                  "callType": "get"
+                  "propertyName":"frequency",
+                  "callType":"get"
                }
             ]
          },
@@ -568,11 +589,11 @@
             "methods":[
                {
                   "name":"getCanCopy",
-                  "obfuscated": "canCopy"
+                  "obfuscated":"canCopy"
                },
                {
                   "name":"getCanPlay",
-                  "obfuscated": "canPlay"
+                  "obfuscated":"canPlay"
                },
                {
                   "name":"copyRecord"
@@ -688,6 +709,68 @@
                },
                {
                   "name":"getCapacity"
+               }
+            ]
+         }
+      ]
+   },
+   {
+      "modId":"PortalGun",
+      "classes":[
+         {
+            "className":"portalgun.common.tileentity.TileEntityAFP",
+            "methods":[
+               {
+                  "name":"getNeedsPower",
+                  "propertyName": "needsPower",
+                  "callType": "get"
+               },
+               {
+                  "name":"setNeedsPower",
+                  "propertyName": "needsPower",
+                  "callType": "set"
+               },
+               {
+                  "name":"getVerticalStrength",
+                  "propertyName": "strVert",
+                  "callType": "get"
+               },
+               {
+                  "name":"setVerticalStrength",
+                  "propertyName": "strVert",
+                  "callType": "set",
+                  "restrictions":{
+		     "0":{
+			"min":1,
+			"max":5
+		     }
+                  }
+               },
+               {
+                  "name":"getHorizontalStrength",
+                  "propertyName": "strHori",
+                  "callType": "get"
+               },
+               {
+                  "name":"setHorizontalStrength",
+                  "propertyName": "strHori",
+                  "callType": "set",
+                  "restrictions":{
+		     "0":{
+			"min":0,
+			"max":5
+		     }
+                  }
+               },
+               {
+                  "name":"getNeedsPower",
+                  "propertyName": "needsPower",
+                  "callType": "get"
+               },
+               {
+                  "name":"setNeedsPower",
+                  "propertyName": "needsPower",
+                  "callType": "set"
                }
             ]
          }

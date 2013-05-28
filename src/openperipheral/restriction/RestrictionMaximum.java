@@ -15,13 +15,15 @@ public class RestrictionMaximum implements IRestriction {
 	public boolean isValid(Object value) {
 		if (value instanceof Byte){
 			return (Byte)value <= maximum;
+		} else if (value instanceof Double) {
+			return (Double)value <= maximum;
 		}
 		return (Integer)value <= maximum;
 	}
 
 	@Override
 	public String getErrorMessage(int paramOffset) {
-		return String.format("Arguments %s must be lower than %s", paramOffset, maximum);
+		return String.format("Arguments %s must be no bigger than %s", paramOffset, maximum);
 	}
 
 }

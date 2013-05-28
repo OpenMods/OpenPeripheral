@@ -28,6 +28,7 @@ import openperipheral.definition.DefinitionClass;
 import openperipheral.definition.DefinitionMethod;
 import openperipheral.definition.DefinitionMod;
 import openperipheral.definition.ModList;
+import openperipheral.postchange.PostChangePortalGun;
 import openperipheral.restriction.RestrictionChoice;
 import openperipheral.restriction.RestrictionMaximum;
 import openperipheral.restriction.RestrictionMinimum;
@@ -112,6 +113,10 @@ public class OpenPeripheral
 			TypeConversionRegistry.registryTypeConverter(new ConverterObjectTags());
 			TypeConversionRegistry.registryTypeConverter(new ConverterEnumTag());
 		}
+		if (ModLoader.isModLoaded(Mods.PORTAL_GUN)) {
+			PostChangeRegistry.registerChangeHandler(new PostChangePortalGun());
+		}
+		
 		JsonRootNode rootNode = loadJSON();
 		
 		if (rootNode != null) {

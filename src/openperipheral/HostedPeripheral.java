@@ -125,15 +125,19 @@ public class HostedPeripheral implements IHostedPeripheral {
 			final Object[] argsToUse = args.toArray(new Object[args.size()]);
 			
 			if (isCableCall) {
+				Object response = TypeConversionRegistry.toLua(methodDefinition.execute(tile, argsToUse));
+				PostChangeRegistry.onPostChange(tile, methodDefinition, argsToUse);
 				return new Object[] { 
-						TypeConversionRegistry.toLua(methodDefinition.execute(tile, argsToUse))
+						response
 				};
 			}else {
 				Future callback = TickHandler.addTickCallback(
 						tile.worldObj, new Callable() {
 							@Override
 							public Object call() throws Exception {
-								return TypeConversionRegistry.toLua(methodDefinition.execute(tile, argsToUse));
+								Object response = TypeConversionRegistry.toLua(methodDefinition.execute(tile, argsToUse));
+								PostChangeRegistry.onPostChange(tile, methodDefinition, argsToUse);
+								return response;
 							}
 						});
 

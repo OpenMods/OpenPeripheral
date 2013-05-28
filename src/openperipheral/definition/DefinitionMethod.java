@@ -136,6 +136,10 @@ public class DefinitionMethod {
 		return callType;
 	}
 	
+	public String getPropertyName() {
+		return propertyName;
+	}
+	
 	public HashMap<Integer, String> getReplacements() {
 		return replacements;
 	}
