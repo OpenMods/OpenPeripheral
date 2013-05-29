@@ -138,6 +138,10 @@ public class DefinitionMethod {
 		}
 	}
 	
+	public boolean paramNeedsReplacing(int index) {
+		return replacements != null && replacements.containsKey(index);
+	}
+	
 	public CallType getCallType() {
 		return callType;
 	}
@@ -152,6 +156,15 @@ public class DefinitionMethod {
 	
 	public boolean getCauseTileUpdate() {
 		return causeTileUpdate;
+	}
+	
+	public Class getReturnType() {
+		if (getCallType() == CallType.METHOD) {
+			return method.getReturnType();
+		}else if (getCallType() == CallType.GET_PROPERTY) {
+			return field.getType();
+		}
+		return Void.class;
 	}
 	
 	public Class[] getRequiredParameters() {

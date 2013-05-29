@@ -2,9 +2,8 @@ package openperipheral;
 
 import java.util.ArrayList;
 
-import openperipheral.definition.DefinitionMethod;
-
 import net.minecraft.tileentity.TileEntity;
+import openperipheral.definition.DefinitionMethod;
 
 public class PostChangeRegistry {
 	
