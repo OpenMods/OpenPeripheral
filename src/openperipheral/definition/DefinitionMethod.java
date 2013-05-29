@@ -24,6 +24,7 @@ public class DefinitionMethod {
 	private String obfuscated;
 	private String propertyName;
 	private CallType callType = CallType.METHOD;
+	private boolean causeTileUpdate = false;
 	
 	private Field field = null;
 	private Method method = null;
@@ -66,6 +67,11 @@ public class DefinitionMethod {
 				callType = CallType.GET_PROPERTY;
 			}else if (_callType.equals("set")) {
 				callType = CallType.SET_PROPERTY;
+			}
+		}
+		if (json.isNode("causeUpdate")) {
+			if (json.getStringValue("causeUpdate").equals("true")) {
+				causeTileUpdate = true;
 			}
 		}
 		
@@ -142,6 +148,10 @@ public class DefinitionMethod {
 	
 	public HashMap<Integer, String> getReplacements() {
 		return replacements;
+	}
+	
+	public boolean getCauseTileUpdate() {
+		return causeTileUpdate;
 	}
 	
 	public Class[] getRequiredParameters() {

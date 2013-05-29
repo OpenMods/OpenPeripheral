@@ -28,6 +28,7 @@ import openperipheral.definition.DefinitionClass;
 import openperipheral.definition.DefinitionMethod;
 import openperipheral.definition.DefinitionMod;
 import openperipheral.definition.ModList;
+import openperipheral.postchange.PostChangeMarkUpdate;
 import openperipheral.postchange.PostChangePortalGun;
 import openperipheral.restriction.RestrictionChoice;
 import openperipheral.restriction.RestrictionMaximum;
@@ -91,6 +92,8 @@ public class OpenPeripheral
 				return new RestrictionChoice(json);
 			}
 		});
+
+		PostChangeRegistry.registerChangeHandler(new PostChangeMarkUpdate());
 
 		TypeConversionRegistry.registryTypeConverter(new ConverterArray());
 		TypeConversionRegistry.registryTypeConverter(new ConverterDouble());

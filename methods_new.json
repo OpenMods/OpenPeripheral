@@ -493,6 +493,12 @@
                   "name":"getFrequency",
                   "propertyName":"frequency",
                   "callType":"get"
+               },
+               {
+               	  "name":"setFrequency",
+               	  "propertyName": "frequency",
+               	  "callType":"set",
+               	  "causeUpdate": "true"
                }
             ]
          },
