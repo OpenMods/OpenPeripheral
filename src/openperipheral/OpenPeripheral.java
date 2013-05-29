@@ -74,7 +74,7 @@ public class OpenPeripheral
 	public static OpenPeripheral instance;
 	
 	public static String CACHE_FILE = "config/openperipheral/methods.json";
-	public static String DATA_URL = "http://localhost/methods_new.json";
+	public static String DATA_URL = "https://raw.github.com/mikeemoo/OpenPeripheral/master/methods_new.json";
 	public static int CACHE_REFRESH_INTERVAL = 7;
 	public static boolean analyticsEnabled = true;
 	public static boolean doAnalytics = false;
