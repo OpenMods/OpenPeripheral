@@ -16,6 +16,13 @@
                {
                   "name":"getSizeInventory",
                   "obfuscated":"func_70302_i_"
+               },
+               {
+                  "name":"testMethod",
+                  "callType": "script",
+                  "script": "
+                    1 + 1
+                  "
                }
             ]
          },
@@ -750,7 +757,18 @@
                         "min":1,
                         "max":5
                      }
-                  }
+                  },
+                  "postscript": "
+                        env.callMethod(null, worldObj, ['markBlockForUpdate', 'func_72710_a', 'func_72845_h'], xCoord, yCoord, zCoord);
+
+                        var pair = env.getProperty(null, tile, 'pair');
+                        env.setProperty(null, pair, values[0], luaMethod.getPropertyName());
+                        var pairX = env.getProperty(null, pair, 'xCoord', 'field_70329_l');
+                        var pairY = env.getProperty(null, pair, 'yCoord', 'field_70330_m');
+                        var pairZ = env.getProperty(null, pair, 'zCoord', 'field_70327_n');
+			
+                        env.callMethod(null, worldObj, ['markBlockForUpdate', 'func_72710_a', 'func_72845_h'], pairX, pairY, pairZ);
+                  "
                },
                {
                   "name":"getHorizontalStrength",
@@ -766,17 +784,18 @@
                         "min":0,
                         "max":5
                      }
-                  }
-               },
-               {
-                  "name":"getNeedsPower",
-                  "propertyName":"needsPower",
-                  "callType":"get"
-               },
-               {
-                  "name":"setNeedsPower",
-                  "propertyName":"needsPower",
-                  "callType":"set"
+                  },
+                  "postscript": "
+                        env.callMethod(null, worldObj, ['markBlockForUpdate', 'func_72710_a', 'func_72845_h'], xCoord, yCoord, zCoord);
+
+                        var pair = env.getProperty(null, tile, 'pair');
+                        env.setProperty(null, pair, values[0], luaMethod.getPropertyName());
+                        var pairX = env.getProperty(null, pair, 'xCoord', 'field_70329_l');
+                        var pairY = env.getProperty(null, pair, 'yCoord', 'field_70330_m');
+                        var pairZ = env.getProperty(null, pair, 'zCoord', 'field_70327_n');
+			
+                        env.callMethod(null, worldObj, ['markBlockForUpdate', 'func_72710_a', 'func_72845_h'], pairX, pairY, pairZ);
+                  "
                }
             ]
          }

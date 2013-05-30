@@ -44,7 +44,7 @@ import openperipheral.definition.DefinitionMethod;
 import openperipheral.definition.DefinitionMod;
 import openperipheral.definition.ModList;
 import openperipheral.postchange.PostChangeMarkUpdate;
-import openperipheral.postchange.PostChangePortalGun;
+import openperipheral.postchange.PostChangeScript;
 import openperipheral.restriction.RestrictionChoice;
 import openperipheral.restriction.RestrictionMaximum;
 import openperipheral.restriction.RestrictionMinimum;
@@ -64,7 +64,7 @@ import cpw.mods.fml.relauncher.Side;
 import dan200.computer.api.ComputerCraftAPI;
 
 
-@Mod( modid = "OpenPeripheral", name = "OpenPeripheral", version = "0.1.0", dependencies = "after:BuildCraft|Core;after:AppliedEnergistics;after:Forestry;after:IC2;after:ThermalExpansion;after:Thaumcraft;after:MineFactoryReloaded;after:Railcraft")
+@Mod( modid = "OpenPeripheral", name = "OpenPeripheral", version = "0.1.0", dependencies = "required-after:ComputerCraft;after:BuildCraft|Core;after:AppliedEnergistics;after:Forestry;after:IC2;after:ThermalExpansion;after:Thaumcraft;after:MineFactoryReloaded;after:Railcraft;after:MiscPeripherals")
 public class OpenPeripheral
 {
 
@@ -178,6 +178,7 @@ public class OpenPeripheral
 		});
 
 		PostChangeRegistry.registerChangeHandler(new PostChangeMarkUpdate());
+		PostChangeRegistry.registerChangeHandler(new PostChangeScript());
 
 		TypeConversionRegistry.registryTypeConverter(new ConverterArray());
 		TypeConversionRegistry.registryTypeConverter(new ConverterDouble());
@@ -199,9 +200,6 @@ public class OpenPeripheral
 		if (ModLoader.isModLoaded(Mods.THAUMCRAFT)) {
 			TypeConversionRegistry.registryTypeConverter(new ConverterObjectTags());
 			TypeConversionRegistry.registryTypeConverter(new ConverterEnumTag());
-		}
-		if (ModLoader.isModLoaded(Mods.PORTAL_GUN)) {
-			PostChangeRegistry.registerChangeHandler(new PostChangePortalGun());
 		}
 		
 		JsonRootNode rootNode = loadJSON();

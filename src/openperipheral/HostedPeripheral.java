@@ -7,10 +7,13 @@ import java.util.Map.Entry;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
+import javax.script.ScriptException;
+
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import openperipheral.definition.DefinitionMethod;
+import openperipheral.definition.DefinitionMethod.CallType;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IHostedPeripheral;
 
@@ -74,6 +77,17 @@ public class HostedPeripheral implements IHostedPeripheral {
 		final DefinitionMethod methodDefinition = methods.get(methodId);
 		
 		if (methodDefinition != null) {
+			
+			if (methodDefinition.getCallType() == CallType.SCRIPT) {
+
+				final TileEntity tile = worldObj.getBlockTileEntity(x, y, z);
+				Object response = TypeConversionRegistry.toLua(methodDefinition.execute(tile, arguments));
+				PostChangeRegistry.onPostChange(tile, methodDefinition, arguments);
+				return new Object[] { 
+						response
+				};
+			}
+			
 			
 			ArrayList<Object> args = new ArrayList(Arrays.asList(arguments));
 

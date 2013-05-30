@@ -13,7 +13,5 @@ public class PostChangeMarkUpdate implements IPostChangeHandler {
 		if (luaMethod.getCauseTileUpdate()) {
 			tile.worldObj.markBlockForUpdate(tile.xCoord, tile.yCoord, tile.zCoord);
 		}
-		
 	}
-
 }

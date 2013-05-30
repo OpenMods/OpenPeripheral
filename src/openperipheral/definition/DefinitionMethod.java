@@ -6,23 +6,38 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+
+import org.bouncycastle.util.encoders.Base64;
+
+import cpw.mods.fml.common.ObfuscationReflectionHelper;
+
 import net.minecraft.tileentity.TileEntity;
 import openperipheral.IRestriction;
 import openperipheral.RestrictionFactory;
+import openperipheral.util.ReflectionHelper;
 import argo.jdom.JsonField;
 import argo.jdom.JsonNode;
 
 public class DefinitionMethod {
 
+	private ScriptEngineManager factory = new ScriptEngineManager();
+	protected ScriptEngine engine = factory.getEngineByName("JavaScript");
+	
 	public enum CallType {
 		METHOD,
 		GET_PROPERTY,
-		SET_PROPERTY
+		SET_PROPERTY,
+		SCRIPT
 	}
 	
 	private String name;
 	private String obfuscated;
 	private String propertyName;
+	private String script = null;
+	private String postscript = null;
 	private CallType callType = CallType.METHOD;
 	private boolean causeTileUpdate = false;
 	
@@ -43,6 +58,14 @@ public class DefinitionMethod {
 		
 		if (json.isNode("obfuscated")) {
 			obfuscated = json.getStringValue("obfuscated");
+		}
+		
+		if (json.isNode("script")) {
+			script = new String(json.getStringValue("script"));
+		}
+		
+		if (json.isNode("postscript")) {
+			postscript = new String(json.getStringValue("postscript"));
 		}
 		
 		if (json.isNode("propertyName")) {
@@ -67,6 +90,8 @@ public class DefinitionMethod {
 				callType = CallType.GET_PROPERTY;
 			}else if (_callType.equals("set")) {
 				callType = CallType.SET_PROPERTY;
+			}else if (_callType.equals("script")) {
+				callType = CallType.SCRIPT;
 			}
 		}
 		if (json.isNode("causeUpdate")) {
@@ -110,31 +135,9 @@ public class DefinitionMethod {
 		}
 		
 		if (callType == CallType.GET_PROPERTY || callType == CallType.SET_PROPERTY) {
-			try {
-				field = klazz.getDeclaredField(propertyName);
-			} catch (Exception e) {
-			}
-			if (field == null && obfuscated != null) {
-				try {
-					field = klazz.getDeclaredField(obfuscated);
-				} catch (Exception e) {
-					
-				}
-			}
-			
-			if (field != null) {
-				field.setAccessible(true);
-			}
-		}else {
-			for (Method m : klazz.getDeclaredMethods()) {
-				if ((m.getName().equals(name) || m.getName().equals(obfuscated)) &&
-						(argumentCount == -1 || m.getParameterTypes().length == argumentCount)) {
-					
-					method = m;
-					break;
-				
-				}
-			}
+			field = ReflectionHelper.getField(klazz, propertyName, obfuscated);
+		}else if (callType == CallType.METHOD){
+			method = ReflectionHelper.getMethod(klazz, new String[] { name,  obfuscated }, argumentCount);
 		}
 	}
 	
@@ -152,6 +155,14 @@ public class DefinitionMethod {
 	
 	public HashMap<Integer, String> getReplacements() {
 		return replacements;
+	}
+	
+	public String getScript() {
+		return script;
+	}
+	
+	public String getPostScript() {
+		return postscript;
 	}
 	
 	public boolean getCauseTileUpdate() {
@@ -181,7 +192,7 @@ public class DefinitionMethod {
 	}
 
 	public boolean isValid() {
-		return field != null || method != null;
+		return field != null || method != null || callType == CallType.SCRIPT;
 	}
 	
 	public ArrayList<IRestriction> getRestrictions(int index) {
@@ -193,13 +204,36 @@ public class DefinitionMethod {
 	}
 
 	public Object execute(TileEntity tile, Object[] args) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		if (callType == CallType.METHOD) {
+		if (callType == CallType.SCRIPT) {
+			return executeScript(tile, args);
+		}else if (callType == CallType.METHOD) {
 			return method.invoke(tile, args);
 		}else if (callType == CallType.GET_PROPERTY) {
 			return field.get(tile);
 		}else if (callType == CallType.SET_PROPERTY) {
 			field.set(tile, args[0]);
 			return true;
+		}
+		return null;
+	}
+
+	private Object executeScript(TileEntity tile, Object[] args) {
+
+		String script = this.getScript();
+		if (script != null) {
+			try {
+				this.engine.put("tile", tile);
+				this.engine.put("xCoord", tile.xCoord);
+				this.engine.put("yCoord", tile.yCoord);
+				this.engine.put("zCoord", tile.zCoord);
+				this.engine.put("values", args);
+				this.engine.put("worldObj", tile.worldObj);
+				this.engine.put("env", this);
+				return this.engine.eval(script);
+			} catch (ScriptException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return null;
 	}
