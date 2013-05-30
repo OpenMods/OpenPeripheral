@@ -82,7 +82,6 @@ public class HostedPeripheral implements IHostedPeripheral {
 
 				final TileEntity tile = worldObj.getBlockTileEntity(x, y, z);
 				Object response = TypeConversionRegistry.toLua(methodDefinition.execute(tile, arguments));
-				PostChangeRegistry.onPostChange(tile, methodDefinition, arguments);
 				return new Object[] { 
 						response
 				};

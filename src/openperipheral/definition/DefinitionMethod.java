@@ -221,6 +221,7 @@ public class DefinitionMethod {
 
 		String script = this.getScript();
 		if (script != null) {
+			script = new String(Base64.decode(script));
 			try {
 				this.engine.put("tile", tile);
 				this.engine.put("xCoord", tile.xCoord);

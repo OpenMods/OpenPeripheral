@@ -8,6 +8,8 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
+import org.bouncycastle.util.encoders.Base64;
+
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 
@@ -34,9 +36,9 @@ public class PostChangeScript implements IPostChangeHandler {
 	public void execute(TileEntity tile, DefinitionMethod luaMethod,
 			Object[] values) {
 		Class c = tile.getClass();
-		
 		String script = luaMethod.getPostScript();
 		if (script != null) {
+			script = new String(Base64.decode(script));
 			try {
 				this.engine.put("tile", tile);
 				this.engine.put("xCoord", tile.xCoord);
