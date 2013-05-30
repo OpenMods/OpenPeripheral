@@ -19,10 +19,8 @@
                },
                {
                   "name":"testMethod",
-                  "callType": "script",
-                  "script": "
-                    1 + 1
-                  "
+                  "callType":"script",
+                  "script":"MSsx"
                }
             ]
          },
@@ -758,17 +756,7 @@
                         "max":5
                      }
                   },
-                  "postscript": "
-                        env.callMethod(null, worldObj, ['markBlockForUpdate', 'func_72710_a', 'func_72845_h'], xCoord, yCoord, zCoord);
-
-                        var pair = env.getProperty(null, tile, 'pair');
-                        env.setProperty(null, pair, values[0], luaMethod.getPropertyName());
-                        var pairX = env.getProperty(null, pair, 'xCoord', 'field_70329_l');
-                        var pairY = env.getProperty(null, pair, 'yCoord', 'field_70330_m');
-                        var pairZ = env.getProperty(null, pair, 'zCoord', 'field_70327_n');
-			
-                        env.callMethod(null, worldObj, ['markBlockForUpdate', 'func_72710_a', 'func_72845_h'], pairX, pairY, pairZ);
-                  "
+                  "postscript":"ZW52LmNhbGxNZXRob2QobnVsbCwgd29ybGRPYmosIFsnbWFya0Jsb2NrRm9yVXBkYXRlJywgJ2Z1bmNfNzI3MTBfYScsICdmdW5jXzcyODQ1X2gnXSwgeENvb3JkLCB5Q29vcmQsIHpDb29yZCk7DQoNCnZhciBwYWlyID0gZW52LmdldFByb3BlcnR5KG51bGwsIHRpbGUsICdwYWlyJyk7DQplbnYuc2V0UHJvcGVydHkobnVsbCwgcGFpciwgdmFsdWVzWzBdLCBsdWFNZXRob2QuZ2V0UHJvcGVydHlOYW1lKCkpOw0KdmFyIHBhaXJYID0gZW52LmdldFByb3BlcnR5KG51bGwsIHBhaXIsICd4Q29vcmQnLCAnZmllbGRfNzAzMjlfbCcpOw0KdmFyIHBhaXJZID0gZW52LmdldFByb3BlcnR5KG51bGwsIHBhaXIsICd5Q29vcmQnLCAnZmllbGRfNzAzMzBfbScpOw0KdmFyIHBhaXJaID0gZW52LmdldFByb3BlcnR5KG51bGwsIHBhaXIsICd6Q29vcmQnLCAnZmllbGRfNzAzMjdfbicpOw0KDQplbnYuY2FsbE1ldGhvZChudWxsLCB3b3JsZE9iaiwgWydtYXJrQmxvY2tGb3JVcGRhdGUnLCAnZnVuY183MjcxMF9hJywgJ2Z1bmNfNzI4NDVfaCddLCBwYWlyWCwgcGFpclksIHBhaXJaKTs="
                },
                {
                   "name":"getHorizontalStrength",
@@ -785,17 +773,7 @@
                         "max":5
                      }
                   },
-                  "postscript": "
-                        env.callMethod(null, worldObj, ['markBlockForUpdate', 'func_72710_a', 'func_72845_h'], xCoord, yCoord, zCoord);
-
-                        var pair = env.getProperty(null, tile, 'pair');
-                        env.setProperty(null, pair, values[0], luaMethod.getPropertyName());
-                        var pairX = env.getProperty(null, pair, 'xCoord', 'field_70329_l');
-                        var pairY = env.getProperty(null, pair, 'yCoord', 'field_70330_m');
-                        var pairZ = env.getProperty(null, pair, 'zCoord', 'field_70327_n');
-			
-                        env.callMethod(null, worldObj, ['markBlockForUpdate', 'func_72710_a', 'func_72845_h'], pairX, pairY, pairZ);
-                  "
+                  "postscript":"ZW52LmNhbGxNZXRob2QobnVsbCwgd29ybGRPYmosIFsnbWFya0Jsb2NrRm9yVXBkYXRlJywgJ2Z1bmNfNzI3MTBfYScsICdmdW5jXzcyODQ1X2gnXSwgeENvb3JkLCB5Q29vcmQsIHpDb29yZCk7DQoNCnZhciBwYWlyID0gZW52LmdldFByb3BlcnR5KG51bGwsIHRpbGUsICdwYWlyJyk7DQplbnYuc2V0UHJvcGVydHkobnVsbCwgcGFpciwgdmFsdWVzWzBdLCBsdWFNZXRob2QuZ2V0UHJvcGVydHlOYW1lKCkpOw0KdmFyIHBhaXJYID0gZW52LmdldFByb3BlcnR5KG51bGwsIHBhaXIsICd4Q29vcmQnLCAnZmllbGRfNzAzMjlfbCcpOw0KdmFyIHBhaXJZID0gZW52LmdldFByb3BlcnR5KG51bGwsIHBhaXIsICd5Q29vcmQnLCAnZmllbGRfNzAzMzBfbScpOw0KdmFyIHBhaXJaID0gZW52LmdldFByb3BlcnR5KG51bGwsIHBhaXIsICd6Q29vcmQnLCAnZmllbGRfNzAzMjdfbicpOw0KDQplbnYuY2FsbE1ldGhvZChudWxsLCB3b3JsZE9iaiwgWydtYXJrQmxvY2tGb3JVcGRhdGUnLCAnZnVuY183MjcxMF9hJywgJ2Z1bmNfNzI4NDVfaCddLCBwYWlyWCwgcGFpclksIHBhaXJaKTs="
                }
             ]
          }
