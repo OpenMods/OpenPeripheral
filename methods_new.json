@@ -495,10 +495,10 @@
                   "callType":"get"
                },
                {
-               	  "name":"setFrequency",
-               	  "propertyName": "frequency",
-               	  "callType":"set",
-               	  "causeUpdate": "true"
+                  "name":"setFrequency",
+                  "propertyName":"frequency",
+                  "callType":"set",
+                  "causeUpdate":"true"
                }
             ]
          },
@@ -728,55 +728,55 @@
             "methods":[
                {
                   "name":"getNeedsPower",
-                  "propertyName": "needsPower",
-                  "callType": "get"
+                  "propertyName":"needsPower",
+                  "callType":"get"
                },
                {
                   "name":"setNeedsPower",
-                  "propertyName": "needsPower",
-                  "callType": "set"
+                  "propertyName":"needsPower",
+                  "callType":"set"
                },
                {
                   "name":"getVerticalStrength",
-                  "propertyName": "strVert",
-                  "callType": "get"
+                  "propertyName":"strVert",
+                  "callType":"get"
                },
                {
                   "name":"setVerticalStrength",
-                  "propertyName": "strVert",
-                  "callType": "set",
+                  "propertyName":"strVert",
+                  "callType":"set",
                   "restrictions":{
-		     "0":{
-			"min":1,
-			"max":5
-		     }
+                     "0":{
+                        "min":1,
+                        "max":5
+                     }
                   }
                },
                {
                   "name":"getHorizontalStrength",
-                  "propertyName": "strHori",
-                  "callType": "get"
+                  "propertyName":"strHori",
+                  "callType":"get"
                },
                {
                   "name":"setHorizontalStrength",
-                  "propertyName": "strHori",
-                  "callType": "set",
+                  "propertyName":"strHori",
+                  "callType":"set",
                   "restrictions":{
-		     "0":{
-			"min":0,
-			"max":5
-		     }
+                     "0":{
+                        "min":0,
+                        "max":5
+                     }
                   }
                },
                {
                   "name":"getNeedsPower",
-                  "propertyName": "needsPower",
-                  "callType": "get"
+                  "propertyName":"needsPower",
+                  "callType":"get"
                },
                {
                   "name":"setNeedsPower",
-                  "propertyName": "needsPower",
-                  "callType": "set"
+                  "propertyName":"needsPower",
+                  "callType":"set"
                }
             ]
          }
@@ -883,6 +883,89 @@
                },
                {
                   "name":"getPowerType"
+               }
+            ]
+         }
+      ]
+   },
+   {
+      "modId":"UniversalElectricity",
+      "classes":[
+         {
+            "className":"universalelectricity.core.block.IConductor",
+            "methods":[
+               {
+                  "name":"getResistance"
+               },
+               {
+                  "name":"getCurrentCapcity"
+               }
+            ]
+         },
+         {
+            "className":"universalelectricity.core.block.IConnector",
+            "methods":[
+               {
+                  "name":"canConnect"
+               }
+            ]
+         },
+         {
+            "className":"universalelectricity.core.block.IElectricityStorage",
+            "methods":[
+               {
+                  "name":"getJoules"
+               },
+               {
+                  "name":"getMaxJoules"
+               }
+            ]
+         },
+         {
+            "className":"universalelectricity.core.block.IVoltage",
+            "methods":[
+               {
+                  "name":"getVoltage"
+               }
+            ]
+         }
+      ]
+   },
+   {
+      "modId":"Mekanism",
+      "classes":[
+         {
+            "className":"mekanism.api.IStrictEnergyAcceptor",
+            "methods":[
+               {
+                  "name":"canReceiveEnergy"
+               }
+            ]
+         },
+         {
+            "className":"mekanism.api.IStrictEnergyStorage",
+            "methods":[
+               {
+                  "name":"getEnergy"
+               },
+               {
+                  "name":"getMaxEnergy"
+               }
+            ]
+         },
+         {
+            "className":"mekanism.api.ITubeConnection",
+            "methods":[
+               {
+                  "name":"canTubeConnect"
+               }
+            ]
+         },
+         {
+            "className":"mekanism.api.ICableOutputter",
+            "methods":[
+               {
+                  "name":"canOutputTo"
                }
             ]
          }

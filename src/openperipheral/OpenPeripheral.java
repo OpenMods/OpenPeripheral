@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.src.ModLoader;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.Configuration;
@@ -73,8 +74,10 @@ public class OpenPeripheral
 	@Instance( value = "OpenPeripheral" )
 	public static OpenPeripheral instance;
 	
-	public static String CACHE_FILE = "config/openperipheral/methods.json";
+	public static String CACHE_FILE = "OpenPeripheral_methods.json";
+	public static String CACHE_PATH = "";
 	public static String DATA_URL = "https://raw.github.com/mikeemoo/OpenPeripheral/master/methods_new.json";
+	//public static String DATA_URL = "http://localhost/methods_new.json";
 	public static int CACHE_REFRESH_INTERVAL = 7;
 	public static boolean analyticsEnabled = true;
 	public static boolean doAnalytics = false;
@@ -83,6 +86,7 @@ public class OpenPeripheral
 	@Mod.PreInit
 	public void preInit( FMLPreInitializationEvent evt )
 	{
+	
 		Configuration configFile = new Configuration(evt.getSuggestedConfigurationFile());
 		
 		ModContainer container = FMLCommonHandler.instance().findContainerFor(OpenPeripheral.instance);
@@ -119,6 +123,16 @@ public class OpenPeripheral
 		if (doAnalytics && analyticsEnabled) {
 			analytics(container);
 		}
+		
+		File directory = null;
+		if (FMLRelauncher.side() == "CLIENT") {
+			directory = new File(Minecraft.getMinecraftDir(), "config/");
+		}else {
+			directory = new File(".", "config/");
+		}
+		File cacheFile = new File(directory, CACHE_FILE);
+		
+		CACHE_PATH = cacheFile.getAbsolutePath();
 	}
 
 	private void analytics(ModContainer container) {
@@ -218,43 +232,35 @@ public class OpenPeripheral
 	}
 
 	private JsonRootNode loadJSON() {
-		
-		int indOf = CACHE_FILE.lastIndexOf('/');
-		if (indOf > -1) {
-			String directoryPath = OpenPeripheral.CACHE_FILE.substring(0, indOf);
-			
-			File directory = new File(directoryPath);
-			if (!directory.exists()) {
-				directory.mkdirs();
-			}
-		}
 
-		File file = new File(OpenPeripheral.CACHE_FILE);
+		File file = new File(OpenPeripheral.CACHE_PATH);
 		if (!file.exists()) {
 			fetchNewData();
 		}else if (file.lastModified() < System.currentTimeMillis() - (CACHE_REFRESH_INTERVAL * 24* 60 * 60 * 1000)) {
 			fetchNewData();
 		}
-
+		
 	    try {
-			BufferedReader br = new BufferedReader(new FileReader(OpenPeripheral.CACHE_FILE));
+			System.out.println("Parsing openperipheral json");
+			BufferedReader br = new BufferedReader(new FileReader(OpenPeripheral.CACHE_PATH));
 			JdomParser parser = new JdomParser();
 			JsonRootNode root = parser.parse(br);
 			return root;
 		} catch (Exception e) {
+			System.out.println("Unable to parse openperipherals");
 		}
 	    
 		return null;
 	}
 
 	private void fetchNewData() {
-		System.out.println("Fetching new DATA");
+		System.out.println("Fetching new openperipherals data from " + OpenPeripheral.DATA_URL);
 		BufferedInputStream in = null;
     	FileOutputStream fout = null;
     	try
     	{
     		in = new BufferedInputStream(new URL(OpenPeripheral.DATA_URL).openStream());
-    		fout = new FileOutputStream(OpenPeripheral.CACHE_FILE);
+    		fout = new FileOutputStream(OpenPeripheral.CACHE_PATH);
 
     		byte data[] = new byte[1024];
     		int count;
@@ -264,7 +270,7 @@ public class OpenPeripheral
     		}
     	}
     	catch(Exception e) {
-    		
+			System.out.println("Error fetching openperipheral data");
     	}
 
 		try {
@@ -273,8 +279,6 @@ public class OpenPeripheral
 			if (fout != null)
 				fout.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 	}
 
