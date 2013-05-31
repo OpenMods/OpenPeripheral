@@ -658,6 +658,17 @@
                   "name":"getDyeColor"
                }
             ]
+         },
+         {
+            "className":"powercrystals.core.position.IRotateableTile",
+            "methods":[
+               {
+                  "name":"canRotate"
+               },
+               {
+                  "name":"rotate"
+               }
+            ]
          }
       ]
    },
