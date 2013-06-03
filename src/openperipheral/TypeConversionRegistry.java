@@ -1,15 +1,11 @@
 package openperipheral;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+
+import dan200.computer.core.ILuaObject;
 
 public class TypeConversionRegistry {
 
-	private static final Set<Class> WRAPPER_TYPES = new HashSet(Arrays.asList(
-		    Boolean.class, Character.class, Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class, Void.class));
-	
 	private static ArrayList<ITypeConverter> converters = new ArrayList<ITypeConverter>();
 	
 	public static void registryTypeConverter(ITypeConverter converter) {
@@ -29,6 +25,8 @@ public class TypeConversionRegistry {
 	public static Object toLua(Object obj) {
 		if (obj == null) {
 			return null;
+		}else if (obj instanceof ILuaObject) {
+			return obj;
 		}
 		for (ITypeConverter converter : converters) {
 			Object response = converter.toLua(obj);

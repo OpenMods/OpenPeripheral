@@ -7,8 +7,6 @@ import java.util.Map.Entry;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
-import javax.script.ScriptException;
-
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -137,7 +135,7 @@ public class HostedPeripheral implements IHostedPeripheral {
 			
 			final Object[] argsToUse = args.toArray(new Object[args.size()]);
 			
-			if (isCableCall) {
+			if (isCableCall || methodDefinition.isInstant()) {
 				Object response = TypeConversionRegistry.toLua(methodDefinition.execute(tile, argsToUse));
 				PostChangeRegistry.onPostChange(tile, methodDefinition, argsToUse);
 				return new Object[] { 

@@ -10,14 +10,13 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
-import org.bouncycastle.util.encoders.Base64;
-
-import cpw.mods.fml.common.ObfuscationReflectionHelper;
-
 import net.minecraft.tileentity.TileEntity;
 import openperipheral.IRestriction;
 import openperipheral.RestrictionFactory;
 import openperipheral.util.ReflectionHelper;
+
+import org.bouncycastle.util.encoders.Base64;
+
 import argo.jdom.JsonField;
 import argo.jdom.JsonNode;
 
@@ -44,6 +43,8 @@ public class DefinitionMethod {
 	private Field field = null;
 	private Method method = null;
 	private int argumentCount = -1;
+	
+	private boolean isInstant = false;
 	
 	private HashMap<Integer, String> replacements;
 	
@@ -94,9 +95,16 @@ public class DefinitionMethod {
 				callType = CallType.SCRIPT;
 			}
 		}
+		
 		if (json.isNode("causeUpdate")) {
 			if (json.getStringValue("causeUpdate").equals("true")) {
 				causeTileUpdate = true;
+			}
+		}
+		
+		if (json.isNode("instant")) {
+			if (json.getStringValue("instant").equals("true")) {
+				isInstant = true;
 			}
 		}
 		
@@ -185,6 +193,10 @@ public class DefinitionMethod {
 			return new Class[] { field.getType() };
 		}
 		return new Class[] { };
+	}
+	
+	public boolean isInstant() {
+		return isInstant;
 	}
 	
 	public String getLuaName() {

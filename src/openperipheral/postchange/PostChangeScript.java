@@ -1,22 +1,15 @@
 package openperipheral.postchange;
 
-import java.lang.reflect.Field;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
-
-import org.bouncycastle.util.encoders.Base64;
-
-import cpw.mods.fml.common.ObfuscationReflectionHelper;
-import cpw.mods.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 
 import net.minecraft.tileentity.TileEntity;
 import openperipheral.IPostChangeHandler;
 import openperipheral.definition.DefinitionMethod;
 import openperipheral.util.ReflectionHelper;
+
+import org.bouncycastle.util.encoders.Base64;
 
 public class PostChangeScript implements IPostChangeHandler {
 	

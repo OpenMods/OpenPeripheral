@@ -2,22 +2,15 @@ package openperipheral;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -26,7 +19,12 @@ import net.minecraft.src.ModLoader;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.ForgeVersion;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.Property;
+import openperipheral.common.CommonProxy;
+import openperipheral.common.block.BlockGlassesBridge;
+import openperipheral.common.item.ItemGlasses;
+import openperipheral.common.terminal.DrawableManager;
 import openperipheral.converter.ConverterArray;
 import openperipheral.converter.ConverterDouble;
 import openperipheral.converter.ConverterForgeDirection;
@@ -51,20 +49,22 @@ import openperipheral.restriction.RestrictionMinimum;
 import argo.jdom.JdomParser;
 import argo.jdom.JsonNode;
 import argo.jdom.JsonRootNode;
-import argo.saj.InvalidSyntaxException;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.ModContainer;
+import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.FMLRelauncher;
 import cpw.mods.fml.relauncher.Side;
 import dan200.computer.api.ComputerCraftAPI;
 
 
-@Mod( modid = "OpenPeripheral", name = "OpenPeripheral", version = "0.1.0", dependencies = "required-after:ComputerCraft;after:BuildCraft|Core;after:AppliedEnergistics;after:Forestry;after:IC2;after:ThermalExpansion;after:Thaumcraft;after:MineFactoryReloaded;after:Railcraft;after:MiscPeripherals")
+@Mod( modid = "OpenPeripheral", name = "OpenPeripheral", version = "0.1.1", dependencies = "required-after:ComputerCraft;after:BuildCraft|Core;after:AppliedEnergistics;after:Forestry;after:IC2;after:ThermalExpansion;after:Thaumcraft;after:MineFactoryReloaded;after:Railcraft;after:MiscPeripherals")
+@NetworkMod(serverSideRequired = true, clientSideRequired = true, channels={"OpenPeripheral"}, packetHandler = PacketHandler.class)
 public class OpenPeripheral
 {
 
@@ -74,6 +74,9 @@ public class OpenPeripheral
 	@Instance( value = "OpenPeripheral" )
 	public static OpenPeripheral instance;
 	
+	@SidedProxy( clientSide = "openperipheral.client.ClientProxy", serverSide = "openperipheral.common.CommonProxy" )
+	public static CommonProxy proxy;
+	
 	public static String CACHE_FILE = "OpenPeripheral_methods.json";
 	public static String CACHE_PATH = "";
 	public static String DATA_URL = "https://raw.github.com/mikeemoo/OpenPeripheral/master/methods_new.json";
@@ -82,11 +85,40 @@ public class OpenPeripheral
 	public static boolean analyticsEnabled = true;
 	public static boolean doAnalytics = false;
 	public static String previousVersion;
-
+	
+	public DrawableManager drawables = new DrawableManager();
+		
+	public DrawableManager getDrawableManager() {
+		return drawables;
+	}
+	
+	public static class Items
+	{
+		public static ItemGlasses glasses;
+	}
+	
+	public static class Blocks
+	{
+		public static BlockGlassesBridge glassesBridge;
+	}
+	
+	public static class Config
+	{
+		public static int glassesId = 1055;
+		public static int glassesBridgeId = 580;
+	}
+	
+	public static String RESOURCE_PATH;
+	public static String LANGUAGE_PATH;
+	
+	
 	@Mod.PreInit
 	public void preInit( FMLPreInitializationEvent evt )
 	{
-	
+
+		RESOURCE_PATH = "/mods/openperipheral";
+		LANGUAGE_PATH = String.format("%s/languages", RESOURCE_PATH);
+		
 		Configuration configFile = new Configuration(evt.getSuggestedConfigurationFile());
 		
 		ModContainer container = FMLCommonHandler.instance().findContainerFor(OpenPeripheral.instance);
@@ -117,6 +149,14 @@ public class OpenPeripheral
 		prop = configFile.get("general", "cacheInterval", CACHE_REFRESH_INTERVAL);
 		prop.comment = "How often the cache file gets updated (in days)";
 		CACHE_REFRESH_INTERVAL = prop.getInt();
+		
+		prop = configFile.get("items", "glassesId", Config.glassesId);
+		prop.comment = "The id of the glasses";
+		Config.glassesId = prop.getInt();
+		
+		prop = configFile.get("blocks", "bridgeId", Config.glassesBridgeId);
+		prop.comment = "The id of the glasses bridge";
+		Config.glassesBridgeId = prop.getInt();
 		
 		configFile.save();
 		
@@ -156,6 +196,12 @@ public class OpenPeripheral
 	@Mod.Init
 	public void init( FMLInitializationEvent evt )
 	{
+
+		proxy.init();
+		proxy.registerRenderInformation();
+		
+		MinecraftForge.EVENT_BUS.register(drawables);
+		
 		RestrictionFactory.registerRestrictionHandler("min", new IRestrictionHandler() {
 			@Override
 			public IRestriction createFromJson(JsonNode json) {

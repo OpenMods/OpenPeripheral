@@ -16,11 +16,6 @@
                {
                   "name":"getSizeInventory",
                   "obfuscated":"func_70302_i_"
-               },
-               {
-                  "name":"testMethod",
-                  "callType":"script",
-                  "script":"MSsx"
                }
             ]
          },
@@ -974,6 +969,36 @@
             "methods":[
                {
                   "name":"canOutputTo"
+               }
+            ]
+         }
+      ]
+   },
+   {
+      "modId":"OpenPeripheral",
+      "classes":[
+         {
+            "className":"openperipheral.common.tileentity.TileEntityGlassesBridge",
+            "methods":[
+               {
+                  "name":"addText",
+                  "instant":"true"
+               },
+               {
+                  "name":"addBox",
+                  "instant":"true"
+               },
+               {
+                  "name":"clear",
+                  "instant":"true"
+               },
+               {
+                  "name":"getAllIds",
+                  "instant":"true"
+               },
+               {
+                  "name":"getById",
+                  "instant":"true"
                }
             ]
          }

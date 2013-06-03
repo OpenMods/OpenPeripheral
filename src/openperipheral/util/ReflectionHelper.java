@@ -1,16 +1,12 @@
 package openperipheral.util;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import openperipheral.TypeConversionRegistry;
-
-import cpw.mods.fml.common.ObfuscationReflectionHelper;
-import cpw.mods.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 
 public class ReflectionHelper {
 	
@@ -127,4 +123,5 @@ public class ReflectionHelper {
 		}
 		return null;
 	}
+	
 }

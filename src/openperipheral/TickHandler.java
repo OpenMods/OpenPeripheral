@@ -47,6 +47,7 @@ public class TickHandler implements ITickHandler {
 	public void tickStart(EnumSet<TickType> type, Object... tickObjects) {
 		
 		if (type.contains(TickType.WORLD)) {
+			
 			World world = (World) tickObjects[0];
 			int worldId = world.provider.dimensionId;
 			if (callbacks.containsKey(worldId)) {
