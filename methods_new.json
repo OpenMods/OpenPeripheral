@@ -128,7 +128,8 @@
                   "name":"setConfiguration"
                },
                {
-                  "name":"getConfiguationOptions"
+                  "name":"getConfigurationOptions",
+                  "obfuscated": "getConfiguationOptions"
                },
                {
                   "name":"nextConfiguration"

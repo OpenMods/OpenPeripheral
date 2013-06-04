@@ -56,6 +56,7 @@ import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.network.FMLNetworkHandler;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.FMLRelauncher;
@@ -64,7 +65,7 @@ import dan200.computer.api.ComputerCraftAPI;
 
 
 @Mod( modid = "OpenPeripheral", name = "OpenPeripheral", version = "0.1.1", dependencies = "required-after:ComputerCraft;after:BuildCraft|Core;after:AppliedEnergistics;after:Forestry;after:IC2;after:ThermalExpansion;after:Thaumcraft;after:MineFactoryReloaded;after:Railcraft;after:MiscPeripherals")
-@NetworkMod(serverSideRequired = true, clientSideRequired = true, channels={"OpenPeripheral"}, packetHandler = PacketHandler.class)
+@NetworkMod(serverSideRequired = true, clientSideRequired = false, channels={"OpenPeripheral"}, packetHandler = PacketHandler.class)
 public class OpenPeripheral
 {
 
@@ -157,8 +158,6 @@ public class OpenPeripheral
 		prop = configFile.get("blocks", "bridgeId", Config.glassesBridgeId);
 		prop.comment = "The id of the glasses bridge";
 		Config.glassesBridgeId = prop.getInt();
-		
-		configFile.save();
 		
 		if (doAnalytics && analyticsEnabled) {
 			analytics(container);

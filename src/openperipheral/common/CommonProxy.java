@@ -8,9 +8,7 @@ import openperipheral.common.util.LanguageUtils;
 public class CommonProxy {
 	
 	
-	public void init()
-	{
-		
+	public void init() {
 		OpenPeripheral.Items.glasses = new ItemGlasses();
 		OpenPeripheral.Blocks.glassesBridge = new BlockGlassesBridge();
 		setupLanguages();

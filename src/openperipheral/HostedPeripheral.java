@@ -69,7 +69,6 @@ public class HostedPeripheral implements IHostedPeripheral {
 	@Override
 	public Object[] callMethod(IComputerAccess computer, int methodId,
 			Object[] arguments) throws Exception {
-		
 		boolean isCableCall = mySecurityManager.getCallerClassName(2) == "dan200.computer.shared.TileEntityCable$RemotePeripheralWrapper";
 		
 		final DefinitionMethod methodDefinition = methods.get(methodId);
@@ -130,7 +129,6 @@ public class HostedPeripheral implements IHostedPeripheral {
 					}
 				}
 			}
-			
 			final TileEntity tile = worldObj.getBlockTileEntity(x, y, z);
 			
 			final Object[] argsToUse = args.toArray(new Object[args.size()]);
@@ -165,10 +163,18 @@ public class HostedPeripheral implements IHostedPeripheral {
 
 	@Override
 	public void attach(IComputerAccess computer) {
+		TileEntity tile = worldObj.getBlockTileEntity(x, y, z);
+		if (tile != null && tile instanceof IAttachable) {
+			((IAttachable)tile).addComputer(computer);
+		}
 	}
 
 	@Override
 	public void detach(IComputerAccess computer) {
+		TileEntity tile = worldObj.getBlockTileEntity(x, y, z);
+		if (tile != null && tile instanceof IAttachable) {
+			((IAttachable)tile).removeComputer(computer);
+		}
 	}
 
 	@Override

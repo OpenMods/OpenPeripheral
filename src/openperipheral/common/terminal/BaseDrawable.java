@@ -15,6 +15,8 @@ public abstract class BaseDrawable implements IDrawable {
 	
 	private boolean deleted = false;
 
+	protected int zIndex = 0;
+	
 	private WeakReference<TileEntityGlassesBridge> bridge;
 
 	public BaseDrawable() {
@@ -89,5 +91,14 @@ public abstract class BaseDrawable implements IDrawable {
 			bridge.get().setDeleted(this);
 			bridge.clear();
 		}
+	}
+	
+	
+	public int getZIndex() {
+		return zIndex;
+	}
+	
+	public void setZIndex(int z) {
+		zIndex = z;
 	}
 }

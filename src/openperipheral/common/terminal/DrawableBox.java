@@ -46,6 +46,8 @@ public class DrawableBox extends BaseDrawable implements IDrawable {
 				"setColor",
 				"getAlpha",
 				"setAlpha",
+				"setZIndex",
+				"getZIndex",
 				"delete"
 		};
 	}
@@ -91,6 +93,7 @@ public class DrawableBox extends BaseDrawable implements IDrawable {
 			stream.writeShort((short)height);
 			stream.writeInt(color);
 			stream.writeDouble(alpha);
+			stream.writeInt(zIndex);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -106,6 +109,7 @@ public class DrawableBox extends BaseDrawable implements IDrawable {
 			height = stream.readShort();
 			color = stream.readInt();
 			alpha = stream.readDouble();
+			zIndex = stream.readInt();
 			
 		} catch (IOException e) {
 			

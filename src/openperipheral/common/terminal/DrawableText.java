@@ -33,6 +33,8 @@ public class DrawableText extends BaseDrawable implements IDrawable {
 				"getColor",
 				"setText",
 				"getText",
+				"setZIndex",
+				"getZIndex",
 				"delete"
 		};
 	}
@@ -91,6 +93,7 @@ public class DrawableText extends BaseDrawable implements IDrawable {
 			stream.writeInt(y);
 			stream.writeUTF(text);
 			stream.writeInt(color);
+			stream.writeInt(zIndex);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -103,9 +106,10 @@ public class DrawableText extends BaseDrawable implements IDrawable {
 			y = stream.readInt();
 			text = stream.readUTF();
 			color = stream.readInt();
+			zIndex = stream.readInt();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}	
+	}
 
 }
