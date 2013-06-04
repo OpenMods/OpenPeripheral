@@ -13,7 +13,7 @@ public class ConverterEnumTemperature implements ITypeConverter {
 	@Override
 	public Object toLua(Object o) {
 		if (o instanceof EnumTemperature) {
-			return ((EnumTemperature)o).getName();
+			return ((EnumTemperature) o).getName();
 		}
 		return null;
 	}

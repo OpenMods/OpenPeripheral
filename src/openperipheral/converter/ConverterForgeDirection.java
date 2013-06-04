@@ -8,8 +8,9 @@ import openperipheral.ITypeConverter;
 
 public class ConverterForgeDirection implements ITypeConverter {
 
-	public static List<String> directions = Arrays.asList(new String[] { "down", "up", "north", "south", "west", "east" });
-	
+	public static List<String> directions = Arrays.asList(new String[] {
+			"down", "up", "north", "south", "west", "east" });
+
 	@Override
 	public Object fromLua(Object o, Class required) {
 		if (required == ForgeDirection.class && o instanceof String) {
@@ -26,7 +27,7 @@ public class ConverterForgeDirection implements ITypeConverter {
 	@Override
 	public Object toLua(Object o) {
 		if (o instanceof ForgeDirection) {
-			return directions.get(((ForgeDirection)o).ordinal());
+			return directions.get(((ForgeDirection) o).ordinal());
 		}
 		return null;
 	}

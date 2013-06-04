@@ -12,12 +12,12 @@ public class ConverterEnumTag implements ITypeConverter {
 	public Object fromLua(Object o, Class required) {
 		if (required == EnumTag.class) {
 			if (o instanceof Map) {
-				if (((Map)o).containsKey("id")) {
-					o = ((Map)o).get("id");
+				if (((Map) o).containsKey("id")) {
+					o = ((Map) o).get("id");
 				}
 			}
 			if (o instanceof Double) {
-				return EnumTag.get(new Double((Double)o).intValue());
+				return EnumTag.get(new Double((Double) o).intValue());
 			}
 		}
 		return null;
@@ -26,7 +26,7 @@ public class ConverterEnumTag implements ITypeConverter {
 	@Override
 	public Object toLua(Object o) {
 		if (o instanceof EnumTag) {
-			EnumTag tag = (EnumTag)o;
+			EnumTag tag = (EnumTag) o;
 			HashMap map = new HashMap();
 			map.put("id", tag.id);
 			map.put("name", tag.name);

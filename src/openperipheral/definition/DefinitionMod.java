@@ -8,16 +8,16 @@ import java.util.Map;
 import argo.jdom.JsonNode;
 
 public class DefinitionMod {
-	
+
 	public String modId;
 	public List<DefinitionClass> classes;
 
 	public DefinitionMod(JsonNode json) {
-		
+
 		classes = new ArrayList<DefinitionClass>();
-		
+
 		modId = json.getStringValue("modId");
-		
+
 		if (json.isNode("classes")) {
 			for (JsonNode classNode : json.getNode("classes").getElements()) {
 				DefinitionClass klazzDef = new DefinitionClass(classNode);
@@ -27,9 +27,9 @@ public class DefinitionMod {
 				}
 			}
 		}
-		
+
 	}
-	
+
 	public String getModId() {
 		return modId;
 	}

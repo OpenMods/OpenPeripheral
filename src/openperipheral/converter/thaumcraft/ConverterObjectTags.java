@@ -18,7 +18,7 @@ public class ConverterObjectTags implements ITypeConverter {
 	public Object toLua(Object o) {
 		if (o instanceof ObjectTags) {
 			HashMap map = new HashMap();
-			ObjectTags t = (ObjectTags)o;
+			ObjectTags t = (ObjectTags) o;
 			EnumTag[] aspects = t.getAspects();
 			int j = 1;
 			for (int i = 0; i < aspects.length; i++) {

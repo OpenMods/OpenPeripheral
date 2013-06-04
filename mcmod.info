@@ -1,0 +1,17 @@
+[
+{
+  "modid" : "OpenPeripheral",
+  "name" : "OpenPeripheral",
+  "version" : "0.1.1",
+  "url" : "http://www.computercraft.info",
+  "credits" : "",
+  "authors": [
+    "Mikeemoo"
+  ],
+  "description": "",
+  "logoFile" : "",
+  "updateUrl" : "",
+  "parent" : "",
+  "screenshots": [
+  ]
+}]

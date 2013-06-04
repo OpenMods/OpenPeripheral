@@ -27,7 +27,7 @@ import dan200.computer.core.ILuaObject;
 
 public class TileEntityGlassesBridge extends TileEntity implements IAttachable {
 
-	public HashMap<Integer, IDrawable> drawables = new  HashMap<Integer, IDrawable>();
+	public HashMap<Integer, IDrawable> drawables = new HashMap<Integer, IDrawable>();
 	public HashMap<Integer, Boolean> changes = new HashMap<Integer, Boolean>();
 	public ArrayList<String> players = new ArrayList<String>();
 	public ArrayList<String> newPlayers = new ArrayList<String>();
@@ -39,7 +39,7 @@ public class TileEntityGlassesBridge extends TileEntity implements IAttachable {
 
 	public TileEntityGlassesBridge() {
 	}
-	
+
 	public int getKeyForDrawable(IDrawable d) {
 		int rtn = -1;
 		try {
@@ -53,12 +53,12 @@ public class TileEntityGlassesBridge extends TileEntity implements IAttachable {
 			} finally {
 				lock.unlock();
 			}
-		} catch(Exception ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 		return rtn;
 	}
-	
+
 	public void setDeleted(IDrawable d) {
 		try {
 			lock.lock();
@@ -69,11 +69,11 @@ public class TileEntityGlassesBridge extends TileEntity implements IAttachable {
 			} finally {
 				lock.unlock();
 			}
-		} catch(Exception ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}
-	
+
 	public void markChanged(IDrawable d) {
 		try {
 			lock.lock();
@@ -85,13 +85,14 @@ public class TileEntityGlassesBridge extends TileEntity implements IAttachable {
 			} finally {
 				lock.unlock();
 			}
-		} catch(Exception ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}
-	
+
 	public void registerPlayer(EntityPlayer player) {
-		if (!players.contains(player.username) && !newPlayers.contains(player.username)) {
+		if (!players.contains(player.username)
+				&& !newPlayers.contains(player.username)) {
 			newPlayers.add(player.username);
 		}
 	}
@@ -103,12 +104,14 @@ public class TileEntityGlassesBridge extends TileEntity implements IAttachable {
 			try {
 				lock.lock();
 				try {
-					if (newPlayers.size() > 0 && drawables.size() > 0) {
+					if (newPlayers.size() > 0) {
 						Packet fullPacket = createFullPacket();
-						for (String playerName: newPlayers) {
-							EntityPlayer player = worldObj.getPlayerEntityByName(playerName);
-							if (player != null){
-								((EntityPlayerMP) player).playerNetServerHandler.sendPacketToPlayer(fullPacket);
+						for (String playerName : newPlayers) {
+							EntityPlayer player = worldObj
+									.getPlayerEntityByName(playerName);
+							if (player != null) {
+								((EntityPlayerMP) player).playerNetServerHandler
+										.sendPacketToPlayer(fullPacket);
 							}
 						}
 					}
@@ -120,12 +123,14 @@ public class TileEntityGlassesBridge extends TileEntity implements IAttachable {
 						Iterator<String> iter = players.iterator();
 						while (iter.hasNext()) {
 							String playerName = iter.next();
-							EntityPlayer player = worldObj.getPlayerEntityByName(playerName);
+							EntityPlayer player = worldObj
+									.getPlayerEntityByName(playerName);
 							if (player == null || !isPlayerValid(player)) {
 								iter.remove();
-							}else {
+							} else {
 								if (changePacket != null) {
-									((EntityPlayerMP) player).playerNetServerHandler.sendPacketToPlayer(changePacket);
+									((EntityPlayerMP) player).playerNetServerHandler
+											.sendPacketToPlayer(changePacket);
 								}
 							}
 						}
@@ -140,7 +145,7 @@ public class TileEntityGlassesBridge extends TileEntity implements IAttachable {
 				} finally {
 					lock.unlock();
 				}
-			} catch(Exception ex) {
+			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
 		}
@@ -171,6 +176,7 @@ public class TileEntityGlassesBridge extends TileEntity implements IAttachable {
 		try {
 			lock.lock();
 			try {
+				outputStream.writeUTF(getGuid());
 				outputStream.writeInt(drawables.size());
 				for (Entry<Integer, IDrawable> entries : drawables.entrySet()) {
 					int changeId = entries.getKey();
@@ -178,18 +184,18 @@ public class TileEntityGlassesBridge extends TileEntity implements IAttachable {
 					outputStream.writeByte(1);
 					outputStream.writeInt(changeId);
 					if (drawable instanceof DrawableText) {
-						outputStream.writeByte((byte)0);
-					}else {
-						outputStream.writeByte((byte)1);
+						outputStream.writeByte((byte) 0);
+					} else {
+						outputStream.writeByte((byte) 1);
 					}
 					drawable.writeTo(outputStream);
 				}
 			} finally {
 				lock.unlock();
 			}
-		} catch(Exception ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
-		}	
+		}
 
 		Packet250CustomPayload packet = new Packet250CustomPayload();
 		packet.channel = "OpenPeripheral";
@@ -209,19 +215,19 @@ public class TileEntityGlassesBridge extends TileEntity implements IAttachable {
 			try {
 				outputStream.writeUTF(getGuid());
 				outputStream.writeInt(changes.size());
-				for (Entry<Integer,Boolean> change : changes.entrySet()) {
+				for (Entry<Integer, Boolean> change : changes.entrySet()) {
 					int changeId = change.getKey();
 					IDrawable drawable = drawables.get(changeId);
 					if (change.getValue()) {
 						outputStream.writeByte(1);
 						outputStream.writeInt(changeId);
 						if (drawable instanceof DrawableText) {
-							outputStream.writeByte((byte)0);
-						}else {
-							outputStream.writeByte((byte)1);
+							outputStream.writeByte((byte) 0);
+						} else {
+							outputStream.writeByte((byte) 1);
 						}
 						drawable.writeTo(outputStream);
-					}else {
+					} else {
 						outputStream.writeByte(0);
 						outputStream.writeInt(changeId);
 					}
@@ -229,7 +235,7 @@ public class TileEntityGlassesBridge extends TileEntity implements IAttachable {
 			} finally {
 				lock.unlock();
 			}
-		} catch(Exception ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 		Packet250CustomPayload packet = new Packet250CustomPayload();
@@ -250,48 +256,50 @@ public class TileEntityGlassesBridge extends TileEntity implements IAttachable {
 			} finally {
 				lock.unlock();
 			}
-		} catch(Exception ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 		return (ILuaObject) obj;
 	}
-	
-	public ILuaObject addBox(int x, int y, int width, int height, int color, double alpha) throws InterruptedException {
+
+	public ILuaObject addBox(int x, int y, int width, int height, int color,
+			double alpha) throws InterruptedException {
 		ILuaObject obj = null;
 
 		try {
 			lock.lock();
 			try {
-				drawables.put(count, new DrawableBox(this, x, y, width, height, color, alpha));
+				drawables.put(count, new DrawableBox(this, x, y, width, height,
+						color, alpha));
 				changes.put(count, true);
 				obj = drawables.get(count++);
 			} finally {
 				lock.unlock();
 			}
-		} catch(Exception ex) {
-			
+		} catch (Exception ex) {
+
 		}
-		return (ILuaObject)obj;
+		return (ILuaObject) obj;
 	}
 
 	public ILuaObject getById(int id) {
-		synchronized(lock) {
-			return (ILuaObject)drawables.get(id);
+		synchronized (lock) {
+			return (ILuaObject) drawables.get(id);
 		}
 	}
-	
+
 	public HashMap getAllIds() {
 		HashMap all = new HashMap();
-		synchronized(lock) {
+		synchronized (lock) {
 			int i = 1;
 			for (Integer id : drawables.keySet()) {
 				all.put(i++, id);
-			}	
+			}
 		}
 		return all;
-			
+
 	}
-	
+
 	public synchronized void clear() {
 		try {
 			lock.lock();
@@ -303,7 +311,7 @@ public class TileEntityGlassesBridge extends TileEntity implements IAttachable {
 			} finally {
 				lock.unlock();
 			}
-		} catch(Exception ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}
@@ -323,7 +331,6 @@ public class TileEntityGlassesBridge extends TileEntity implements IAttachable {
 		super.readFromNBT(tag);
 		guid = tag.getString("guid");
 	}
-
 
 	public void onChatCommand(String command) {
 		for (IComputerAccess computer : computers) {

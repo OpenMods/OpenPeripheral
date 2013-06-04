@@ -17,32 +17,23 @@ public class DrawableText extends BaseDrawable implements IDrawable {
 	private int y;
 	private String text;
 	private int color;
-	
-	public DrawableText(TileEntityGlassesBridge parent, int x, int y, String text, int color) {
+
+	public DrawableText(TileEntityGlassesBridge parent, int x, int y,
+			String text, int color) {
 		super(parent);
 		this.x = x;
 		this.y = y;
 		this.text = text;
 		this.color = color;
-		this.methodNames = new String[] {
-				"setX",
-				"getX",
-				"setY",
-				"getY",
-				"setColor",
-				"getColor",
-				"setText",
-				"getText",
-				"setZIndex",
-				"getZIndex",
-				"delete"
-		};
+		this.methodNames = new String[] { "setX", "getX", "setY", "getY",
+				"setColor", "getColor", "setText", "getText", "setZIndex",
+				"getZIndex", "delete" };
 	}
-	
+
 	public DrawableText() {
 		super();
 	}
-	
+
 	@Override
 	public int getX() {
 		return x;
@@ -52,7 +43,7 @@ public class DrawableText extends BaseDrawable implements IDrawable {
 	public int getY() {
 		return y;
 	}
-	
+
 	public void setX(int _x) {
 		x = _x;
 	}
@@ -60,19 +51,19 @@ public class DrawableText extends BaseDrawable implements IDrawable {
 	public void setY(int _y) {
 		y = _y;
 	}
-	
+
 	public String getText() {
 		return text;
 	}
-	
+
 	public int getColor() {
 		return color;
 	}
-	
+
 	public void setColor(int c) {
 		color = c;
 	}
-	
+
 	public void setText(String t) {
 		text = t;
 	}
@@ -84,7 +75,6 @@ public class DrawableText extends BaseDrawable implements IDrawable {
 		FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
 		fontRenderer.drawString(text, x, y, color);
 	}
-
 
 	@Override
 	public void writeTo(DataOutputStream stream) {

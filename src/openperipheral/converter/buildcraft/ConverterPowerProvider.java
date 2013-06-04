@@ -16,7 +16,7 @@ public class ConverterPowerProvider implements ITypeConverter {
 	public Object toLua(Object o) {
 		if (o instanceof IPowerProvider) {
 			HashMap ret = new HashMap();
-			IPowerProvider p = (IPowerProvider)o;
+			IPowerProvider p = (IPowerProvider) o;
 			ret.put("activationEnergy", p.getActivationEnergy());
 			ret.put("latency", p.getLatency());
 			ret.put("minEnergyReceived", p.getMinEnergyReceived());

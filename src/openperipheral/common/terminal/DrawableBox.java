@@ -20,12 +20,13 @@ public class DrawableBox extends BaseDrawable implements IDrawable {
 	private int height;
 	private int color;
 	private double alpha;
-	
+
 	public DrawableBox() {
 		super();
 	}
-	
-	public DrawableBox(TileEntityGlassesBridge parent, int x, int y, int width, int height, int color, double alpha) {
+
+	public DrawableBox(TileEntityGlassesBridge parent, int x, int y, int width,
+			int height, int color, double alpha) {
 		super(parent);
 		this.x = x;
 		this.y = y;
@@ -33,25 +34,12 @@ public class DrawableBox extends BaseDrawable implements IDrawable {
 		this.height = height;
 		this.color = color;
 		this.alpha = alpha;
-		this.methodNames = new String[] {
-				"getX",
-				"setX",
-				"getY",
-				"setY",
-				"getWidth",
-				"setWidth",
-				"getHeight",
-				"setHeight",
-				"getColor",
-				"setColor",
-				"getAlpha",
-				"setAlpha",
-				"setZIndex",
-				"getZIndex",
-				"delete"
-		};
+		this.methodNames = new String[] { "getX", "setX", "getY", "setY",
+				"getWidth", "setWidth", "getHeight", "setHeight", "getColor",
+				"setColor", "getAlpha", "setAlpha", "setZIndex", "getZIndex",
+				"delete" };
 	}
-	
+
 	@Override
 	public int getX() {
 		return x;
@@ -66,31 +54,32 @@ public class DrawableBox extends BaseDrawable implements IDrawable {
 	public void draw(ItemStack stack, EntityPlayer player,
 			ScaledResolution resolution, float partialTicks, boolean hasScreen,
 			int mouseX, int mouseY) {
-		float r = (float)((color >> 16) & 0xFF) / 255;
-		float g = (float)((color >> 8) & 0xFF) / 255;
-		float b = (float)(color & 0xFF) / 255;
-        Tessellator tessellator = Tessellator.instance;
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GL11.glColor4d(r, g, b, alpha);
-        tessellator.startDrawingQuads();
-        tessellator.addVertex((double)x, (double)y+height, 0.0D);
-        tessellator.addVertex((double)x+width, (double)y+height, 0.0D);
-        tessellator.addVertex((double)x+width, y, 0.0D);
-        tessellator.addVertex((double)x, (double)y, 0.0D);
-        tessellator.draw();
+		float r = (float) ((color >> 16) & 0xFF) / 255;
+		float g = (float) ((color >> 8) & 0xFF) / 255;
+		float b = (float) (color & 0xFF) / 255;
+		Tessellator tessellator = Tessellator.instance;
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		GL11.glColor4d(r, g, b, alpha);
+		tessellator.startDrawingQuads();
+		tessellator.addVertex((double) x, (double) y + height, 0.0D);
+		tessellator.addVertex((double) x + width, (double) y + height, 0.0D);
+		tessellator.addVertex((double) x + width, y, 0.0D);
+		tessellator.addVertex((double) x, (double) y, 0.0D);
+		tessellator.draw();
 
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
-        GL11.glDisable(GL11.GL_BLEND);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		GL11.glDisable(GL11.GL_BLEND);
 	}
+
 	@Override
 	public void writeTo(DataOutputStream stream) {
 		try {
-			stream.writeShort((short)x);
-			stream.writeShort((short)y);
-			stream.writeShort((short)width);
-			stream.writeShort((short)height);
+			stream.writeShort((short) x);
+			stream.writeShort((short) y);
+			stream.writeShort((short) width);
+			stream.writeShort((short) height);
 			stream.writeInt(color);
 			stream.writeDouble(alpha);
 			stream.writeInt(zIndex);
@@ -98,11 +87,11 @@ public class DrawableBox extends BaseDrawable implements IDrawable {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
 	public void readFrom(DataInputStream stream) {
 		try {
-			
+
 			x = stream.readShort();
 			y = stream.readShort();
 			width = stream.readShort();
@@ -110,32 +99,32 @@ public class DrawableBox extends BaseDrawable implements IDrawable {
 			color = stream.readInt();
 			alpha = stream.readDouble();
 			zIndex = stream.readInt();
-			
+
 		} catch (IOException e) {
-			
+
 		}
 	}
-	
+
 	public void setX(int x2) {
 		x = x2;
 	}
-	
+
 	public void setY(int y2) {
 		y = y2;
 	}
-	
+
 	public void setWidth(int w) {
 		width = w;
 	}
-	
+
 	public void setHeight(int h) {
 		height = h;
 	}
-	
+
 	public void setColor(int c) {
 		color = c;
 	}
-	
+
 	public void setAlpha(double a) {
 		alpha = a;
 	}
@@ -143,15 +132,15 @@ public class DrawableBox extends BaseDrawable implements IDrawable {
 	public int getHeight() {
 		return height;
 	}
-	
+
 	public int getWidth() {
 		return width;
 	}
-	
+
 	public double getAlpha() {
 		return alpha;
 	}
-	
+
 	public int getColor() {
 		return color;
 	}

@@ -15,18 +15,18 @@ import cpw.mods.fml.common.TickType;
 
 public class TickHandler implements ITickHandler {
 
-	private static Map<Integer, LinkedBlockingQueue<FutureTask>> callbacks = Collections.synchronizedMap(
-		new HashMap<Integer, LinkedBlockingQueue<FutureTask>>()
-	);
+	private static Map<Integer, LinkedBlockingQueue<FutureTask>> callbacks = Collections
+			.synchronizedMap(new HashMap<Integer, LinkedBlockingQueue<FutureTask>>());
 
-	public static Future addTickCallback(World world, Callable callback) throws InterruptedException {
-	    int worldId = world.provider.dimensionId;
+	public static Future addTickCallback(World world, Callable callback)
+			throws InterruptedException {
+		int worldId = world.provider.dimensionId;
 		if (!callbacks.containsKey(Integer.valueOf(worldId))) {
-	    	callbacks.put(worldId, new LinkedBlockingQueue());
-	    }
-	    FutureTask task = new FutureTask(callback);
-	    callbacks.get(worldId).put(task);
-	    return task;
+			callbacks.put(worldId, new LinkedBlockingQueue());
+		}
+		FutureTask task = new FutureTask(callback);
+		callbacks.get(worldId).put(task);
+		return task;
 	}
 
 	@Override
@@ -45,15 +45,16 @@ public class TickHandler implements ITickHandler {
 
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickObjects) {
-		
+
 		if (type.contains(TickType.WORLD)) {
-			
+
 			World world = (World) tickObjects[0];
 			int worldId = world.provider.dimensionId;
 			if (callbacks.containsKey(worldId)) {
-				LinkedBlockingQueue<FutureTask> callbackList = callbacks.get(worldId);
+				LinkedBlockingQueue<FutureTask> callbackList = callbacks
+						.get(worldId);
 				FutureTask callback = callbackList.poll();
-			    while (callback != null) {
+				while (callback != null) {
 					callback.run();
 					callback = callbackList.poll();
 				}

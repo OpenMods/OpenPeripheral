@@ -13,7 +13,7 @@ public class ConverterEnumHumidity implements ITypeConverter {
 	@Override
 	public Object toLua(Object o) {
 		if (o instanceof EnumHumidity) {
-			return ((EnumHumidity)o).getName();
+			return ((EnumHumidity) o).getName();
 		}
 		return null;
 	}

@@ -12,7 +12,6 @@ import openperipheral.OpenPeripheral;
 import openperipheral.common.CommonProxy;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
-
 public class LanguageUtils {
 	public static void setupLanguages() {
 

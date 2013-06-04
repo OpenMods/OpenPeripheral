@@ -22,7 +22,7 @@ public class ConverterILiquidTank implements ITypeConverter {
 			map.put("capacity", t.getCapacity());
 			map.put("pressure", t.getTankPressure());
 			LiquidStack lyqyd = t.getLiquid();
-			if(lyqyd != null) {
+			if (lyqyd != null) {
 				map.put("amount", lyqyd.amount);
 				map.put("id", lyqyd.itemID);
 			}

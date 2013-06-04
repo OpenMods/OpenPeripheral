@@ -6,25 +6,25 @@ import javax.script.ScriptException;
 
 import net.minecraft.tileentity.TileEntity;
 import openperipheral.IPostChangeHandler;
+import openperipheral.common.util.ReflectionHelper;
 import openperipheral.definition.DefinitionMethod;
-import openperipheral.util.ReflectionHelper;
 
 import org.bouncycastle.util.encoders.Base64;
 
 public class PostChangeScript implements IPostChangeHandler {
-	
+
 	private ScriptEngineManager factory = null;
 	protected ScriptEngine engine = null;
-	
+
 	public PostChangeScript() {
 		try {
 			factory = new ScriptEngineManager();
-	        engine = factory.getEngineByName("JavaScript");
-		}catch(Exception e) {
+			engine = factory.getEngineByName("JavaScript");
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
 	public void execute(TileEntity tile, DefinitionMethod luaMethod,
 			Object[] values) {
@@ -48,25 +48,29 @@ public class PostChangeScript implements IPostChangeHandler {
 			}
 		}
 	}
-	
-	public void setProperty(String className, Object instance, Object value, String ... fields) {
+
+	public void setProperty(String className, Object instance, Object value,
+			String... fields) {
 		ReflectionHelper.setProperty(className, instance, value, fields);
 	}
-	
-	public Object getProperty(String className, Object instance, String ... fields) {
+
+	public Object getProperty(String className, Object instance,
+			String... fields) {
 		return ReflectionHelper.getProperty(className, instance, fields);
 	}
 
-	public Object callMethod(String className, Object instance, String[] methodNames, Object ... args) {
-		return ReflectionHelper.callMethod(className, instance, methodNames, args);
+	public Object callMethod(String className, Object instance,
+			String[] methodNames, Object... args) {
+		return ReflectionHelper.callMethod(className, instance, methodNames,
+				args);
 	}
-	
+
 	public void print(Object o) {
-		if (o == null) { 
+		if (o == null) {
 			System.out.println("void");
-		}else {
+		} else {
 			System.out.println(o.toString());
 		}
 	}
-	
+
 }
