@@ -530,8 +530,16 @@
             "className":"thermalexpansion.block.engine.TileEngineRoot",
             "methods":[
                {
-                  "name":"getCurrentOutput",
-                  "obfuscated":"getPower"
+                  "name":"getPower",
+                  "obfuscated":"getCurrentOutput"
+               }
+            ]
+         },
+         {
+            "className":"thermalexpansion.block.device.TileLamp",
+            "methods":[
+               {
+                  "name":"setColor"
                }
             ]
          }
