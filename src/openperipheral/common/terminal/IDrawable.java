@@ -3,26 +3,24 @@ package openperipheral.common.terminal;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import dan200.computer.core.ILuaObject;
 
 public interface IDrawable extends ILuaObject {
-
+	
 	public int getX();
 
 	public int getY();
 
 	public int getZIndex();
 
-	public void setZIndex(int z);
+	public int setZIndex(byte z);
 
-	public void writeTo(DataOutputStream stream);
+	public void writeTo(DataOutputStream stream, Short changeMask);
 
-	public void readFrom(DataInputStream stream);
+	public void readFrom(DataInputStream stream, Short changeMask);
 
-	public void draw(ItemStack stack, EntityPlayer player,
-			ScaledResolution resolution, float partialTicks, boolean hasScreen,
+	public void draw(ItemStack stack, EntityPlayer player, float partialTicks, boolean hasScreen,
 			int mouseX, int mouseY);
 }

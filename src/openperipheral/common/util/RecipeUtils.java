@@ -44,7 +44,7 @@ public class RecipeUtils {
     public static String page7 = new StringBuilder()
    .append("Peripheral Glasses\n")
    .append("-----------------\n\n")
-   .append("Peripheral Glasses are a powerful new feature that let you publish information to a HUD, and send commands via chat back to your computer. See the ComputerCraft forums for more information.")
+   .append("Peripheral Glasses are a powerful new feature that let you publish information to the players HUD, and send commands via chat back to your computer. See the ComputerCraft forums for more information.")
     .toString();
 
 	public static void addGlassesRecipe() {

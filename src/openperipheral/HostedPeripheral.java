@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import net.minecraft.item.ItemStack;
@@ -53,7 +54,7 @@ public class HostedPeripheral implements IHostedPeripheral {
 		methodNames = mNames.toArray(new String[mNames.size()]);
 
 		ItemStack is = new ItemStack(tile.getBlockType(), 1, tile.getBlockMetadata());
-		String name = tile.getBlockType().getUnlocalizedName();
+		name = tile.getBlockType().getUnlocalizedName();
 		try {
 			name = is.getDisplayName();
 		} catch (Exception e) {
@@ -63,7 +64,13 @@ public class HostedPeripheral implements IHostedPeripheral {
 			}
 		}
 		
+		if (name == null) {
+			name = tile.getClass().getName();
+		}
+
 		name = name.replace(".", "_");
+		name = name.replace(" ", "_");
+		name = name.toLowerCase();
 	}
 
 	@Override
@@ -83,7 +90,8 @@ public class HostedPeripheral implements IHostedPeripheral {
 		if (methodId == 0) {
 			return new Object[] { StringUtils.join(getMethodNames(),"\n") };
 		}
-		methodId++;
+		
+		methodId--;
 		
 		boolean isCableCall = mySecurityManager.getCallerClassName(2) == "dan200.computer.shared.TileEntityCable$RemotePeripheralWrapper";
 
@@ -185,19 +193,54 @@ public class HostedPeripheral implements IHostedPeripheral {
 	}
 
 	@Override
-	public void attach(IComputerAccess computer) {
-		TileEntity tile = worldObj.getBlockTileEntity(x, y, z);
-		if (tile != null && tile instanceof IAttachable) {
-			((IAttachable) tile).addComputer(computer);
+	public void attach(final IComputerAccess computer) {
+		Future callback;
+		try {
+			callback = TickHandler.addTickCallback(worldObj,
+					new Callable() {
+						@Override
+						public Object call() throws Exception {
+							TileEntity tile = worldObj.getBlockTileEntity(x, y, z);
+							if (tile != null && tile instanceof IAttachable) {
+								((IAttachable) tile).addComputer(computer);
+							}
+							return null;
+						}
+			});
+			callback.get();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
 	@Override
-	public void detach(IComputerAccess computer) {
-		TileEntity tile = worldObj.getBlockTileEntity(x, y, z);
-		if (tile != null && tile instanceof IAttachable) {
-			((IAttachable) tile).removeComputer(computer);
+	public void detach(final IComputerAccess computer) {
+		Future callback;
+		try {
+			callback = TickHandler.addTickCallback(worldObj,
+					new Callable() {
+						@Override
+						public Object call() throws Exception {
+							TileEntity tile = worldObj.getBlockTileEntity(x, y, z);
+							if (tile != null && tile instanceof IAttachable) {
+								((IAttachable) tile).removeComputer(computer);
+							}
+							return null;
+						}
+			});
+			callback.get();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		
 	}
 
 	@Override

@@ -15,7 +15,7 @@ public abstract class BaseDrawable implements IDrawable {
 
 	private boolean deleted = false;
 
-	protected int zIndex = 0;
+	protected byte zIndex = 0;
 
 	private WeakReference<TileEntityGlassesBridge> bridge;
 
@@ -62,23 +62,16 @@ public abstract class BaseDrawable implements IDrawable {
 
 		final Object[] argsToUse = args.toArray(new Object[args.size()]);
 
-		Object oldValue = null;
+		Object v = method.invoke(this, argsToUse);
+
 		if (methodNames[methodId].startsWith("set")) {
-			Method getter = ReflectionHelper
-					.getMethod(this.getClass(), new String[] { "get"
-							+ methodNames[methodId].substring(3) }, 0);
-			oldValue = getter.invoke(this);
-		}
-
-		Object newValue = method.invoke(this, argsToUse);
-
-		if (oldValue != newValue) {
 			if (bridge.get() != null) {
-				bridge.get().markChanged(this);
+				bridge.get().markChanged(this, (Integer)v);
+				return  new Object[] { };
 			}
 		}
 
-		return new Object[] { newValue };
+		return new Object[] { TypeConversionRegistry.toLua(v) };
 	}
 
 	public void delete() {
@@ -89,11 +82,4 @@ public abstract class BaseDrawable implements IDrawable {
 		}
 	}
 
-	public int getZIndex() {
-		return zIndex;
-	}
-
-	public void setZIndex(int z) {
-		zIndex = z;
-	}
 }

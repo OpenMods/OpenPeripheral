@@ -96,11 +96,12 @@ public class ItemGlasses extends ItemArmor {
 			ItemStack stack) {
 		super.onArmorTickUpdate(world, player, stack);
 		if (!world.isRemote) {
-			TileEntityGlassesBridge bridge = getGlassesBridge(player.worldObj,
-					stack);
+			TileEntityGlassesBridge bridge = getGlassesBridge(player.worldObj, stack);
 			if (bridge != null) {
 				bridge.registerPlayer(player);
 			}
+		}else {
+			
 		}
 	}
 
@@ -110,7 +111,7 @@ public class ItemGlasses extends ItemArmor {
 			int mouseX, int mouseY) {
 		DrawableManager manager = OpenPeripheral.instance.getDrawableManager();
 		for (IDrawable drawable : manager.getDrawables()) {
-			drawable.draw(stack, player, resolution, partialTicks, hasScreen,
+			drawable.draw(stack, player, partialTicks, hasScreen,
 					mouseX, mouseY);
 		}
 	}
@@ -121,18 +122,19 @@ public class ItemGlasses extends ItemArmor {
 
 			NBTTagCompound tag = stack.getTagCompound();
 
+			String guid = tag.getString("guid");
 			int x = tag.getInteger("x");
 			int y = tag.getInteger("y");
 			int z = tag.getInteger("z");
 			int d = tag.getInteger("d");
 
 			if (d == worldObj.provider.dimensionId) {
-
 				if (worldObj.blockExists(x, y, z)) {
-
 					TileEntity tile = worldObj.getBlockTileEntity(x, y, z);
-
 					if (tile instanceof TileEntityGlassesBridge) {
+						if (!((TileEntityGlassesBridge)tile).getGuid().equals(guid)) {
+							return null;
+						}
 						return (TileEntityGlassesBridge) tile;
 					}
 				}

@@ -128,8 +128,7 @@
                   "name":"setConfiguration"
                },
                {
-                  "name":"getConfigurationOptions",
-                  "obfuscated": "getConfiguationOptions"
+                  "name":"getConfiguationOptions"
                },
                {
                   "name":"nextConfiguration"
@@ -987,6 +986,10 @@
                },
                {
                   "name":"addBox",
+                  "instant":"true"
+               },
+               {
+                  "name":"addGradientBox",
                   "instant":"true"
                },
                {

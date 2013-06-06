@@ -65,7 +65,7 @@ import cpw.mods.fml.relauncher.FMLRelauncher;
 import cpw.mods.fml.relauncher.Side;
 import dan200.computer.api.ComputerCraftAPI;
 
-@Mod(modid = "OpenPeripheral", name = "OpenPeripheral", version = "0.1.1", dependencies = "required-after:ComputerCraft;after:BuildCraft|Core;after:AppliedEnergistics;after:Forestry;after:IC2;after:ThermalExpansion;after:Thaumcraft;after:MineFactoryReloaded;after:Railcraft;after:MiscPeripherals")
+@Mod(modid = "OpenPeripheral", name = "OpenPeripheral", version = "0.1.3", dependencies = "required-after:ComputerCraft;after:BuildCraft|Core;after:AppliedEnergistics;after:Forestry;after:IC2;after:ThermalExpansion;after:Thaumcraft;after:MineFactoryReloaded;after:Railcraft;after:MiscPeripherals")
 @NetworkMod(serverSideRequired = true, clientSideRequired = false, channels = { "OpenPeripheral" }, packetHandler = PacketHandler.class)
 public class OpenPeripheral {
 
@@ -133,7 +133,7 @@ public class OpenPeripheral {
 
 	@Mod.PreInit
 	public void preInit(FMLPreInitializationEvent evt) {
-
+		
 		RESOURCE_PATH = "/mods/openperipheral";
 		LANGUAGE_PATH = String.format("%s/languages", RESOURCE_PATH);
 
@@ -191,6 +191,7 @@ public class OpenPeripheral {
 		}
 		File cacheFile = new File(directory, CACHE_FILE);
 
+		configFile.save();
 		CACHE_PATH = cacheFile.getAbsolutePath();
 	}
 

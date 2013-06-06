@@ -12,7 +12,10 @@ public class PacketHandler implements IPacketHandler {
 			Packet250CustomPayload packet, Player player) {
 
 		if (packet.channel.equals("OpenPeripheral")) {
-			OpenPeripheral.instance.drawables.handlePacket(packet);
+			try {
+				OpenPeripheral.instance.drawables.handlePacket(packet);
+			}catch(Exception e) {
+			}
 		}
 	}
 
