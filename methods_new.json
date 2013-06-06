@@ -530,8 +530,8 @@
             "className":"thermalexpansion.block.engine.TileEngineRoot",
             "methods":[
                {
-                  "name":"getPower",
-                  "obfuscated":"getCurrentOutput"
+                  "name":"getCurrentOutput",
+                  "obfuscated":"getPower"
                }
             ]
          }
