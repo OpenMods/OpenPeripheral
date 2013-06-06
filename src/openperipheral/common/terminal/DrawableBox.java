@@ -22,6 +22,7 @@ public class DrawableBox extends BaseDrawable implements IDrawable {
 	private double alpha;
 	private int color2;
 	private double alpha2;
+	private byte gradient = 0;
 	
 	public static final int X_CHANGED 		= 1;
 	public static final int Y_CHANGED 		= 2;
@@ -32,13 +33,14 @@ public class DrawableBox extends BaseDrawable implements IDrawable {
 	public static final int COLOR2_CHANGED 	= 7;
 	public static final int ALPHA2_CHANGED 	= 8;
 	public static final int Z_CHANGED 		= 9;
+	public static final int GRADIENT_CHANGED = 10;
 
 	public DrawableBox() {
 		super();
 	}
 
 	public DrawableBox(TileEntityGlassesBridge parent, int x, int y, int width,
-			int height, int color, double alpha, int color2, double alpha2) {
+			int height, int color, double alpha, int color2, double alpha2, byte gradient) {
 		super(parent);
 		this.x = (short)x;
 		this.y = (short)y;
@@ -48,11 +50,12 @@ public class DrawableBox extends BaseDrawable implements IDrawable {
 		this.alpha = alpha;
 		this.color2 = color2;
 		this.alpha2 = alpha2;
+		this.gradient = gradient;
 		this.methodNames = new String[] { "getX", "setX", "getY", "setY",
 				"getWidth", "setWidth", "getHeight", "setHeight", "getColor",
 				"setColor", "getAlpha", "setAlpha", "getColor2", "setColor2",
-				"getAlpha2", "setAlpha2", "setZIndex", "getZIndex",
-				"delete" };
+				"getAlpha2", "setAlpha2", "setZIndex", "getZIndex", "setGradient",
+				"getGradient", "delete" };
 	}
 
 	@Override
@@ -65,6 +68,13 @@ public class DrawableBox extends BaseDrawable implements IDrawable {
 		float r2 = (float) ((color2 >> 16) & 0xFF) / 255;
 		float g2 = (float) ((color2 >> 8) & 0xFF) / 255;
 		float b2 = (float) (color2 & 0xFF) / 255;
+		
+		if (gradient == 0) {
+			r2 = r;
+			g2 = g;
+			b2 = b;
+		}
+		
 		Tessellator tessellator = Tessellator.instance;
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
@@ -73,11 +83,22 @@ public class DrawableBox extends BaseDrawable implements IDrawable {
         GL11.glShadeModel(GL11.GL_SMOOTH);
 		tessellator.startDrawingQuads();
         tessellator.setColorRGBA_F(r, g, b, (float)alpha);
-		tessellator.addVertex((double) x, (double) y + height, 0.0D);
-		tessellator.addVertex((double) x + width, (double) y + height, 0.0D);
+        if (gradient == 1) {
+			tessellator.addVertex((double) x, (double) y + height, 0.0D);
+			tessellator.addVertex((double) x + width, (double) y + height, 0.0D);
+        }else {
+			tessellator.addVertex((double) x + width, (double) y + height, 0.0D);
+			tessellator.addVertex((double) x + width, y, 0.0D);
+        	
+        }
         tessellator.setColorRGBA_F(r2, g2, b2, (float)alpha2);
-		tessellator.addVertex((double) x + width, y, 0.0D);
-		tessellator.addVertex((double) x, (double) y, 0.0D);
+        if (gradient == 1) {
+			tessellator.addVertex((double) x + width, y, 0.0D);
+			tessellator.addVertex((double) x, (double) y, 0.0D);
+		}else {
+			tessellator.addVertex((double) x, (double) y, 0.0D);
+			tessellator.addVertex((double) x, (double) y + height, 0.0D);
+		}
 		tessellator.draw();
         GL11.glShadeModel(GL11.GL_FLAT);
 		GL11.glDisable(GL11.GL_BLEND);
@@ -95,6 +116,10 @@ public class DrawableBox extends BaseDrawable implements IDrawable {
 
 	public int getColor() {
 		return color;
+	}
+
+	public byte getGradient() {
+		return gradient;
 	}
 
 	public int getColor2() {
@@ -153,6 +178,9 @@ public class DrawableBox extends BaseDrawable implements IDrawable {
 			
 			if (ByteUtils.get(changeMask, Z_CHANGED))
 				zIndex = stream.readByte();
+			
+			if (ByteUtils.get(changeMask, GRADIENT_CHANGED))
+				gradient = stream.readByte();
 
 		} catch (IOException e) {
 
@@ -205,6 +233,14 @@ public class DrawableBox extends BaseDrawable implements IDrawable {
 		}
 		width = w;
 		return WIDTH_CHANGED;
+	}
+
+	public int setGradient(byte g) {
+		if (gradient == g) {
+			return -1;
+		}
+		gradient = g;
+		return GRADIENT_CHANGED;
 	}
 	
 	public int setX(short x2) {
@@ -261,6 +297,10 @@ public class DrawableBox extends BaseDrawable implements IDrawable {
 
 			if (ByteUtils.get(changeMask, Z_CHANGED))
 				stream.writeByte(zIndex);
+			
+			if (ByteUtils.get(changeMask, GRADIENT_CHANGED))
+				stream.writeByte(gradient);
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

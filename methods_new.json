@@ -93,6 +93,16 @@
                   "name":"getPowerProvider"
                }
             ]
+         },
+         {
+            "className":"buildcraft.energy.TileEngine",
+            "methods":[
+               {
+                  "name":"getCurrentOutput",
+                  "callType":"script",
+                  "script":"aW1wb3J0UGFja2FnZShQYWNrYWdlcy5vcGVucGVyaXBoZXJhbC5jb21tb24udXRpbCk7DQp2YXIgZW5naW5lID0gUmVmbGVjdGlvbkhlbHBlci5jYWxsTWV0aG9kKCIiLCB0aWxlLCBbImdldEVuZ2luZSJdKTsNClJlZmxlY3Rpb25IZWxwZXIuY2FsbE1ldGhvZCgiIiwgZW5naW5lLCBbImdldEN1cnJlbnRPdXRwdXQiXSk7"
+               }
+            ]
          }
       ]
    },
@@ -515,6 +525,15 @@
                   "name":"isPrivate"
                }
             ]
+         },
+         {
+            "className":"thermalexpansion.block.engine.TileEngineRoot",
+            "methods":[
+               {
+                  "name":"getPower",
+                  "obfuscated":"getCurrentOutput"
+               }
+            ]
          }
       ]
    },
@@ -651,17 +670,6 @@
             "methods":[
                {
                   "name":"getDyeColor"
-               }
-            ]
-         },
-         {
-            "className":"powercrystals.core.position.IRotateableTile",
-            "methods":[
-               {
-                  "name":"canRotate"
-               },
-               {
-                  "name":"rotate"
                }
             ]
          }
@@ -986,10 +994,6 @@
                },
                {
                   "name":"addBox",
-                  "instant":"true"
-               },
-               {
-                  "name":"addGradientBox",
                   "instant":"true"
                },
                {

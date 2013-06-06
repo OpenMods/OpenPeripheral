@@ -348,16 +348,16 @@ public class TileEntityGlassesBridge extends TileEntity implements IAttachable {
 
 	public ILuaObject addBox(int x, int y, int width, int height, int color,
 			double alpha) throws InterruptedException {
-		return addGradientBox(x, y, width, height, color, alpha, color, alpha);
+		return addGradientBox(x, y, width, height, color, alpha, color, alpha, (byte)0);
 	}
 	
-	public ILuaObject addGradientBox(int x, int y, int width, int height, int color, double alpha, int color2, double alpha2) throws InterruptedException {
+	public ILuaObject addGradientBox(int x, int y, int width, int height, int color, double alpha, int color2, double alpha2, byte gradient) throws InterruptedException {
 		ILuaObject obj = null;
 
 		try {
 			lock.lock();
 			try {
-				drawables.put(count, new DrawableBox(this, x, y, width, height, color, alpha, color2, alpha2));
+				drawables.put(count, new DrawableBox(this, x, y, width, height, color, alpha, color2, alpha2, gradient));
 				changes.put(count, Short.MAX_VALUE);
 				obj = drawables.get(count++);
 			}catch (Exception e2) {
