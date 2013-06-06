@@ -194,9 +194,19 @@ public class HostedPeripheral implements IHostedPeripheral {
 
 	@Override
 	public void attach(final IComputerAccess computer) {
-		Future callback;
+
+		boolean isCableCall = mySecurityManager.getCallerClassName(2) == "dan200.computer.shared.TileEntityCable$RemotePeripheralWrapper";
+
+		if (isCableCall) {
+			TileEntity tile = worldObj.getBlockTileEntity(x, y, z);
+			if (tile != null && tile instanceof IAttachable) {
+				((IAttachable) tile).addComputer(computer);
+			}
+			return;
+		}
+		
 		try {
-			callback = TickHandler.addTickCallback(worldObj,
+			TickHandler.addTickCallback(worldObj,
 					new Callable() {
 						@Override
 						public Object call() throws Exception {
@@ -207,39 +217,31 @@ public class HostedPeripheral implements IHostedPeripheral {
 							return null;
 						}
 			});
-			callback.get();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
 	@Override
 	public void detach(final IComputerAccess computer) {
-		Future callback;
-		try {
-			callback = TickHandler.addTickCallback(worldObj,
-					new Callable() {
-						@Override
-						public Object call() throws Exception {
-							TileEntity tile = worldObj.getBlockTileEntity(x, y, z);
-							if (tile != null && tile instanceof IAttachable) {
-								((IAttachable) tile).removeComputer(computer);
+
+			try {
+				TickHandler.addTickCallback(worldObj,
+						new Callable() {
+							@Override
+							public Object call() throws Exception {
+								TileEntity tile = worldObj.getBlockTileEntity(x, y, z);
+								if (tile != null && tile instanceof IAttachable) {
+									((IAttachable) tile).removeComputer(computer);
+								}
+								return null;
 							}
-							return null;
-						}
-			});
-			callback.get();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+				});
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 		
 	}
 

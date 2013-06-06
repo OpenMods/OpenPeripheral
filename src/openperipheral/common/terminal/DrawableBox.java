@@ -73,6 +73,7 @@ public class DrawableBox extends BaseDrawable implements IDrawable {
 			r2 = r;
 			g2 = g;
 			b2 = b;
+			alpha2 = alpha;
 		}
 		
 		Tessellator tessellator = Tessellator.instance;

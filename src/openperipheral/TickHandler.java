@@ -12,6 +12,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import net.minecraft.world.World;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
+import dan200.computer.api.IComputerAccess;
 
 public class TickHandler implements ITickHandler {
 
@@ -28,7 +29,7 @@ public class TickHandler implements ITickHandler {
 		callbacks.get(worldId).put(task);
 		return task;
 	}
-
+	
 	@Override
 	public String getLabel() {
 		return "OpenPeripheral";

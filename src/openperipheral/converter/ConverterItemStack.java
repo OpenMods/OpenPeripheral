@@ -17,12 +17,12 @@ public class ConverterItemStack implements ITypeConverter {
 			if (!m.containsKey("id")) {
 				return null;
 			}
-			int id = (Integer) m.get("id");
+			int id = (int)(double)(Double) m.get("id");
 			if (m.containsKey("qty")) {
-				quantity = (Integer) m.get("qty");
+				quantity = (int)(double)(Double) m.get("qty");
 			}
 			if (m.containsKey("dmg")) {
-				dmg = (Integer) m.get("qty");
+				dmg = (int)(double)(Double) m.get("qty");
 			}
 			return new ItemStack(id, quantity, dmg);
 		}
