@@ -13,7 +13,7 @@ public class PacketHandler implements IPacketHandler {
 
 		if (packet.channel.equals("OpenPeripheral")) {
 			try {
-				OpenPeripheral.instance.drawables.handlePacket(packet);
+				OpenPeripheral.proxy.getDrawableManager().handlePacket(packet);
 			}catch(Exception e) {
 			}
 		}

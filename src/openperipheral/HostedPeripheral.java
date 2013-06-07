@@ -63,7 +63,7 @@ public class HostedPeripheral implements IHostedPeripheral {
 			} catch (Exception e2) {
 			}
 		}
-		
+
 		if (name == null) {
 			name = tile.getClass().getName();
 		}
@@ -86,13 +86,12 @@ public class HostedPeripheral implements IHostedPeripheral {
 	@Override
 	public Object[] callMethod(IComputerAccess computer, int methodId,
 			Object[] arguments) throws Exception {
-		
 		if (methodId == 0) {
-			return new Object[] { StringUtils.join(getMethodNames(),"\n") };
+			return new Object[] { StringUtils.join(getMethodNames(), "\n") };
 		}
-		
+
 		methodId--;
-		
+
 		boolean isCableCall = mySecurityManager.getCallerClassName(2) == "dan200.computer.shared.TileEntityCable$RemotePeripheralWrapper";
 
 		final DefinitionMethod methodDefinition = methods.get(methodId);
@@ -100,40 +99,20 @@ public class HostedPeripheral implements IHostedPeripheral {
 		if (methodDefinition != null) {
 
 			if (methodDefinition.getCallType() == CallType.SCRIPT) {
-
 				final TileEntity tile = worldObj.getBlockTileEntity(x, y, z);
-				Object response = TypeConversionRegistry.toLua(methodDefinition
-						.execute(tile, arguments));
+				Object response = TypeConversionRegistry.toLua(methodDefinition.execute(tile, arguments));
 				return new Object[] { response };
 			}
 
 			ArrayList<Object> args = new ArrayList(Arrays.asList(arguments));
 
-			Class[] requiredParameters = methodDefinition
-					.getRequiredParameters();
+			Class[] requiredParameters = methodDefinition.getRequiredParameters();
 
-			HashMap<Integer, String> toReplace = methodDefinition
-					.getReplacements();
-			for (Entry<Integer, String> replacement : toReplace.entrySet()) {
-				String r = replacement.getValue();
-				Object v = null;
-				if (r.equals("x")) {
-					v = x;
-				} else if (r.equals("y")) {
-					v = y;
-				} else if (r.equals("z")) {
-					v = z;
-				} else if (r.equals("world")) {
-					v = worldObj;
-				}
-				if (v != null) {
-					args.add(replacement.getKey(), v);
-				}
-			}
+			replaceArguments(args, methodDefinition.getReplacements());
 
 			if (args.size() != requiredParameters.length) {
 				throw new Exception("Invalid number of parameters. Expected "
-						+ (requiredParameters.length - toReplace.size()));
+						+ (requiredParameters.length - methodDefinition.getReplacements().size()));
 			}
 
 			for (int i = 0; i < requiredParameters.length; i++) {
@@ -162,29 +141,43 @@ public class HostedPeripheral implements IHostedPeripheral {
 			final Object[] argsToUse = args.toArray(new Object[args.size()]);
 
 			if (isCableCall || methodDefinition.isInstant()) {
-				Object response = TypeConversionRegistry.toLua(methodDefinition
-						.execute(tile, argsToUse));
-				PostChangeRegistry.onPostChange(tile, methodDefinition,
-						argsToUse);
+				Object response = TypeConversionRegistry.toLua(methodDefinition.execute(tile, argsToUse));
+				PostChangeRegistry.onPostChange(tile, methodDefinition, argsToUse);
 				return new Object[] { response };
 			} else {
 				Future callback = TickHandler.addTickCallback(tile.worldObj,
 						new Callable() {
 							@Override
 							public Object call() throws Exception {
-								Object response = TypeConversionRegistry
-										.toLua(methodDefinition.execute(tile,
-												argsToUse));
-								PostChangeRegistry.onPostChange(tile,
-										methodDefinition, argsToUse);
+								Object response = TypeConversionRegistry.toLua(methodDefinition.execute(tile, argsToUse));
+								PostChangeRegistry.onPostChange(tile, methodDefinition, argsToUse);
 								return response;
 							}
 						});
-
 				return new Object[] { callback.get() };
 			}
 		}
 		return null;
+	}
+
+	private void replaceArguments(ArrayList<Object> args,
+			HashMap<Integer, String> replacements) {
+		for (Entry<Integer, String> replacement : replacements.entrySet()) {
+			String r = replacement.getValue();
+			Object v = null;
+			if (r.equals("x")) {
+				v = x;
+			} else if (r.equals("y")) {
+				v = y;
+			} else if (r.equals("z")) {
+				v = z;
+			} else if (r.equals("world")) {
+				v = worldObj;
+			}
+			if (v != null) {
+				args.add(replacement.getKey(), v);
+			}
+		}
 	}
 
 	@Override
@@ -195,54 +188,38 @@ public class HostedPeripheral implements IHostedPeripheral {
 	@Override
 	public void attach(final IComputerAccess computer) {
 
-		boolean isCableCall = mySecurityManager.getCallerClassName(2) == "dan200.computer.shared.TileEntityCable$RemotePeripheralWrapper";
-
-		if (isCableCall) {
-			TileEntity tile = worldObj.getBlockTileEntity(x, y, z);
-			if (tile != null && tile instanceof IAttachable) {
-				((IAttachable) tile).addComputer(computer);
-			}
-			return;
-		}
-		
 		try {
-			TickHandler.addTickCallback(worldObj,
-					new Callable() {
-						@Override
-						public Object call() throws Exception {
-							TileEntity tile = worldObj.getBlockTileEntity(x, y, z);
-							if (tile != null && tile instanceof IAttachable) {
-								((IAttachable) tile).addComputer(computer);
-							}
-							return null;
-						}
+			TickHandler.addTickCallback(worldObj, new Callable() {
+				@Override
+				public Object call() throws Exception {
+					TileEntity tile = worldObj.getBlockTileEntity(x, y, z);
+					if (tile != null && tile instanceof IAttachable) {
+						((IAttachable) tile).addComputer(computer);
+					}
+					return null;
+				}
 			});
 		} catch (InterruptedException e) {
-			e.printStackTrace();
 		}
 	}
 
 	@Override
 	public void detach(final IComputerAccess computer) {
 
-			try {
-				TickHandler.addTickCallback(worldObj,
-						new Callable() {
-							@Override
-							public Object call() throws Exception {
-								TileEntity tile = worldObj.getBlockTileEntity(x, y, z);
-								if (tile != null && tile instanceof IAttachable) {
-									((IAttachable) tile).removeComputer(computer);
-								}
-								return null;
-							}
-				});
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-		
+		try {
+			TickHandler.addTickCallback(worldObj, new Callable() {
+				@Override
+				public Object call() throws Exception {
+					TileEntity tile = worldObj.getBlockTileEntity(x, y, z);
+					if (tile != null && tile instanceof IAttachable) {
+						((IAttachable) tile).removeComputer(computer);
+					}
+					return null;
+				}
+			});
+		} catch (InterruptedException e) {
+		}
+
 	}
 
 	@Override

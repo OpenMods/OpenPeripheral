@@ -11,7 +11,7 @@ public class ConverterItemStack implements ITypeConverter {
 	@Override
 	public Object fromLua(Object o, Class required) {
 		if (required == ItemStack.class && o instanceof Map) {
-			int quantity = 0;
+			int quantity = 1;
 			int dmg = 0;
 			Map m = (Map) o;
 			if (!m.containsKey("id")) {
@@ -22,7 +22,7 @@ public class ConverterItemStack implements ITypeConverter {
 				quantity = (int)(double)(Double) m.get("qty");
 			}
 			if (m.containsKey("dmg")) {
-				dmg = (int)(double)(Double) m.get("qty");
+				dmg = (int)(double)(Double) m.get("dmg");
 			}
 			return new ItemStack(id, quantity, dmg);
 		}

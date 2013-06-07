@@ -20,15 +20,20 @@ import net.minecraftforge.event.world.WorldEvent.Load;
 import openperipheral.OpenPeripheral;
 import openperipheral.common.tileentity.TileEntityGlassesBridge;
 import openperipheral.common.util.ByteUtils;
+import openperipheral.common.util.PacketChunker;
 
 public class DrawableManager {
 
-	public static final int DELETE = 0;
-	public static final int CHANGE = 1;
 	ArrayList<IDrawable> drawableList = new ArrayList<IDrawable>();
-	private int length = 0;
-	private int remainingLength = 0;
-	private HashMap<Integer, byte[][]> packetStack = new HashMap<Integer, byte[][]>();
+
+	public static final byte CLEAR_ALL_FLAG = 0;
+	public static final byte CHANGE_FLAG = 1;
+	
+	private int displayList = 0;
+	
+	public DrawableManager() {
+		
+	}
 
 	private HashMap<Short, IDrawable> drawables = new HashMap<Short, IDrawable>();
 	Comparator<IDrawable> zIndexComparator = new Comparator<IDrawable>() {
@@ -43,135 +48,72 @@ public class DrawableManager {
 		drawables.clear();
 	}
 
-	@ForgeSubscribe
-	public void onServerChatEvent(ServerChatEvent event) {
-		EntityPlayerMP player = event.player;
-		if (player != null) {
-			if (event.message.startsWith("$$")) {
-				ItemStack headSlot = player.inventory.armorItemInSlot(3);
-				if (headSlot != null
-						&& headSlot.getItem() == OpenPeripheral.Items.glasses) {
-					event.setCanceled(true);
-					if (!headSlot.hasTagCompound()) {
-						return;
-					}
-					NBTTagCompound tag = headSlot.getTagCompound();
-					if (!tag.hasKey("guid")) {
-						return;
-					}
-					int x = tag.getInteger("x");
-					int y = tag.getInteger("y");
-					int z = tag.getInteger("z");
-					int d = tag.getInteger("d");
-					if (player.worldObj.provider.dimensionId == d) {
-						if (player.worldObj.blockExists(x, y, z)) {
-							TileEntity te = player.worldObj.getBlockTileEntity(
-									x, y, z);
-							if (te instanceof TileEntityGlassesBridge) {
-								((TileEntityGlassesBridge) te)
-								.onChatCommand(event.message.substring(
-										2).trim());
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-
 	public Collection<IDrawable> getDrawables() {
 		return drawableList;
 	}
 
 	public void handlePacket(Packet250CustomPayload packet) {
 
-		DataInputStream inputStream1 = new DataInputStream(new ByteArrayInputStream(packet.data));
 		try {
 			
-			short chunkLength = inputStream1.readShort();
-			short chunkIndex = inputStream1.readShort();
-			int packetId = inputStream1.readInt();
-
-			if (!packetStack.containsKey(packetId)) {
-				packetStack.put(packetId, new byte[chunkLength][]);
+			byte[] bytes = PacketChunker.instance.getBytes(packet);
+			
+			if (bytes == null) {
+				return;
 			}
+			
 
-			byte[][] stack = packetStack.get(packetId);
+			DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream(bytes));
 
-			byte[] remainingBytes = new byte[packet.data.length - 8];
-			inputStream1.read(remainingBytes, 0, remainingBytes.length);
-			stack[chunkIndex] = remainingBytes;
-
-			int chunksLeft = 0;
-			for (byte[] s : stack) {
-				if (s == null) {
-					chunksLeft++;
-				}
+			byte type = inputStream.readByte();
+			
+			if (type == 0) {
+				drawables.clear();
+				return;
 			}
-
-			if (chunksLeft == 0) {
-
-				int totalLength =  0;
-				for (byte[] s : stack) {
-					totalLength += s.length;
-				}
-
-				byte[] fullPacket = new byte[totalLength];
-				int offset = 0;
-				for (short i = 0; i < chunkLength; i++) {
-					byte[] chunkPart = stack[i];
-					System.arraycopy(chunkPart, 0, fullPacket, offset, chunkPart.length);
-					offset += chunkPart.length;
-				}
-
-				packetStack.remove(packetId);
+			
+			// how many drawable objects are in this packet
+			short drawableCount = inputStream.readShort();
+			
+			for (int i = 0; i < drawableCount; i++) {
 				
-				DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream(fullPacket));
-
-				byte type = inputStream.readByte();
+				// the change mask specifies which properties have changed
+				short changeMask = inputStream.readShort();
 				
-				if (type == 0) {
-					drawables.clear();
-					return;
-				}
+				// get the id for this drawable object
+				short drawableId = inputStream.readShort();
 				
-				short drawableCount = inputStream.readShort();
-				for (int i = 0; i < drawableCount; i++) {
-					short changeMask = inputStream.readShort();
-					short drawableId = inputStream.readShort();
-					
-					if (!ByteUtils.get(changeMask, 0)) {
-						drawables.remove(drawableId);
-					}else {
-						byte drawableType = inputStream.readByte();
-						IDrawable drawable = null;
-						if (drawables.containsKey(drawableId)) {
-							drawable = drawables.get(drawableId);
-						} else {
-							switch (drawableType) {
-							case 0:
-								drawable = new DrawableText();
-								break;
-							default:
-								drawable = new DrawableBox();
-							}
-						}
-						if (drawable != null) {
-							drawable.readFrom(inputStream, changeMask);
-							drawables.put(drawableId, drawable);
+				// if slot 0 is false, it means we need to remove the object
+				if (!ByteUtils.get(changeMask, 0)) {
+					drawables.remove(drawableId);
+				}else {
+					// drawable type means text/box
+					byte drawableType = inputStream.readByte();
+					IDrawable drawable = null;
+					if (drawables.containsKey(drawableId)) {
+						drawable = drawables.get(drawableId);
+					} else {
+						switch (drawableType) {
+						case 0:
+							drawable = new DrawableText();
+							break;
+						default:
+							drawable = new DrawableBox();
 						}
 					}
+					if (drawable != null) {
+						drawable.readFrom(inputStream, changeMask);
+						drawables.put(drawableId, drawable);
+					}
 				}
-
-				drawableList.clear();
-				drawableList.addAll(drawables.values());
-				Collections.sort(drawableList, zIndexComparator);
 			}
 
-		} catch (IOException e) {
-			e.printStackTrace();
-			return;
+			drawableList.clear();
+			drawableList.addAll(drawables.values());
+			Collections.sort(drawableList, zIndexComparator);
+			
+		}catch(Exception e) {
+			
 		}
 
 	}

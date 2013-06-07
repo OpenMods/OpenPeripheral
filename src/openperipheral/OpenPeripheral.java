@@ -28,6 +28,7 @@ import openperipheral.common.CommonProxy;
 import openperipheral.common.block.BlockGlassesBridge;
 import openperipheral.common.item.ItemGlasses;
 import openperipheral.common.terminal.DrawableManager;
+import openperipheral.common.util.PacketChunker;
 import openperipheral.converter.ConverterArray;
 import openperipheral.converter.ConverterDouble;
 import openperipheral.converter.ConverterForgeDirection;
@@ -87,11 +88,6 @@ public class OpenPeripheral {
 	public static boolean doAnalytics = false;
 	public static String previousVersion;
 
-	public DrawableManager drawables = new DrawableManager();
-
-	public DrawableManager getDrawableManager() {
-		return drawables;
-	}
 	
 	public static CreativeTabs tabOpenPeripheral = new CreativeTabs("tabOpenPeripheral") {
         public ItemStack getIconItemStack() {
@@ -166,8 +162,7 @@ public class OpenPeripheral {
 		prop.comment = "The path to the cache file";
 		CACHE_FILE = prop.getString();
 
-		prop = configFile.get("general", "cacheInterval",
-				CACHE_REFRESH_INTERVAL);
+		prop = configFile.get("general", "cacheInterval", CACHE_REFRESH_INTERVAL);
 		prop.comment = "How often the cache file gets updated (in days)";
 		CACHE_REFRESH_INTERVAL = prop.getInt();
 
@@ -218,8 +213,6 @@ public class OpenPeripheral {
 
 		proxy.init();
 		proxy.registerRenderInformation();
-
-		MinecraftForge.EVENT_BUS.register(drawables);
 
 		RestrictionFactory.registerRestrictionHandler("min",
 				new IRestrictionHandler() {
