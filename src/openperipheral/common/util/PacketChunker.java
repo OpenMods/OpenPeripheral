@@ -9,12 +9,12 @@ import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet250CustomPayload;
 
 public class PacketChunker {
-
+	
 	private byte packetId = 0;
 
-	private HashMap<Byte, byte[][]> packetStack = new HashMap<Byte, byte[][]>();
+	private final HashMap<Byte, byte[][]> packetStack = new HashMap<Byte, byte[][]>();
 
-	public static PacketChunker instance = new PacketChunker();
+	public final static PacketChunker instance = new PacketChunker();
 
 	/***
 	 * Convert a byte array into one or more packets
@@ -24,32 +24,27 @@ public class PacketChunker {
 	 */
 	public Packet[] createPackets(byte[] data) throws IOException {
 
-		byte[] chunk = null;
 		int start = 0;
 		short maxChunkSize = Short.MAX_VALUE - 100;
 		byte numChunks = (byte)Math.ceil(data.length / (double)maxChunkSize);
 		Packet[] packets = new Packet[numChunks];
+		final byte META_LENGTH = 3;
 		
 		for(byte i = 0; i < numChunks; i++) {
-
-			byte[] meta = null;
-			/*if (numChunks == 1) {
-				meta = new byte[] { numChunks };
-			}else{
-			}*/
-			meta = new byte[] { numChunks, i, packetId };
 			
 			// size of the current chunk
 			int chunkSize = Math.min(data.length - start, maxChunkSize);
 
 			// make a new byte array but leave space for the meta
-			chunk = new byte[meta.length + chunkSize];
-			
-			// copy the meta bytes across
-			System.arraycopy(meta, 0, chunk, 0, meta.length);
+			byte[] chunk = new byte[META_LENGTH + chunkSize];
+
+			// set the chunk metadata: total number of chunks, current chunk index, packetId to match chunks together
+			chunk[0] = numChunks;
+			chunk[1] = i;
+			chunk[2] = packetId;
 			
 			// copy part of the data across
-			System.arraycopy(data, start, chunk, meta.length, chunkSize);
+			System.arraycopy(data, start, chunk, META_LENGTH, chunkSize);
 
 			Packet250CustomPayload packet = new Packet250CustomPayload();
 			packet.channel = "OpenPeripheral";

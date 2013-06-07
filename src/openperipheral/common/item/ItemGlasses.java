@@ -105,17 +105,6 @@ public class ItemGlasses extends ItemArmor {
 		}
 	}
 
-	@SideOnly(Side.CLIENT)
-	public void renderHelmetOverlay(ItemStack stack, EntityPlayer player,
-			ScaledResolution resolution, float partialTicks, boolean hasScreen,
-			int mouseX, int mouseY) {
-		DrawableManager manager = OpenPeripheral.instance.getDrawableManager();
-		for (IDrawable drawable : manager.getDrawables()) {
-			drawable.draw(stack, player, partialTicks, hasScreen,
-					mouseX, mouseY);
-		}
-	}
-
 	public TileEntityGlassesBridge getGlassesBridge(World worldObj,
 			ItemStack stack) {
 		if (stack.hasTagCompound()) {

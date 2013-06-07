@@ -45,8 +45,7 @@ public class DrawableText extends BaseDrawable implements IDrawable {
 	}
 
 	@Override
-	public void draw(ItemStack stack, EntityPlayer player, float partialTicks, boolean hasScreen,
-			int mouseX, int mouseY) {
+	public void draw(float partialTicks, int mouseX, int mouseY) {
 		FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
 		GL11.glPushMatrix();
 		GL11.glTranslatef(x, y, 0);

@@ -59,8 +59,7 @@ public class DrawableBox extends BaseDrawable implements IDrawable {
 	}
 
 	@Override
-	public void draw(ItemStack stack, EntityPlayer player, float partialTicks, boolean hasScreen,
-			int mouseX, int mouseY) {
+	public void draw(float partialTicks, int mouseX, int mouseY) {
 		float r = (float) ((color >> 16) & 0xFF) / 255;
 		float g = (float) ((color >> 8) & 0xFF) / 255;
 		float b = (float) (color & 0xFF) / 255;

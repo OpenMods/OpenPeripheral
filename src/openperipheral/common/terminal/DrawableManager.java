@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.world.WorldEvent.Load;
@@ -33,6 +34,13 @@ public class DrawableManager {
 	
 	public DrawableManager() {
 		
+	}
+	
+	@ForgeSubscribe
+	public void onRenderGameOverlay(RenderGameOverlayEvent evt) {
+		for (IDrawable drawable : drawableList) {
+			drawable.draw(evt.partialTicks, evt.mouseX, evt.mouseY);
+		}
 	}
 
 	private HashMap<Short, IDrawable> drawables = new HashMap<Short, IDrawable>();

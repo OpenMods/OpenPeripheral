@@ -21,6 +21,5 @@ public interface IDrawable extends ILuaObject {
 
 	public void readFrom(DataInputStream stream, Short changeMask);
 
-	public void draw(ItemStack stack, EntityPlayer player, float partialTicks, boolean hasScreen,
-			int mouseX, int mouseY);
+	public void draw(float partialTicks, int mouseX, int mouseY);
 }
