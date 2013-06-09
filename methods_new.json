@@ -497,7 +497,10 @@
                   "name":"isOwner"
                },
                {
-                  "name":"getOwner"
+                  "name":"getOwner",
+                  "propertyName":"owner",
+                  "callType":"get",
+                  "causeUpdate":"true"
                },
                {
                   "name":"getFrequency",
@@ -509,7 +512,16 @@
                   "propertyName":"frequency",
                   "callType":"set",
                   "causeUpdate":"true"
-               }
+               },
+               {
+                  "name":"isPublic"
+               },
+               {
+                  "name":"isFriends"
+               },
+               {
+                  "name":"isPrivate"
+               },
             ]
          },
          {
