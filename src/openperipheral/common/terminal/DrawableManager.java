@@ -69,8 +69,6 @@ public class DrawableManager {
 			if (bytes == null) {
 				return;
 			}
-			
-			System.out.println("Got full packet");
 
 			DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream(bytes));
 

@@ -71,16 +71,6 @@ public class PacketChunker {
 		// how many total chunks in this packet
 		byte chunkLength = inputStream1.readByte();
 		
-		/*
-		if (chunkLength == 1) {
-			System.out.println("got a 1 length packet");
-			byte[] packetBytes = new byte[packet.data.length - 1];
-			System.arraycopy(packet.data, 1, packetBytes, 0, packetBytes.length - 1);
-			System.out.println("Returning " + packetBytes.length +" bytes");
-			return packetBytes;
-		}
-		*/
-
 		// the index of this chunk
 		byte chunkIndex = inputStream1.readByte();
 

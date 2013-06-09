@@ -66,7 +66,7 @@ import cpw.mods.fml.relauncher.FMLRelauncher;
 import cpw.mods.fml.relauncher.Side;
 import dan200.computer.api.ComputerCraftAPI;
 
-@Mod(modid = "OpenPeripheral", name = "OpenPeripheral", version = "0.1.5", dependencies = "required-after:ComputerCraft;after:BuildCraft|Core;after:AppliedEnergistics;after:Forestry;after:IC2;after:ThermalExpansion;after:Thaumcraft;after:MineFactoryReloaded;after:Railcraft;after:MiscPeripherals")
+@Mod(modid = "OpenPeripheral", name = "OpenPeripheral", version = "0.1.5", dependencies = "required-after:ComputerCraft;after:mmmPowersuits;after:BuildCraft|Core;after:AppliedEnergistics;after:Forestry;after:IC2;after:ThermalExpansion;after:Thaumcraft;after:MineFactoryReloaded;after:Railcraft;after:MiscPeripherals")
 @NetworkMod(serverSideRequired = true, clientSideRequired = false, channels = { "OpenPeripheral" }, packetHandler = PacketHandler.class)
 public class OpenPeripheral {
 
