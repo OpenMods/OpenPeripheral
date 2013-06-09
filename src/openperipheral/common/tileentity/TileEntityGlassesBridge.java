@@ -13,6 +13,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
@@ -351,24 +353,38 @@ public class TileEntityGlassesBridge extends TileEntity implements IAttachable {
 	}
 
 	public ILuaObject getById(int id) {
-		synchronized (lock) {
-			return (ILuaObject) drawables.get(id);
+		try {
+			lock.lock();
+			try {
+				return (ILuaObject) drawables.get(id);
+			} finally {
+				lock.unlock();
+			}
+		} catch (Exception ex) {
 		}
+		return null;
 	}
 
 	public HashMap getAllIds() {
-		HashMap all = new HashMap();
-		synchronized (lock) {
-			int i = 1;
-			for (Short id : drawables.keySet()) {
-				all.put(i++, id);
+		try {
+			lock.lock();
+			try {
+				HashMap all = new HashMap();
+				int i = 1;
+				for (Short id : drawables.keySet()) {
+					all.put(i++, id);
+				}
+				return all;
+			} finally {
+				lock.unlock();
 			}
+		} catch (Exception ex) {
 		}
-		return all;
+		return null;
 
 	}
 
-	public synchronized void clear() {
+	public void clear() {
 		try {
 			lock.lock();
 			try {
@@ -421,13 +437,9 @@ public class TileEntityGlassesBridge extends TileEntity implements IAttachable {
 	public static TileEntityGlassesBridge getGlassesBridgeFromStack(World worldObj,
 			ItemStack stack) {
 		if (stack.hasTagCompound()) {
-
 			NBTTagCompound tag = stack.getTagCompound();
-			
 			if (tag.hasKey("openp")) {
-				
 				NBTTagCompound openPTag = tag.getCompoundTag("openp");
-	
 				String guid = openPTag.getString("guid");
 				int x = openPTag.getInteger("x");
 				int y = openPTag.getInteger("y");
@@ -456,14 +468,12 @@ public class TileEntityGlassesBridge extends TileEntity implements IAttachable {
 		}else {
 			tag = new NBTTagCompound();
 		}
-		
 		NBTTagCompound openPTag = null;
 		if (tag.hasKey("openp")) {
 			openPTag = tag.getCompoundTag("openp");
 		}else {
 			openPTag = new NBTTagCompound();
 		}
-		
 		openPTag.setString("guid", getGuid());
 		openPTag.setInteger("x", xCoord);
 		openPTag.setInteger("y", yCoord);

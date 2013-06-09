@@ -1,5 +1,6 @@
 package openperipheral.common;
 
+import java.util.Collections;
 import net.minecraft.src.ModLoader;
 import net.minecraftforge.common.MinecraftForge;
 import openperipheral.Mods;
@@ -23,7 +24,10 @@ public class CommonProxy {
 		
 		MinecraftForge.EVENT_BUS.register(new ChatCommandInterceptor());
 		if (ModLoader.isModLoaded(Mods.MPS)) {
-			net.machinemuse.api.ModuleManager.addModule(new GlassesModule());
+			net.machinemuse.api.ModuleManager.addModule(
+					new GlassesModule()
+			);
+			
 		}
 	}
 

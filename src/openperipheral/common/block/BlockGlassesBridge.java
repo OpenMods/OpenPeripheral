@@ -43,15 +43,14 @@ public class BlockGlassesBridge extends BlockContainer {
 		if (player.isSneaking() || tileEntity == null) {
 			return false;
 		}
-		System.out.println("player interact");
+		
 		if (!world.isRemote && tileEntity instanceof TileEntityGlassesBridge) {
-			System.out.println("its a bridge");
-			ItemStack glassesStack = player.inventory.armorItemInSlot(3);
+			ItemStack glassesStack = player.getHeldItem();
 			if (MiscUtils.canBeGlasses(glassesStack)) {
-				System.out.println("we has helmet");
 				((TileEntityGlassesBridge)tileEntity).writeDataToGlasses(glassesStack);
 			}
 		}
+		
 		return true;
 	}
 

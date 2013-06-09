@@ -45,7 +45,10 @@ public class ItemGlasses extends ItemArmor {
 	public void addInformation(ItemStack itemStack, EntityPlayer player,
 			List list, boolean par4) {
 		if (itemStack.hasTagCompound()) {
-			list.add("Key: " + itemStack.getTagCompound().getString("guid"));
+			NBTTagCompound tag = itemStack.getTagCompound();
+			if (tag.hasKey("openp")) {
+				list.add("Key: " + tag.getCompoundTag("openp").getString("guid"));
+			}
 		}
 	}
 

@@ -137,7 +137,7 @@
 
 	<!-- Default target to run -->
 	<target name="main" depends="package">
-		<copy todir="./bin/">
+		<copy todir="../instances/1.5.2_rand/minecraft/mods">
 			<fileset dir="${jar.dir}"/>
 		</copy>
 	</target>
