@@ -5,23 +5,32 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import openperipheral.OpenPeripheral;
+import openperipheral.common.tileentity.TileEntityGlassesBridge;
+
+import net.machinemuse.api.IPowerModule;
 import net.machinemuse.api.IPropertyModifier;
 import net.machinemuse.api.moduletrigger.IPlayerTickModule;
+import net.machinemuse.api.moduletrigger.IRightClickModule;
 import net.machinemuse.api.moduletrigger.IToggleableModule;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
+import net.minecraft.world.World;
 
-public class GlassesModule implements IToggleableModule, IPlayerTickModule
+public class GlassesModule implements IPowerModule
 {
 
 	private Icon itemIcon;
 	
 	@Override
 	public List<ItemStack> getInstallCost() {
-		return new ArrayList<ItemStack>();
+		List<ItemStack> stacks = new ArrayList<ItemStack>();
+		stacks.add(new ItemStack(OpenPeripheral.Items.glasses));
+		return stacks;
 	}
 
 	@Override
@@ -80,15 +89,4 @@ public class GlassesModule implements IToggleableModule, IPlayerTickModule
 		return true;
 	}
 
-	@Override
-	public void onPlayerTickActive(EntityPlayer player, ItemStack item) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onPlayerTickInactive(EntityPlayer player, ItemStack item) {
-		// TODO Auto-generated method stub
-		
-	}
 }

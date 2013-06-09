@@ -2,6 +2,7 @@ package openperipheral.common;
 
 import net.minecraft.src.ModLoader;
 import net.minecraftforge.common.MinecraftForge;
+import openperipheral.Mods;
 import openperipheral.OpenPeripheral;
 import openperipheral.common.block.BlockGlassesBridge;
 import openperipheral.common.item.ItemGlasses;
@@ -21,7 +22,7 @@ public class CommonProxy {
 		RecipeUtils.addBookRecipe();
 		
 		MinecraftForge.EVENT_BUS.register(new ChatCommandInterceptor());
-		if (ModLoader.isModLoaded("mmmPowersuits")) {
+		if (ModLoader.isModLoaded(Mods.MPS)) {
 			net.machinemuse.api.ModuleManager.addModule(new GlassesModule());
 		}
 	}
