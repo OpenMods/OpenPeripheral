@@ -16,6 +16,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import openperipheral.IAttachable;
 import openperipheral.OpenPeripheral;
 import openperipheral.common.terminal.DrawableBox;
@@ -23,6 +24,7 @@ import openperipheral.common.terminal.DrawableManager;
 import openperipheral.common.terminal.DrawableText;
 import openperipheral.common.terminal.IDrawable;
 import openperipheral.common.util.ByteUtils;
+import openperipheral.common.util.MiscUtils;
 import openperipheral.common.util.PacketChunker;
 import openperipheral.common.util.StringUtils;
 import openperipheral.common.util.ThreadLock;
@@ -197,17 +199,21 @@ public class TileEntityGlassesBridge extends TileEntity implements IAttachable {
 			return false;
 		}
 		Item item = glasses.getItem();
-		if (item != OpenPeripheral.Items.glasses) {
+		if (!MiscUtils.canBeGlasses(glasses)) {
 			return false;
 		}
 		if (!glasses.hasTagCompound()) {
 			return false;
 		}
 		NBTTagCompound tag = glasses.getTagCompound();
-		if (!tag.hasKey("guid")) {
+		if (!tag.hasKey("openp")) {
 			return false;
 		}
-		return tag.getString("guid").equals(guid);
+		NBTTagCompound openPTag = tag.getCompoundTag("openp");
+		if (!openPTag.hasKey("guid")) {
+			return false;
+		}
+		return openPTag.getString("guid").equals(guid);
 	}
 
 	private Packet[] createFullPackets() {
@@ -410,6 +416,61 @@ public class TileEntityGlassesBridge extends TileEntity implements IAttachable {
 	@Override
 	public void removeComputer(IComputerAccess computer) {
 		computers.remove(computer);
+	}
+	
+	public static TileEntityGlassesBridge getGlassesBridgeFromStack(World worldObj,
+			ItemStack stack) {
+		if (stack.hasTagCompound()) {
+
+			NBTTagCompound tag = stack.getTagCompound();
+			
+			if (tag.hasKey("openp")) {
+				
+				NBTTagCompound openPTag = tag.getCompoundTag("openp");
+	
+				String guid = openPTag.getString("guid");
+				int x = openPTag.getInteger("x");
+				int y = openPTag.getInteger("y");
+				int z = openPTag.getInteger("z");
+				int d = openPTag.getInteger("d");
+				if (d == worldObj.provider.dimensionId) {
+					if (worldObj.blockExists(x, y, z)) {
+						TileEntity tile = worldObj.getBlockTileEntity(x, y, z);
+						if (tile instanceof TileEntityGlassesBridge) {
+							if (!((TileEntityGlassesBridge)tile).getGuid().equals(guid)) {
+								return null;
+							}
+							return (TileEntityGlassesBridge) tile;
+						}
+					}
+				}
+			}
+		}
+		return null;
+	}
+	
+	public void writeDataToGlasses(ItemStack stack) {
+		NBTTagCompound tag = null;
+		if (stack.hasTagCompound()) {
+			tag = stack.getTagCompound();
+		}else {
+			tag = new NBTTagCompound();
+		}
+		
+		NBTTagCompound openPTag = null;
+		if (tag.hasKey("openp")) {
+			openPTag = tag.getCompoundTag("openp");
+		}else {
+			openPTag = new NBTTagCompound();
+		}
+		
+		openPTag.setString("guid", getGuid());
+		openPTag.setInteger("x", xCoord);
+		openPTag.setInteger("y", yCoord);
+		openPTag.setInteger("z", zCoord);
+		openPTag.setInteger("d", worldObj.provider.dimensionId);
+		tag.setTag("openp", openPTag);
+		stack.setTagCompound(tag);
 	}
 
 }

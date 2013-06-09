@@ -6,4 +6,5 @@ public class Mods {
 	public static final String FORESTRY = "Forestry";
 	public static final String THAUMCRAFT = "Thaumcraft";
 	public static final String PORTAL_GUN = "PortalGun";
+	public static final String MPS = "mmmPowersuits";
 }
