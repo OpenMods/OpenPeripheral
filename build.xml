@@ -1,4 +1,4 @@
-<!-- nallar's BuildCraft ant build script edited for OpenXP -->
+<!-- nallar's BuildCraft ant build script edited for OpenPeripheral -->
 <project name="OpenPeripheral" default="main">
 	<property environment="env"/>
 	<!-- Properties -->
@@ -137,7 +137,7 @@
 
 	<!-- Default target to run -->
 	<target name="main" depends="package">
-		<copy todir="../instances/1.5.2_rand/minecraft/mods">
+		<copy todir="./bin/">
 			<fileset dir="${jar.dir}"/>
 		</copy>
 	</target>
