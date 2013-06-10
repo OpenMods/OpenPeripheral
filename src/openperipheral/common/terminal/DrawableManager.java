@@ -20,6 +20,7 @@ import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.world.WorldEvent.Load;
@@ -43,8 +44,10 @@ public class DrawableManager {
 	
 	@ForgeSubscribe
 	public void onRenderGameOverlay(RenderGameOverlayEvent evt) {
-		for (IDrawable drawable : drawableList) {
-			drawable.draw(evt.partialTicks, evt.mouseX, evt.mouseY);
+		if (evt.type == ElementType.HELMET && evt instanceof RenderGameOverlayEvent.Post) {
+			for (IDrawable drawable : drawableList) {
+				drawable.draw(evt.partialTicks, evt.mouseX, evt.mouseY);
+			}
 		}
 	}
 

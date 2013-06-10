@@ -73,11 +73,11 @@ public class DrawableText extends BaseDrawable implements IDrawable {
 	public int getY() {
 		return y;
 	}
-	
+
 	public int getWidth() {
 		return OpenPeripheral.getFontSizeChecker().getStringWidth(getText());
 	}
-	
+
 	public float getScale() {
 		return scale;
 	}
@@ -101,13 +101,13 @@ public class DrawableText extends BaseDrawable implements IDrawable {
 
 			if (ByteUtils.get(changeMask, COLOR_CHANGED))
 				color = stream.readInt();
-			
+
 			if (ByteUtils.get(changeMask, Z_CHANGED))
 				zIndex = stream.readByte();
-			
+
 			if (ByteUtils.get(changeMask, SCALE_CHANGED))
 				scale = stream.readFloat();
-			
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -152,7 +152,7 @@ public class DrawableText extends BaseDrawable implements IDrawable {
 		zIndex = z;
 		return Z_CHANGED;
 	}
-	
+
 	public int setScale(float s) {
 		if (scale == s) {
 			return -1;
@@ -172,16 +172,16 @@ public class DrawableText extends BaseDrawable implements IDrawable {
 
 			if (ByteUtils.get(changeMask, TEXT_CHANGED))
 				stream.writeUTF(text);
-			
+
 			if (ByteUtils.get(changeMask, COLOR_CHANGED))
 				stream.writeInt(color);
-			
+
 			if (ByteUtils.get(changeMask, Z_CHANGED))
 				stream.writeByte(zIndex);
 
 			if (ByteUtils.get(changeMask, SCALE_CHANGED))
 				stream.writeFloat(scale);
-			
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
