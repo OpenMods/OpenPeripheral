@@ -10,6 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import openperipheral.OpenPeripheral;
 import openperipheral.common.tileentity.TileEntityGlassesBridge;
 import openperipheral.common.util.ByteUtils;
 
@@ -27,7 +28,6 @@ public class DrawableText extends BaseDrawable implements IDrawable {
 	public static final int COLOR_CHANGED 	= 4;
 	public static final int Z_CHANGED 		= 5;
 	public static final int SCALE_CHANGED 	= 6;
-	
 	public DrawableText() {
 		super();
 	}
@@ -41,7 +41,7 @@ public class DrawableText extends BaseDrawable implements IDrawable {
 		this.color = color;
 		this.methodNames = new String[] { "setX", "getX", "setY", "getY",
 				"setColor", "getColor", "setText", "getText", "setZIndex",
-				"getZIndex", "setScale", "getScale", "delete" };
+				"getZIndex", "setScale", "getScale", "getWidth", "delete" };
 	}
 
 	@Override
@@ -72,6 +72,10 @@ public class DrawableText extends BaseDrawable implements IDrawable {
 	@Override
 	public int getY() {
 		return y;
+	}
+	
+	public int getWidth() {
+		return OpenPeripheral.getFontSizeChecker().getStringWidth(getText());
 	}
 	
 	public float getScale() {

@@ -191,6 +191,7 @@ public class TileEntityGlassesBridge extends TileEntity implements IAttachable {
 				}
 			}
 		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		
 	}
@@ -365,6 +366,20 @@ public class TileEntityGlassesBridge extends TileEntity implements IAttachable {
 		return null;
 	}
 
+	public int getStringWidth(String str) {
+		try {
+			lock.lock();
+			try {
+				return OpenPeripheral.getFontSizeChecker().getStringWidth(str);
+			} finally {
+				lock.unlock();
+			}
+		}catch(Exception e) {
+			
+		}
+		return str.length() * 8;
+	}
+
 	public HashMap getAllIds() {
 		try {
 			lock.lock();
@@ -416,9 +431,9 @@ public class TileEntityGlassesBridge extends TileEntity implements IAttachable {
 		guid = tag.getString("guid");
 	}
 
-	public void onChatCommand(String command) {
+	public void onChatCommand(String command, String username) {
 		for (IComputerAccess computer : computers) {
-			computer.queueEvent("chat_command", new Object[] { command });
+			computer.queueEvent("chat_command", new Object[] { command, username, getGuid() });
 		}
 	}
 

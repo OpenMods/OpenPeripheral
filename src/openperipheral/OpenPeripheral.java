@@ -28,6 +28,7 @@ import openperipheral.common.CommonProxy;
 import openperipheral.common.block.BlockGlassesBridge;
 import openperipheral.common.item.ItemGlasses;
 import openperipheral.common.terminal.DrawableManager;
+import openperipheral.common.util.FontSizeChecker;
 import openperipheral.common.util.PacketChunker;
 import openperipheral.converter.ConverterArray;
 import openperipheral.converter.ConverterDouble;
@@ -321,6 +322,10 @@ public class OpenPeripheral {
 		}
 
 		return null;
+	}
+	
+	public static FontSizeChecker getFontSizeChecker()  {
+		return proxy.getFontSizeChecker();
 	}
 
 	private void fetchNewData() {

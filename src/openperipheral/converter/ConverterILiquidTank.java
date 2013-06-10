@@ -26,7 +26,6 @@ public class ConverterILiquidTank implements ITypeConverter {
 			if (lyqyd != null) {
 				map.put("amount", lyqyd.amount);
 				map.put("id", lyqyd.itemID);
-				map.put("name", Item.itemsList[lyqyd.itemID].getUnlocalizedName().substring(4));
 			}
 			return map;
 		}
