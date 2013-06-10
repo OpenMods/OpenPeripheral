@@ -51,7 +51,7 @@ public class BlockGlassesBridge extends BlockContainer {
 			}
 		}
 		
-		return true;
+		return false;
 	}
 
 }

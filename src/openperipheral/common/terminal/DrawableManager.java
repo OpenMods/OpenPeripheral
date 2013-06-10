@@ -7,13 +7,18 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.EnumSet;
 import java.util.HashMap;
+
+import cpw.mods.fml.common.ITickHandler;
+import cpw.mods.fml.common.TickType;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.ServerChatEvent;
@@ -44,6 +49,7 @@ public class DrawableManager {
 	}
 
 	private HashMap<Short, IDrawable> drawables = new HashMap<Short, IDrawable>();
+	
 	Comparator<IDrawable> zIndexComparator = new Comparator<IDrawable>() {
 		@Override
 		public int compare(IDrawable s1, IDrawable s2) {
@@ -61,7 +67,7 @@ public class DrawableManager {
 	}
 
 	public void handlePacket(Packet250CustomPayload packet) {
-
+		
 		try {
 			
 			byte[] bytes = PacketChunker.instance.getBytes(packet);
@@ -76,6 +82,7 @@ public class DrawableManager {
 			
 			if (type == 0) {
 				drawables.clear();
+				drawableList.clear();
 				return;
 			}
 			

@@ -5,6 +5,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import net.minecraft.client.renderer.GLAllocation;
+
 import openperipheral.TypeConversionRegistry;
 import openperipheral.common.tileentity.TileEntityGlassesBridge;
 import openperipheral.common.util.ReflectionHelper;
@@ -20,9 +22,11 @@ public abstract class BaseDrawable implements IDrawable {
 	private WeakReference<TileEntityGlassesBridge> bridge;
 
 	public BaseDrawable() {
-
 	}
 
+	public void destroy() {
+	}
+	
 	public BaseDrawable(TileEntityGlassesBridge _bridge) {
 		bridge = new WeakReference<TileEntityGlassesBridge>(_bridge);
 	}
@@ -70,7 +74,7 @@ public abstract class BaseDrawable implements IDrawable {
 				return  new Object[] { };
 			}
 		}
-
+		
 		return new Object[] { TypeConversionRegistry.toLua(v) };
 	}
 

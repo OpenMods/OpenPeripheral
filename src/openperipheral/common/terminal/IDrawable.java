@@ -22,4 +22,5 @@ public interface IDrawable extends ILuaObject {
 	public void readFrom(DataInputStream stream, Short changeMask);
 
 	public void draw(float partialTicks, int mouseX, int mouseY);
+	
 }

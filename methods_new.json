@@ -509,9 +509,8 @@
                },
                {
                   "name":"setFrequency",
-                  "propertyName":"frequency",
-                  "callType":"set",
-                  "causeUpdate":"true"
+                  "callType":"script",
+                  "script":"aW1wb3J0UGFja2FnZShQYWNrYWdlcy5vcGVucGVyaXBoZXJhbC5jb21tb24udXRpbCk7DQpSZWZsZWN0aW9uSGVscGVyLmNhbGxNZXRob2QoJycsIHRpbGUsIFsncmVtb3ZlRnJvbVJlZ2lzdHJ5J10pOw0KUmVmbGVjdGlvbkhlbHBlci5zZXRQcm9wZXJ0eSgnJywgdGlsZSwgcGFyc2VJbnQodmFsdWVzWzBdKSwgWydmcmVxdWVuY3knXSk7DQpSZWZsZWN0aW9uSGVscGVyLmNhbGxNZXRob2QoJycsIHRpbGUsIFsnYWRkVG9SZWdpc3RyeSddKTsNClJlZmxlY3Rpb25IZWxwZXIuY2FsbE1ldGhvZCgnJywgd29ybGRPYmosIFsnbWFya0Jsb2NrRm9yVXBkYXRlJywgJ2Z1bmNfNzI3MTBfYScsICdmdW5jXzcyODQ1X2gnXSwgeENvb3JkLCB5Q29vcmQsIHpDb29yZCk7DQpibG9ja1R5cGUgPSBSZWZsZWN0aW9uSGVscGVyLmdldFByb3BlcnR5KCcnLCB0aWxlLCBbJ2ZpZWxkXzcwMzI0X3EnLCAnYmxvY2tUeXBlJ10pOw0KYmxvY2tJZCA9IFJlZmxlY3Rpb25IZWxwZXIuZ2V0UHJvcGVydHkoJycsIGJsb2NrVHlwZSwgWydibG9ja0lEJywgJ2ZpZWxkXzcxOTkwX2NhJ10pOw0KUmVmbGVjdGlvbkhlbHBlci5jYWxsTWV0aG9kKCcnLCB3b3JsZE9iaiwgWydub3RpZnlCbG9ja3NPZk5laWdoYm9yQ2hhbmdlJywgJ2Z1bmNfNzI4OThfaCddLCB4Q29vcmQsIHlDb29yZCwgekNvb3JkLCBibG9ja0lkKTs="
                },
                {
                   "name":"isPublic"
@@ -1026,6 +1025,10 @@
                },
                {
                   "name":"getById",
+                  "instant":"true"
+               },
+               {
+                  "name":"getStringWidth",
                   "instant":"true"
                }
             ]

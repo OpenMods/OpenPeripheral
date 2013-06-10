@@ -8,6 +8,7 @@ import openperipheral.OpenPeripheral;
 import openperipheral.common.block.BlockGlassesBridge;
 import openperipheral.common.item.ItemGlasses;
 import openperipheral.common.terminal.DrawableManager;
+import openperipheral.common.util.FontSizeChecker;
 import openperipheral.common.util.LanguageUtils;
 import openperipheral.common.util.RecipeUtils;
 import openperipheral.mps.GlassesModule;
@@ -29,6 +30,10 @@ public class CommonProxy {
 			);
 			
 		}
+	}
+	
+	public FontSizeChecker getFontSizeChecker() {
+		return null;
 	}
 
 	public void registerRenderInformation() {

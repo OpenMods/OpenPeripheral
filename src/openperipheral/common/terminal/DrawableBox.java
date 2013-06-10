@@ -60,6 +60,7 @@ public class DrawableBox extends BaseDrawable implements IDrawable {
 
 	@Override
 	public void draw(float partialTicks, int mouseX, int mouseY) {
+
 		float r = (float) ((color >> 16) & 0xFF) / 255;
 		float g = (float) ((color >> 8) & 0xFF) / 255;
 		float b = (float) (color & 0xFF) / 255;
@@ -105,6 +106,7 @@ public class DrawableBox extends BaseDrawable implements IDrawable {
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glEnable(GL11.GL_ALPHA_TEST);
 	}
+	
 
 	public double getAlpha() {
 		return alpha;
@@ -181,7 +183,7 @@ public class DrawableBox extends BaseDrawable implements IDrawable {
 			
 			if (ByteUtils.get(changeMask, GRADIENT_CHANGED))
 				gradient = stream.readByte();
-
+			
 		} catch (IOException e) {
 
 		}
