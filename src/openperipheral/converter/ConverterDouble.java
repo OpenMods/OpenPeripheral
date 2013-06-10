@@ -28,7 +28,7 @@ public class ConverterDouble implements ITypeConverter {
 
 	@Override
 	public Object toLua(Object o) {
-		if (o instanceof Double || o instanceof Integer) {
+		if (o instanceof Double || o instanceof Integer || o instanceof Short) {
 			return o;
 		}
 		return null;

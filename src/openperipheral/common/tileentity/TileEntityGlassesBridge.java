@@ -380,16 +380,11 @@ public class TileEntityGlassesBridge extends TileEntity implements IAttachable {
 		return str.length() * 8;
 	}
 
-	public HashMap getAllIds() {
+	public Short[] getAllIds() {
 		try {
 			lock.lock();
 			try {
-				HashMap all = new HashMap();
-				int i = 1;
-				for (Short id : drawables.keySet()) {
-					all.put(i++, id);
-				}
-				return all;
+				return drawables.keySet().toArray(new Short[drawables.size()]);
 			} finally {
 				lock.unlock();
 			}
