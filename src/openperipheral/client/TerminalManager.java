@@ -8,23 +8,27 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 
+import net.minecraft.network.INetworkManager;
+import net.minecraft.network.NetLoginHandler;
+import net.minecraft.network.packet.NetHandler;
+import net.minecraft.network.packet.Packet1Login;
 import net.minecraft.network.packet.Packet250CustomPayload;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.event.ForgeSubscribe;
-import net.minecraftforge.event.world.WorldEvent.Load;
 import openperipheral.api.IDrawable;
 import openperipheral.common.drawable.DrawableBox;
 import openperipheral.common.drawable.DrawableText;
 import openperipheral.common.util.ByteUtils;
 import openperipheral.common.util.PacketChunker;
+import cpw.mods.fml.common.network.IConnectionHandler;
+import cpw.mods.fml.common.network.Player;
 
-public class TerminalManager {
+public class TerminalManager implements IConnectionHandler {
 
 	public static final byte CLEAR_ALL_FLAG = 0;
 	public static final byte CHANGE_FLAG = 1;
-
-	private int displayList = 0;
 
 	private HashMap<Short, IDrawable> drawables = new HashMap<Short, IDrawable>();
 
@@ -127,10 +131,39 @@ public class TerminalManager {
 		}
 	}
 
-	@ForgeSubscribe
-	public void onWorldLoad(Load loadEvent) {
-		drawables.clear();
-		drawableList.clear();
+	@Override
+	public void playerLoggedIn(Player player, NetHandler netHandler, INetworkManager manager) {
+		
+	}
+
+	@Override
+	public String connectionReceived(NetLoginHandler netHandler, INetworkManager manager) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void connectionOpened(NetHandler netClientHandler, String server, int port, INetworkManager manager) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void connectionOpened(NetHandler netClientHandler, MinecraftServer server, INetworkManager manager) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void connectionClosed(INetworkManager manager) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void clientLoggedIn(NetHandler clientHandler, INetworkManager manager, Packet1Login login) {
+		this.drawables.clear();
+		this.drawableList.clear();
 	}
 
 }

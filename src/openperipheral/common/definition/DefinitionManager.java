@@ -41,7 +41,7 @@ public class DefinitionManager {
 		FileRetriever.downloadFileIfOlderThan(
 			ConfigSettings.DATA_URL,
 			ConfigSettings.CACHE_PATH,
-			ConfigSettings.CACHE_REFRESH_INTERVAL
+			ConfigSettings.FRESH_INSTALL ? 0 : ConfigSettings.CACHE_REFRESH_INTERVAL
 		);
 		
 		try {

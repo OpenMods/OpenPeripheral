@@ -29,6 +29,8 @@ public class ConfigSettings {
 	public static String LOCAL_LUA_LISTING;
 	public static String LOCAL_LUA_FOLDER;
 	
+	public static boolean FRESH_INSTALL = false;
+	
 	public static boolean analyticsEnabled = true;
 
 	public static String CACHE_FILE = "OpenPeripheral_methods.json";
@@ -42,8 +44,6 @@ public class ConfigSettings {
 	
 
 	public static void loadAndSaveConfig(File suggestedConfigFile) {
-
-		boolean doAnalytics = false;
 
 		Configuration configFile = new Configuration(suggestedConfigFile);
 
@@ -59,7 +59,7 @@ public class ConfigSettings {
 		previousVersion = prop.getString();
 
 		if (version != previousVersion) {
-			doAnalytics = true;
+			FRESH_INSTALL = true;
 		}
 
 		prop.set(version);
@@ -84,7 +84,7 @@ public class ConfigSettings {
 		prop.comment = "The id of the glasses bridge";
 		glassesBridgeId = prop.getInt();
 
-		if (doAnalytics && analyticsEnabled) {
+		if (FRESH_INSTALL && analyticsEnabled) {
 			analytics(container);
 		}
 

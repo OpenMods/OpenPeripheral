@@ -85,10 +85,12 @@ local function TweetToast(x, y)
 
             local i = 1
             local str = ''
-            local limit = 50
 
             for w in string.gmatch(text, '%S+') do
-                if #str + #w >= limit then
+                local currentWidth = glass.getStringWidth(str)
+                local wordWidth = glass.getStringWidth(w)
+
+                if currentWidth + wordWidth > 257 then
                     if self.lines[i] and settings.display then
                         self.lines[i].setText(str)
                     end
@@ -284,18 +286,18 @@ local function watchingNum(watching)
     return i
 end
 
-
+local folder = '/.twitter'
 local settingsFilename = '/.twitter/config'
 local lastIDFilename = '/.twitter/lastID'
 local watchingFilename = '/.twitter/watching'
 
-if fs.exists('/.twitter') and not fs.isDir('/.twitter') then
+if fs.exists(folder) and not fs.isDir(folder) then
     print('File with name .twitter allready exists.')
     print('Please delete this file and re run this program.')
 end
 
-if not fs.exists('/.twitter') then
-    fs.makeDir('/.twitter')
+if not fs.exists(folder) then
+    fs.makeDir(folder)
 end
 
 if fs.exists(settingsFilename) then
