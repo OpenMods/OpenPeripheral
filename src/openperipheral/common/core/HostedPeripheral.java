@@ -7,9 +7,6 @@ import java.util.Map.Entry;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.ModContainer;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -23,6 +20,8 @@ import openperipheral.common.definition.DefinitionMethod;
 import openperipheral.common.definition.DefinitionMethod.CallType;
 import openperipheral.common.postchange.PostChangeRegistry;
 import openperipheral.common.util.StringUtils;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.ModContainer;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IHostedPeripheral;
 

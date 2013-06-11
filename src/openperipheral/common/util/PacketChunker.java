@@ -5,10 +5,9 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 
-import openperipheral.common.config.ConfigSettings;
-
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet250CustomPayload;
+import openperipheral.common.config.ConfigSettings;
 
 public class PacketChunker {
 

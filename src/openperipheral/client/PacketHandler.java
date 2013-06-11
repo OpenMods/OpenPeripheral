@@ -1,8 +1,8 @@
 package openperipheral.client;
 
-import openperipheral.common.config.ConfigSettings;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
+import openperipheral.common.config.ConfigSettings;
 import cpw.mods.fml.common.network.IPacketHandler;
 import cpw.mods.fml.common.network.Player;
 

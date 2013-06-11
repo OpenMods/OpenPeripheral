@@ -10,6 +10,7 @@ end
 local args = {...}
 local side = args[1]
 
+assert(http, 'HTTP is required for this program.')
 assert(side, printUsage())
 
 local glass = assert(peripheral.wrap(side), printUsage())
@@ -284,17 +285,17 @@ local function watchingNum(watching)
 end
 
 
-local settingsFilename = '.twitter/config'
-local lastIDFilename = '.twitter/lastID'
-local watchingFilename = '.twitter/watching'
+local settingsFilename = '/.twitter/config'
+local lastIDFilename = '/.twitter/lastID'
+local watchingFilename = '/.twitter/watching'
 
-if fs.exists('.twitter') and not fs.isDir('.twitter') then
+if fs.exists('/.twitter') and not fs.isDir('/.twitter') then
     print('File with name .twitter allready exists.')
     print('Please delete this file and re run this program.')
 end
 
-if not fs.exists('.twitter') then
-    fs.makeDir('.twitter')
+if not fs.exists('/.twitter') then
+    fs.makeDir('/.twitter')
 end
 
 if fs.exists(settingsFilename) then

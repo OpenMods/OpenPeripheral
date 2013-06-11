@@ -1,6 +1,5 @@
 package openperipheral.common.config;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
