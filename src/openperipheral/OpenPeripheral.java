@@ -35,6 +35,7 @@ import openperipheral.common.restriction.RestrictionChoice;
 import openperipheral.common.restriction.RestrictionFactory;
 import openperipheral.common.restriction.RestrictionMaximum;
 import openperipheral.common.restriction.RestrictionMinimum;
+import openperipheral.common.util.MountingUtils;
 import argo.jdom.JsonNode;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Instance;
@@ -46,7 +47,7 @@ import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 import dan200.computer.api.ComputerCraftAPI;
 
-@Mod(modid = "OpenPeripheral", name = "OpenPeripheral", version = "0.1.5", dependencies = "required-after:ComputerCraft;after:mmmPowersuits;after:BuildCraft|Core;after:AppliedEnergistics;after:Forestry;after:IC2;after:ThermalExpansion;after:Thaumcraft;after:MineFactoryReloaded;after:Railcraft;after:MiscPeripherals")
+@Mod(modid = "OpenPeripheral", name = "OpenPeripheral", version = "0.1.6", dependencies = "required-after:ComputerCraft;after:mmmPowersuits;after:BuildCraft|Core;after:AppliedEnergistics;after:Forestry;after:IC2;after:ThermalExpansion;after:Thaumcraft;after:MineFactoryReloaded;after:Railcraft;after:MiscPeripherals")
 @NetworkMod(serverSideRequired = true, clientSideRequired = false, channels = { ConfigSettings.NETWORK_CHANNEL }, packetHandler = PacketHandler.class)
 public class OpenPeripheral {
 
@@ -67,13 +68,14 @@ public class OpenPeripheral {
 	}
 
 	public static class Blocks {
+		
 		public static BlockGlassesBridge glassesBridge;
 	}
 
 	@Mod.PreInit
 	public void preInit(FMLPreInitializationEvent evt) {
 		ConfigSettings.loadAndSaveConfig(evt.getSuggestedConfigurationFile());
-
+		MountingUtils.refreshLatestFiles();
 	}
 
 	@Mod.Init

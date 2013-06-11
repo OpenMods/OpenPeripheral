@@ -9,6 +9,7 @@ import openperipheral.common.integration.mps.GlassesModule;
 import openperipheral.common.item.ItemGlasses;
 import openperipheral.common.util.LanguageUtils;
 import openperipheral.common.util.RecipeUtils;
+import openperipheral.common.util.ReflectionHelper;
 
 public class CommonProxy {
 
@@ -24,8 +25,9 @@ public class CommonProxy {
 		RecipeUtils.addBookRecipe();
 
 		MinecraftForge.EVENT_BUS.register(new ChatCommandInterceptor());
+		
 		if (ModLoader.isModLoaded(Mods.MPS)) {
-			net.machinemuse.api.ModuleManager.addModule(new GlassesModule());
+			ReflectionHelper.callMethod("net.machinemuse.api.ModuleManager", null, new String[] { "addModule"} , new GlassesModule());
 		}
 	}
 

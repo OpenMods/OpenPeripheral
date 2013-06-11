@@ -1,5 +1,6 @@
 package openperipheral.common.config;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
@@ -18,18 +19,25 @@ import cpw.mods.fml.relauncher.FMLRelauncher;
 public class ConfigSettings {
 
 	public static final String NETWORK_CHANNEL = "OpenPeripheral";
+	public static int CACHE_REFRESH_INTERVAL = 7;
+	public static String RESOURCE_PATH = "/mods/openperipheral";
+	public static String LANGUAGE_PATH = String.format("%s/languages", RESOURCE_PATH);
+	
+	private static String externalBase = "https://raw.github.com/mikeemoo/OpenPeripheral/master/";
+	
+	public static String EXTERNAL_LUA_LISTING = String.format("%s%s", externalBase, "mods/openperipheral/scripts.txt");
+	public static String EXTERNAL_LUA_FOLDER = String.format("%s%s", externalBase, "mods/openperipheral/lua/");
+	public static String LOCAL_LUA_LISTING;
+	public static String LOCAL_LUA_FOLDER;
 	
 	public static boolean analyticsEnabled = true;
 
 	public static String CACHE_FILE = "OpenPeripheral_methods.json";
 	public static String CACHE_PATH = "";
-	public static String DATA_URL = "https://raw.github.com/mikeemoo/OpenPeripheral/master/methods_new.json";
+	public static String DATA_URL = String.format("%s%s", externalBase, "methods_new.json");
 	public static String previousVersion;
 
-	public static int CACHE_REFRESH_INTERVAL = 7;
-	public static String RESOURCE_PATH = "/mods/openperipheral";
-	public static String LANGUAGE_PATH = String.format("%s/languages", RESOURCE_PATH);
-
+	// blocks and items
 	public static int glassesId = 1055;
 	public static int glassesBridgeId = 580;
 	
@@ -81,14 +89,22 @@ public class ConfigSettings {
 			analytics(container);
 		}
 
-		File directory = null;
-		if (FMLRelauncher.side() == "CLIENT") {
-			directory = new File(Minecraft.getMinecraftDir(), "config/");
-		} else {
-			directory = new File(".", "config/");
-		}
-		File cacheFile = new File(directory, CACHE_FILE);
+		File baseDirectory = null;
 
+		if (FMLRelauncher.side() == "CLIENT") {
+			baseDirectory = Minecraft.getMinecraftDir();
+		} else {
+			baseDirectory = new File(".");
+		}
+		
+		File configDirectory = new File(baseDirectory, "config/");
+		File cacheFile = new File(configDirectory, CACHE_FILE);
+		File openPeripheralFolder = new File(baseDirectory, "openperipheral/");
+		File luaFolder = new File(openPeripheralFolder, "lua/");
+		
+		LOCAL_LUA_LISTING = openPeripheralFolder.getAbsolutePath() + "/scripts.txt";
+		LOCAL_LUA_FOLDER = luaFolder.getAbsolutePath();
+		
 		configFile.save();
 		CACHE_PATH = cacheFile.getAbsolutePath();
 	}

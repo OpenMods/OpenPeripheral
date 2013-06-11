@@ -17,6 +17,7 @@ import argo.jdom.JsonArrayNodeBuilder;
 import argo.jdom.JsonObjectNodeBuilder;
 import argo.jdom.JsonRootNode;
 
+import net.minecraft.block.Block;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.ServerCommandManager;
@@ -97,6 +98,7 @@ public class OpenPeripheralDocs implements ICommand {
 				Entry e = (Entry) o;
 				Class c = (Class) e.getValue();
 				if (c != null) {
+					
 					if (IPeripheral.class.isAssignableFrom(c)) {
 						continue;
 					}
@@ -104,8 +106,7 @@ public class OpenPeripheralDocs implements ICommand {
 					ArrayList<DefinitionMethod> methods = DefinitionManager.getMethodsForClass(c);
 					if (methods.size() > 0) {
 						JsonObjectNodeBuilder object = anObjectBuilder();
-
-						object.withField("tile", aStringBuilder(c.getName()));
+						object.withField("tile", aStringBuilder(c.getSimpleName()));
 						JsonArrayNodeBuilder jsonMethods = anArrayBuilder();
 						for (DefinitionMethod method : methods) {
 							JsonObjectNodeBuilder jsonMethod = anObjectBuilder();
