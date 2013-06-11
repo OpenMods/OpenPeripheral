@@ -8,8 +8,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import openperipheral.OpenPeripheral;
 import openperipheral.common.CommonProxy;
+import openperipheral.common.config.ConfigSettings;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
 public class LanguageUtils {
@@ -18,20 +18,18 @@ public class LanguageUtils {
 		ArrayList arrayList = new ArrayList();
 
 		try {
-			InputStream input = CommonProxy.class.getResourceAsStream(String
-					.format("%s/languages.txt", OpenPeripheral.LANGUAGE_PATH));
+			InputStream input = CommonProxy.class.getResourceAsStream(String.format("%s/languages.txt", ConfigSettings.LANGUAGE_PATH));
 
 			if (input == null) {
 				return;
 			}
 
-			BufferedReader var2 = new BufferedReader(new InputStreamReader(
-					input, "UTF-8"));
+			BufferedReader var2 = new BufferedReader(new InputStreamReader(input, "UTF-8"));
 
-			for (String var3 = var2.readLine(); var3 != null; var3 = var2
-					.readLine()) {
+			for (String var3 = var2.readLine(); var3 != null; var3 = var2.readLine()) {
 				arrayList.add(var3);
 			}
+
 		} catch (IOException var5) {
 			var5.printStackTrace();
 			return;
@@ -41,13 +39,11 @@ public class LanguageUtils {
 
 		while (iterator.hasNext()) {
 			String langString = (String) iterator.next();
-			URL url = CommonProxy.class.getResource(String.format("%s/%s.lang",
-					OpenPeripheral.LANGUAGE_PATH, langString));
+			URL url = CommonProxy.class.getResource(String.format("%s/%s.lang", ConfigSettings.LANGUAGE_PATH, langString));
 			if (url == null) {
 				continue;
 			}
-			LanguageRegistry.instance()
-					.loadLocalization(url, langString, false);
+			LanguageRegistry.instance().loadLocalization(url, langString, false);
 		}
 	}
 }

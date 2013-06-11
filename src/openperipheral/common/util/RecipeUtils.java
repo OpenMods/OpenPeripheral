@@ -14,38 +14,24 @@ import openperipheral.OpenPeripheral;
 
 public class RecipeUtils {
 
-	public static String page1 = new StringBuilder()
-    .append("Thank you for choosing OpenPeripheral.\n\n")
-    .append("OpenPeripheral turns the majority of blocks, from a variety of mods, into ComputerCraft peripherals.\n\n")
-    .toString();
-	public static String page2 = new StringBuilder()
-    .append("To get started, try placing a computer to the right to a noteblock.\n\n")
-    .append("Next, in the computer enter \"lua\" to access the lua console.\n\n")
-    .append("The lua console allows you to type code that will be instantly executed.\n\n")
-    .toString();
-    public static String page3 = new StringBuilder()
-   .append("Now that you're inside Lua, type:\n\n")
-   .append("nb = peripheral.wrap(\"left\")\n\n")
-   .append("This will allow you to call functions on the noteblock.\n\n")
-   .toString();
-    public static String page4 = new StringBuilder()
-   .append("To see what functions are available, type:\n\n")
-   .append("nb.listMethods()\n\n")
-   .append("As you can see, there's the method you just called, but also 'changePitch' and 'triggerNote'.\n\n")
-    .toString();
-    public static String page5 = new StringBuilder()
-   .append("Try calling:\n\n")
-   .append("nb.triggerNote()\n\n")
-   .append("Did you hear it play a note? Cool huh?\n\n")
-    .toString();
-    public static String page6 = new StringBuilder()
-   .append("Now try some other blocks. It's not just vanilla blocks that work, a whole range of blocks from a wide variety of mods are supported!")
-    .toString();
-    public static String page7 = new StringBuilder()
-   .append("Peripheral Glasses\n")
-   .append("-----------------\n\n")
-   .append("Peripheral Glasses are a powerful new feature that let you publish information to the players HUD, and send commands via chat back to your computer. See the ComputerCraft forums for more information.")
-    .toString();
+	public static String page1 = new StringBuilder().append("Thank you for choosing OpenPeripheral.\n\n")
+			.append("OpenPeripheral turns the majority of blocks, from a variety of mods, into ComputerCraft peripherals.\n\n").toString();
+	public static String page2 = new StringBuilder().append("To get started, try placing a computer to the right to a noteblock.\n\n")
+			.append("Next, in the computer enter \"lua\" to access the lua console.\n\n")
+			.append("The lua console allows you to type code that will be instantly executed.\n\n").toString();
+	public static String page3 = new StringBuilder().append("Now that you're inside Lua, type:\n\n").append("nb = peripheral.wrap(\"left\")\n\n")
+			.append("This will allow you to call functions on the noteblock.\n\n").toString();
+	public static String page4 = new StringBuilder().append("To see what functions are available, type:\n\n").append("nb.listMethods()\n\n")
+			.append("As you can see, there's the method you just called, but also 'changePitch' and 'triggerNote'.\n\n").toString();
+	public static String page5 = new StringBuilder().append("Try calling:\n\n").append("nb.triggerNote()\n\n").append("Did you hear it play a note? Cool huh?\n\n")
+			.toString();
+	public static String page6 = new StringBuilder().append(
+			"Now try some other blocks. It's not just vanilla blocks that work, a whole range of blocks from a wide variety of mods are supported!").toString();
+	public static String page7 = new StringBuilder()
+			.append("Peripheral Glasses\n")
+			.append("-----------------\n\n")
+			.append("Peripheral Glasses are a powerful new feature that let you publish information to the players HUD, and send commands via chat back to your computer. See the ComputerCraft forums for more information.")
+			.toString();
 
 	public static void addGlassesRecipe() {
 		Block peripheral = getCCBlock("peripheral");
@@ -53,10 +39,7 @@ public class RecipeUtils {
 		CraftingManager
 				.getInstance()
 				.getRecipeList()
-				.add(new ShapedOreRecipe(new ItemStack(
-						OpenPeripheral.Items.glasses), new Object[] { "mcm",
-						Character.valueOf('m'),
-						new ItemStack(peripheral, 1, 4),
+				.add(new ShapedOreRecipe(new ItemStack(OpenPeripheral.Items.glasses), new Object[] { "mcm", Character.valueOf('m'), new ItemStack(peripheral, 1, 4),
 						Character.valueOf('c'), new ItemStack(cable), }));
 	}
 
@@ -66,13 +49,9 @@ public class RecipeUtils {
 		CraftingManager
 				.getInstance()
 				.getRecipeList()
-				.add(new ShapedOreRecipe(new ItemStack(
-						OpenPeripheral.Blocks.glassesBridge), new Object[] {
-						"lwl", "wrw", "lwl", Character.valueOf('w'),
-						new ItemStack(cable, 1, 1), Character.valueOf('r'),
-						new ItemStack(Block.blockRedstone),
-						Character.valueOf('l'),
-						new ItemStack(peripheral, 1, 1), }));
+				.add(new ShapedOreRecipe(new ItemStack(OpenPeripheral.Blocks.glassesBridge),
+						new Object[] { "lwl", "wrw", "lwl", Character.valueOf('w'), new ItemStack(cable, 1, 1), Character.valueOf('r'),
+								new ItemStack(Block.blockRedstone), Character.valueOf('l'), new ItemStack(peripheral, 1, 1), }));
 	}
 
 	private static Block getCCBlock(String fieldName) {
@@ -90,7 +69,7 @@ public class RecipeUtils {
 		}
 		return block;
 	}
-	
+
 	public static ItemStack getGuideItemStack() {
 		ItemStack book = new ItemStack(Item.writtenBook);
 		NBTTagCompound bookTag = new NBTTagCompound();
@@ -114,13 +93,7 @@ public class RecipeUtils {
 		CraftingManager
 				.getInstance()
 				.getRecipeList()
-				.add(new ShapedOreRecipe(getGuideItemStack(), new Object[] {
-						"r",
-						"c",
-						"b",
-						Character.valueOf('r'), new ItemStack(Item.redstone),
-						Character.valueOf('c'), new ItemStack(cable),
-						Character.valueOf('b'), new ItemStack(Item.book)
-				}));
+				.add(new ShapedOreRecipe(getGuideItemStack(), new Object[] { "r", "c", "b", Character.valueOf('r'), new ItemStack(Item.redstone), Character.valueOf('c'),
+						new ItemStack(cable), Character.valueOf('b'), new ItemStack(Item.book) }));
 	}
 }
