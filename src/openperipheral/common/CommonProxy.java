@@ -1,15 +1,14 @@
 package openperipheral.common;
 
-import net.minecraft.src.ModLoader;
 import net.minecraftforge.common.MinecraftForge;
 import openperipheral.OpenPeripheral;
 import openperipheral.common.block.BlockGlassesBridge;
 import openperipheral.common.core.Mods;
-import openperipheral.common.integration.mps.GlassesModule;
 import openperipheral.common.item.ItemGlasses;
 import openperipheral.common.util.LanguageUtils;
+import openperipheral.common.util.MPSUtils;
 import openperipheral.common.util.RecipeUtils;
-import openperipheral.common.util.ReflectionHelper;
+import cpw.mods.fml.common.Loader;
 
 public class CommonProxy {
 
@@ -26,8 +25,8 @@ public class CommonProxy {
 
 		MinecraftForge.EVENT_BUS.register(new ChatCommandInterceptor());
 		
-		if (ModLoader.isModLoaded(Mods.MPS)) {
-			ReflectionHelper.callMethod("net.machinemuse.api.ModuleManager", null, new String[] { "addModule"} , new GlassesModule());
+		if (Loader.isModLoaded(Mods.MPS)) {
+			MPSUtils.initModule();
 		}
 	}
 

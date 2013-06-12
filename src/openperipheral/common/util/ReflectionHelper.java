@@ -41,11 +41,15 @@ public class ReflectionHelper {
 		return getProperty(getClass(className), instance, fields);
 	}
 
+	public static Object callMethod(boolean replace, String className, Object instance, String[] methodNames, Object... args) {
+		return callMethod(replace, getClass(className), instance, methodNames, args);
+	}
+	
 	public static Object callMethod(String className, Object instance, String[] methodNames, Object... args) {
 		return callMethod(getClass(className), instance, methodNames, args);
 	}
-
-	public static Object callMethod(Class klazz, Object instance, String[] methodNames, Object... args) {
+	
+	public static Object callMethod(boolean replace, Class klazz, Object instance, String[] methodNames, Object... args) {
 		if (instance == null) {
 			return null;
 		}
@@ -54,16 +58,23 @@ public class ReflectionHelper {
 			try {
 				Class[] types = m.getParameterTypes();
 				List<Object> argumentList = Arrays.asList(args);
-				for (int i = 0; i < argumentList.size(); i++) {
-					Object newType = TypeConversionRegistry.fromLua(argumentList.get(i), types[i]);
-					argumentList.set(i, newType);
+				if (replace) {
+					for (int i = 0; i < argumentList.size(); i++) {
+						Object newType = TypeConversionRegistry.fromLua(argumentList.get(i), types[i]);
+						argumentList.set(i, newType);
+					}
 				}
-				return m.invoke(instance, argumentList.toArray(new Object[args.length]));
+				Object response = m.invoke(instance, argumentList.toArray(new Object[args.length]));
+				return response;
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 		return null;
+	}
+	
+	public static Object callMethod(Class klazz, Object instance, String[] methodNames, Object... args) {
+		return callMethod(true, klazz, instance, methodNames, args);
 	}
 
 	public static Method getMethod(Class klazz, String[] methodNames, int argCount) {

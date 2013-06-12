@@ -412,6 +412,14 @@ public class TileEntityGlassesBridge extends TileEntity implements IAttachable {
 	public String getGuid() {
 		return guid;
 	}
+	
+	public void resetGuid() {
+		guid = StringUtils.randomString(8);
+	}
+
+	public String[] getUsers() {
+		return players.toArray(new String[players.size()]);
+	}
 
 	@Override
 	public void writeToNBT(NBTTagCompound tag) {

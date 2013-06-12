@@ -1002,6 +1002,30 @@
       ]
    },
    {
+      "modId":"SGCraft",
+      "classes":[
+         {
+            "className":"gcewing.sg.SGBaseTE",
+            "methods":[
+               {
+                  "name":"getHomeAddress",
+                  "obfuscated":"findHomeAddress"
+               },
+               {
+                  "name":"connect",
+                  "callType":"script",
+                  "script": "aW1wb3J0UGFja2FnZShQYWNrYWdlcy5vcGVucGVyaXBoZXJhbC5jb21tb24udXRpbCk7DQppbXBvcnRQYWNrYWdlKFBhY2thZ2VzLmdjZXdpbmcuc2cpOw0KaWYgKHZhbHVlcy5sZW5ndGggIT0gMSkgew0KICB0aHJvdyAiRXhwZWN0aW5nIDEgcGFyYW1ldGVyIjsNCn1lbHNlIGlmICh2YWx1ZXNbMF0gPT0gbnVsbCkgew0KICB0aHJvdyAiRXhwZWN0aW5nIDEgcGFyYW1ldGVyIjsNCn1lbHNlIGlmICghKHZhbHVlc1swXSBpbnN0YW5jZW9mIGphdmEubGFuZy5TdHJpbmcpKSB7DQogIHRocm93ICJQYXJhbWV0ZXIgMSBzaG91bGQgYmUgYSBzdHJpbmciOw0KfWVsc2UgaWYgKHZhbHVlc1swXS5sZW5ndGgoKSAhPSA3KSB7DQogIHRocm93ICJBZGRyZXNzIHNob3VsZCBiZSA3IGNoYXJhY3RlcnMgbG9uZyI7DQp9ZWxzZSB7DQp2YXIgdGlsZVdyYXBwZWQgPSBuZXcgUmVmbGVjdGlvbldyYXBwZXIodGlsZSk7DQp2YXIgaG9tZUFkZHJlc3MgPSB0aWxlV3JhcHBlZC5jYWxsKGZhbHNlLCAiZmluZEhvbWVBZGRyZXNzIik7DQp2YXIgbG9jYWxTR0Jhc2VURSA9IFNHQWRkcmVzc2luZy5maW5kQWRkcmVzc2VkU3RhcmdhdGUodmFsdWVzWzBdKTsNCnZhciBsb2NhbFNHQmFzZVRFVyA9IG5ldyBSZWZsZWN0aW9uV3JhcHBlcihsb2NhbFNHQmFzZVRFKTsNCmlmIChsb2NhbFNHQmFzZVRFID09IG51bGwpIHsNCiAgdGhyb3cgIlVuYWJsZSB0byBmaW5kIHRhcmdldCBhZGRyZXNzIjsNCn1lbHNlIGlmIChsb2NhbFNHQmFzZVRFID09IHRpbGUpIHsNCiAgdGhyb3cgIllvdSBjYW4gbm90IGNvbm5lY3QgdG8geW91cnNlbGYiOw0KfWVsc2UgaWYgKGxvY2FsU0dCYXNlVEVXLmdldCgnc3RhdGUnKS5nZXRSYXcoKSAhPSBTR1N0YXRlLklkbGUpIHsNCiAgdGhyb3cgIkludmFsaWQgc3RhdGUgIisgbG9jYWxTR0Jhc2VURVcuZ2V0KCdzdGF0ZScpLmdldFJhdygpOw0KfWVsc2UgaWYgKCF0aWxlV3JhcHBlZC5jYWxsKGZhbHNlLCdyZWxvYWRGdWVsJywgdGlsZVdyYXBwZWQuZ2V0KCdmdWVsVG9PcGVuJykuZ2V0UmF3KCkpKSB7DQogdGhyb3cgIk5vdCBlbm91Z2ggZnVlbCI7DQp9ZWxzZSB7DQp2YXIgeCA9IHRpbGVXcmFwcGVkLmNhbGwoZmFsc2UsICJzdGFydERpYWxsaW5nU3RhcmdhdGUiLCB2YWx1ZXNbMF0sIGxvY2FsU0dCYXNlVEUsIHRydWUpOw0KdmFyIHAgPSBuZXcgUmVmbGVjdGlvbldyYXBwZXIobG9jYWxTR0Jhc2VURSk7DQp2YXIgciA9IHAuY2FsbChmYWxzZSwgInN0YXJ0RGlhbGxpbmdTdGFyZ2F0ZSIsIGhvbWVBZGRyZXNzLmdldFJhdygpLCB0aWxlLCBmYWxzZSk7DQp0cnVlOw0KfQ0KfQ=="
+               },
+               {
+                  "name": "disconnect",
+                  "callType": "script",
+                  "script":"aW1wb3J0UGFja2FnZShQYWNrYWdlcy5vcGVucGVyaXBoZXJhbC5jb21tb24udXRpbCk7DQppbXBvcnRQYWNrYWdlKFBhY2thZ2VzLmdjZXdpbmcuc2cpOw0KdmFyIHRpbGVXcmFwcGVkID0gbmV3IFJlZmxlY3Rpb25XcmFwcGVyKHRpbGUpOw0KdmFyIGxvY2FsU0dCYXNlVEUgPSBTR0Jhc2VURS5hdCh0aWxlV3JhcHBlZC5nZXQoJ2Nvbm5lY3RlZExvY2F0aW9uJykuZ2V0UmF3KCkpOw0KaWYgKGxvY2FsU0dCYXNlVEUgIT0gbnVsbCkgew0KICAgbG9jYWxTR0Jhc2VURS5jbGVhckNvbm5lY3Rpb24oKTsNCn0NCnRpbGUuY2xlYXJDb25uZWN0aW9uKCk7"
+               }
+            ]
+         }
+      ]
+   },
+   {
       "modId":"OpenPeripheral",
       "classes":[
          {
