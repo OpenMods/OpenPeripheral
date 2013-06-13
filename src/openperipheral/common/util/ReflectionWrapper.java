@@ -11,8 +11,8 @@ public class ReflectionWrapper {
 		return target;
 	}
 	
-	public ReflectionWrapper call(String methodName, Object ... args) {
-		return new ReflectionWrapper(ReflectionHelper.callMethod("", target, new String[] { methodName }, args));
+	public ReflectionWrapper call(boolean replace, String methodName, Object ... args) {
+		return new ReflectionWrapper(ReflectionHelper.callMethod(replace, "", target, new String[] { methodName }, args));
 	}
 	
 	public ReflectionWrapper call(String[] methodNames, Object ... args) {

@@ -213,7 +213,7 @@ public class DefinitionMethod {
 		return method;
 	}
 
-	public Object execute(TileEntity tile, Object[] args) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public Object execute(TileEntity tile, Object[] args) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, ScriptException {
 		if (callType == CallType.SCRIPT) {
 			return executeScript(tile, args);
 		} else if (callType == CallType.METHOD) {
@@ -227,24 +227,19 @@ public class DefinitionMethod {
 		return null;
 	}
 
-	private Object executeScript(TileEntity tile, Object[] args) {
+	private Object executeScript(TileEntity tile, Object[] args) throws ScriptException {
 
 		String script = this.getScript();
 		if (script != null) {
 			script = new String(Base64.decode(script));
-			try {
-				this.engine.put("tile", tile);
-				this.engine.put("xCoord", tile.xCoord);
-				this.engine.put("yCoord", tile.yCoord);
-				this.engine.put("zCoord", tile.zCoord);
-				this.engine.put("values", args);
-				this.engine.put("worldObj", tile.worldObj);
-				this.engine.put("env", this);
-				return this.engine.eval(script);
-			} catch (ScriptException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			this.engine.put("tile", tile);
+			this.engine.put("xCoord", tile.xCoord);
+			this.engine.put("yCoord", tile.yCoord);
+			this.engine.put("zCoord", tile.zCoord);
+			this.engine.put("values", args);
+			this.engine.put("worldObj", tile.worldObj);
+			this.engine.put("env", this);
+			return this.engine.eval(script);
 		}
 		return null;
 	}

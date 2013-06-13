@@ -3,13 +3,13 @@ package openperipheral.common.util;
 import java.util.Calendar;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.src.ModLoader;
 import openperipheral.OpenPeripheral;
 import openperipheral.common.core.Mods;
+import cpw.mods.fml.common.Loader;
 
 public class MiscUtils {
 	public static boolean canBeGlasses(ItemStack stack) {
-		return stack != null && (stack.getItem() == OpenPeripheral.Items.glasses || (ModLoader.isModLoaded(Mods.MPS) && MPSUtils.isValidHelmet(stack)));
+		return stack != null && (stack.getItem() == OpenPeripheral.Items.glasses || (Loader.isModLoaded(Mods.MPS) && MPSUtils.isValidHelmet(stack)));
 	}
 
 	public static int getHoliday() {

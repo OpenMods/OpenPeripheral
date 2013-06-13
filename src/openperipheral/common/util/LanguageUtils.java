@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Iterator;
 
 import openperipheral.common.CommonProxy;
 import openperipheral.common.config.ConfigSettings;
@@ -15,7 +13,6 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 public class LanguageUtils {
 	public static void setupLanguages() {
 
-		ArrayList arrayList = new ArrayList();
 
 		try {
 			InputStream input = CommonProxy.class.getResourceAsStream(String.format("%s/languages.txt", ConfigSettings.LANGUAGE_PATH));
@@ -24,26 +21,23 @@ public class LanguageUtils {
 				return;
 			}
 
-			BufferedReader var2 = new BufferedReader(new InputStreamReader(input, "UTF-8"));
+			BufferedReader reader = new BufferedReader(new InputStreamReader(input, "UTF-8"));
+			
+			FileLineReader.readLineByLine(reader, new ILineReadMethod() {
+				@Override
+				public void Read(String line) {
+					URL url = CommonProxy.class.getResource(String.format("%s/%s.lang", ConfigSettings.LANGUAGE_PATH, line));
+					if (url == null) {
+						return;
+					}
+					LanguageRegistry.instance().loadLocalization(url, line, false);
+				}
+			});
 
-			for (String var3 = var2.readLine(); var3 != null; var3 = var2.readLine()) {
-				arrayList.add(var3);
-			}
-
-		} catch (IOException var5) {
-			var5.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 			return;
 		}
 
-		Iterator iterator = arrayList.iterator();
-
-		while (iterator.hasNext()) {
-			String langString = (String) iterator.next();
-			URL url = CommonProxy.class.getResource(String.format("%s/%s.lang", ConfigSettings.LANGUAGE_PATH, langString));
-			if (url == null) {
-				continue;
-			}
-			LanguageRegistry.instance().loadLocalization(url, langString, false);
-		}
 	}
 }

@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import openperipheral.OpenPeripheral;
 import openperipheral.api.IAttachable;
 import openperipheral.api.IRestriction;
 import openperipheral.common.converter.TypeConversionRegistry;
@@ -19,6 +20,8 @@ import openperipheral.common.definition.DefinitionMethod;
 import openperipheral.common.definition.DefinitionMethod.CallType;
 import openperipheral.common.postchange.PostChangeRegistry;
 import openperipheral.common.util.StringUtils;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.ModContainer;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IHostedPeripheral;
 
@@ -184,7 +187,8 @@ public class HostedPeripheral implements IHostedPeripheral {
 
 	@Override
 	public void attach(final IComputerAccess computer) {
-
+		ModContainer container = FMLCommonHandler.instance().findContainerFor(OpenPeripheral.instance);
+		computer.mountFixedDir("openp", String.format("openperipheral/lua", container.getVersion()), true, 0);
 		try {
 			TickHandler.addTickCallback(worldObj, new Callable() {
 				@Override

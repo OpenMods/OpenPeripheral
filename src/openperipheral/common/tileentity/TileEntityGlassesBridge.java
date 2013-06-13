@@ -14,8 +14,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.packet.Packet;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldProvider;
 import openperipheral.api.IAttachable;
 import openperipheral.api.IDrawable;
 import openperipheral.client.TerminalManager;
@@ -126,7 +128,8 @@ public class TileEntityGlassesBridge extends TileEntity implements IAttachable {
 						Packet[] fullPackets = createFullPackets();
 						for (Packet packet : fullPackets) {
 							for (String playerName : newPlayers) {
-								EntityPlayer player = worldObj.getPlayerEntityByName(playerName);
+								EntityPlayer player = MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(playerName);
+								//EntityPlayer player = worldObj.getPlayerEntityByName(playerName);
 								if (player != null) {
 									((EntityPlayerMP) player).playerNetServerHandler.sendPacketToPlayer(packet);
 								}
@@ -141,7 +144,7 @@ public class TileEntityGlassesBridge extends TileEntity implements IAttachable {
 						Iterator<String> iter = players.iterator();
 						while (iter.hasNext()) {
 							String playerName = iter.next();
-							EntityPlayer player = worldObj.getPlayerEntityByName(playerName);
+							EntityPlayer player = MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(playerName);
 							if (player == null || !isPlayerValid(player)) {
 								iter.remove();
 								if (player != null) {
@@ -352,11 +355,12 @@ public class TileEntityGlassesBridge extends TileEntity implements IAttachable {
 		try {
 			lock.lock();
 			try {
-				return (ILuaObject) drawables.get(id);
+				return (ILuaObject) drawables.get((short)id);
 			} finally {
 				lock.unlock();
 			}
 		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
 		return null;
 	}
@@ -408,6 +412,14 @@ public class TileEntityGlassesBridge extends TileEntity implements IAttachable {
 	public String getGuid() {
 		return guid;
 	}
+	
+	public void resetGuid() {
+		guid = StringUtils.randomString(8);
+	}
+
+	public String[] getUsers() {
+		return players.toArray(new String[players.size()]);
+	}
 
 	@Override
 	public void writeToNBT(NBTTagCompound tag) {
@@ -449,7 +461,13 @@ public class TileEntityGlassesBridge extends TileEntity implements IAttachable {
 				int y = openPTag.getInteger("y");
 				int z = openPTag.getInteger("z");
 				int d = openPTag.getInteger("d");
-				if (d == worldObj.provider.dimensionId) {
+				
+				if (worldObj == null) {
+					WorldProvider provider = WorldProvider.getProviderForDimension(d);
+					worldObj = provider.worldObj;
+				}
+				
+				if (worldObj != null && d == worldObj.provider.dimensionId) {
 					if (worldObj.blockExists(x, y, z)) {
 						TileEntity tile = worldObj.getBlockTileEntity(x, y, z);
 						if (tile instanceof TileEntityGlassesBridge) {
