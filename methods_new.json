@@ -1052,6 +1052,14 @@
                   "instant":"true"
                },
                {
+               	  "name":"getUsers",
+               	  "instant": "true"
+               },
+               {
+                  "name":"resetGuid",
+                  "instant":"true"
+               },
+               {
                   "name":"getStringWidth",
                   "instant":"true"
                }
