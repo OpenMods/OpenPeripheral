@@ -2,7 +2,6 @@ package openperipheral;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
-import net.minecraft.src.ModLoader;
 import net.minecraft.tileentity.TileEntity;
 import openperipheral.api.IRestriction;
 import openperipheral.api.IRestrictionHandler;
@@ -35,7 +34,9 @@ import openperipheral.common.restriction.RestrictionChoice;
 import openperipheral.common.restriction.RestrictionFactory;
 import openperipheral.common.restriction.RestrictionMaximum;
 import openperipheral.common.restriction.RestrictionMinimum;
+import openperipheral.common.util.MountingUtils;
 import argo.jdom.JsonNode;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.SidedProxy;
@@ -73,6 +74,7 @@ public class OpenPeripheral {
 	@Mod.PreInit
 	public void preInit(FMLPreInitializationEvent evt) {
 		ConfigSettings.loadAndSaveConfig(evt.getSuggestedConfigurationFile());
+		MountingUtils.refreshLatestFiles();
 
 	}
 
@@ -112,21 +114,21 @@ public class OpenPeripheral {
 		TypeConversionRegistry.registryTypeConverter(new ConverterILiquidTank());
 		TypeConversionRegistry.registryTypeConverter(new ConverterForgeDirection());
 
-		if (ModLoader.isModLoaded(Mods.APPLIED_ENERGISTICS)) {
+		if (Loader.isModLoaded(Mods.APPLIED_ENERGISTICS)) {
 			TypeConversionRegistry.registryTypeConverter(new ConverterIMEInventory());
 		}
 
-		if (ModLoader.isModLoaded(Mods.FORESTRY)) {
+		if (Loader.isModLoaded(Mods.FORESTRY)) {
 			TypeConversionRegistry.registryTypeConverter(new ConverterEnumHumidity());
 			TypeConversionRegistry.registryTypeConverter(new ConverterEnumTemperature());
 			TypeConversionRegistry.registryTypeConverter(new ConverterFruitFamily());
 		}
 
-		if (ModLoader.isModLoaded(Mods.BUILDCRAFT)) {
+		if (Loader.isModLoaded(Mods.BUILDCRAFT)) {
 			TypeConversionRegistry.registryTypeConverter(new ConverterPowerProvider());
 		}
 
-		if (ModLoader.isModLoaded(Mods.THAUMCRAFT)) {
+		if (Loader.isModLoaded(Mods.THAUMCRAFT)) {
 			TypeConversionRegistry.registryTypeConverter(new ConverterObjectTags());
 			TypeConversionRegistry.registryTypeConverter(new ConverterEnumTag());
 		}
