@@ -18,7 +18,7 @@
 
 	<property name="mc.version"          value="1.5.2"/>
 	<property name="forge.version"       value="7.8.0.712"/>
-	<property name="mod.version"         value="0.1.6"/>
+	<property name="mod.version"         value="0.1.7"/>
 	<property name="mod.name"	     value="OpenPeripheral"/>
 	
 	<property name="forge.name"          value="minecraftforge-src-${mc.version}-${forge.version}.zip"/>
@@ -119,6 +119,9 @@
 		<!-- Copy resources -->
 		<copy todir="${classes.dir}">
 			<fileset dir="." includes="mcmod.info" />
+			<filterset>
+				<filter token="VERSION" value="${mod.version}"/>
+			</filterset>
 		</copy>
 
 		<!-- Reset src dir to post-forge-install state -->
@@ -137,7 +140,7 @@
 
 	<!-- Default target to run -->
 	<target name="main" depends="package">
-		<copy todir="../instances/1.5.2_rand/minecraft/mods">
+		<copy todir="bin">
 			<fileset dir="${jar.dir}"/>
 		</copy>
 	</target>

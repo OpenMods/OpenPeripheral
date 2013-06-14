@@ -47,7 +47,7 @@ import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 import dan200.computer.api.ComputerCraftAPI;
 
-@Mod(modid = "OpenPeripheral", name = "OpenPeripheral", version = "0.1.6", dependencies = "required-after:ComputerCraft;after:mmmPowersuits;after:BuildCraft|Core;after:AppliedEnergistics;after:Forestry;after:IC2;after:ThermalExpansion;after:Thaumcraft;after:MineFactoryReloaded;after:Railcraft;after:MiscPeripherals")
+@Mod(modid = "OpenPeripheral", name = "OpenPeripheral", version = "@VERSION@", dependencies = "required-after:ComputerCraft;after:mmmPowersuits;after:BuildCraft|Core;after:AppliedEnergistics;after:Forestry;after:IC2;after:ThermalExpansion;after:Thaumcraft;after:MineFactoryReloaded;after:Railcraft;after:MiscPeripherals")
 @NetworkMod(serverSideRequired = true, clientSideRequired = false, channels = { ConfigSettings.NETWORK_CHANNEL }, packetHandler = PacketHandler.class)
 public class OpenPeripheral {
 
@@ -68,7 +68,6 @@ public class OpenPeripheral {
 	}
 
 	public static class Blocks {
-		
 		public static BlockGlassesBridge glassesBridge;
 	}
 
@@ -76,6 +75,7 @@ public class OpenPeripheral {
 	public void preInit(FMLPreInitializationEvent evt) {
 		ConfigSettings.loadAndSaveConfig(evt.getSuggestedConfigurationFile());
 		MountingUtils.refreshLatestFiles();
+
 	}
 
 	@Mod.Init
