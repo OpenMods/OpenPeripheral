@@ -5,6 +5,7 @@ import java.util.Map;
 
 import net.minecraft.item.ItemStack;
 import openperipheral.api.ITypeConverter;
+import openperipheral.common.util.InventoryUtils;
 
 public class ConverterItemStack implements ITypeConverter {
 
@@ -35,6 +36,8 @@ public class ConverterItemStack implements ITypeConverter {
 			ItemStack s = (ItemStack) o;
 			HashMap ret = new HashMap();
 			ret.put("id", s.itemID);
+			ret.put("Name", InventoryUtils.getNameForItemStack(s));
+			ret.put("RawName", InventoryUtils.getRawNameForStack(s));
 			ret.put("qty", s.stackSize);
 			ret.put("dmg", s.getItemDamage());
 			return ret;
