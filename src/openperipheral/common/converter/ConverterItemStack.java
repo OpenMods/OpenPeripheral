@@ -36,8 +36,8 @@ public class ConverterItemStack implements ITypeConverter {
 			ItemStack s = (ItemStack) o;
 			HashMap ret = new HashMap();
 			ret.put("id", s.itemID);
-			ret.put("Name", InventoryUtils.getNameForItemStack(s));
-			ret.put("RawName", InventoryUtils.getRawNameForStack(s));
+			ret.put("name", InventoryUtils.getNameForItemStack(s));
+			ret.put("rawName", InventoryUtils.getRawNameForStack(s));
 			ret.put("qty", s.stackSize);
 			ret.put("dmg", s.getItemDamage());
 			return ret;

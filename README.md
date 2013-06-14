@@ -12,7 +12,7 @@ Compiling
 
 You will need Apache Ant and Git.
 
-Run: git clone git://github.com/mikeemoo/OpenPeriphal; && cd OpenPeripheral
+Run: git clone git://github.com/mikeemoo/OpenPeripheral; && cd OpenPeripheral
 
 It should download the repository and cd into the repository.
 
@@ -25,4 +25,4 @@ It will start decompiling Minecraft and then after a few minutes there should be
 License
 =======
 
-OpenPeripheral is distrubuted under the terms of the MIT License, which can be found under the name LICENSE in your distribution.
+OpenPeripheral is distributed under the terms of the MIT License, which can be found under the name LICENSE in your distribution.
