@@ -435,7 +435,7 @@ public class TileEntityGlassesBridge extends TileEntity implements IAttachable {
 
 	public void onChatCommand(String command, String username) {
 		for (IComputerAccess computer : computers) {
-			computer.queueEvent("chat_command", new Object[] { command, username, getGuid() });
+			computer.queueEvent("chat_command", new Object[] { command, username, getGuid(), computer.getAttachmentName() });
 		}
 	}
 

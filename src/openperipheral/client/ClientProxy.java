@@ -1,7 +1,11 @@
 package openperipheral.client;
 
 import net.minecraftforge.common.MinecraftForge;
+import openperipheral.OpenPeripheral;
 import openperipheral.common.CommonProxy;
+import openperipheral.common.tileentity.TileEntityProxy;
+import cpw.mods.fml.client.registry.ClientRegistry;
+import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.network.NetworkRegistry;
 
 public class ClientProxy extends CommonProxy {
@@ -10,7 +14,15 @@ public class ClientProxy extends CommonProxy {
 
 	@Override
 	public void registerRenderInformation() {
+		OpenPeripheral.renderId = RenderingRegistry.getNextAvailableRenderId();
 		MinecraftForge.EVENT_BUS.register(terminalManager);
 		NetworkRegistry.instance().registerConnectionHandler(terminalManager);
+		/*
+		RenderingRegistry.registerBlockHandler(new BlockRenderingHandler());
+		ClientRegistry.bindTileEntitySpecialRenderer(
+				TileEntityProxy.class,
+				new TileEntityProxyRenderer()
+		);
+		*/
 	}
 }

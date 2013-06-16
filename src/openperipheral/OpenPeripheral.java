@@ -8,6 +8,7 @@ import openperipheral.api.IRestrictionHandler;
 import openperipheral.client.PacketHandler;
 import openperipheral.common.CommonProxy;
 import openperipheral.common.block.BlockGlassesBridge;
+import openperipheral.common.block.BlockProxy;
 import openperipheral.common.config.ConfigSettings;
 import openperipheral.common.converter.ConverterArray;
 import openperipheral.common.converter.ConverterDouble;
@@ -69,7 +70,12 @@ public class OpenPeripheral {
 
 	public static class Blocks {
 		public static BlockGlassesBridge glassesBridge;
+		public static BlockProxy proxy;
 	}
+	
+	public static int renderId;
+	
+	public static PeripheralHandler peripheralHandler = new PeripheralHandler();
 
 	@Mod.PreInit
 	public void preInit(FMLPreInitializationEvent evt) {
@@ -136,7 +142,7 @@ public class OpenPeripheral {
 		DefinitionManager.load();
 
 		TickRegistry.registerTickHandler(new TickHandler(), Side.SERVER);
-		ComputerCraftAPI.registerExternalPeripheral(TileEntity.class, new PeripheralHandler());
+		ComputerCraftAPI.registerExternalPeripheral(TileEntity.class, peripheralHandler);
 
 	}
 

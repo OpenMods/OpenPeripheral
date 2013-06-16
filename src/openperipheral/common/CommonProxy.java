@@ -3,6 +3,7 @@ package openperipheral.common;
 import net.minecraftforge.common.MinecraftForge;
 import openperipheral.OpenPeripheral;
 import openperipheral.common.block.BlockGlassesBridge;
+import openperipheral.common.block.BlockProxy;
 import openperipheral.common.core.Mods;
 import openperipheral.common.item.ItemGlasses;
 import openperipheral.common.util.LanguageUtils;
@@ -16,6 +17,7 @@ public class CommonProxy {
 
 		OpenPeripheral.Items.glasses = new ItemGlasses();
 		OpenPeripheral.Blocks.glassesBridge = new BlockGlassesBridge();
+		OpenPeripheral.Blocks.proxy = new BlockProxy();
 
 		setupLanguages();
 

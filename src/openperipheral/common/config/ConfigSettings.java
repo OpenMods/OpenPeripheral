@@ -41,6 +41,7 @@ public class ConfigSettings {
 	// blocks and items
 	public static int glassesId = 1055;
 	public static int glassesBridgeId = 580;
+	public static int proxyBlockId = 581;
 	
 
 	public static void loadAndSaveConfig(File suggestedConfigFile) {
@@ -112,8 +113,12 @@ public class ConfigSettings {
 		String charset = "UTF-8";
 		String url;
 		try {
-			url = String.format("http://www.openccsensors.info/op_analytics?version=%s&side=%s&forge=%s", URLEncoder.encode(container.getVersion(), charset),
-					URLEncoder.encode(FMLRelauncher.side(), charset), URLEncoder.encode(ForgeVersion.getVersion(), charset));
+			url = String.format(
+				"http://www.openccsensors.info/op_analytics?version=%s&side=%s&forge=%s",
+				URLEncoder.encode(container.getVersion(), charset),
+				URLEncoder.encode(FMLRelauncher.side(), charset),
+				URLEncoder.encode(ForgeVersion.getVersion(), charset)
+			);
 			URLConnection connection = new URL(url).openConnection();
 			connection.setConnectTimeout(4000);
 			connection.setRequestProperty("Accept-Charset", charset);

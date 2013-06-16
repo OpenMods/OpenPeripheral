@@ -17,6 +17,7 @@ public class PeripheralHandler implements IPeripheralHandler {
 		if (tile instanceof IPeripheral) {
 			return null;
 		}
+		
 		if (!peripherals.containsKey(tile)) {
 			peripherals.put(tile, new HostedPeripheral(tile));
 		}

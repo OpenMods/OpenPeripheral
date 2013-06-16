@@ -61,7 +61,7 @@ public class HostedPeripheral implements IHostedPeripheral {
 		methodNames = mNames.toArray(new String[mNames.size()]);
 
 		ItemStack is = new ItemStack(tile.getBlockType(), 1, tile.getBlockMetadata());
-		name = tile.getBlockType().getUnlocalizedName();
+		
 		try {
 			name = is.getDisplayName();
 		} catch (Exception e) {
@@ -92,13 +92,17 @@ public class HostedPeripheral implements IHostedPeripheral {
 
 	@Override
 	public Object[] callMethod(IComputerAccess computer, int methodId, Object[] arguments) throws Exception {
+		
 		if (methodId == 0) {
 			return new Object[] { StringUtils.join(getMethodNames(), "\n") };
 		}
 
 		methodId--;
 
-		boolean isCableCall = mySecurityManager.getCallerClassName(2) == "dan200.computer.shared.TileEntityCable$RemotePeripheralWrapper";
+		String callerClass = mySecurityManager.getCallerClassName(2);
+		
+		boolean isCableCall = callerClass.equals("dan200.computer.shared.TileEntityCable$RemotePeripheralWrapper") || 
+							  callerClass.equals("openperipheral.common.tileentity.TileEntityProxy");
 
 		final DefinitionMethod methodDefinition = methods.get(methodId);
 

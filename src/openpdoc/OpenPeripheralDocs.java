@@ -105,7 +105,7 @@ public class OpenPeripheralDocs implements ICommand {
 					ArrayList<DefinitionMethod> methods = DefinitionManager.getMethodsForClass(c);
 					if (methods.size() > 0) {
 						JsonObjectNodeBuilder object = anObjectBuilder();
-						object.withField("tile", aStringBuilder(c.getSimpleName()));
+						object.withField("tile", aStringBuilder(c.getName()));
 						JsonArrayNodeBuilder jsonMethods = anArrayBuilder();
 						for (DefinitionMethod method : methods) {
 							JsonObjectNodeBuilder jsonMethod = anObjectBuilder();

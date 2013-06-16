@@ -66,7 +66,7 @@ public class GlassesModule implements IPowerModule {
 
 	@Override
 	public double applyPropertyModifiers(NBTTagCompound itemTag, String propertyName, double propertyValue) {
-		return 0;
+		return propertyValue;
 	}
 
 	@Override

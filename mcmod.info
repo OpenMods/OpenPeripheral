@@ -2,13 +2,13 @@
 {
   "modid" : "OpenPeripheral",
   "name" : "OpenPeripheral",
-  "version" : "@VERSION@",
+  "version" : "0.1.7",
   "url" : "http://www.computercraft.info",
-  "credits" : "",
+  "credits" : "Everyone in #ComputerCraft and #OpenCCSensors",
   "authors": [
     "Mikeemoo"
   ],
-  "description": "",
+  "description": "Converts many blocks into ComputerCraft peripherals!",
   "logoFile" : "",
   "updateUrl" : "",
   "parent" : "",
