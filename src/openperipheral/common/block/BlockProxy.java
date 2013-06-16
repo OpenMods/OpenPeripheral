@@ -52,7 +52,7 @@ public class BlockProxy extends BlockContainer {
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving entityliving, ItemStack itemStack) {
 		super.onBlockPlacedBy(world, z, y, z, entityliving, itemStack);
 		ForgeDirection orientation = BlockUtils.get3dOrientation(Vec3.createVectorHelper(entityliving.posX, entityliving.posY, entityliving.posZ),
-				Vec3.createVectorHelper(x, y, z));
+				Vec3.createVectorHelper(x+0.5, y+0.5, z+0.5));
 		world.setBlockMetadataWithNotify(x, y, z, orientation.getOpposite().ordinal(), 3);
 		refreshProxiedPeripheral(world, x, y, z);
 	}
@@ -105,7 +105,6 @@ public class BlockProxy extends BlockContainer {
 	@Override
 	public Icon getIcon(int side, int metadata) {
 		ForgeDirection orientation = ForgeDirection.getOrientation(metadata);
-		System.out.println(orientation);
 		if (orientations.containsKey(orientation)) {
 			return orientations.get(orientation)[side];
 		}

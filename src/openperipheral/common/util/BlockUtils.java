@@ -26,7 +26,6 @@ public class BlockUtils {
 		double Dx = pos1.xCoord - pos2.xCoord;
 		double Dy = pos1.yCoord - pos2.yCoord;
 		double angle = Math.atan2(Dy, Dx) / Math.PI * 180 + 180;
-
 		if (angle > 45 && angle < 135) {
 			return ForgeDirection.UP;
 		} else if (angle > 225 && angle < 315) {

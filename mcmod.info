@@ -2,7 +2,7 @@
 {
   "modid" : "OpenPeripheral",
   "name" : "OpenPeripheral",
-  "version" : "0.1.7",
+  "version" : "@VERSION@",
   "url" : "http://www.computercraft.info",
   "credits" : "Everyone in #ComputerCraft and #OpenCCSensors",
   "authors": [
