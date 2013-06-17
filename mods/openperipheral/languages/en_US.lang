@@ -1,4 +1,5 @@
 item.openperipheral.glasses.name=Terminal Glasses
 tile.openperipheral.glassesbridge.name=Terminal Glasses Bridge
-
+tile.openperipheral.proxyblock.name=Peripheral Proxy
+tile.openperipheral.playerinventory.name=PIM
 itemGroup.tabOpenPeripheral=OpenPeripheral 

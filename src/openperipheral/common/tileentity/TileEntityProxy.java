@@ -1,19 +1,24 @@
 package openperipheral.common.tileentity;
 
+import java.util.ArrayList;
+
 import openperipheral.common.block.BlockProxy;
+import openperipheral.common.util.BlockUtils;
 import openperipheral.common.util.ReflectionHelper;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 import net.minecraft.block.Block;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
 public class TileEntityProxy extends TileEntity implements IPeripheral {
-	
+
 	private IPeripheral peripheral;
-	
+
 	private boolean initialized = false;
-	
+
 	@Override
 	public void updateEntity() {
 		super.updateEntity();
@@ -22,33 +27,60 @@ public class TileEntityProxy extends TileEntity implements IPeripheral {
 			initialized = true;
 		}
 	}
-	
+
 	public void setPeripheral(IPeripheral peripheral) {
 
 		this.peripheral = peripheral;
-		
-		if (!worldObj.isRemote){
-			
+
+		if (!worldObj.isRemote) {
+
 			for (int x = -1; x <= 1; x++) {
 				for (int y = -1; y <= 1; y++) {
 					for (int z = -1; z <= 1; z++) {
-						
+
 						int offsetX = xCoord + x;
 						int offsetY = yCoord + y;
 						int offsetZ = zCoord + z;
 						
+						int tots = Math.abs(x) + Math.abs(y) + Math.abs(z);
+						if (tots < -1 || tots > 1) {
+							continue;
+						}
+					
 						TileEntity te = worldObj.getBlockTileEntity(offsetX, offsetY, offsetZ);
+						
 						if (te != null && te.getClass().getName() == "dan200.computer.shared.TileEntityCable") {
 							if (peripheral == null) {
-								worldObj.destroyBlock(offsetX, offsetY, offsetZ, true);
+								int blockId = worldObj.getBlockId(offsetX, offsetY, offsetZ);
+								int meta = worldObj.getBlockMetadata(offsetX, offsetY, offsetZ);
+								int subtype = getCableSubtypeFromMetadata(meta);
+								if (subtype == 1 || subtype == 2) {
+									BlockUtils.dropItemStackInWorld(worldObj, offsetX, offsetY, offsetZ, new ItemStack(blockId, 1, 1));
+
+									if (subtype == 2) {
+										BlockUtils.dropItemStackInWorld(worldObj, offsetX, offsetY, offsetZ, new ItemStack(blockId, 1, 0));	
+									}
+									worldObj.setBlockToAir(offsetX, offsetY, offsetZ);
+								}
 							}
 						}
-						
+
 					}
-				}	
+				}
 			}
-			
+
 		}
+	}
+
+	public static int getCableSubtypeFromMetadata(int metadata) {
+		if ((metadata >= 0) && (metadata < 6)) {
+			return 1;
+		}
+		if ((metadata >= 6) && (metadata < 12)) {
+			return 2;
+		}
+
+		return 0;
 	}
 
 	@Override
@@ -74,7 +106,7 @@ public class TileEntityProxy extends TileEntity implements IPeripheral {
 		}
 		return peripheral.callMethod(computer, method, arguments);
 	}
-	
+
 	@Override
 	public boolean canAttachToSide(int side) {
 		return true;

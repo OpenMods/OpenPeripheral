@@ -21,6 +21,7 @@ public class ConfigSettings {
 	public static int CACHE_REFRESH_INTERVAL = 7;
 	public static String RESOURCE_PATH = "/mods/openperipheral";
 	public static String LANGUAGE_PATH = String.format("%s/languages", RESOURCE_PATH);
+	public static String TEXTURES_PATH = String.format("%s/textures", RESOURCE_PATH);
 	
 	private static String externalBase = "https://raw.github.com/mikeemoo/OpenPeripheral/master/";
 	
@@ -42,6 +43,7 @@ public class ConfigSettings {
 	public static int glassesId = 1055;
 	public static int glassesBridgeId = 580;
 	public static int proxyBlockId = 581;
+	public static int playerInventoryId = 582;
 	
 
 	public static void loadAndSaveConfig(File suggestedConfigFile) {
@@ -84,6 +86,10 @@ public class ConfigSettings {
 		prop = configFile.get("blocks", "bridgeId", glassesBridgeId);
 		prop.comment = "The id of the glasses bridge";
 		glassesBridgeId = prop.getInt();
+		
+		prop = configFile.get("blocks", "playerInventoryId", playerInventoryId);
+		prop.comment = "The id of the player inventory block";
+		playerInventoryId = prop.getInt();
 
 		if (FRESH_INSTALL && analyticsEnabled) {
 			analytics(container);

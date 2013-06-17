@@ -8,6 +8,7 @@ import openperipheral.api.IRestrictionHandler;
 import openperipheral.client.PacketHandler;
 import openperipheral.common.CommonProxy;
 import openperipheral.common.block.BlockGlassesBridge;
+import openperipheral.common.block.BlockPlayerInventory;
 import openperipheral.common.block.BlockProxy;
 import openperipheral.common.config.ConfigSettings;
 import openperipheral.common.converter.ConverterArray;
@@ -71,6 +72,7 @@ public class OpenPeripheral {
 	public static class Blocks {
 		public static BlockGlassesBridge glassesBridge;
 		public static BlockProxy proxy;
+		public static BlockPlayerInventory playerInventory;
 	}
 	
 	public static int renderId;

@@ -18,9 +18,9 @@ public class DrawableBox extends BaseDrawable implements IDrawable {
 	private short width;
 	private short height;
 	private int color;
-	private double alpha;
+	private double opacity;
 	private int color2;
-	private double alpha2;
+	private double opacity2;
 	private byte gradient = 0;
 
 	public static final int X_CHANGED = 1;
@@ -28,9 +28,9 @@ public class DrawableBox extends BaseDrawable implements IDrawable {
 	public static final int WIDTH_CHANGED = 3;
 	public static final int HEIGHT_CHANGED = 4;
 	public static final int COLOR_CHANGED = 5;
-	public static final int ALPHA_CHANGED = 6;
+	public static final int OPACITY_CHANGED = 6;
 	public static final int COLOR2_CHANGED = 7;
-	public static final int ALPHA2_CHANGED = 8;
+	public static final int OPACITY2_CHANGED = 8;
 	public static final int Z_CHANGED = 9;
 	public static final int GRADIENT_CHANGED = 10;
 
@@ -45,12 +45,12 @@ public class DrawableBox extends BaseDrawable implements IDrawable {
 		this.width = (short) width;
 		this.height = (short) height;
 		this.color = color;
-		this.alpha = alpha;
+		this.opacity = alpha;
 		this.color2 = color2;
-		this.alpha2 = alpha2;
+		this.opacity2 = alpha2;
 		this.gradient = gradient;
-		this.methodNames = new String[] { "getX", "setX", "getY", "setY", "getWidth", "setWidth", "getHeight", "setHeight", "getColor", "setColor", "getAlpha",
-				"setAlpha", "getColor2", "setColor2", "getAlpha2", "setAlpha2", "setZIndex", "getZIndex", "setGradient", "getGradient", "delete" };
+		this.methodNames = new String[] { "getX", "setX", "getY", "setY", "getWidth", "setWidth", "getHeight", "setHeight", "getColor", "setColor", "getOpacity",
+				"setOpacity", "getColor2", "setColor2", "getOpacity2", "setOpacity2", "setZIndex", "getZIndex", "setGradient", "getGradient", "delete" };
 	}
 
 	@Override
@@ -68,7 +68,7 @@ public class DrawableBox extends BaseDrawable implements IDrawable {
 			r2 = r;
 			g2 = g;
 			b2 = b;
-			alpha2 = alpha;
+			opacity2 = opacity;
 		}
 
 		Tessellator tessellator = Tessellator.instance;
@@ -78,7 +78,7 @@ public class DrawableBox extends BaseDrawable implements IDrawable {
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glShadeModel(GL11.GL_SMOOTH);
 		tessellator.startDrawingQuads();
-		tessellator.setColorRGBA_F(r, g, b, (float) alpha);
+		tessellator.setColorRGBA_F(r, g, b, (float) opacity);
 		if (gradient == 1) {
 			tessellator.addVertex((double) x, (double) y + height, 0.0D);
 			tessellator.addVertex((double) x + width, (double) y + height, 0.0D);
@@ -87,7 +87,7 @@ public class DrawableBox extends BaseDrawable implements IDrawable {
 			tessellator.addVertex((double) x + width, y, 0.0D);
 
 		}
-		tessellator.setColorRGBA_F(r2, g2, b2, (float) alpha2);
+		tessellator.setColorRGBA_F(r2, g2, b2, (float) opacity2);
 		if (gradient == 1) {
 			tessellator.addVertex((double) x + width, y, 0.0D);
 			tessellator.addVertex((double) x, (double) y, 0.0D);
@@ -102,12 +102,12 @@ public class DrawableBox extends BaseDrawable implements IDrawable {
 		GL11.glEnable(GL11.GL_ALPHA_TEST);
 	}
 
-	public double getAlpha() {
-		return alpha;
+	public double getOpacity() {
+		return opacity;
 	}
 
-	public double getAlpha2() {
-		return alpha2;
+	public double getOpacity2() {
+		return opacity2;
 	}
 
 	public int getColor() {
@@ -163,14 +163,14 @@ public class DrawableBox extends BaseDrawable implements IDrawable {
 			if (ByteUtils.get(changeMask, COLOR_CHANGED))
 				color = stream.readInt();
 
-			if (ByteUtils.get(changeMask, ALPHA_CHANGED))
-				alpha = (double) stream.readFloat();
+			if (ByteUtils.get(changeMask, OPACITY_CHANGED))
+				opacity = (double) stream.readFloat();
 
 			if (ByteUtils.get(changeMask, COLOR2_CHANGED))
 				color2 = stream.readInt();
 
-			if (ByteUtils.get(changeMask, ALPHA2_CHANGED))
-				alpha2 = (double) stream.readFloat();
+			if (ByteUtils.get(changeMask, OPACITY2_CHANGED))
+				opacity2 = (double) stream.readFloat();
 
 			if (ByteUtils.get(changeMask, Z_CHANGED))
 				zIndex = stream.readByte();
@@ -183,20 +183,20 @@ public class DrawableBox extends BaseDrawable implements IDrawable {
 		}
 	}
 
-	public int setAlpha(double a) {
-		if (a == alpha) {
+	public int setOpacity(double a) {
+		if (a == opacity) {
 			return -1;
 		}
-		alpha = a;
-		return ALPHA_CHANGED;
+		opacity = a;
+		return OPACITY_CHANGED;
 	}
 
-	public int setAlpha2(double a2) {
-		if (alpha2 == a2) {
+	public int setOpacity2(double a2) {
+		if (opacity2 == a2) {
 			return -1;
 		}
-		alpha2 = a2;
-		return ALPHA2_CHANGED;
+		opacity2 = a2;
+		return OPACITY2_CHANGED;
 	}
 
 	public int setColor(int c) {
@@ -282,14 +282,14 @@ public class DrawableBox extends BaseDrawable implements IDrawable {
 			if (ByteUtils.get(changeMask, COLOR_CHANGED))
 				stream.writeInt(color);
 
-			if (ByteUtils.get(changeMask, ALPHA_CHANGED))
-				stream.writeFloat((float) alpha);
+			if (ByteUtils.get(changeMask, OPACITY_CHANGED))
+				stream.writeFloat((float) opacity);
 
 			if (ByteUtils.get(changeMask, COLOR2_CHANGED))
 				stream.writeInt(color2);
 
-			if (ByteUtils.get(changeMask, ALPHA2_CHANGED))
-				stream.writeFloat((float) alpha2);
+			if (ByteUtils.get(changeMask, OPACITY2_CHANGED))
+				stream.writeFloat((float) opacity2);
 
 			if (ByteUtils.get(changeMask, Z_CHANGED))
 				stream.writeByte(zIndex);

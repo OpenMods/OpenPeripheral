@@ -58,8 +58,16 @@ public class DrawableText extends BaseDrawable implements IDrawable {
 		return color;
 	}
 
+	public float getScale() {
+		return scale;
+	}
+
 	public String getText() {
 		return text;
+	}
+
+	public int getWidth() {
+		return FontSizeChecker.instance.getStringWidth(getText());
 	}
 
 	@Override
@@ -72,19 +80,10 @@ public class DrawableText extends BaseDrawable implements IDrawable {
 		return y;
 	}
 
-	public int getWidth() {
-		return FontSizeChecker.instance.getStringWidth(getText());
-	}
-
-	public float getScale() {
-		return scale;
-	}
-
 	public int getZIndex() {
 		return zIndex;
 	}
 	
-
 	@Override
 	public void readFrom(DataInputStream stream, Short changeMask) {
 		try {
@@ -119,6 +118,14 @@ public class DrawableText extends BaseDrawable implements IDrawable {
 		color = c;
 		return COLOR_CHANGED;
 	}
+	
+	public int setScale(float s) {
+		if (scale == s) {
+			return -1;
+		}
+		scale = s;
+		return SCALE_CHANGED;
+	}
 
 	public int setText(String t) {
 		if (t.equals(text)) {
@@ -150,14 +157,6 @@ public class DrawableText extends BaseDrawable implements IDrawable {
 		}
 		zIndex = z;
 		return Z_CHANGED;
-	}
-
-	public int setScale(float s) {
-		if (scale == s) {
-			return -1;
-		}
-		scale = s;
-		return SCALE_CHANGED;
 	}
 
 	@Override
