@@ -1,7 +1,5 @@
 package openperipheral.common.block;
 
-import java.util.Random;
-
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -32,7 +30,7 @@ public class BlockPlayerInventory extends BlockContainer {
 	public void registerIcons(IconRegister registry) {
 		blockIcon = registry.registerIcon("openperipheral:playerinventory");
 	}
-	
+
 	@Override
 	public TileEntity createNewTileEntity(World world) {
 		return new TileEntityPlayerInventory();
@@ -60,15 +58,13 @@ public class BlockPlayerInventory extends BlockContainer {
 			if (entity instanceof EntityPlayer && tile != null && tile instanceof TileEntityPlayerInventory) {
 				TileEntityPlayerInventory pi = (TileEntityPlayerInventory) tile;
 				if (pi.getPlayer() == null) {
-					ChunkCoordinates coordinates = ((EntityPlayer)entity).getPlayerCoordinates();
-					if (coordinates.posX == x &&
-						coordinates.posY == y && 
-						coordinates.posZ == z) {
-						pi.setPlayer((EntityPlayer)entity);
+					ChunkCoordinates coordinates = ((EntityPlayer) entity).getPlayerCoordinates();
+					if (coordinates.posX == x && coordinates.posY == y && coordinates.posZ == z) {
+						pi.setPlayer((EntityPlayer) entity);
 					}
 				}
 			}
 		}
 	}
-	
+
 }

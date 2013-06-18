@@ -1,17 +1,11 @@
 package openperipheral.common.tileentity;
 
-import java.util.ArrayList;
-
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import openperipheral.common.block.BlockProxy;
 import openperipheral.common.util.BlockUtils;
-import openperipheral.common.util.ReflectionHelper;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
-import net.minecraft.block.Block;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 
 public class TileEntityProxy extends TileEntity implements IPeripheral {
 
@@ -41,14 +35,14 @@ public class TileEntityProxy extends TileEntity implements IPeripheral {
 						int offsetX = xCoord + x;
 						int offsetY = yCoord + y;
 						int offsetZ = zCoord + z;
-						
+
 						int tots = Math.abs(x) + Math.abs(y) + Math.abs(z);
 						if (tots < -1 || tots > 1) {
 							continue;
 						}
-					
+
 						TileEntity te = worldObj.getBlockTileEntity(offsetX, offsetY, offsetZ);
-						
+
 						if (te != null && te.getClass().getName() == "dan200.computer.shared.TileEntityCable") {
 							if (peripheral == null) {
 								int blockId = worldObj.getBlockId(offsetX, offsetY, offsetZ);
@@ -58,7 +52,7 @@ public class TileEntityProxy extends TileEntity implements IPeripheral {
 									BlockUtils.dropItemStackInWorld(worldObj, offsetX, offsetY, offsetZ, new ItemStack(blockId, 1, 1));
 
 									if (subtype == 2) {
-										BlockUtils.dropItemStackInWorld(worldObj, offsetX, offsetY, offsetZ, new ItemStack(blockId, 1, 0));	
+										BlockUtils.dropItemStackInWorld(worldObj, offsetX, offsetY, offsetZ, new ItemStack(blockId, 1, 0));
 									}
 									worldObj.setBlockToAir(offsetX, offsetY, offsetZ);
 								}

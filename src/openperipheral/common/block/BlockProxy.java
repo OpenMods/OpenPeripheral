@@ -1,20 +1,7 @@
 package openperipheral.common.block;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
-import openperipheral.OpenPeripheral;
-import openperipheral.common.config.ConfigSettings;
-import openperipheral.common.tileentity.TileEntityGlassesBridge;
-import openperipheral.common.tileentity.TileEntityProxy;
-import openperipheral.common.util.BlockUtils;
-import cpw.mods.fml.common.registry.GameRegistry;
-import dan200.computer.api.IHostedPeripheral;
-import dan200.computer.api.IPeripheral;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -22,9 +9,15 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
-import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+import openperipheral.OpenPeripheral;
+import openperipheral.common.config.ConfigSettings;
+import openperipheral.common.tileentity.TileEntityProxy;
+import openperipheral.common.util.BlockUtils;
+import cpw.mods.fml.common.registry.GameRegistry;
+import dan200.computer.api.IHostedPeripheral;
+import dan200.computer.api.IPeripheral;
 
 public class BlockProxy extends BlockContainer {
 

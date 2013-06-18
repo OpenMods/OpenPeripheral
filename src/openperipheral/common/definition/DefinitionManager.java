@@ -38,12 +38,9 @@ public class DefinitionManager {
 
 	private static JsonRootNode loadJSON() {
 
-		FileRetriever.downloadFileIfOlderThan(
-			ConfigSettings.DATA_URL,
-			ConfigSettings.CACHE_PATH,
-			ConfigSettings.FRESH_INSTALL ? 0 : ConfigSettings.CACHE_REFRESH_INTERVAL
-		);
-		
+		FileRetriever.downloadFileIfOlderThan(ConfigSettings.DATA_URL, ConfigSettings.CACHE_PATH, ConfigSettings.FRESH_INSTALL ? 0
+				: ConfigSettings.CACHE_REFRESH_INTERVAL);
+
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(ConfigSettings.CACHE_PATH));
 			JdomParser parser = new JdomParser();

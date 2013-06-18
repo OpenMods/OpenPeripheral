@@ -9,7 +9,7 @@ import net.minecraft.util.ChunkCoordinates;
 public class TileEntityPlayerInventory extends TileEntity implements IInventory {
 
 	private EntityPlayer player;
-	
+
 	@Override
 	public int getSizeInventory() {
 		if (player != null) {
@@ -78,13 +78,13 @@ public class TileEntityPlayerInventory extends TileEntity implements IInventory 
 	@Override
 	public void openChest() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void closeChest() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -98,27 +98,26 @@ public class TileEntityPlayerInventory extends TileEntity implements IInventory 
 	public EntityPlayer getPlayer() {
 		return player;
 	}
-	
+
 	public boolean hasPlayer() {
-		if (worldObj == null) return false;
+		if (worldObj == null)
+			return false;
 		return worldObj.getBlockMetadata(xCoord, yCoord, zCoord) == 1;
 	}
-	
+
 	public void setPlayer(EntityPlayer p) {
 		player = p;
-        worldObj.playSoundEffect((double)xCoord + 0.5D, (double)yCoord + 0.1D, (double)zCoord + 0.5D, "random.click", 0.3F, 0.6F);
+		worldObj.playSoundEffect((double) xCoord + 0.5D, (double) yCoord + 0.1D, (double) zCoord + 0.5D, "random.click", 0.3F, 0.6F);
 		worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, p == null ? 0 : 1, 3);
 	}
-	
+
 	@Override
 	public void updateEntity() {
 		if (!worldObj.isRemote) {
 			EntityPlayer player = getPlayer();
 			if (player != null) {
 				ChunkCoordinates coordinates = player.getPlayerCoordinates();
-				if (coordinates.posX != xCoord || 
-					coordinates.posY != yCoord || 
-					coordinates.posZ != zCoord) {
+				if (coordinates.posX != xCoord || coordinates.posY != yCoord || coordinates.posZ != zCoord) {
 					setPlayer(null);
 				}
 			}

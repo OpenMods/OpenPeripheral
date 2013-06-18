@@ -13,7 +13,6 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 public class LanguageUtils {
 	public static void setupLanguages() {
 
-
 		try {
 			InputStream input = CommonProxy.class.getResourceAsStream(String.format("%s/languages.txt", ConfigSettings.LANGUAGE_PATH));
 
@@ -22,7 +21,7 @@ public class LanguageUtils {
 			}
 
 			BufferedReader reader = new BufferedReader(new InputStreamReader(input, "UTF-8"));
-			
+
 			FileLineReader.readLineByLine(reader, new ILineReadMethod() {
 				@Override
 				public void Read(String line) {

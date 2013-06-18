@@ -133,7 +133,7 @@ public class TerminalManager implements IConnectionHandler {
 
 	@Override
 	public void playerLoggedIn(Player player, NetHandler netHandler, INetworkManager manager) {
-		
+
 	}
 
 	@Override
@@ -145,19 +145,19 @@ public class TerminalManager implements IConnectionHandler {
 	@Override
 	public void connectionOpened(NetHandler netClientHandler, String server, int port, INetworkManager manager) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void connectionOpened(NetHandler netClientHandler, MinecraftServer server, INetworkManager manager) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void connectionClosed(INetworkManager manager) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override

@@ -44,11 +44,11 @@ public class ReflectionHelper {
 	public static Object callMethod(boolean replace, String className, Object instance, String[] methodNames, Object... args) {
 		return callMethod(replace, getClass(className), instance, methodNames, args);
 	}
-	
+
 	public static Object callMethod(String className, Object instance, String[] methodNames, Object... args) {
 		return callMethod(getClass(className), instance, methodNames, args);
 	}
-	
+
 	public static Object callMethod(boolean replace, Class klazz, Object instance, String[] methodNames, Object... args) {
 		if (instance == null) {
 			return null;
@@ -72,7 +72,7 @@ public class ReflectionHelper {
 		}
 		return null;
 	}
-	
+
 	public static Object callMethod(Class klazz, Object instance, String[] methodNames, Object... args) {
 		return callMethod(true, klazz, instance, methodNames, args);
 	}
@@ -88,7 +88,6 @@ public class ReflectionHelper {
 					}
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
 			}
 		}
 		return null;

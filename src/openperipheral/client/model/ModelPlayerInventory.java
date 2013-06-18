@@ -6,7 +6,7 @@ import net.minecraft.client.model.ModelRenderer;
 public class ModelPlayerInventory extends ModelBase {
 
 	float f5 = 0.0625F;
-	
+
 	ModelRenderer pressure;
 	ModelRenderer chest;
 

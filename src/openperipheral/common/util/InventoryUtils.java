@@ -15,6 +15,7 @@ public class InventoryUtils {
 		}
 		return name;
 	}
+
 	public static String getRawNameForStack(ItemStack is) {
 
 		String rawName = "unknown";
@@ -25,11 +26,9 @@ public class InventoryUtils {
 		}
 		try {
 			if (rawName.length() - rawName.replaceAll("\\.", "").length() == 0) {
-				String packageName = is.getItem().getClass().getName()
-						.toLowerCase();
+				String packageName = is.getItem().getClass().getName().toLowerCase();
 				String[] packageLevels = packageName.split("\\.");
-				if (!rawName.startsWith(packageLevels[0])
-						&& packageLevels.length > 1) {
+				if (!rawName.startsWith(packageLevels[0]) && packageLevels.length > 1) {
 					rawName = packageLevels[0] + "." + rawName;
 				}
 			}

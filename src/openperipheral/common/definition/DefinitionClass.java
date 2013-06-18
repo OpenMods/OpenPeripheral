@@ -12,7 +12,7 @@ public class DefinitionClass {
 	private Class javaClass = null;
 
 	public DefinitionClass(JsonNode json) {
-		
+
 		methods = new ArrayList<DefinitionMethod>();
 
 		className = json.getStringValue("className");

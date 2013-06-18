@@ -10,6 +10,7 @@ import openperipheral.common.CommonProxy;
 import openperipheral.common.block.BlockGlassesBridge;
 import openperipheral.common.block.BlockPlayerInventory;
 import openperipheral.common.block.BlockProxy;
+import openperipheral.common.block.BlockTicketMachine;
 import openperipheral.common.config.ConfigSettings;
 import openperipheral.common.converter.ConverterArray;
 import openperipheral.common.converter.ConverterDouble;
@@ -73,10 +74,15 @@ public class OpenPeripheral {
 		public static BlockGlassesBridge glassesBridge;
 		public static BlockProxy proxy;
 		public static BlockPlayerInventory playerInventory;
+		public static BlockTicketMachine ticketMachine;
 	}
-	
+
+	public enum Gui {
+		ticketMachine
+	};
+
 	public static int renderId;
-	
+
 	public static PeripheralHandler peripheralHandler = new PeripheralHandler();
 
 	@Mod.PreInit

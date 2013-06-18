@@ -83,7 +83,7 @@ public class DrawableText extends BaseDrawable implements IDrawable {
 	public int getZIndex() {
 		return zIndex;
 	}
-	
+
 	@Override
 	public void readFrom(DataInputStream stream, Short changeMask) {
 		try {
@@ -118,7 +118,7 @@ public class DrawableText extends BaseDrawable implements IDrawable {
 		color = c;
 		return COLOR_CHANGED;
 	}
-	
+
 	public int setScale(float s) {
 		if (scale == s) {
 			return -1;

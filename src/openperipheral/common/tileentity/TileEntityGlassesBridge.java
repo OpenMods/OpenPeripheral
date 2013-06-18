@@ -129,7 +129,8 @@ public class TileEntityGlassesBridge extends TileEntity implements IAttachable {
 						for (Packet packet : fullPackets) {
 							for (String playerName : newPlayers) {
 								EntityPlayer player = MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(playerName);
-								//EntityPlayer player = worldObj.getPlayerEntityByName(playerName);
+								// EntityPlayer player =
+								// worldObj.getPlayerEntityByName(playerName);
 								if (player != null) {
 									((EntityPlayerMP) player).playerNetServerHandler.sendPacketToPlayer(packet);
 								}
@@ -355,7 +356,7 @@ public class TileEntityGlassesBridge extends TileEntity implements IAttachable {
 		try {
 			lock.lock();
 			try {
-				return (ILuaObject) drawables.get((short)id);
+				return (ILuaObject) drawables.get((short) id);
 			} finally {
 				lock.unlock();
 			}
@@ -412,7 +413,7 @@ public class TileEntityGlassesBridge extends TileEntity implements IAttachable {
 	public String getGuid() {
 		return guid;
 	}
-	
+
 	public void resetGuid() {
 		guid = StringUtils.randomString(8);
 	}
@@ -461,12 +462,12 @@ public class TileEntityGlassesBridge extends TileEntity implements IAttachable {
 				int y = openPTag.getInteger("y");
 				int z = openPTag.getInteger("z");
 				int d = openPTag.getInteger("d");
-				
+
 				if (worldObj == null) {
 					WorldProvider provider = WorldProvider.getProviderForDimension(d);
 					worldObj = provider.worldObj;
 				}
-				
+
 				if (worldObj != null && d == worldObj.provider.dimensionId) {
 					if (worldObj.blockExists(x, y, z)) {
 						TileEntity tile = worldObj.getBlockTileEntity(x, y, z);

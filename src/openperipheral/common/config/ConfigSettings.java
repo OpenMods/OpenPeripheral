@@ -22,16 +22,16 @@ public class ConfigSettings {
 	public static String RESOURCE_PATH = "/mods/openperipheral";
 	public static String LANGUAGE_PATH = String.format("%s/languages", RESOURCE_PATH);
 	public static String TEXTURES_PATH = String.format("%s/textures", RESOURCE_PATH);
-	
+
 	private static String externalBase = "https://raw.github.com/mikeemoo/OpenPeripheral/master/";
-	
+
 	public static String EXTERNAL_LUA_LISTING = String.format("%s%s", externalBase, "mods/openperipheral/scripts.txt");
 	public static String EXTERNAL_LUA_FOLDER = String.format("%s%s", externalBase, "mods/openperipheral/lua/");
 	public static String LOCAL_LUA_LISTING;
 	public static String LOCAL_LUA_FOLDER;
-	
+
 	public static boolean FRESH_INSTALL = false;
-	
+
 	public static boolean analyticsEnabled = true;
 
 	public static String CACHE_FILE = "OpenPeripheral_methods.json";
@@ -44,7 +44,7 @@ public class ConfigSettings {
 	public static int glassesBridgeId = 580;
 	public static int proxyBlockId = 581;
 	public static int playerInventoryId = 582;
-	
+	public static int ticketMachineId = 583;
 
 	public static void loadAndSaveConfig(File suggestedConfigFile) {
 
@@ -86,10 +86,14 @@ public class ConfigSettings {
 		prop = configFile.get("blocks", "bridgeId", glassesBridgeId);
 		prop.comment = "The id of the glasses bridge";
 		glassesBridgeId = prop.getInt();
-		
+
 		prop = configFile.get("blocks", "playerInventoryId", playerInventoryId);
 		prop.comment = "The id of the player inventory block";
 		playerInventoryId = prop.getInt();
+
+		prop = configFile.get("blocks", "ticketMachineId", ticketMachineId);
+		prop.comment = "The id of the player ticket machine";
+		ticketMachineId = prop.getInt();
 
 		if (FRESH_INSTALL && analyticsEnabled) {
 			analytics(container);
@@ -102,15 +106,15 @@ public class ConfigSettings {
 		} else {
 			baseDirectory = new File(".");
 		}
-		
+
 		File configDirectory = new File(baseDirectory, "config/");
 		File cacheFile = new File(configDirectory, CACHE_FILE);
 		File openPeripheralFolder = new File(baseDirectory, "openperipheral/");
 		File luaFolder = new File(openPeripheralFolder, "lua/");
-		
+
 		LOCAL_LUA_LISTING = openPeripheralFolder.getAbsolutePath() + "/scripts.txt";
 		LOCAL_LUA_FOLDER = luaFolder.getAbsolutePath();
-		
+
 		configFile.save();
 		CACHE_PATH = cacheFile.getAbsolutePath();
 	}
@@ -119,12 +123,8 @@ public class ConfigSettings {
 		String charset = "UTF-8";
 		String url;
 		try {
-			url = String.format(
-				"http://www.openccsensors.info/op_analytics?version=%s&side=%s&forge=%s",
-				URLEncoder.encode(container.getVersion(), charset),
-				URLEncoder.encode(FMLRelauncher.side(), charset),
-				URLEncoder.encode(ForgeVersion.getVersion(), charset)
-			);
+			url = String.format("http://www.openccsensors.info/op_analytics?version=%s&side=%s&forge=%s", URLEncoder.encode(container.getVersion(), charset),
+					URLEncoder.encode(FMLRelauncher.side(), charset), URLEncoder.encode(ForgeVersion.getVersion(), charset));
 			URLConnection connection = new URL(url).openConnection();
 			connection.setConnectTimeout(4000);
 			connection.setRequestProperty("Accept-Charset", charset);
