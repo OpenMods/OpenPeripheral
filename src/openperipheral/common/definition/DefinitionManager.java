@@ -31,6 +31,12 @@ public class DefinitionManager {
 		}
 	}
 	
+	public static void addClassDefinition(IClassDefinition classDefinition) {
+		if (classDefinition.getJavaClass() != null) {
+			addClass(classDefinition.getJavaClass(), classDefinition);
+		}
+	}
+	
 	public static void addClass(Class klazz, IClassDefinition classDefinition) {
 		if (classList.containsKey(klazz)) {
 			classList.get(klazz).add(classDefinition);
