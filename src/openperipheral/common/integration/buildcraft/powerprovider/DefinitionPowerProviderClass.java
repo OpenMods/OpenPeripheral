@@ -1,4 +1,4 @@
-package openperipheral.common.integration.buildcraft;
+package openperipheral.common.integration.buildcraft.powerprovider;
 
 import java.util.ArrayList;
 

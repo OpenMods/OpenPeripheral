@@ -168,7 +168,6 @@ public class HostedPeripheral implements IHostedPeripheral {
 			Future callback = TickHandler.addTickCallback(tile.worldObj, new Callable() {
 				@Override
 				public Object call() throws Exception {
-					System.out.println("Calling!");
 					Object response = TypeConversionRegistry.toLua(methodDefinition.execute(tile, argsToUse));
 					PostChangeRegistry.onPostChange(tile, methodDefinition, argsToUse);
 					return response;

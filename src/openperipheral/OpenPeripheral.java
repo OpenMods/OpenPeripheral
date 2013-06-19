@@ -29,6 +29,7 @@ import openperipheral.common.integration.gregtech.GregTechModule;
 import openperipheral.common.integration.mps.MPSModule;
 import openperipheral.common.integration.sgcraft.SGCraftModule;
 import openperipheral.common.integration.thaumcraft.ThaumcraftModule;
+import openperipheral.common.integration.thermalexpansion.TEModule;
 import openperipheral.common.item.ItemGlasses;
 import openperipheral.common.postchange.PostChangeMarkUpdate;
 import openperipheral.common.postchange.PostChangeRegistry;
@@ -156,6 +157,10 @@ public class OpenPeripheral {
 
 		if (Loader.isModLoaded(Mods.SGCRAFT)) {
 			SGCraftModule.init();
+		}
+		
+		if (Loader.isModLoaded(Mods.THERMALEXPANSION)) {
+			TEModule.init();
 		}
 
 		TickRegistry.registerTickHandler(new TickHandler(), Side.SERVER);
