@@ -31,7 +31,6 @@ public class BlockTicketMachine extends BlockContainer {
 
 	public HashMap<ForgeDirection, Icon[]> orientations = new HashMap<ForgeDirection, Icon[]>();
 
-	
 	public BlockTicketMachine() {
 		super(ConfigSettings.ticketMachineId, Material.ground);
 		setHardness(0.5F);
@@ -40,7 +39,7 @@ public class BlockTicketMachine extends BlockContainer {
 		GameRegistry.registerTileEntity(TileEntityTicketMachine.class, "ticketmachine");
 		setUnlocalizedName("openperipheral.ticketmachine");
 	}
-	
+
 	@Override
 	public void registerIcons(IconRegister register) {
 		Icons.front = register.registerIcon("openperipheral:ticketmachine_front");
@@ -49,11 +48,11 @@ public class BlockTicketMachine extends BlockContainer {
 		Icons.side_right = register.registerIcon("openperipheral:ticketmachine_side_right");
 		Icons.top = register.registerIcon("openperipheral:ticketmachine_top");
 		Icons.bottom = register.registerIcon("openperipheral:ticketmachine_bottom");
-		
-		orientations.put(ForgeDirection.WEST, new Icon[] { Icons.bottom, Icons.top, Icons.side_left, Icons.side_right, Icons.front, Icons.back });
-		orientations.put(ForgeDirection.EAST, new Icon[] { Icons.bottom, Icons.top, Icons.back, Icons.side_left, Icons.side_right, Icons.front });
+
+		orientations.put(ForgeDirection.WEST, new Icon[] { Icons.bottom, Icons.top, Icons.side_right, Icons.side_left, Icons.front, Icons.back });
+		orientations.put(ForgeDirection.EAST, new Icon[] { Icons.bottom, Icons.top, Icons.side_left, Icons.side_right, Icons.back, Icons.front });
 		orientations.put(ForgeDirection.NORTH, new Icon[] { Icons.bottom, Icons.top, Icons.front, Icons.back, Icons.side_left, Icons.side_right });
-		orientations.put(ForgeDirection.SOUTH, new Icon[] { Icons.bottom, Icons.top, Icons.side_right, Icons.front, Icons.back, Icons.side_left });
+		orientations.put(ForgeDirection.SOUTH, new Icon[] { Icons.bottom, Icons.top, Icons.back, Icons.front, Icons.side_right, Icons.side_left });
 
 	}
 
@@ -63,7 +62,7 @@ public class BlockTicketMachine extends BlockContainer {
 		if (orientations.containsKey(orientation)) {
 			return orientations.get(orientation)[side];
 		}
-		return Icons.side_left;
+		return orientations.get(ForgeDirection.WEST)[side];
 	}
 
 	@Override
@@ -80,7 +79,7 @@ public class BlockTicketMachine extends BlockContainer {
 		player.openGui(OpenPeripheral.instance, OpenPeripheral.Gui.ticketMachine.ordinal(), world, x, y, z);
 		return true;
 	}
-	
+
 	@Override
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving entityliving, ItemStack itemStack) {
 		super.onBlockPlacedBy(world, z, y, z, entityliving, itemStack);
@@ -88,4 +87,17 @@ public class BlockTicketMachine extends BlockContainer {
 		world.setBlockMetadataWithNotify(x, y, z, orientation.getOpposite().ordinal(), 3);
 	}
 
+	@Override
+	public void breakBlock(World world, int x, int y, int z, int par5, int par6) {
+		BlockUtils.dropInventoryItems(world.getBlockTileEntity(x, y, z));
+		super.breakBlock(world, x, y, z, par5, par6);
+	}
+	
+    public boolean onBlockEventReceived(World world, int x, int y, int z, int eventId, int eventParam) {
+        TileEntity te = world.getBlockTileEntity(x, y, z);
+        if (te instanceof TileEntityTicketMachine) {
+        	((TileEntityTicketMachine)te).onBlockEventReceived(eventId, eventParam);
+        }
+    	return true;
+    }
 }

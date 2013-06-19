@@ -17,8 +17,9 @@ public class GuiTicketMachine extends GuiContainer {
 		ticketMachine = tileentity;
 	}
 
-	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY, String name) {
-		String machineName = StatCollector.translateToLocal(name);
+	@Override
+	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+		String machineName = StatCollector.translateToLocal("openperipheral.gui.ticketmachine");
 		int x = this.xSize / 2 - (fontRenderer.getStringWidth(machineName) / 2);
 		fontRenderer.drawString(machineName, x, 6, 4210752);
 		String translatedName = StatCollector.translateToLocal("container.inventory");

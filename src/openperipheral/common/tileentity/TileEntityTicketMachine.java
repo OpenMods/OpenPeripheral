@@ -7,6 +7,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.ForgeDirection;
 import openperipheral.api.IConditionalSlots;
 import openperipheral.api.IInventoryCallback;
 import openperipheral.common.core.OPInventory;
@@ -19,6 +20,7 @@ public class TileEntityTicketMachine extends TileEntity implements IInventory, I
 
 	protected OPInventory inventory = new OPInventory("ticketmachine", false, 3);
 	private Item ticketItem;
+	private boolean isLocked = false;
 
 	public TileEntityTicketMachine() {
 		inventory.addCallback(this);
@@ -127,15 +129,29 @@ public class TileEntityTicketMachine extends TileEntity implements IInventory, I
 		return false;
 	}
 
+	public void addBlockEvent(int eventId, int eventParam) {
+		worldObj.addBlockEvent(xCoord, yCoord, zCoord, getBlockType().blockID, eventId, eventParam);
+	}
+
+	public void onBlockEventReceived(int eventId, int eventParam) {
+		if (worldObj.isRemote) {
+			if (eventId == 0) {
+				isLocked = eventParam == 1;
+			}
+		}
+	}
+
 	@Override
 	public void writeToNBT(NBTTagCompound tag) {
 		super.writeToNBT(tag);
+		tag.setBoolean("locked", isLocked);
 		inventory.writeToNBT(tag);
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound tag) {
 		super.readFromNBT(tag);
+		isLocked = tag.getBoolean("locked");
 		inventory.readFromNBT(tag);
 	}
 
@@ -146,17 +162,44 @@ public class TileEntityTicketMachine extends TileEntity implements IInventory, I
 
 	@Override
 	public boolean canInsertItem(int i, ItemStack itemstack, int j) {
-		return true;
+		return isStackValidForSlot(i, itemstack);
 	}
 
 	@Override
 	public boolean canExtractItem(int i, ItemStack itemstack, int j) {
-		return true;
+		return i == 2;
 	}
 
 	@Override
 	public void onInventoryChanged(IInventory inventory) {
 
+	}
+
+	@Override
+	public boolean canTakeStack(int slotNumber, EntityPlayer player) {
+		return slotNumber == 2 || !isLocked;
+	}
+	
+	public ForgeDirection getOrientation() {
+		return ForgeDirection.getOrientation(worldObj.getBlockMetadata(xCoord, yCoord, zCoord));
+	}
+
+	public void lock() {
+		isLocked = true;
+		if (!worldObj.isRemote) {
+			addBlockEvent(0, 1);
+		}
+	}
+
+	public void unlock() {
+		isLocked = false;
+		if (!worldObj.isRemote) {
+			addBlockEvent(0, 0);
+		}
+	}
+
+	public boolean isLocked() {
+		return isLocked;
 	}
 
 }

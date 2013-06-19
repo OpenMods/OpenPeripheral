@@ -1,5 +1,6 @@
 package openperipheral.common.container;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -15,6 +16,13 @@ public class ConditionalSlot extends Slot {
 	public boolean isItemValid(ItemStack itemStack) {
 		if (this.inventory instanceof IConditionalSlots) {
 			return ((IConditionalSlots) inventory).isStackValidForSlot(slotNumber, itemStack);
+		}
+		return true;
+	}
+	
+	public boolean canTakeStack(EntityPlayer player) {
+		if (this.inventory instanceof IConditionalSlots) {
+			return ((IConditionalSlots) inventory).canTakeStack(slotNumber, player);
 		}
 		return true;
 	}

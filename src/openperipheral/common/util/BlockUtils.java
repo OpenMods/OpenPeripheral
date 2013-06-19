@@ -1,8 +1,13 @@
 package openperipheral.common.util;
 
+import java.util.Random;
+
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
@@ -41,6 +46,22 @@ public class BlockUtils {
 		double d2 = (double) (worldObj.rand.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
 		EntityItem entityitem = new EntityItem(worldObj, (double) x + d0, (double) y + d1, (double) z + d2, stack);
 		entityitem.delayBeforeCanPickup = 10;
+		if (stack.hasTagCompound()) {
+			entityitem.getEntityItem().setTagCompound((NBTTagCompound) stack.getTagCompound().copy());
+		}
 		worldObj.spawnEntityInWorld(entityitem);
+	}
+
+	public static void dropInventoryItems(TileEntity tileEntity) {
+		if (tileEntity != null && tileEntity instanceof IInventory) {
+			IInventory inventory = (IInventory) tileEntity;
+			Random rand = tileEntity.worldObj.rand;
+			for (int i = 0; i < inventory.getSizeInventory(); ++i) {
+				ItemStack itemStack = inventory.getStackInSlot(i);
+				if (itemStack != null) {
+					dropItemStackInWorld(tileEntity.worldObj, tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, itemStack);
+				}
+			}
+		}
 	}
 }

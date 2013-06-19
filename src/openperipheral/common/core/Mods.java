@@ -10,4 +10,5 @@ public class Mods {
 	public static final String GREGTECH = "GregTech_Addon";
 	public static final String SGCRAFT = "SGCraft";
 	public static final String THERMALEXPANSION = "ThermalExpansion";
+	public static final String RAILCRAFT = "Railcraft";
 }

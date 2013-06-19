@@ -1,6 +1,8 @@
 package openperipheral.common.restriction;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 import openperipheral.api.IRestriction;
 import argo.jdom.JsonNode;
@@ -9,6 +11,10 @@ public class RestrictionChoice implements IRestriction {
 
 	private ArrayList<String> choices = new ArrayList<String>();
 
+	public RestrictionChoice(String ... schoices) {
+		choices.addAll(Arrays.asList(schoices));
+	}
+	
 	public RestrictionChoice(JsonNode json) {
 		for (JsonNode choice : json.getElements()) {
 			choices.add("" + choice.getText());

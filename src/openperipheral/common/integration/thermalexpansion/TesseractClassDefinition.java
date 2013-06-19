@@ -16,6 +16,8 @@ public class TesseractClassDefinition implements IClassDefinition {
 		klazz = ReflectionHelper.getClass("thermalexpansion.block.tesseract.TileTesseractRoot");
 		if (klazz != null) {
 			methods.add(new TesseractSetFrequencyMethodDefinition());
+			methods.add(new TesseractSetModeMethodDefinition());
+			methods.add(new TesseractGetModeMethodDefinition());
 		}
 	}
 	

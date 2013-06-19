@@ -10,10 +10,12 @@ import openperipheral.common.block.BlockPlayerInventory;
 import openperipheral.common.block.BlockProxy;
 import openperipheral.common.block.BlockTicketMachine;
 import openperipheral.common.container.ContainerGeneric;
+import openperipheral.common.core.Mods;
 import openperipheral.common.item.ItemGlasses;
 import openperipheral.common.tileentity.TileEntityTicketMachine;
 import openperipheral.common.util.LanguageUtils;
 import openperipheral.common.util.RecipeUtils;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.network.IGuiHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 
@@ -26,8 +28,9 @@ public class CommonProxy implements IGuiHandler {
 		OpenPeripheral.Blocks.glassesBridge = new BlockGlassesBridge();
 		OpenPeripheral.Blocks.proxy = new BlockProxy();
 		OpenPeripheral.Blocks.playerInventory = new BlockPlayerInventory();
-		OpenPeripheral.Blocks.ticketMachine = new BlockTicketMachine();
-
+		if (Loader.isModLoaded(Mods.RAILCRAFT)) {
+			OpenPeripheral.Blocks.ticketMachine = new BlockTicketMachine();
+		}
 		setupLanguages();
 
 		RecipeUtils.addGlassesRecipe();
