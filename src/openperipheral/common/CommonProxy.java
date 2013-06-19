@@ -10,13 +10,10 @@ import openperipheral.common.block.BlockPlayerInventory;
 import openperipheral.common.block.BlockProxy;
 import openperipheral.common.block.BlockTicketMachine;
 import openperipheral.common.container.ContainerGeneric;
-import openperipheral.common.core.Mods;
 import openperipheral.common.item.ItemGlasses;
 import openperipheral.common.tileentity.TileEntityTicketMachine;
 import openperipheral.common.util.LanguageUtils;
-import openperipheral.common.util.MPSUtils;
 import openperipheral.common.util.RecipeUtils;
-import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.network.IGuiHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 
@@ -40,10 +37,7 @@ public class CommonProxy implements IGuiHandler {
 		MinecraftForge.EVENT_BUS.register(new ChatCommandInterceptor());
 
 		NetworkRegistry.instance().registerGuiHandler(OpenPeripheral.instance, this);
-
-		if (Loader.isModLoaded(Mods.MPS)) {
-			MPSUtils.initModule();
-		}
+	
 	}
 
 	public void registerRenderInformation() {

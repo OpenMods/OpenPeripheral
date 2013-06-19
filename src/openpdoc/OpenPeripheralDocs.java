@@ -25,7 +25,7 @@ import net.minecraft.src.BaseMod;
 import net.minecraft.tileentity.TileEntity;
 import openperipheral.OpenPeripheral;
 import openperipheral.common.definition.DefinitionManager;
-import openperipheral.common.definition.DefinitionMethod;
+import openperipheral.common.definition.DefinitionJsonMethod;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -79,7 +79,7 @@ public class OpenPeripheralDocs implements ICommand {
 
 	@Override
 	public void processCommand(ICommandSender icommandsender, String[] astring) {
-
+/*
 		try {
 			Map m = null;
 			Field f;
@@ -102,12 +102,12 @@ public class OpenPeripheralDocs implements ICommand {
 						continue;
 					}
 
-					ArrayList<DefinitionMethod> methods = DefinitionManager.getMethodsForClass(c);
+					ArrayList<DefinitionJsonMethod> methods = DefinitionManager.getMethodsForClass(c);
 					if (methods.size() > 0) {
 						JsonObjectNodeBuilder object = anObjectBuilder();
 						object.withField("tile", aStringBuilder(c.getName()));
 						JsonArrayNodeBuilder jsonMethods = anArrayBuilder();
-						for (DefinitionMethod method : methods) {
+						for (DefinitionJsonMethod method : methods) {
 							JsonObjectNodeBuilder jsonMethod = anObjectBuilder();
 							jsonMethod.withField("name", aStringBuilder(method.getLuaName()));
 							jsonMethod.withField("returnType", aStringBuilder(method.getReturnType().getName()));
@@ -151,7 +151,7 @@ public class OpenPeripheralDocs implements ICommand {
 			icommandsender.sendChatToPlayer(sw.toString());
 			icommandsender.sendChatToPlayer(e.getMessage());
 		}
-
+*/
 	}
 
 	@Override

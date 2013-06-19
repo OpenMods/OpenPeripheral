@@ -20,11 +20,11 @@ public class ReflectionWrapper {
 		return new ReflectionWrapper(ReflectionHelper.callMethod("", target, methodNames, args));
 	}
 
-	public Object get(String[] fieldNames) {
+	public ReflectionWrapper get(String[] fieldNames) {
 		return new ReflectionWrapper(ReflectionHelper.getProperty("", target, fieldNames));
 	}
 
-	public Object get(String fieldName) {
+	public ReflectionWrapper get(String fieldName) {
 		return new ReflectionWrapper(ReflectionHelper.getProperty("", target, new String[] { fieldName }));
 	}
 

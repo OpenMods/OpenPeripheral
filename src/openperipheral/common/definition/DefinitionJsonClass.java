@@ -2,21 +2,23 @@ package openperipheral.common.definition;
 
 import java.util.ArrayList;
 
+import net.minecraft.tileentity.TileEntity;
+import openperipheral.api.IClassDefinition;
+import openperipheral.api.IMethodDefinition;
 import argo.jdom.JsonNode;
 
-public class DefinitionClass {
+public class DefinitionJsonClass implements IClassDefinition {
 
 	private String className;
-	private ArrayList<DefinitionMethod> methods;
+	private ArrayList<IMethodDefinition> methods;
 
 	private Class javaClass = null;
 
-	public DefinitionClass(JsonNode json) {
+	public DefinitionJsonClass(JsonNode json) {
 
-		methods = new ArrayList<DefinitionMethod>();
+		methods = new ArrayList<IMethodDefinition>();
 
 		className = json.getStringValue("className");
-
 		try {
 			javaClass = Class.forName(className);
 		} catch (ClassNotFoundException e) {
@@ -24,7 +26,7 @@ public class DefinitionClass {
 
 		if (javaClass != null && json.isNode("methods")) {
 			for (JsonNode methodNode : json.getNode("methods").getElements()) {
-				DefinitionMethod method = new DefinitionMethod(javaClass, methodNode);
+				DefinitionJsonMethod method = new DefinitionJsonMethod(javaClass, methodNode);
 				if (method.isValid()) {
 					methods.add(method);
 				}
@@ -32,11 +34,13 @@ public class DefinitionClass {
 		}
 	}
 
+	@Override
 	public Class getJavaClass() {
 		return javaClass;
 	}
 
-	public ArrayList<DefinitionMethod> getMethods() {
+	@Override
+	public ArrayList<IMethodDefinition> getMethods(TileEntity tile) {
 		return methods;
 	}
 }

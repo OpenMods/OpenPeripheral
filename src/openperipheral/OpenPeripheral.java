@@ -22,13 +22,13 @@ import openperipheral.common.core.Mods;
 import openperipheral.common.core.PeripheralHandler;
 import openperipheral.common.core.TickHandler;
 import openperipheral.common.definition.DefinitionManager;
-import openperipheral.common.integration.appliedenergistics.ConverterIMEInventory;
-import openperipheral.common.integration.buildcraft.ConverterPowerProvider;
-import openperipheral.common.integration.forestry.ConverterEnumHumidity;
-import openperipheral.common.integration.forestry.ConverterEnumTemperature;
-import openperipheral.common.integration.forestry.ConverterFruitFamily;
-import openperipheral.common.integration.thaumcraft.ConverterEnumTag;
-import openperipheral.common.integration.thaumcraft.ConverterObjectTags;
+import openperipheral.common.integration.appliedenergistics.AEModule;
+import openperipheral.common.integration.buildcraft.BCModule;
+import openperipheral.common.integration.forestry.ForestryModule;
+import openperipheral.common.integration.gregtech.GregTechModule;
+import openperipheral.common.integration.mps.MPSModule;
+import openperipheral.common.integration.sgcraft.SGCraftModule;
+import openperipheral.common.integration.thaumcraft.ThaumcraftModule;
 import openperipheral.common.item.ItemGlasses;
 import openperipheral.common.postchange.PostChangeMarkUpdate;
 import openperipheral.common.postchange.PostChangeRegistry;
@@ -98,6 +98,8 @@ public class OpenPeripheral {
 		proxy.init();
 		proxy.registerRenderInformation();
 
+		DefinitionManager.load();
+		
 		RestrictionFactory.registerRestrictionHandler("min", new IRestrictionHandler() {
 			@Override
 			public IRestriction createFromJson(JsonNode json) {
@@ -129,25 +131,32 @@ public class OpenPeripheral {
 		TypeConversionRegistry.registryTypeConverter(new ConverterForgeDirection());
 
 		if (Loader.isModLoaded(Mods.APPLIED_ENERGISTICS)) {
-			TypeConversionRegistry.registryTypeConverter(new ConverterIMEInventory());
+			AEModule.init();
 		}
 
 		if (Loader.isModLoaded(Mods.FORESTRY)) {
-			TypeConversionRegistry.registryTypeConverter(new ConverterEnumHumidity());
-			TypeConversionRegistry.registryTypeConverter(new ConverterEnumTemperature());
-			TypeConversionRegistry.registryTypeConverter(new ConverterFruitFamily());
+			ForestryModule.init();
 		}
 
 		if (Loader.isModLoaded(Mods.BUILDCRAFT)) {
-			TypeConversionRegistry.registryTypeConverter(new ConverterPowerProvider());
+			BCModule.init();
 		}
 
 		if (Loader.isModLoaded(Mods.THAUMCRAFT)) {
-			TypeConversionRegistry.registryTypeConverter(new ConverterObjectTags());
-			TypeConversionRegistry.registryTypeConverter(new ConverterEnumTag());
+			ThaumcraftModule.init();
+		}
+		
+		if (Loader.isModLoaded(Mods.GREGTECH)) {
+			GregTechModule.init();
 		}
 
-		DefinitionManager.load();
+		if (Loader.isModLoaded(Mods.MPS)) {
+			MPSModule.init();
+		}
+
+		if (Loader.isModLoaded(Mods.SGCRAFT)) {
+			SGCraftModule.init();
+		}
 
 		TickRegistry.registerTickHandler(new TickHandler(), Side.SERVER);
 		ComputerCraftAPI.registerExternalPeripheral(TileEntity.class, peripheralHandler);

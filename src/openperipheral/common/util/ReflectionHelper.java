@@ -50,10 +50,10 @@ public class ReflectionHelper {
 	}
 
 	public static Object callMethod(boolean replace, Class klazz, Object instance, String[] methodNames, Object... args) {
-		if (instance == null) {
+		Method m = getMethod(klazz == null ? instance.getClass() : klazz, methodNames, args.length);
+		if (m == null) {
 			return null;
 		}
-		Method m = getMethod(klazz == null ? instance.getClass() : klazz, methodNames, args.length);
 		if (m != null) {
 			try {
 				Class[] types = m.getParameterTypes();
@@ -78,7 +78,9 @@ public class ReflectionHelper {
 	}
 
 	public static Method getMethod(Class klazz, String[] methodNames, int argCount) {
-
+		if (klazz == null) {
+			return null;
+		}
 		for (String method : methodNames) {
 			try {
 				for (Method m : getAllMethods(klazz)) {

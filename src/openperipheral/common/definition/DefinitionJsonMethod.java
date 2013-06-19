@@ -11,6 +11,7 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 import net.minecraft.tileentity.TileEntity;
+import openperipheral.api.IMethodDefinition;
 import openperipheral.api.IRestriction;
 import openperipheral.common.restriction.RestrictionFactory;
 import openperipheral.common.util.ReflectionHelper;
@@ -20,7 +21,7 @@ import org.bouncycastle.util.encoders.Base64;
 import argo.jdom.JsonField;
 import argo.jdom.JsonNode;
 
-public class DefinitionMethod {
+public class DefinitionJsonMethod implements IMethodDefinition {
 
 	private ScriptEngineManager factory = new ScriptEngineManager();
 	protected ScriptEngine engine = factory.getEngineByName("JavaScript");
@@ -47,7 +48,7 @@ public class DefinitionMethod {
 
 	private HashMap<Integer, ArrayList<IRestriction>> restrictions;
 
-	public DefinitionMethod(Class klazz, JsonNode json) {
+	public DefinitionJsonMethod(Class klazz, JsonNode json) {
 
 		restrictions = new HashMap<Integer, ArrayList<IRestriction>>();
 		replacements = new HashMap<Integer, String>();
@@ -147,10 +148,6 @@ public class DefinitionMethod {
 		}
 	}
 
-	public boolean paramNeedsReplacing(int index) {
-		return replacements != null && replacements.containsKey(index);
-	}
-
 	public CallType getCallType() {
 		return callType;
 	}
@@ -159,6 +156,7 @@ public class DefinitionMethod {
 		return propertyName;
 	}
 
+	@Override
 	public HashMap<Integer, String> getReplacements() {
 		return replacements;
 	}
@@ -167,23 +165,17 @@ public class DefinitionMethod {
 		return script;
 	}
 
+	@Override
 	public String getPostScript() {
 		return postscript;
 	}
 
+	@Override
 	public boolean getCauseTileUpdate() {
 		return causeTileUpdate;
 	}
 
-	public Class getReturnType() {
-		if (getCallType() == CallType.METHOD) {
-			return method.getReturnType();
-		} else if (getCallType() == CallType.GET_PROPERTY) {
-			return field.getType();
-		}
-		return Void.class;
-	}
-
+	@Override
 	public Class[] getRequiredParameters() {
 		if (callType == CallType.METHOD) {
 			return method.getParameterTypes();
@@ -193,26 +185,27 @@ public class DefinitionMethod {
 		return new Class[] {};
 	}
 
+	@Override
 	public boolean isInstant() {
 		return isInstant;
 	}
 
+	@Override
 	public String getLuaName() {
 		return name;
 	}
 
+	@Override
 	public boolean isValid() {
 		return field != null || method != null || callType == CallType.SCRIPT;
 	}
 
+	@Override
 	public ArrayList<IRestriction> getRestrictions(int index) {
 		return restrictions.get(index);
 	}
 
-	public Method getMethod() {
-		return method;
-	}
-
+	@Override
 	public Object execute(TileEntity tile, Object[] args) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, ScriptException {
 		if (callType == CallType.SCRIPT) {
 			return executeScript(tile, args);
@@ -242,5 +235,10 @@ public class DefinitionMethod {
 			return this.engine.eval(script);
 		}
 		return null;
+	}
+
+	@Override
+	public boolean needsSanitize() {
+		return getCallType() != CallType.SCRIPT;
 	}
 }

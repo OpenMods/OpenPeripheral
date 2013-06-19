@@ -13,11 +13,10 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import openperipheral.OpenPeripheral;
 import openperipheral.api.IAttachable;
+import openperipheral.api.IMethodDefinition;
 import openperipheral.api.IRestriction;
 import openperipheral.common.converter.TypeConversionRegistry;
 import openperipheral.common.definition.DefinitionManager;
-import openperipheral.common.definition.DefinitionMethod;
-import openperipheral.common.definition.DefinitionMethod.CallType;
 import openperipheral.common.postchange.PostChangeRegistry;
 import openperipheral.common.util.StringUtils;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -41,7 +40,7 @@ public class HostedPeripheral implements IHostedPeripheral {
 	private int y;
 	private int z;
 	private String name;
-	private ArrayList<DefinitionMethod> methods;
+	private ArrayList<IMethodDefinition> methods;
 	private String[] methodNames;
 
 	public HostedPeripheral(TileEntity tile) {
@@ -51,11 +50,11 @@ public class HostedPeripheral implements IHostedPeripheral {
 		x = tile.xCoord;
 		y = tile.yCoord;
 		z = tile.zCoord;
-		methods = DefinitionManager.getMethodsForClass(klass);
+		methods = DefinitionManager.getMethodsForTile(tile);
 		ArrayList<String> mNames = new ArrayList<String>();
 
 		mNames.add("listMethods");
-		for (DefinitionMethod method : methods) {
+		for (IMethodDefinition method : methods) {
 			mNames.add(method.getLuaName());
 		}
 		methodNames = mNames.toArray(new String[mNames.size()]);
@@ -104,14 +103,16 @@ public class HostedPeripheral implements IHostedPeripheral {
 		boolean isCableCall = callerClass.equals("dan200.computer.shared.TileEntityCable$RemotePeripheralWrapper")
 				|| callerClass.equals("openperipheral.common.tileentity.TileEntityProxy");
 
-		final DefinitionMethod methodDefinition = methods.get(methodId);
-
+		final IMethodDefinition methodDefinition = methods.get(methodId);
 		if (methodDefinition != null) {
 
-			if (methodDefinition.getCallType() == CallType.SCRIPT) {
+			if (!methodDefinition.needsSanitize()) {
 				final TileEntity tile = worldObj.getBlockTileEntity(x, y, z);
-				Object response = TypeConversionRegistry.toLua(methodDefinition.execute(tile, arguments));
-				return new Object[] { response };
+				return executeMethod(
+						isCableCall || methodDefinition.isInstant(),
+						methodDefinition,
+						tile,
+						arguments);
 			}
 
 			ArrayList<Object> args = new ArrayList(Arrays.asList(arguments));
@@ -142,30 +143,45 @@ public class HostedPeripheral implements IHostedPeripheral {
 					}
 				}
 			}
+			
 			final TileEntity tile = worldObj.getBlockTileEntity(x, y, z);
 
 			final Object[] argsToUse = args.toArray(new Object[args.size()]);
 
-			if (isCableCall || methodDefinition.isInstant()) {
-				Object response = TypeConversionRegistry.toLua(methodDefinition.execute(tile, argsToUse));
-				PostChangeRegistry.onPostChange(tile, methodDefinition, argsToUse);
-				return new Object[] { response };
-			} else {
-				Future callback = TickHandler.addTickCallback(tile.worldObj, new Callable() {
-					@Override
-					public Object call() throws Exception {
-						Object response = TypeConversionRegistry.toLua(methodDefinition.execute(tile, argsToUse));
-						PostChangeRegistry.onPostChange(tile, methodDefinition, argsToUse);
-						return response;
-					}
-				});
-				return new Object[] { callback.get() };
-			}
+			return executeMethod(
+					isCableCall || methodDefinition.isInstant(),
+					methodDefinition,
+					tile,
+					argsToUse);
 		}
+		
 		return null;
+
 	}
 
+	private Object[] executeMethod(boolean isInstant, final IMethodDefinition methodDefinition, final TileEntity tile, final Object[] argsToUse) throws Exception {
+		if (isInstant) {
+			Object response = TypeConversionRegistry.toLua(methodDefinition.execute(tile, argsToUse));
+			PostChangeRegistry.onPostChange(tile, methodDefinition, argsToUse);
+			return new Object[] { response };
+		} else {
+			Future callback = TickHandler.addTickCallback(tile.worldObj, new Callable() {
+				@Override
+				public Object call() throws Exception {
+					System.out.println("Calling!");
+					Object response = TypeConversionRegistry.toLua(methodDefinition.execute(tile, argsToUse));
+					PostChangeRegistry.onPostChange(tile, methodDefinition, argsToUse);
+					return response;
+				}
+			});
+			return new Object[] { callback.get() };
+		}
+	}
+	
 	private void replaceArguments(ArrayList<Object> args, HashMap<Integer, String> replacements) {
+		if (replacements == null) {
+			return;
+		}
 		for (Entry<Integer, String> replacement : replacements.entrySet()) {
 			String r = replacement.getValue();
 			Object v = null;
