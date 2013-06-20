@@ -7,13 +7,21 @@ import javax.imageio.ImageIO;
 
 import net.minecraft.client.renderer.RenderEngine;
 import net.minecraft.util.ChatAllowedCharacters;
+import openperipheral.OpenPeripheral;
 import openperipheral.common.config.ConfigSettings;
 
 public class FontSizeChecker {
 
-	public static FontSizeChecker instance = new FontSizeChecker(ConfigSettings.RESOURCE_PATH + "/textures/fonts/main.png");
+	private static FontSizeChecker instance = null;
 
 	private int[] charWidth = new int[256];
+	
+	public static FontSizeChecker getInstance() {
+		if (instance == null) {
+			instance = new FontSizeChecker(ConfigSettings.RESOURCE_PATH + "/textures/fonts/main.png");
+		}
+		return instance;
+	}
 
 	private FontSizeChecker(String textureFile) {
 		readFontTexture(textureFile);
@@ -21,13 +29,11 @@ public class FontSizeChecker {
 
 	private void readFontTexture(String par1Str) {
 		BufferedImage bufferedimage;
-
 		try {
-			bufferedimage = ImageIO.read(RenderEngine.class.getResourceAsStream(par1Str));
+			bufferedimage = ImageIO.read(OpenPeripheral.class.getResourceAsStream(par1Str));
 		} catch (IOException ioexception) {
 			throw new RuntimeException(ioexception);
 		}
-
 		int i = bufferedimage.getWidth();
 		int j = bufferedimage.getHeight();
 		int[] aint = new int[i * j];
@@ -62,7 +68,6 @@ public class FontSizeChecker {
 				if (k == 32) {
 					j1 = 2;
 				}
-
 				this.charWidth[k] = j1 + 2;
 				++k;
 				break;
@@ -93,6 +98,7 @@ public class FontSizeChecker {
 
 			for (int j = 0; j < par1Str.length(); ++j) {
 				char c0 = par1Str.charAt(j);
+				
 				int k = this.getCharWidth(c0);
 
 				if (k < 0 && j < par1Str.length() - 1) {

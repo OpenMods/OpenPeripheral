@@ -2,6 +2,6 @@ item.openperipheral.glasses.name=Terminal Glasses
 tile.openperipheral.glassesbridge.name=Terminal Glasses Bridge
 tile.openperipheral.proxyblock.name=Peripheral Proxy
 tile.openperipheral.playerinventory.name=PIM
-tile.openperipheral.ticketmachine.name=PIM
+tile.openperipheral.ticketmachine.name=Ticket Machine
 itemGroup.tabOpenPeripheral=OpenPeripheral 
 openperipheral.gui.ticketmachine=Ticket Machine

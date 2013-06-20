@@ -66,8 +66,6 @@ public class SGCraftConnect implements IMethodDefinition {
 	@Override
 	public Object execute(TileEntity tile, Object[] args) throws Exception {
 		String homeAddress = (String) ReflectionHelper.callMethod("", tile, new String[] { "findHomeAddress" });
-		System.out.println("HomeAddress = "+homeAddress);
-		System.out.println("targetAddress = "+args[0]);
 		Object targetStargate = ReflectionHelper.callMethod(false, "gcewing.sg.SGAddressing", null, new String[] { "findAddressedStargate" }, args[0]);
 		if (targetStargate == null) {
 			throw new Exception("Unable to find target gate");
@@ -76,7 +74,6 @@ public class SGCraftConnect implements IMethodDefinition {
 			throw new Exception("You can not connect to yourself");
 		}
 		Object state = ReflectionHelper.getProperty("", targetStargate, "state");
-		System.out.println(state.toString());
 		int requiredFuel = (Integer)ReflectionHelper.getProperty("", tile, "fuelToOpen");
 		boolean reloaded = (Boolean) ReflectionHelper.callMethod("", tile, new String[] { "reloadFuel" }, requiredFuel);
 		if (!reloaded) {

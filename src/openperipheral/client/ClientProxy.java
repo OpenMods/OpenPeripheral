@@ -18,6 +18,10 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 
 public class ClientProxy extends CommonProxy {
 
+	public ClientProxy() {
+		MinecraftForge.EVENT_BUS.register(new SoundLoader());
+	}
+
 	public static TerminalManager terminalManager = new TerminalManager();
 
 	@Override

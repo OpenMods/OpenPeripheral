@@ -108,11 +108,7 @@ public class HostedPeripheral implements IHostedPeripheral {
 
 			if (!methodDefinition.needsSanitize()) {
 				final TileEntity tile = worldObj.getBlockTileEntity(x, y, z);
-				return executeMethod(
-						isCableCall || methodDefinition.isInstant(),
-						methodDefinition,
-						tile,
-						arguments);
+				return executeMethod(isCableCall || methodDefinition.isInstant(), methodDefinition, tile, arguments);
 			}
 
 			ArrayList<Object> args = new ArrayList(Arrays.asList(arguments));
@@ -143,18 +139,14 @@ public class HostedPeripheral implements IHostedPeripheral {
 					}
 				}
 			}
-			
+
 			final TileEntity tile = worldObj.getBlockTileEntity(x, y, z);
 
 			final Object[] argsToUse = args.toArray(new Object[args.size()]);
 
-			return executeMethod(
-					isCableCall || methodDefinition.isInstant(),
-					methodDefinition,
-					tile,
-					argsToUse);
+			return executeMethod(isCableCall || methodDefinition.isInstant(), methodDefinition, tile, argsToUse);
 		}
-		
+
 		return null;
 
 	}
@@ -176,7 +168,7 @@ public class HostedPeripheral implements IHostedPeripheral {
 			return new Object[] { callback.get() };
 		}
 	}
-	
+
 	private void replaceArguments(ArrayList<Object> args, HashMap<Integer, String> replacements) {
 		if (replacements == null) {
 			return;
@@ -207,6 +199,10 @@ public class HostedPeripheral implements IHostedPeripheral {
 	@Override
 	public void attach(final IComputerAccess computer) {
 		ModContainer container = FMLCommonHandler.instance().findContainerFor(OpenPeripheral.instance);
+		try {
+			computer.unmount("openp");
+		} catch (Exception e) {
+		}
 		computer.mountFixedDir("openp", String.format("openperipheral/lua", container.getVersion()), true, 0);
 		try {
 			TickHandler.addTickCallback(worldObj, new Callable() {

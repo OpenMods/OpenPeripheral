@@ -1,0 +1,84 @@
+package openperipheral.common.integration.appliedenergistics.cellprovider;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import appeng.api.me.tiles.ICellProvider;
+import appeng.api.me.util.IMEInventoryHandler;
+
+import net.minecraft.tileentity.TileEntity;
+import openperipheral.api.IMethodDefinition;
+import openperipheral.api.IRestriction;
+import openperipheral.common.util.ReflectionHelper;
+
+public class DefinitionCellProviderMethod implements IMethodDefinition {
+
+	private String name;
+	private String luaName;
+	private Class[] required;
+	
+	public DefinitionCellProviderMethod(String name, String luaName, Class ... required) {
+		this.name = name;
+		this.luaName = luaName;
+		this.required = required;
+	}
+	
+	public DefinitionCellProviderMethod(String name, Class ... required) {
+		this(name, name, required);
+	}
+	
+	@Override
+	public HashMap<Integer, String> getReplacements() {
+		return null;
+	}
+
+	@Override
+	public String getPostScript() {
+		return null;
+	}
+
+	@Override
+	public boolean getCauseTileUpdate() {
+		return false;
+	}
+
+	@Override
+	public Class[] getRequiredParameters() {
+		return required;
+	}
+
+	@Override
+	public boolean isInstant() {
+		return false;
+	}
+
+	@Override
+	public String getLuaName() {
+		return luaName;
+	}
+
+	@Override
+	public boolean isValid() {
+		return true;
+	}
+
+	@Override
+	public boolean needsSanitize() {
+		return true;
+	}
+
+	@Override
+	public ArrayList<IRestriction> getRestrictions(int index) {
+		return null;
+	}
+
+	@Override
+	public Object execute(TileEntity tile, Object[] args) throws Exception {
+		if (tile instanceof ICellProvider) {
+			IMEInventoryHandler handler = ((ICellProvider) tile).provideCell();
+			return ReflectionHelper.callMethod(false, "", handler, new String[] { name }, args);	
+		}
+		return null;
+	}
+
+}

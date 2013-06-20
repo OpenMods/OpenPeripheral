@@ -7,9 +7,11 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import openperipheral.OpenPeripheral;
@@ -26,6 +28,7 @@ public class BlockTicketMachine extends BlockContainer {
 		public static Icon side_left;
 		public static Icon side_right;
 		public static Icon front;
+		public static Icon front_ticket;
 		public static Icon back;
 	}
 
@@ -43,6 +46,7 @@ public class BlockTicketMachine extends BlockContainer {
 	@Override
 	public void registerIcons(IconRegister register) {
 		Icons.front = register.registerIcon("openperipheral:ticketmachine_front");
+		Icons.front_ticket = register.registerIcon("openperipheral:ticketmachine_front_ticket");
 		Icons.back = register.registerIcon("openperipheral:ticketmachine_back");
 		Icons.side_left = register.registerIcon("openperipheral:ticketmachine_side_left");
 		Icons.side_right = register.registerIcon("openperipheral:ticketmachine_side_right");
@@ -55,6 +59,22 @@ public class BlockTicketMachine extends BlockContainer {
 		orientations.put(ForgeDirection.SOUTH, new Icon[] { Icons.bottom, Icons.top, Icons.back, Icons.front, Icons.side_right, Icons.side_left });
 
 	}
+	
+	@Override
+    public Icon getBlockTexture(IBlockAccess blockAccess, int x, int y, int z, int side)
+    {
+        Icon ret = getIcon(side, blockAccess.getBlockMetadata(x, y, z));
+        if (ret == Icons.front){
+        	TileEntity te = blockAccess.getBlockTileEntity(x, y, z);
+        	if (te instanceof TileEntityTicketMachine) {
+        		if (((TileEntityTicketMachine)te).hasTicket()) {
+        			ret = Icons.front_ticket;
+        		}
+        	}
+        }
+        
+        return ret;
+    }
 
 	@Override
 	public Icon getIcon(int side, int metadata) {
@@ -85,6 +105,10 @@ public class BlockTicketMachine extends BlockContainer {
 		super.onBlockPlacedBy(world, z, y, z, entityliving, itemStack);
 		ForgeDirection orientation = BlockUtils.get2dOrientation(entityliving);
 		world.setBlockMetadataWithNotify(x, y, z, orientation.getOpposite().ordinal(), 3);
+		TileEntity te = world.getBlockTileEntity(x, y, z);
+		if (te != null && te instanceof TileEntityTicketMachine && entityliving instanceof EntityPlayer) {
+			((TileEntityTicketMachine)te).setOwner(((EntityPlayer)entityliving).username);
+		}
 	}
 
 	@Override

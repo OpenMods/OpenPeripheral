@@ -370,12 +370,12 @@ public class TileEntityGlassesBridge extends TileEntity implements IAttachable {
 		try {
 			lock.lock();
 			try {
-				return FontSizeChecker.instance.getStringWidth(str);
+				return FontSizeChecker.getInstance().getStringWidth(str);
 			} finally {
 				lock.unlock();
 			}
 		} catch (Exception e) {
-
+			e.printStackTrace();
 		}
 		return str.length() * 8;
 	}

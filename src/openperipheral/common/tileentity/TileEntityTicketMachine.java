@@ -6,6 +6,9 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.INetworkManager;
+import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.Packet132TileEntityData;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import openperipheral.api.IConditionalSlots;
@@ -20,7 +23,9 @@ public class TileEntityTicketMachine extends TileEntity implements IInventory, I
 
 	protected OPInventory inventory = new OPInventory("ticketmachine", false, 3);
 	private Item ticketItem;
+	private boolean hasTicket = false;
 	private boolean isLocked = false;
+	private String owner = "TicketMachine";
 
 	public TileEntityTicketMachine() {
 		inventory.addCallback(this);
@@ -28,6 +33,10 @@ public class TileEntityTicketMachine extends TileEntity implements IInventory, I
 		if (ticketStack != null) {
 			ticketItem = ticketStack.getItem();
 		}
+	}
+
+	public void setOwner(String owner) {
+		this.owner = owner;
 	}
 
 	@Override
@@ -103,7 +112,7 @@ public class TileEntityTicketMachine extends TileEntity implements IInventory, I
 		return false;
 	}
 
-	public boolean createTicket(String destination, boolean drop) {
+	public boolean createTicket(String destination) {
 		ItemStack paperStack = inventory.getStackInSlot(0);
 		ItemStack inkStack = inventory.getStackInSlot(1);
 		ItemStack outputStack = inventory.getStackInSlot(2);
@@ -111,22 +120,52 @@ public class TileEntityTicketMachine extends TileEntity implements IInventory, I
 			if (isStackValidForSlot(0, paperStack) && isStackValidForSlot(1, inkStack) && outputStack == null) {
 				ItemStack output = new ItemStack(ticketItem);
 				NBTTagCompound tag = new NBTTagCompound();
-				tag.setString("owner", "Mikeemoo");
+				tag.setString("owner", owner);
 				tag.setString("dest", destination);
 				output.setTagCompound(tag);
 				decrStackSize(0, 1);
 				decrStackSize(1, 1);
-				if (drop) {
-					BlockUtils.dropItemStackInWorld(worldObj, xCoord, yCoord, zCoord, output);
-				} else {
-					setInventorySlotContents(2, output);
-				}
+				setInventorySlotContents(2, output);
+				worldObj.playSoundEffect((double)xCoord + 0.5D, (double)yCoord + 0.5D, (double)zCoord + 0.5D, "openperipheral.ticketmachine", 0.3F, 0.6F);
+				
 				return true;
 
 			}
 		} catch (Exception e) {
 		}
 		return false;
+	}
+	
+	public boolean hasTicket() {
+		return hasTicket;
+	}
+	
+	@Override
+	public Packet getDescriptionPacket() {
+		Packet132TileEntityData packet = new Packet132TileEntityData();
+		packet.actionType = 0;
+		packet.xPosition = xCoord;
+		packet.yPosition = yCoord;
+		packet.zPosition = zCoord;
+		NBTTagCompound nbt = new NBTTagCompound();
+		writeToNetwork(nbt);
+		packet.customParam1 = nbt;
+		return packet;
+	}
+	
+
+	@Override
+	public void onDataPacket(INetworkManager net, Packet132TileEntityData pkt) {
+		readFromNetwork(pkt.customParam1);
+		worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
+	}
+
+	public void readFromNetwork(NBTTagCompound tag) {
+		hasTicket = tag.getBoolean("hasTicket");
+	}
+
+	public void writeToNetwork(NBTTagCompound tag) {
+		tag.setBoolean("hasTicket", hasTicket);
 	}
 
 	public void addBlockEvent(int eventId, int eventParam) {
@@ -146,6 +185,7 @@ public class TileEntityTicketMachine extends TileEntity implements IInventory, I
 		super.writeToNBT(tag);
 		tag.setBoolean("locked", isLocked);
 		inventory.writeToNBT(tag);
+		tag.setString("owner", owner);
 	}
 
 	@Override
@@ -153,6 +193,9 @@ public class TileEntityTicketMachine extends TileEntity implements IInventory, I
 		super.readFromNBT(tag);
 		isLocked = tag.getBoolean("locked");
 		inventory.readFromNBT(tag);
+		if (tag.hasKey("owner")) {
+			owner = tag.getString("owner");
+		}
 	}
 
 	@Override
@@ -172,14 +215,20 @@ public class TileEntityTicketMachine extends TileEntity implements IInventory, I
 
 	@Override
 	public void onInventoryChanged(IInventory inventory) {
-
+		if (!worldObj.isRemote) {
+			boolean nowHasTicket = inventory.getStackInSlot(2) != null;
+			if (nowHasTicket != hasTicket) {
+				hasTicket = nowHasTicket;
+				worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+			}
+		}
 	}
 
 	@Override
 	public boolean canTakeStack(int slotNumber, EntityPlayer player) {
 		return slotNumber == 2 || !isLocked;
 	}
-	
+
 	public ForgeDirection getOrientation() {
 		return ForgeDirection.getOrientation(worldObj.getBlockMetadata(xCoord, yCoord, zCoord));
 	}

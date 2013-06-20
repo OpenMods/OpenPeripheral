@@ -67,7 +67,7 @@ public class DrawableText extends BaseDrawable implements IDrawable {
 	}
 
 	public int getWidth() {
-		return FontSizeChecker.instance.getStringWidth(getText());
+		return FontSizeChecker.getInstance().getStringWidth(getText());
 	}
 
 	@Override
