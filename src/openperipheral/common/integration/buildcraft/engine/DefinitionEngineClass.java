@@ -28,5 +28,4 @@ public class DefinitionEngineClass implements IClassDefinition {
 	public ArrayList<IMethodDefinition> getMethods(TileEntity tile) {
 		return methods;
 	}
-
 }

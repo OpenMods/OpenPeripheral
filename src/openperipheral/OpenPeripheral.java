@@ -99,8 +99,6 @@ public class OpenPeripheral {
 		proxy.init();
 		proxy.registerRenderInformation();
 
-		DefinitionManager.load();
-		
 		RestrictionFactory.registerRestrictionHandler("min", new IRestrictionHandler() {
 			@Override
 			public IRestriction createFromJson(JsonNode json) {
@@ -163,6 +161,8 @@ public class OpenPeripheral {
 			TEModule.init();
 		}
 
+		DefinitionManager.load();
+		
 		TickRegistry.registerTickHandler(new TickHandler(), Side.SERVER);
 		ComputerCraftAPI.registerExternalPeripheral(TileEntity.class, peripheralHandler);
 

@@ -118,6 +118,14 @@
             ]
          },
          {
+            "className":"appeng.api.me.tiles.IGridInterface",
+            "methods":[
+               {
+                  "name":"getPowerUsageAvg"
+               }
+            ]
+         },
+         {
             "className":"appeng.api.me.tiles.ITileInterfaceApi",
             "methods":[
                {
@@ -1062,6 +1070,22 @@
                {
                   "name":"getStringWidth",
                   "instant":"true"
+               }
+            ]
+         },{
+            "className":"openperipheral.common.tileentity.TileEntityTicketMachine",
+            "methods":[
+               {
+                  "name":"createTicket"
+               },
+               {
+                  "name":"lock"
+               },
+               {
+                  "name":"unlock"
+               },
+               {
+                  "name":"isLocked"
                }
             ]
          }

@@ -52,7 +52,18 @@ public class DefinitionManager {
 		for (Entry<Class, ArrayList<IClassDefinition>> entry : classList.entrySet()) {
 			if (entry.getKey().isAssignableFrom(tile.getClass())) {
 				for (IClassDefinition def : entry.getValue()) {
-					methods.addAll(def.getMethods(tile));
+					ArrayList<IMethodDefinition> meths = def.getMethods(tile);
+					for (IMethodDefinition methdef : meths) {
+						boolean dupe = false;
+						for (IMethodDefinition methdef2 : methods) {
+							if (methdef2.getLuaName().equals(methdef.getLuaName())) {
+								dupe = true;
+							}
+						}
+						if (!dupe) {
+							methods.add(methdef);
+						}
+					}
 				}
 			}
 		}

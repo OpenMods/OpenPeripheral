@@ -31,7 +31,6 @@ public class ReflectionHelper {
 			try {
 				return field.get(instance);
 			} catch (Exception e) {
-				e.printStackTrace();
 			}
 		}
 		return null;

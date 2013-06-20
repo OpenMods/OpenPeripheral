@@ -43,4 +43,5 @@ public class DefinitionJsonClass implements IClassDefinition {
 	public ArrayList<IMethodDefinition> getMethods(TileEntity tile) {
 		return methods;
 	}
+
 }

@@ -30,12 +30,14 @@ public class CommonProxy implements IGuiHandler {
 		OpenPeripheral.Blocks.playerInventory = new BlockPlayerInventory();
 		if (Loader.isModLoaded(Mods.RAILCRAFT)) {
 			OpenPeripheral.Blocks.ticketMachine = new BlockTicketMachine();
+			RecipeUtils.addTicketMachineRecipe();
 		}
 		setupLanguages();
 
 		RecipeUtils.addGlassesRecipe();
 		RecipeUtils.addBridgeRecipe();
 		RecipeUtils.addBookRecipe();
+		RecipeUtils.addProxyRecipe();
 
 		MinecraftForge.EVENT_BUS.register(new ChatCommandInterceptor());
 

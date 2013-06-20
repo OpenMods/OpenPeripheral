@@ -32,6 +32,11 @@ public class RecipeUtils {
 			.append("-----------------\n\n")
 			.append("Peripheral Glasses are a powerful new feature that let you publish information to the players HUD, and send commands via chat back to your computer. See the ComputerCraft forums for more information.")
 			.toString();
+	public static String page8 = new StringBuilder()
+			.append("Peripheral Proxy\n")
+			.append("-----------------\n\n")
+			.append("You can't connect wired modems to non-solid blocks, so stick down a Peripheral Proxy next to you're block and attach your wired modem to that instead!")
+			.toString();
 
 	public static void addGlassesRecipe() {
 		Block peripheral = getCCBlock("peripheral");
@@ -52,6 +57,22 @@ public class RecipeUtils {
 				.add(new ShapedOreRecipe(new ItemStack(OpenPeripheral.Blocks.glassesBridge),
 						new Object[] { "lwl", "wrw", "lwl", Character.valueOf('w'), new ItemStack(cable, 1, 1), Character.valueOf('r'),
 								new ItemStack(Block.blockRedstone), Character.valueOf('l'), new ItemStack(peripheral, 1, 1), }));
+	}
+
+	public static void addTicketMachineRecipe() {
+		CraftingManager
+				.getInstance()
+				.getRecipeList()
+				.add(new ShapedOreRecipe(new ItemStack(OpenPeripheral.Blocks.ticketMachine), new Object[] { "iii", "iii", "igi", Character.valueOf('i'),
+						new ItemStack(Item.ingotIron), Character.valueOf('g'), new ItemStack(Block.thinGlass), }));
+	}
+
+	public static void addProxyRecipe() {
+		CraftingManager
+				.getInstance()
+				.getRecipeList()
+				.add(new ShapedOreRecipe(new ItemStack(OpenPeripheral.Blocks.proxy), new Object[] { "iri", "rrr", "iri", Character.valueOf('i'),
+						new ItemStack(Item.ingotIron), Character.valueOf('r'), new ItemStack(Item.redstone), }));
 	}
 
 	private static Block getCCBlock(String fieldName) {
@@ -83,6 +104,7 @@ public class RecipeUtils {
 		bookPages.appendTag(new NBTTagString("5", page5));
 		bookPages.appendTag(new NBTTagString("6", page6));
 		bookPages.appendTag(new NBTTagString("7", page7));
+		bookPages.appendTag(new NBTTagString("8", page8));
 		bookTag.setTag("pages", bookPages);
 		book.setTagCompound(bookTag);
 		return book;

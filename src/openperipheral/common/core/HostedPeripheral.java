@@ -114,19 +114,22 @@ public class HostedPeripheral implements IHostedPeripheral {
 			ArrayList<Object> args = new ArrayList(Arrays.asList(arguments));
 
 			Class[] requiredParameters = methodDefinition.getRequiredParameters();
+			
+			if (requiredParameters != null) {
 
-			replaceArguments(args, methodDefinition.getReplacements());
-
-			if (args.size() != requiredParameters.length) {
-				throw new Exception("Invalid number of parameters. Expected " + (requiredParameters.length - methodDefinition.getReplacements().size()));
-			}
-
-			for (int i = 0; i < requiredParameters.length; i++) {
-				Object converted = TypeConversionRegistry.fromLua(args.get(i), requiredParameters[i]);
-				if (converted == null) {
-					throw new Exception("Invalid parameter number " + (i + 1));
+				replaceArguments(args, methodDefinition.getReplacements());
+	
+				if (args.size() != requiredParameters.length) {
+					throw new Exception("Invalid number of parameters. Expected " + (requiredParameters.length - methodDefinition.getReplacements().size()));
 				}
-				args.set(i, converted);
+	
+				for (int i = 0; i < requiredParameters.length; i++) {
+					Object converted = TypeConversionRegistry.fromLua(args.get(i), requiredParameters[i]);
+					if (converted == null) {
+						throw new Exception("Invalid parameter number " + (i + 1));
+					}
+					args.set(i, converted);
+				}
 			}
 
 			for (int i = 0; i < args.size(); i++) {
