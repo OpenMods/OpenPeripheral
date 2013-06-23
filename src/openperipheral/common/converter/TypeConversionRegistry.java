@@ -1,6 +1,7 @@
 package openperipheral.common.converter;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import openperipheral.api.ITypeConverter;
 import dan200.computer.core.ILuaObject;
@@ -34,6 +35,9 @@ public class TypeConversionRegistry {
 			if (response != null) {
 				return response;
 			}
+		}
+		if (obj instanceof Map) {
+			return obj;
 		}
 		return obj.toString();
 	}

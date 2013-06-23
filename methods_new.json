@@ -893,10 +893,12 @@
             "className":"mithion.arsmagica.api.power.IPowerIntegration",
             "methods":[
                {
-                  "name":"getCharge"
+                  "name":"getEssenceCharge",
+                  "obfuscated":"getCharge"
                },
                {
-                  "name":"getCapacity"
+                  "name":"getEssenceCapacity",
+                  "obfuscated":"getCapacity"
                },
                {
                   "name":"getDefecit"
@@ -905,7 +907,8 @@
                   "name":"getDefecitThreshold"
                },
                {
-                  "name":"canProvidePower"
+                  "name":"canProvideEssencePower",
+                  "obfuscated":"canProvidePower"
                },
                {
                   "name":"isNexus"
@@ -920,7 +923,8 @@
                   "name":"getNumHopsToNexus"
                },
                {
-                  "name":"getPowerType"
+                  "name": "getEssencePowerType",
+                  "obfuscated":"getPowerType"
                }
             ]
          }

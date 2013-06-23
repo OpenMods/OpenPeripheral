@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
+import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -59,7 +60,9 @@ public class HostedPeripheral implements IHostedPeripheral {
 		}
 		methodNames = mNames.toArray(new String[mNames.size()]);
 
-		ItemStack is = new ItemStack(tile.getBlockType(), 1, tile.getBlockMetadata());
+		Block blockType = tile.getBlockType();
+		
+		ItemStack is = new ItemStack(blockType, 1, blockType.getDamageValue(tile.worldObj, tile.xCoord, tile.yCoord, tile.zCoord));
 
 		try {
 			name = is.getDisplayName();
@@ -118,9 +121,13 @@ public class HostedPeripheral implements IHostedPeripheral {
 			if (requiredParameters != null) {
 
 				replaceArguments(args, methodDefinition.getReplacements());
-	
+				
 				if (args.size() != requiredParameters.length) {
-					throw new Exception("Invalid number of parameters. Expected " + (requiredParameters.length - methodDefinition.getReplacements().size()));
+					int replacements = 0;
+					if (methodDefinition.getReplacements() != null) {
+						replacements = methodDefinition.getReplacements().size();
+					}
+					throw new Exception("Invalid number of parameters. Expected " + (requiredParameters.length - replacements));
 				}
 	
 				for (int i = 0; i < requiredParameters.length; i++) {

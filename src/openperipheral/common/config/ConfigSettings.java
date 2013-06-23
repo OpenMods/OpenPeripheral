@@ -45,6 +45,8 @@ public class ConfigSettings {
 	public static int proxyBlockId = 581;
 	public static int playerInventoryId = 582;
 	public static int ticketMachineId = 583;
+	
+	public static boolean enabledExtendedInventory = true;
 
 	public static void loadAndSaveConfig(File suggestedConfigFile) {
 
@@ -78,6 +80,10 @@ public class ConfigSettings {
 		prop = configFile.get("general", "cacheInterval", CACHE_REFRESH_INTERVAL);
 		prop.comment = "How often the cache file gets updated (in days)";
 		CACHE_REFRESH_INTERVAL = prop.getInt();
+		
+		prop = configFile.get("general", "enabledExtendedInventory", enabledExtendedInventory);
+		prop.comment = "Do you wish to enable the extended inventory methods? (pull, push, swap)";
+		enabledExtendedInventory = prop.getBoolean(enabledExtendedInventory);
 
 		prop = configFile.get("items", "glassesId", glassesId);
 		prop.comment = "The id of the glasses";
@@ -95,6 +101,10 @@ public class ConfigSettings {
 		prop.comment = "The id of the player ticket machine";
 		ticketMachineId = prop.getInt();
 
+		prop = configFile.get("blocks", "proxyBlockId", proxyBlockId);
+		prop.comment = "The id of the proxy block";
+		proxyBlockId = prop.getInt();
+		
 		if (FRESH_INSTALL && analyticsEnabled) {
 			analytics(container);
 		}

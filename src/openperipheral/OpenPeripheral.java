@@ -30,6 +30,7 @@ import openperipheral.common.integration.mps.MPSModule;
 import openperipheral.common.integration.sgcraft.SGCraftModule;
 import openperipheral.common.integration.thaumcraft.ThaumcraftModule;
 import openperipheral.common.integration.thermalexpansion.TEModule;
+import openperipheral.common.integration.vanilla.InventoryClassDefinition;
 import openperipheral.common.item.ItemGlasses;
 import openperipheral.common.postchange.PostChangeMarkUpdate;
 import openperipheral.common.postchange.PostChangeRegistry;
@@ -160,6 +161,8 @@ public class OpenPeripheral {
 		if (Loader.isModLoaded(Mods.THERMALEXPANSION)) {
 			TEModule.init();
 		}
+		
+		DefinitionManager.addClassDefinition(new InventoryClassDefinition());
 
 		DefinitionManager.load();
 		
