@@ -75,6 +75,14 @@ public class RecipeUtils {
 						new ItemStack(Item.ingotIron), Character.valueOf('r'), new ItemStack(Item.redstone), }));
 	}
 
+	public static void addPIMRecipe() {
+		CraftingManager
+				.getInstance()
+				.getRecipeList()
+				.add(new ShapedOreRecipe(new ItemStack(OpenPeripheral.Blocks.playerInventory), new Object[] { "ooo", "rcr", Character.valueOf('o'),
+						new ItemStack(Block.obsidian), Character.valueOf('r'), new ItemStack(Item.redstone), Character.valueOf('c'), new ItemStack(Block.chest), }));
+	}
+
 	private static Block getCCBlock(String fieldName) {
 		Block block = null;
 		try {

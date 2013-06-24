@@ -74,6 +74,9 @@ public class InventoryMoveIntoMethod implements IMethodDefinition {
 			int slot = (Integer) args[1];
 			int maxAmount = (Integer) args[2];
 			int intoSlot = (Integer) args[3];
+			if (direction == ForgeDirection.UNKNOWN) {
+				return 0;
+			}
 
 			int targetX = tile.xCoord + direction.offsetX;
 			int targetY = tile.yCoord + direction.offsetY;

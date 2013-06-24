@@ -38,6 +38,7 @@ public class CommonProxy implements IGuiHandler {
 		RecipeUtils.addBridgeRecipe();
 		RecipeUtils.addBookRecipe();
 		RecipeUtils.addProxyRecipe();
+		RecipeUtils.addPIMRecipe();
 
 		MinecraftForge.EVENT_BUS.register(new ChatCommandInterceptor());
 

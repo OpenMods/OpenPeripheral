@@ -71,6 +71,9 @@ public class InventoryMoveMethod implements IMethodDefinition {
 		int merged = 0;
 		if (tile instanceof IInventory) {
 			ForgeDirection direction = (ForgeDirection) args[0];
+			if (direction == ForgeDirection.UNKNOWN) {
+				return 0;
+			}
 			int slot = (Integer) args[1];
 			int maxAmount = (Integer) args[2];
 
