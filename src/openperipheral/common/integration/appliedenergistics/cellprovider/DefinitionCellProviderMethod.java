@@ -73,7 +73,7 @@ public class DefinitionCellProviderMethod implements IMethodDefinition {
 	}
 
 	@Override
-	public Object execute(TileEntity tile, Object[] args) throws Exception {
+	public Object execute(Object tile, Object[] args) throws Exception {
 		if (tile instanceof ICellProvider) {
 			IMEInventoryHandler handler = ((ICellProvider) tile).provideCell();
 			return ReflectionHelper.callMethod(false, "", handler, new String[] { name }, args);	

@@ -57,11 +57,11 @@ public class InventorySwapMethod implements IMethodDefinition {
 	}
 
 	@Override
-	public Object execute(TileEntity tile, Object[] args) throws Exception {
-		if (tile instanceof IInventory) {
-			IInventory invent = (IInventory) tile;
-			int from = (Integer)args[0];
-			int to = (Integer)args[1];
+	public Object execute(Object target, Object[] args) throws Exception {
+		if (target instanceof IInventory && target instanceof TileEntity) {
+			IInventory invent = (IInventory) target;
+			int from = ((Integer)args[0] - 1);
+			int to = ((Integer)args[1] - 1);
 			if (from >= 0 && from < invent.getSizeInventory() && to >= 0 && to < invent.getSizeInventory()) {
 				
 				ItemStack stack1 = invent.getStackInSlot(from);

@@ -1,14 +1,14 @@
-package openperipheral.common.integration.sgcraft.method;
+package openperipheral.common.integration.vanilla;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.inventory.IInventory;
+
 import openperipheral.api.IMethodDefinition;
 import openperipheral.api.IRestriction;
-import openperipheral.common.util.ReflectionHelper;
 
-public class SGCraftIsConnected implements IMethodDefinition {
+public class InventoryStackInSlotMethod implements IMethodDefinition {
 
 	@Override
 	public HashMap<Integer, String> getReplacements() {
@@ -27,7 +27,7 @@ public class SGCraftIsConnected implements IMethodDefinition {
 
 	@Override
 	public Class[] getRequiredParameters() {
-		return new Class[] { };
+		return new Class[] { int.class };
 	}
 
 	@Override
@@ -37,7 +37,7 @@ public class SGCraftIsConnected implements IMethodDefinition {
 
 	@Override
 	public String getLuaName() {
-		return "isConnected";
+		return "getStackInSlot";
 	}
 
 	@Override
@@ -47,7 +47,7 @@ public class SGCraftIsConnected implements IMethodDefinition {
 
 	@Override
 	public boolean needsSanitize() {
-		return false;
+		return true;
 	}
 
 	@Override
@@ -56,8 +56,16 @@ public class SGCraftIsConnected implements IMethodDefinition {
 	}
 
 	@Override
-	public Object execute(Object tile, Object[] args) throws Exception {
-		return (Boolean) ReflectionHelper.callMethod("", tile, new String[] { "isConnected" });
+	public Object execute(Object target, Object[] args) throws Exception {
+		if (target instanceof IInventory) {
+			IInventory invent = (IInventory) target;
+			int slot = (Integer) args[0];
+			if (slot < 1 || slot > invent.getSizeInventory()) {
+				throw new Exception("Invalid slot number");
+			}
+			return invent.getStackInSlot(slot-1);
+		}
+		return null;
 	}
 
 }

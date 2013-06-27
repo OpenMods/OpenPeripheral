@@ -19,6 +19,7 @@ public class InventoryClassDefinition implements IClassDefinition {
 			methods.add(new InventoryMoveMethod("push", false));
 			methods.add(new InventoryCondenseMethod());
 			methods.add(new InventorySwapMethod());
+			methods.add(new InventoryStackInSlotMethod());
 		}
 	}
 	

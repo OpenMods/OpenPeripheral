@@ -58,9 +58,9 @@ public class InventoryCondenseMethod implements IMethodDefinition {
 	}
 
 	@Override
-	public Object execute(TileEntity tile, Object[] args) throws Exception {
-		if (tile instanceof IInventory) {
-			IInventory invent = (IInventory) tile;
+	public Object execute(Object target, Object[] args) throws Exception {
+		if (target instanceof IInventory) {
+			IInventory invent = (IInventory) target;
 			ArrayList<ItemStack> stacks = new ArrayList<ItemStack>();
 			for (int i = 0; i < invent.getSizeInventory(); i++) {
 				ItemStack sta = invent.getStackInSlot(i);

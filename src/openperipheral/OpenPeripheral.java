@@ -10,6 +10,7 @@ import openperipheral.common.CommonProxy;
 import openperipheral.common.block.BlockGlassesBridge;
 import openperipheral.common.block.BlockPlayerInventory;
 import openperipheral.common.block.BlockProxy;
+import openperipheral.common.block.BlockSensor;
 import openperipheral.common.block.BlockTicketMachine;
 import openperipheral.common.config.ConfigSettings;
 import openperipheral.common.converter.ConverterArray;
@@ -32,6 +33,7 @@ import openperipheral.common.integration.thaumcraft.ThaumcraftModule;
 import openperipheral.common.integration.thermalexpansion.TEModule;
 import openperipheral.common.integration.vanilla.InventoryClassDefinition;
 import openperipheral.common.item.ItemGlasses;
+import openperipheral.common.item.ItemRemote;
 import openperipheral.common.postchange.PostChangeMarkUpdate;
 import openperipheral.common.postchange.PostChangeRegistry;
 import openperipheral.common.postchange.PostChangeScript;
@@ -70,6 +72,7 @@ public class OpenPeripheral {
 
 	public static class Items {
 		public static ItemGlasses glasses;
+		public static ItemRemote remote;
 	}
 
 	public static class Blocks {
@@ -77,10 +80,12 @@ public class OpenPeripheral {
 		public static BlockProxy proxy;
 		public static BlockPlayerInventory playerInventory;
 		public static BlockTicketMachine ticketMachine;
+		public static BlockSensor sensor;
 	}
 
 	public enum Gui {
-		ticketMachine
+		ticketMachine,
+		remote
 	};
 
 	public static int renderId;

@@ -69,10 +69,12 @@ public class DefinitionMetaMethod implements IMethodDefinition {
 	}
 
 	@Override
-	public Object execute(TileEntity tile, Object[] args) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, ScriptException {
-		Object metaTileEntity = DefinitionMetaClass.getMetaTileEntity(tile);
-		if (metaTileEntity != null) {
-			return callback.execute(this, metaTileEntity, args);
+	public Object execute(Object tile, Object[] args) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, ScriptException {
+		if (tile instanceof TileEntity) {
+			Object metaTileEntity = DefinitionMetaClass.getMetaTileEntity((TileEntity)tile);
+			if (metaTileEntity != null) {
+				return callback.execute(this, metaTileEntity, args);
+			}
 		}
 		return null;
 	}

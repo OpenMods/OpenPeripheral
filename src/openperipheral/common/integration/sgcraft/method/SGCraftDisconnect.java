@@ -57,7 +57,7 @@ public class SGCraftDisconnect implements IMethodDefinition {
 	}
 
 	@Override
-	public Object execute(TileEntity tile, Object[] args) throws Exception {
+	public Object execute(Object tile, Object[] args) throws Exception {
 		ReflectionWrapper tileWrapped = new ReflectionWrapper(tile);
 		Object connectedLocation = tileWrapped.get("connectedLocation").getRaw();
 		Object localSGBaseTE = ReflectionHelper.callMethod("gcewing.sg.SGBaseTE", null, new String[] { "at" }, connectedLocation);

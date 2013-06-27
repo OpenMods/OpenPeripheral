@@ -1052,6 +1052,10 @@
                   "instant":"true"
                },
                {
+                  "name":"addGradientBox",
+                  "instant":"true"
+               },
+               {
                   "name":"clear",
                   "instant":"true"
                },

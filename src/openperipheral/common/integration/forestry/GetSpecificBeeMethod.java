@@ -64,9 +64,9 @@ public class GetSpecificBeeMethod implements IMethodDefinition {
 	}
 
 	@Override
-	public Object execute(TileEntity tile, Object[] args) throws Exception {
-		if (tile instanceof IBeeHousing) {
-			IBeeHousing housing = (IBeeHousing) tile;
+	public Object execute(Object target, Object[] args) throws Exception {
+		if (target instanceof IBeeHousing) {
+			IBeeHousing housing = (IBeeHousing) target;
 			ItemStack bee = null;
 			if (methodName.equals("getQueen")) {
 				bee = housing.getQueen();

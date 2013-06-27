@@ -11,4 +11,5 @@ public class Mods {
 	public static final String SGCRAFT = "SGCraft";
 	public static final String THERMALEXPANSION = "ThermalExpansion";
 	public static final String RAILCRAFT = "Railcraft";
+	public static final String COMPUTERCRAFT = "ComputerCraft";
 }

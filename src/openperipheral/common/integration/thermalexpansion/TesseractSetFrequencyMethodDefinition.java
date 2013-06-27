@@ -56,7 +56,7 @@ public class TesseractSetFrequencyMethodDefinition implements IMethodDefinition 
 	}
 
 	@Override
-	public Object execute(TileEntity tile, Object[] args) throws Exception {
+	public Object execute(Object tile, Object[] args) throws Exception {
 		ReflectionHelper.callMethod(false, "", tile, new String[] { "removeFromRegistry" });
 		ReflectionHelper.setProperty("", tile, args[0], "frequency");
 		ReflectionHelper.callMethod(false, "", tile, new String[] { "addToRegistry" });

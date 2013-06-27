@@ -64,7 +64,7 @@ public class SGCraftConnect implements IMethodDefinition {
 	}
 
 	@Override
-	public Object execute(TileEntity tile, Object[] args) throws Exception {
+	public Object execute(Object tile, Object[] args) throws Exception {
 		String homeAddress = (String) ReflectionHelper.callMethod("", tile, new String[] { "findHomeAddress" });
 		Object targetStargate = ReflectionHelper.callMethod(false, "gcewing.sg.SGAddressing", null, new String[] { "findAddressedStargate" }, args[0]);
 		if (targetStargate == null) {

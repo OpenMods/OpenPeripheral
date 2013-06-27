@@ -2,6 +2,9 @@ package openperipheral.common.core;
 
 import java.util.WeakHashMap;
 
+import openperipheral.api.IPeripheralProvider;
+import openperipheral.common.peripheral.HostedPeripheral;
+
 import net.minecraft.tileentity.TileEntity;
 import dan200.computer.api.IHostedPeripheral;
 import dan200.computer.api.IPeripheral;
@@ -16,6 +19,10 @@ public class PeripheralHandler implements IPeripheralHandler {
 
 		if (tile instanceof IPeripheral) {
 			return null;
+		}
+		
+		if (tile instanceof IPeripheralProvider) {
+			return ((IPeripheralProvider) tile).providePeripheral();
 		}
 
 		if (!peripherals.containsKey(tile)) {

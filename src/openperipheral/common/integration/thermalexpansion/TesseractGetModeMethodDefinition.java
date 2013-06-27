@@ -57,7 +57,7 @@ public class TesseractGetModeMethodDefinition implements IMethodDefinition {
 	}
 
 	@Override
-	public Object execute(TileEntity tile, Object[] args) throws Exception {
+	public Object execute(Object tile, Object[] args) throws Exception {
 		int mode = new Byte((Byte)(ReflectionHelper.getProperty("", tile, "mode"))).intValue();
 		return TEModule.tesseractModes[mode];
 	}

@@ -56,7 +56,7 @@ public class DefinitionCurrentOutputMethod implements IMethodDefinition {
 	}
 
 	@Override
-	public Object execute(TileEntity tile, Object[] args) throws Exception {
+	public Object execute(Object tile, Object[] args) throws Exception {
 		Object engine = ReflectionHelper.callMethod(false, "", tile, new String[] { "getEngine" });
 		if (engine != null) {
 			return ReflectionHelper.callMethod(false, "", engine, new String[] { "getCurrentOutput" });

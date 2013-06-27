@@ -33,13 +33,8 @@ public class ConverterItemStack implements ITypeConverter {
 	@Override
 	public Object toLua(Object o) {
 		if (o instanceof ItemStack) {
-			ItemStack s = (ItemStack) o;
 			HashMap ret = new HashMap();
-			ret.put("id", s.itemID);
-			ret.put("name", InventoryUtils.getNameForItemStack(s));
-			ret.put("rawName", InventoryUtils.getRawNameForStack(s));
-			ret.put("qty", s.stackSize);
-			ret.put("dmg", s.getItemDamage());
+			InventoryUtils.itemstackToMap(ret, (ItemStack) o);
 			return ret;
 		}
 		return null;

@@ -67,14 +67,15 @@ public class InventoryMoveMethod implements IMethodDefinition {
 	}
 
 	@Override
-	public Object execute(TileEntity tile, Object[] args) throws Exception {
+	public Object execute(Object target, Object[] args) throws Exception {
 		int merged = 0;
-		if (tile instanceof IInventory) {
+		if (target instanceof IInventory && target instanceof TileEntity) {
+			TileEntity tile = (TileEntity) target;
 			ForgeDirection direction = (ForgeDirection) args[0];
 			if (direction == ForgeDirection.UNKNOWN) {
 				return 0;
 			}
-			int slot = (Integer) args[1];
+			int slot = ((Integer) args[1]) - 1;
 			int maxAmount = (Integer) args[2];
 
 			int targetX = tile.xCoord + direction.offsetX;
