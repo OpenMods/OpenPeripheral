@@ -13,6 +13,7 @@ import net.minecraftforge.common.MinecraftForge;
 import openperipheral.OpenPeripheral;
 import openperipheral.client.gui.GuiTicketMachine;
 import openperipheral.client.model.ModelRobot;
+import openperipheral.client.renderer.RenderLazer;
 import openperipheral.client.renderer.RenderRobot;
 import openperipheral.client.renderer.TileEntityPlayerInventoryRenderer;
 import openperipheral.client.renderer.TileEntitySensorRenderer;
@@ -21,6 +22,7 @@ import openperipheral.common.container.ContainerComputer;
 import openperipheral.common.container.ContainerGeneric;
 import openperipheral.common.core.Mods;
 import openperipheral.common.core.TickHandler;
+import openperipheral.common.entity.EntityLazer;
 import openperipheral.common.entity.EntityRobot;
 import openperipheral.common.tileentity.TileEntityPlayerInventory;
 import openperipheral.common.tileentity.TileEntitySensor;
@@ -75,5 +77,6 @@ public class ClientProxy extends CommonProxy {
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySensor.class, new TileEntitySensorRenderer());
 
 		RenderingRegistry.registerEntityRenderingHandler(EntityRobot.class, new RenderRobot(new ModelRobot(), 0.7F));
+		RenderingRegistry.registerEntityRenderingHandler(EntityLazer.class, new RenderLazer());
 	}
 }

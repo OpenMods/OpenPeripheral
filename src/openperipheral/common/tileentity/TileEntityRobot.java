@@ -90,6 +90,26 @@ public class TileEntityRobot extends TileEntity implements IAttachable {
 		}
 		return robot.posZ;
 	}
+
+	
+	public void fire() throws Exception {
+		EntityRobot robot = getRobot();
+		if (robot == null) {
+			throw new Exception("No robot available");
+		}
+		robot.playSound("openperipheral.lazer", 1F, worldObj.rand.nextFloat() + 0.4f);
+		robot.fire();
+	}
+	
+
+	public void look(float direction) throws Exception {
+		EntityRobot robot = getRobot();
+		if (robot == null) {
+			throw new Exception("No robot available");
+		}
+		/// ARRGGHHHHHH
+		robot.renderYawOffset = robot.prevRotationYawHead = robot.rotationYawHead = robot.prevRotationYaw = robot.rotationYaw = direction;
+	}
 	
 	public void jump() throws Exception {
 		EntityRobot robot = getRobot();

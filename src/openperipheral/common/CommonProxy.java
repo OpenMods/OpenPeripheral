@@ -17,6 +17,7 @@ import openperipheral.common.block.BlockTicketMachine;
 import openperipheral.common.container.ContainerComputer;
 import openperipheral.common.container.ContainerGeneric;
 import openperipheral.common.core.Mods;
+import openperipheral.common.entity.EntityLazer;
 import openperipheral.common.entity.EntityRobot;
 import openperipheral.common.item.ItemGeneric;
 import openperipheral.common.item.ItemGlasses;
@@ -66,6 +67,7 @@ public class CommonProxy implements IGuiHandler {
 		MinecraftForge.EVENT_BUS.register(new ChatCommandInterceptor());
 
 		EntityRegistry.registerModEntity(EntityRobot.class, "Robot", 600, OpenPeripheral.instance, 64, 1, true);
+		EntityRegistry.registerModEntity(EntityLazer.class, "Lazer", 601, OpenPeripheral.instance, 64, 1, true);
 
 		NetworkRegistry.instance().registerGuiHandler(OpenPeripheral.instance, this);
 	

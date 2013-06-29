@@ -69,8 +69,15 @@ public class EntityRobot extends EntityCreature {
         return 32;
     }
 	
+	/** 
+	 * doesn't appear to work
+	 */
+	@Override
+	public boolean canBePushed() {
+		return false;
+    }
+	
 	public void suckUp() {
-		
 		List<EntityItem> entities = worldObj.getEntitiesWithinAABB(EntityItem.class,
 				AxisAlignedBB.getAABBPool().getAABB(
 						posX - 2,
@@ -93,13 +100,9 @@ public class EntityRobot extends EntityCreature {
 				InventoryUtils.insertItemIntoInventory(inventory, stack);
 				if (stack.stackSize == 0) {
 					entity.setDead();
-				}
-				
+				}	
 			}
-			
 		}
-		
-		
 	}
 	
 	public void onEntityUpdate() {
@@ -135,7 +138,7 @@ public class EntityRobot extends EntityCreature {
 
 	@Override
 	public int getMaxHealth() {
-		return 100;
+		return 40;
 	}
 
 	@Override
@@ -220,4 +223,10 @@ public class EntityRobot extends EntityCreature {
         this.isAirBorne = true;
         ForgeHooks.onLivingJump(this);
     }
+
+	public void fire() {
+		EntityLazer lazer = new EntityLazer(worldObj, this);
+		worldObj.spawnEntityInWorld(lazer);
+	}
+	
 }

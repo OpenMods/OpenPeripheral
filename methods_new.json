@@ -1126,6 +1126,12 @@
                },
                {
                	  "name": "jump"
+               },
+               {
+               	  "name": "fire"
+               },
+               {
+               	  "name": "look"
                }
             ]
          }
