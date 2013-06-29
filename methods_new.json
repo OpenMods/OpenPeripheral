@@ -1096,6 +1096,38 @@
                   "name":"isLocked"
                }
             ]
+         },{
+            "className":"openperipheral.common.tileentity.TileEntityRobot",
+            "methods":[
+               {
+                  "name":"spawnRobot"
+               },
+               {
+                  "name":"getYaw"
+               },
+               {
+                  "name":"goto",
+                  "obfuscated": "gotoLocation"
+               },
+               {
+               	  "name": "getX"
+               },
+               {
+               	  "name": "getY"
+               },
+               {
+               	  "name": "getZ"
+               },
+               {
+               	  "name": "suck"
+               },
+               {
+               	  "name": "dropAll"
+               },
+               {
+               	  "name": "jump"
+               }
+            ]
          }
       ]
    }

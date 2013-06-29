@@ -11,6 +11,7 @@ import openperipheral.OpenPeripheral;
 import openperipheral.common.block.BlockGlassesBridge;
 import openperipheral.common.block.BlockPlayerInventory;
 import openperipheral.common.block.BlockProxy;
+import openperipheral.common.block.BlockRobot;
 import openperipheral.common.block.BlockSensor;
 import openperipheral.common.block.BlockTicketMachine;
 import openperipheral.common.container.ContainerComputer;
@@ -46,6 +47,7 @@ public class CommonProxy implements IGuiHandler {
 		OpenPeripheral.Blocks.proxy = new BlockProxy();
 		OpenPeripheral.Blocks.playerInventory = new BlockPlayerInventory();
 		OpenPeripheral.Blocks.sensor = new BlockSensor();
+		OpenPeripheral.Blocks.robot = new BlockRobot();
 		
 		if (Loader.isModLoaded(Mods.RAILCRAFT)) {
 			OpenPeripheral.Blocks.ticketMachine = new BlockTicketMachine();

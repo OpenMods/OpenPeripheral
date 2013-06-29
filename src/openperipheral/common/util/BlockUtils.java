@@ -40,6 +40,10 @@ public class BlockUtils {
 	}
 
 	public static void dropItemStackInWorld(World worldObj, int x, int y, int z, ItemStack stack) {
+		dropItemStackInWorld(worldObj, (double)x, (double)y, (double)z, stack);
+	}
+
+	public static void dropItemStackInWorld(World worldObj, double x, double y, double z, ItemStack stack) {
 		float f = 0.7F;
 		double d0 = (double) (worldObj.rand.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
 		double d1 = (double) (worldObj.rand.nextFloat() * f) + (double) (1.0F - f) * 0.5D;

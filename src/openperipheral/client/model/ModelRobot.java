@@ -1,11 +1,15 @@
 package openperipheral.client.model;
 
+import openperipheral.common.entity.EntityRobot;
+
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.Vec3;
+import net.minecraft.util.Vec3Pool;
 
 public class ModelRobot extends ModelBase {
 	// fields
@@ -123,8 +127,8 @@ public class ModelRobot extends ModelBase {
 		longarm.mirror = true;
 		setRotation(longarm, 0F, 0F, 0F);
 		gun = new ModelRenderer(this, 12, 0);
-		gun.addBox(-12F, 0F, -9F, 4, 4, 8);
-		gun.setRotationPoint(0F, 0F, 0F);
+		gun.addBox(-2F, -2F, -9F, 4, 4, 8);
+		gun.setRotationPoint(-10F, 2F, 0F);
 		gun.setTextureSize(128, 32);
 		gun.mirror = true;
 		setRotation(gun, 0F, 0F, 0F);
@@ -175,37 +179,55 @@ public class ModelRobot extends ModelBase {
 		model.rotateAngleZ = z;
 	}
 
-	public void setRotationAngles(float par1, float par2, float par3, float par4, float par5, float par6, Entity par7Entity) {
+	public void setRotationAngles(float par1, float par2, float par3, float par4, float par5, float par6, Entity entity) {
+		if (entity instanceof EntityRobot) {
 
-		head.rotateAngleY = par4 / (180F / (float) Math.PI);
-		shoulderleft.rotateAngleY = head.rotateAngleY;
-		shoulderright.rotateAngleY = head.rotateAngleY;
-		longarm.rotateAngleY = head.rotateAngleY;
-		melee.rotateAngleY = head.rotateAngleY;
-		shortarm.rotateAngleY = head.rotateAngleY;
-		gun.rotateAngleY = head.rotateAngleY;
+			EntityRobot robot = (EntityRobot) entity;
 
-		leg1.rotateAngleX = MathHelper.cos(par1 * 0.6662F) * 1.4F * par2;
-		legpart1.rotateAngleX = leg1.rotateAngleX;
-		legpart2.rotateAngleX = leg1.rotateAngleX;
-		foot1.rotateAngleX = leg1.rotateAngleX;
-		
-        leg2.rotateAngleX = MathHelper.cos(par1 * 0.6662F + (float)Math.PI) * 1.4F * par2;
-		legpart3.rotateAngleX = leg2.rotateAngleX;
-		legpart4.rotateAngleX = leg2.rotateAngleX;
-		foot2.rotateAngleX = leg2.rotateAngleX;
-       
-		
-		/*
-		this.bipedRightArm.rotateAngleX = MathHelper.cos(par1 * 0.6662F + (float) Math.PI) * 2.0F * par2 * 0.5F;
-		this.bipedLeftArm.rotateAngleX = MathHelper.cos(par1 * 0.6662F) * 2.0F * par2 * 0.5F;
-		this.bipedRightArm.rotateAngleZ = 0.0F;
-		this.bipedLeftArm.rotateAngleZ = 0.0F;
-		this.bipedRightLeg.rotateAngleX = MathHelper.cos(par1 * 0.6662F) * 1.4F * par2;
-		this.bipedLeftLeg.rotateAngleX = MathHelper.cos(par1 * 0.6662F + (float) Math.PI) * 1.4F * par2;
-		this.bipedRightLeg.rotateAngleY = 0.0F;
-		this.bipedLeftLeg.rotateAngleY = 0.0F;
-		*/
+			
+			head.rotateAngleY = par4 / (180F / (float) Math.PI);
+			shoulderleft.rotateAngleY = head.rotateAngleY;
+			shoulderright.rotateAngleY = head.rotateAngleY;
+			longarm.rotateAngleY = head.rotateAngleY;
+			melee.rotateAngleY = head.rotateAngleY;
+			shortarm.rotateAngleY = head.rotateAngleY;
+
+			float z = (float) (head.rotationPointZ + 10.0F * Math.sin(head.rotateAngleY));
+			float x = (float) (head.rotationPointX - 10.0F * Math.cos(head.rotateAngleY));
+			
+			gun.rotationPointX = x;
+			gun.rotationPointZ = z;
+			gun.rotateAngleZ = head.rotateAngleZ;
+			gun.rotateAngleX = 0;
+			gun.rotateAngleY = head.rotateAngleY;
+			//gun.rotateAngleZ = robot.getWeaponSpin();
+
+			par2 *= 1.2;
+
+			leg1.rotateAngleX = MathHelper.cos(par1 * 0.6662F) * 1.4F * par2;
+			rotateLeg(par1, par2, leg1, legpart1, legpart2, foot1);
+			leg2.rotateAngleX = MathHelper.cos(par1 * 0.6662F + (float) Math.PI) * 1.4F * par2;
+			rotateLeg(par1, par2, leg2, legpart3, legpart4, foot2);
+
+		}
+
+	}
+
+	private void rotateLeg(float f, float i, ModelRenderer upper, ModelRenderer lower1, ModelRenderer lower2, ModelRenderer foot) {
+		float z = (float) (upper.rotationPointZ - 6.0F * Math.cos(upper.rotateAngleX + (Math.PI / 2)));
+		float y = (float) (upper.rotationPointY + 6.0F * Math.sin(upper.rotateAngleX + (Math.PI / 2)));
+		lower1.rotationPointY = y;
+		lower1.rotationPointZ = z;
+		lower2.rotationPointY = lower1.rotationPointY;
+		lower2.rotationPointZ = lower1.rotationPointZ;
+		if (upper.rotateAngleX > 0) {
+			lower1.rotateAngleX = (float) (upper.rotateAngleX * 1.5);
+		}
+		lower2.rotateAngleX = lower1.rotateAngleX;
+		z = (float) (lower1.rotationPointZ - 6.0F * Math.cos(lower1.rotateAngleX + (Math.PI / 2)));
+		y = (float) (lower1.rotationPointY + 6.0F * Math.sin(lower1.rotateAngleX + (Math.PI / 2)));
+		foot.rotationPointY = y;
+		foot.rotationPointZ = z;
 	}
 
 }

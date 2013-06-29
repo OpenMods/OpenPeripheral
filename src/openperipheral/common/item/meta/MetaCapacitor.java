@@ -38,12 +38,6 @@ public class MetaCapacitor implements IMetaItem {
 
 	@Override
 	public ItemStack onItemRightClick(ItemStack itemStack, EntityPlayer player, World world) {
-		if (!world.isRemote) {
-			EntityRobot npc = new EntityRobot(world);
-			npc.setLocationAndAngles(player.posX, player.posY, player.posZ, 0, 0);
-			world.spawnEntityInWorld(npc);
-			System.out.println("spawned");
-		}
 		return itemStack;
 	}
 

@@ -10,6 +10,7 @@ import openperipheral.common.CommonProxy;
 import openperipheral.common.block.BlockGlassesBridge;
 import openperipheral.common.block.BlockPlayerInventory;
 import openperipheral.common.block.BlockProxy;
+import openperipheral.common.block.BlockRobot;
 import openperipheral.common.block.BlockSensor;
 import openperipheral.common.block.BlockTicketMachine;
 import openperipheral.common.config.ConfigSettings;
@@ -83,6 +84,7 @@ public class OpenPeripheral {
 		public static BlockPlayerInventory playerInventory;
 		public static BlockTicketMachine ticketMachine;
 		public static BlockSensor sensor;
+		public static BlockRobot robot;
 	}
 
 	public enum Gui {

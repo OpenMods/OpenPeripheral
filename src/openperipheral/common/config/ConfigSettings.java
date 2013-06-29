@@ -49,6 +49,7 @@ public class ConfigSettings {
 	public static int playerInventoryId = 582;
 	public static int ticketMachineId = 583;
 	public static int sensorBlockId = 584;
+	public static int robotBlockId = 585;
 	
 	public static boolean enabledExtendedInventory = true;
 
