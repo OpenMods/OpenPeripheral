@@ -1,7 +1,30 @@
-item.openperipheral.glasses.name=Terminal Glasses
 tile.openperipheral.glassesbridge.name=Terminal Glasses Bridge
 tile.openperipheral.proxyblock.name=Peripheral Proxy
 tile.openperipheral.playerinventory.name=PIM
 tile.openperipheral.ticketmachine.name=Ticket Machine
+
+item.openperipheral.glasses.name=Terminal Glasses
+item.openperipheral.remote.name=Remote
+item.openperipheral.capacitor.name=Capacitor
+item.openperipheral.carbon.name=Carbon
+item.openperipheral.coiledwire.name=Coiled Wire
+item.openperipheral.duckantenna.name=Duck Antenna
+item.openperipheral.electrode.name=Electrode
+item.openperipheral.lcdscreen.name=LCD Screen
+item.openperipheral.led.name=LED
+item.openperipheral.microcontroller.name=Microcontroller
+item.openperipheral.optoisolator.name=Opto-Isolator
+item.openperipheral.pcb.name=Printed Circuit Board
+item.openperipheral.plasticsheets.name=Plastic Sheets
+item.openperipheral.preparedboard.name=Prepared Circuit Board
+item.openperipheral.rawplastic.name=Raw Plastic
+item.openperipheral.resistor.name=Resistor
+item.openperipheral.ribboncable.name=Ribbon Cable
+item.openperipheral.silislimerubber.name=Silislime Rubber
+item.openperipheral.solarcell.name=Solar Cell
+item.openperipheral.thinwire.name=Thin Wire
+item.openperipheral.transistor.name=Transistor
+
 itemGroup.tabOpenPeripheral=OpenPeripheral 
+
 openperipheral.gui.ticketmachine=Ticket Machine

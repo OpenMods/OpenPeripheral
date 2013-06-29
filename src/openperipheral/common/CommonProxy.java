@@ -16,6 +16,8 @@ import openperipheral.common.block.BlockTicketMachine;
 import openperipheral.common.container.ContainerComputer;
 import openperipheral.common.container.ContainerGeneric;
 import openperipheral.common.core.Mods;
+import openperipheral.common.entity.EntityRobot;
+import openperipheral.common.item.ItemGeneric;
 import openperipheral.common.item.ItemGlasses;
 import openperipheral.common.item.ItemRemote;
 import openperipheral.common.tileentity.TileEntityTicketMachine;
@@ -29,6 +31,7 @@ import cpw.mods.fml.common.network.FMLNetworkHandler;
 import cpw.mods.fml.common.network.IGuiHandler;
 import cpw.mods.fml.common.network.NetworkModHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.registry.EntityRegistry;
 
 public class CommonProxy implements IGuiHandler {
 
@@ -36,6 +39,8 @@ public class CommonProxy implements IGuiHandler {
 
 		OpenPeripheral.Items.glasses = new ItemGlasses();
 		OpenPeripheral.Items.remote = new ItemRemote();
+		OpenPeripheral.Items.generic = new ItemGeneric();
+		OpenPeripheral.Items.generic.initRecipes();
 
 		OpenPeripheral.Blocks.glassesBridge = new BlockGlassesBridge();
 		OpenPeripheral.Blocks.proxy = new BlockProxy();
@@ -54,8 +59,11 @@ public class CommonProxy implements IGuiHandler {
 		RecipeUtils.addBookRecipe();
 		RecipeUtils.addProxyRecipe();
 		RecipeUtils.addPIMRecipe();
+		RecipeUtils.addRemoteRecipe();
 
 		MinecraftForge.EVENT_BUS.register(new ChatCommandInterceptor());
+
+		EntityRegistry.registerModEntity(EntityRobot.class, "Robot", 600, OpenPeripheral.instance, 64, 1, true);
 
 		NetworkRegistry.instance().registerGuiHandler(OpenPeripheral.instance, this);
 	

@@ -32,6 +32,7 @@ import openperipheral.common.integration.sgcraft.SGCraftModule;
 import openperipheral.common.integration.thaumcraft.ThaumcraftModule;
 import openperipheral.common.integration.thermalexpansion.TEModule;
 import openperipheral.common.integration.vanilla.InventoryClassDefinition;
+import openperipheral.common.item.ItemGeneric;
 import openperipheral.common.item.ItemGlasses;
 import openperipheral.common.item.ItemRemote;
 import openperipheral.common.postchange.PostChangeMarkUpdate;
@@ -73,6 +74,7 @@ public class OpenPeripheral {
 	public static class Items {
 		public static ItemGlasses glasses;
 		public static ItemRemote remote;
+		public static ItemGeneric generic;
 	}
 
 	public static class Blocks {

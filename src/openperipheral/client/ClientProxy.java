@@ -12,6 +12,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import openperipheral.OpenPeripheral;
 import openperipheral.client.gui.GuiTicketMachine;
+import openperipheral.client.model.ModelRobot;
+import openperipheral.client.renderer.RenderRobot;
 import openperipheral.client.renderer.TileEntityPlayerInventoryRenderer;
 import openperipheral.client.renderer.TileEntitySensorRenderer;
 import openperipheral.common.CommonProxy;
@@ -19,6 +21,7 @@ import openperipheral.common.container.ContainerComputer;
 import openperipheral.common.container.ContainerGeneric;
 import openperipheral.common.core.Mods;
 import openperipheral.common.core.TickHandler;
+import openperipheral.common.entity.EntityRobot;
 import openperipheral.common.tileentity.TileEntityPlayerInventory;
 import openperipheral.common.tileentity.TileEntitySensor;
 import openperipheral.common.tileentity.TileEntityTicketMachine;
@@ -54,7 +57,7 @@ public class ClientProxy extends CommonProxy {
 				if (screen != null) {
 	        		screen.inventorySlots = new ContainerComputer();
 	        	}
-	        	return screen;
+				return screen;
 			}
 		}
 		return null;
@@ -71,5 +74,6 @@ public class ClientProxy extends CommonProxy {
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPlayerInventory.class, new TileEntityPlayerInventoryRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySensor.class, new TileEntitySensorRenderer());
 
+		RenderingRegistry.registerEntityRenderingHandler(EntityRobot.class, new RenderRobot(new ModelRobot(), 0.7F));
 	}
 }
