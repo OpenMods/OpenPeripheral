@@ -46,7 +46,7 @@ public class EntityLazer extends Entity implements IThrowableEntity {
 		float z = (float) (robot.posZ + 1.4 * Math.cos(headRotRadians));
 		float x = (float) (robot.posX - 1.4 * Math.sin(headRotRadians));
 		float y = (float) (robot.posY + 2.2);
-		//????
+		
 		this.setLocationAndAngles(x, y, z, (float)rot, 0);
         this.setPosition(this.posX, this.posY, this.posZ);
         this.yOffset = 0.0F;

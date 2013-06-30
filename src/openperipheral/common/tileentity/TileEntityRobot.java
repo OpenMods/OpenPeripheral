@@ -111,6 +111,15 @@ public class TileEntityRobot extends TileEntity implements IAttachable {
 		robot.renderYawOffset = robot.prevRotationYawHead = robot.rotationYawHead = robot.prevRotationYaw = robot.rotationYaw = direction;
 	}
 	
+	public void setPitch(float direction) throws Exception {
+		EntityRobot robot = getRobot();
+		if (robot == null) {
+			throw new Exception("No robot available");
+		}
+		/// ARRGGHHHHHH
+		robot.rotationPitch = direction;
+	}
+	
 	public void jump() throws Exception {
 		EntityRobot robot = getRobot();
 		if (robot == null) {

@@ -1132,6 +1132,9 @@
                },
                {
                	  "name": "look"
+               },
+               {
+               	  "name": "setPitch"
                }
             ]
          }
