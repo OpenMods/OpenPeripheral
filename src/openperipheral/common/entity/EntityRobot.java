@@ -118,7 +118,7 @@ public class EntityRobot extends EntityCreature {
 		}
 		else
 		{
-			this.weaponSpin += .1f;
+			this.weaponSpin += .5f;
 		}
 	}
 	
