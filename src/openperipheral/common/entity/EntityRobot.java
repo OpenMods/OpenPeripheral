@@ -39,6 +39,7 @@ public class EntityRobot extends EntityCreature {
 	private int controllerX = 0;
 	private int controllerY = 0;
 	private int controllerZ = 0;
+	private float weaponSpin = 0.f;
 
 	public double locationTargetX = 0;
 	public double locationTargetY = 0;
@@ -114,6 +115,10 @@ public class EntityRobot extends EntityCreature {
 					this.setDead();
 				}
 			}
+		}
+		else
+		{
+			this.weaponSpin += .1f;
 		}
 	}
 
@@ -227,6 +232,11 @@ public class EntityRobot extends EntityCreature {
 	public void fire() {
 		EntityLazer lazer = new EntityLazer(worldObj, this);
 		worldObj.spawnEntityInWorld(lazer);
+	}
+
+	public float getWeaponSpin()
+	{
+		return weaponSpin;
 	}
 	
 }
