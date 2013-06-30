@@ -92,19 +92,20 @@ public class ModelRendererGun extends ModelRenderer {
                     GL11.glPushMatrix();
                     GL11.glTranslatef(this.rotationPointX * par1, this.rotationPointY * par1, this.rotationPointZ * par1);
 
+                    
                     if (this.rotateAngleY != 0.0F)
                     {
                         GL11.glRotatef(this.rotateAngleY * (180F / (float)Math.PI), 0.0F, 1.0F, 0.0F);
                     }
                     
-                    if (this.rotateAngleZ != 0.0F)
-                    {
-                        GL11.glRotatef(this.rotateAngleZ * (180F / (float)Math.PI), 0.0F, 0.0F, 1.0F);
-                    }
-
                     if (this.rotateAngleX != 0.0F)
                     {
                         GL11.glRotatef(this.rotateAngleX * (180F / (float)Math.PI), 1.0F, 0.0F, 0.0F);
+                    }
+                    
+                    if (this.rotateAngleZ != 0.0F)
+                    {
+                        GL11.glRotatef(this.rotateAngleZ * (180F / (float)Math.PI), 0.0F, 0.0F, 1.0F);
                     }
 
                     GL11.glCallList(this.displayList);

@@ -2,6 +2,10 @@ package openperipheral.common.entity;
 
 import java.util.List;
 
+import openperipheral.vector.matrix4x4;
+import openperipheral.vector.vector3;
+import openperipheral.vector.vector4;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.nbt.NBTTagCompound;
@@ -38,24 +42,40 @@ public class EntityLazer extends Entity implements IThrowableEntity {
 	public EntityLazer(World world) {
 		super(world);
 	}
-
+	
 	public EntityLazer(World world, EntityRobot robot) {
 		super(world);
-		double rot = robot.rotationYawHead + 90;
-		double headRotRadians = (rot / 180) * Math.PI;
-		float z = (float) (robot.posZ + 1.4 * Math.cos(headRotRadians));
-		float x = (float) (robot.posX - 1.4 * Math.sin(headRotRadians));
-		float y = (float) (robot.posY + 2.2);
 		
-		this.setLocationAndAngles(x, y, z, (float)rot, 0);
+		float body_high = 2.2f;
+		float shoulder_length = 1.3f;
+		float gun_length = 1.f;
+		
+		float rotYdeg = robot.rotationYawHead + 90;
+		float rotY = (float)((rotYdeg / 180.f) * Math.PI);
+		float rotXdeg = -robot.rotationPitch;
+		float rotX = (float)((rotXdeg / 180.f) * Math.PI);
+		
+		matrix4x4 t1 = matrix4x4.rotation(new vector3(0, 1, 0), rotY);
+		t1 = matrix4x4.multiplication(t1, matrix4x4.rotation(new vector3(1, 0, 0), rotX));
+		vector4 rst = new vector4(new vector3(shoulder_length, 0.f, -gun_length));
+		rst.apply(t1);
+		vector3 result = new vector3(rst);
+		float z = (float)(robot.posZ + result.z);
+		float x = (float)(robot.posX + result.x);
+		float y = (float)(robot.posY + body_high + result.y);
+		
+		this.setLocationAndAngles(x, y, z, rotYdeg, rotXdeg);
         this.setPosition(this.posX, this.posY, this.posZ);
         this.yOffset = 0.0F;
         this.motionX = this.motionY = this.motionZ = 0.0D;
-
-        double d6 = (double)MathHelper.sqrt_double(x * x + y * y + z * z);
-        this.accelerationX = Math.cos(headRotRadians) * 0.7;
-        this.accelerationY = 0;
-        this.accelerationZ = Math.sin(headRotRadians) * 0.7;
+        
+        rst = new vector4(new vector3(0.f, 0.f, -0.7f));
+		rst.apply(t1);
+		result = new vector3(rst);
+        
+        this.accelerationX = result.x;
+        this.accelerationY = result.y;
+        this.accelerationZ = result.z;
 	}
 
 	@Override
