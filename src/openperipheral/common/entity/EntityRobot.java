@@ -245,5 +245,10 @@ public class EntityRobot extends EntityCreature {
 	{
 		return weaponSpin;
 	}
+
+    public float getEyeHeight()
+    {
+        return 2.2f;
+    }
 	
 }
