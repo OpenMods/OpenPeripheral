@@ -121,6 +121,13 @@ public class EntityRobot extends EntityCreature {
 			this.weaponSpin += .1f;
 		}
 	}
+	
+	protected void updateAITasks()
+    {
+		float oldPitch = rotationPitch;
+		super.updateAITasks();
+		this.rotationPitch = oldPitch;
+    }
 
 	protected boolean isAIEnabled() {
 		return true;
