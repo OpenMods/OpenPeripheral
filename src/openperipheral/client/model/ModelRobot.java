@@ -28,7 +28,7 @@ public class ModelRobot extends ModelBase {
 	ModelRenderer foot2;
 	ModelRenderer foot1;
 	ModelRenderer longarm;
-	ModelRenderer gun;
+	ModelRendererGun gun;
 	ModelRenderer shortarm;
 	ModelRenderer melee;
 
@@ -126,7 +126,7 @@ public class ModelRobot extends ModelBase {
 		longarm.setTextureSize(128, 32);
 		longarm.mirror = true;
 		setRotation(longarm, 0F, 0F, 0F);
-		gun = new ModelRenderer(this, 12, 0);
+		gun = new ModelRendererGun(this, 12, 0);
 		gun.addBox(-2F, -2F, -9F, 4, 4, 8);
 		gun.setRotationPoint(-10F, 2F, 0F);
 		gun.setTextureSize(128, 32);
@@ -197,10 +197,9 @@ public class ModelRobot extends ModelBase {
 			
 			gun.rotationPointX = x;
 			gun.rotationPointZ = z;
-			gun.rotateAngleZ = head.rotateAngleZ;
 			gun.rotateAngleX = 0;
 			gun.rotateAngleY = head.rotateAngleY;
-			//gun.rotateAngleZ = robot.getWeaponSpin();
+			gun.rotateAngleZ = robot.getWeaponSpin();
 
 			par2 *= 1.2;
 
