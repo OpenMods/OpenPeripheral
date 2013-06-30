@@ -155,6 +155,11 @@ public class ModelRobot extends ModelBase {
 		shoulderright.render(f5);
 		head.render(f5);
 		shoulderleft.render(f5);
+		longarm.render(f5);
+		gun.render(f5);
+		shortarm.render(f5);
+		melee.render(f5);
+		
 		pelvis.render(f5);
 		bodybolt.render(f5);
 		body.render(f5);
@@ -166,10 +171,6 @@ public class ModelRobot extends ModelBase {
 		legpart2.render(f5);
 		foot2.render(f5);
 		foot1.render(f5);
-		longarm.render(f5);
-		gun.render(f5);
-		shortarm.render(f5);
-		melee.render(f5);
 		GL11.glPopMatrix();
 	}
 
@@ -183,14 +184,19 @@ public class ModelRobot extends ModelBase {
 		if (entity instanceof EntityRobot) {
 
 			EntityRobot robot = (EntityRobot) entity;
-
-			
 			head.rotateAngleY = par4 / (180F / (float) Math.PI);
+	        head.rotateAngleX = par5 / (180F / (float)Math.PI);
 			shoulderleft.rotateAngleY = head.rotateAngleY;
 			shoulderright.rotateAngleY = head.rotateAngleY;
 			longarm.rotateAngleY = head.rotateAngleY;
 			melee.rotateAngleY = head.rotateAngleY;
 			shortarm.rotateAngleY = head.rotateAngleY;
+
+			shoulderleft.rotateAngleX = head.rotateAngleX;
+			shoulderright.rotateAngleX = head.rotateAngleX;
+			longarm.rotateAngleX = head.rotateAngleX;
+			melee.rotateAngleX = head.rotateAngleX;
+			shortarm.rotateAngleX = head.rotateAngleX;
 
 			float z = (float) (head.rotationPointZ + 10.0F * Math.sin(head.rotateAngleY));
 			float x = (float) (head.rotationPointX - 10.0F * Math.cos(head.rotateAngleY));
