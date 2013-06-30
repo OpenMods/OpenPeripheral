@@ -12,12 +12,15 @@ import net.minecraft.client.renderer.Tessellator;
 
 public class ModelRendererGun extends ModelRenderer {
 
-	public ModelRendererGun(ModelBase par1ModelBase, int par2, int par3) {
-		super(par1ModelBase, par2, par3);
-	}
-
     private boolean compiled;
     private int displayList;
+    
+	public ModelRendererGun(ModelBase par1ModelBase, int par2, int par3) {
+		super(par1ModelBase, par2, par3);
+		this.displayList = 0;
+		this.compiled = false;
+	}
+
 
     /**
      * Compiles a GL display list for this model
