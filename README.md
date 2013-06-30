@@ -4,7 +4,6 @@ OpenPeripheral
 An open source Peripheral for ComputerCraft to make the block the Peripheral
 
 Official thread: http://www.computercraft.info/forums2/index.php?/topic/13063-
-Offical Website: http://openperipheral.info/openperipheral
 
 Offical Website: http://openperipheral.info/openperipheral
 
