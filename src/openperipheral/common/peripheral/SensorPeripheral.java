@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
@@ -26,8 +27,14 @@ public class SensorPeripheral extends AbstractPeripheral {
 	
 	private ISensorEnvironment env;
 	private HashMap<String, PlayerData> surroundingPlayers = new HashMap<String, PlayerData>();
+	private HashMap<Integer, MinecartData> surroundingMinecarts = new HashMap<Integer, MinecartData>();
+
+	HashMap<String, PlayerData> tempPlayers = new HashMap<String, PlayerData>();
+	HashMap<Integer, MinecartData> tempMinecarts = new HashMap<Integer, MinecartData>();
 	
 	private ThreadLock lock = new ThreadLock();
+	
+	private int range = 5;
 	
 	public SensorPeripheral(ISensorEnvironment env) {
 		this.env = env;
@@ -64,6 +71,39 @@ public class SensorPeripheral extends AbstractPeripheral {
 		}
 		return null;
 	}
+
+
+	@LuaMethod
+	public Integer[] getMinecartIds() {
+		try {
+			lock.lock();
+			try {
+				return surroundingMinecarts.keySet().toArray(new Integer[surroundingMinecarts.size()]);
+			} finally {
+				lock.unlock();
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return null;
+	}
+	
+	@LuaMethod
+	public HashMap getMinecartData(int id) {
+		try {
+			lock.lock();
+			try {
+				if (surroundingMinecarts.containsKey(id)) {
+					return surroundingMinecarts.get(id);
+				}
+			} finally {
+				lock.unlock();
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return null;
+	}
 	
 	@Override
 	protected void replaceArguments(ArrayList<Object> args, HashMap<Integer, String> replacements) {
@@ -72,7 +112,8 @@ public class SensorPeripheral extends AbstractPeripheral {
 
 	@Override
 	public void update() {
-		HashMap<String, PlayerData> tempPlayers = new HashMap<String, PlayerData>();
+		tempPlayers.clear();
+		tempMinecarts.clear();
 		try {
 			lock.lock();
 			try {
@@ -82,30 +123,39 @@ public class SensorPeripheral extends AbstractPeripheral {
 				
 				List<Entity> entities = world.getEntitiesWithinAABB(Entity.class,
 						AxisAlignedBB.getAABBPool().getAABB(
-								location.xCoord - 5,
-								location.yCoord - 5,
-								location.zCoord - 5, 
-								location.xCoord + 6,
-								location.yCoord + 6,
-								location.zCoord + 6));
+								location.xCoord,
+								location.yCoord,
+								location.zCoord, 
+								location.xCoord + 1,
+								location.yCoord + 1,
+								location.zCoord + 1).expand(range, range, range));
 
 				for (Entity entity : entities) {
 					try {
-						PlayerData newEntity = null;
 						if (entity instanceof EntityPlayer) {
-							newEntity = surroundingPlayers.get(entity.entityId);
+							PlayerData newEntity = surroundingPlayers.get(entity.entityId);
 							if (newEntity == null) {
 								newEntity = new PlayerData();
 							}
-							newEntity.fromPlayer(env.getLocation(), (EntityPlayer)entity);
+							newEntity.fromEntity(env.getLocation(), (EntityPlayer)entity);
 							tempPlayers.put(((EntityPlayer) entity).username, newEntity);
+						}else if (entity instanceof EntityMinecart) {
+							MinecartData newEntity = surroundingMinecarts.get(entity.entityId);
+							if (newEntity == null) {
+								newEntity = new MinecartData();
+							}
+							newEntity.fromEntity(env.getLocation(), (EntityMinecart)entity);
+							tempMinecarts.put(((EntityMinecart) entity).entityId, newEntity);
 						}
+						
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
 				}
 				surroundingPlayers.clear();
 				surroundingPlayers.putAll(tempPlayers);
+				surroundingMinecarts.clear();
+				surroundingMinecarts.putAll(tempMinecarts);
 			} finally {
 				lock.unlock();
 			}

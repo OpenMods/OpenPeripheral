@@ -30,7 +30,7 @@ public class PlayerData extends HashMap implements IEntityData {
 		put("slots", inventory);
 	}
 	
-	public void fromPlayer(Vec3 sensorPosition, EntityPlayer player) {
+	public void fromEntity(Vec3 sensorPosition, EntityPlayer player) {
 		
 		potionEffects.clear();
 		
