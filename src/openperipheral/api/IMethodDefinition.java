@@ -15,5 +15,5 @@ public interface IMethodDefinition {
 	public boolean isValid();
 	public boolean needsSanitize();
 	public ArrayList<IRestriction> getRestrictions(int index);
-	public Object execute(TileEntity tile, Object[] args) throws Exception;
+	public Object execute(Object target, Object[] args) throws Exception;
 }

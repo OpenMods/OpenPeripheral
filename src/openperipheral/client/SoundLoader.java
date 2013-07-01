@@ -21,7 +21,13 @@ public class SoundLoader {
 		Minecraft mc = Minecraft.getMinecraft();
 
 		String[] soundFiles = {
-				"ticketmachine.ogg"
+				"ticketmachine.ogg",
+				"robotstepping.ogg",
+				"robotjump.ogg",
+				"robothurt.ogg",
+				"robotdead1.ogg",
+				"robotdead2.ogg",
+				"lazer1.ogg"
 		};
 
 		File resourcesDirectory = new File(mc.mcDataDir, "resources/openperipheral/");

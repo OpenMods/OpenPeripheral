@@ -206,36 +206,18 @@ public class DefinitionJsonMethod implements IMethodDefinition {
 	}
 
 	@Override
-	public Object execute(TileEntity tile, Object[] args) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, ScriptException {
-		if (callType == CallType.SCRIPT) {
-			return executeScript(tile, args);
-		} else if (callType == CallType.METHOD) {
-			return method.invoke(tile, args);
+	public Object execute(Object target, Object[] args) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		if (callType == CallType.METHOD) {
+			return method.invoke(target, args);
 		} else if (callType == CallType.GET_PROPERTY) {
-			return field.get(tile);
+			return field.get(target);
 		} else if (callType == CallType.SET_PROPERTY) {
-			field.set(tile, args[0]);
+			field.set(target, args[0]);
 			return true;
 		}
 		return null;
 	}
 
-	private Object executeScript(TileEntity tile, Object[] args) throws ScriptException {
-
-		String script = this.getScript();
-		if (script != null) {
-			script = new String(Base64.decode(script));
-			this.engine.put("tile", tile);
-			this.engine.put("xCoord", tile.xCoord);
-			this.engine.put("yCoord", tile.yCoord);
-			this.engine.put("zCoord", tile.zCoord);
-			this.engine.put("values", args);
-			this.engine.put("worldObj", tile.worldObj);
-			this.engine.put("env", this);
-			return this.engine.eval(script);
-		}
-		return null;
-	}
 
 	@Override
 	public boolean needsSanitize() {

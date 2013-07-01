@@ -59,7 +59,7 @@ public class DefinitionRequestCraftingMethod implements IMethodDefinition {
 	}
 
 	@Override
-	public Object execute(TileEntity tile, Object[] args) throws Exception {
+	public Object execute(Object tile, Object[] args) throws Exception {
 		if (tile instanceof IGridInterface) {
 			ICraftRequest request = ((IGridInterface) tile).craftingRequest((ItemStack)args[0]);
 		}

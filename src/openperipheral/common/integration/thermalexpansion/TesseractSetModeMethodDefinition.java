@@ -65,7 +65,7 @@ public class TesseractSetModeMethodDefinition implements IMethodDefinition {
 	}
 
 	@Override
-	public Object execute(TileEntity tile, Object[] args) throws Exception {
+	public Object execute(Object tile, Object[] args) throws Exception {
 		int mode = Arrays.asList(TEModule.tesseractModes).indexOf(args[0]);
 		ReflectionHelper.callMethod(false, "", tile, new String[] { "removeFromRegistry" });
 		ReflectionHelper.setProperty("", tile, (byte)mode, "mode");

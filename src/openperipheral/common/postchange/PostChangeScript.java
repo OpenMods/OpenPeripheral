@@ -26,19 +26,23 @@ public class PostChangeScript implements IPostChangeHandler {
 	}
 
 	@Override
-	public void execute(TileEntity tile, IMethodDefinition luaMethod, Object[] values) {
-		Class c = tile.getClass();
+	public void execute(Object target, IMethodDefinition luaMethod, Object[] values) {
+		
+		
 		String script = luaMethod.getPostScript();
 		if (script != null) {
 			script = new String(Base64.decode(script));
 			try {
-				this.engine.put("tile", tile);
-				this.engine.put("xCoord", tile.xCoord);
-				this.engine.put("yCoord", tile.yCoord);
-				this.engine.put("zCoord", tile.zCoord);
+				if (target instanceof TileEntity) {
+					TileEntity tile = (TileEntity) target;
+					this.engine.put("tile", tile);
+					this.engine.put("xCoord", tile.xCoord);
+					this.engine.put("yCoord", tile.yCoord);
+					this.engine.put("zCoord", tile.zCoord);
+					this.engine.put("worldObj", tile.worldObj);
+				}
 				this.engine.put("luaMethod", luaMethod);
 				this.engine.put("values", values);
-				this.engine.put("worldObj", tile.worldObj);
 				this.engine.put("env", this);
 				this.engine.eval(script);
 			} catch (ScriptException e) {

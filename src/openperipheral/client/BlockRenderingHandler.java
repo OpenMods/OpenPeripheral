@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.world.IBlockAccess;
 import openperipheral.OpenPeripheral;
 import openperipheral.common.tileentity.TileEntityPlayerInventory;
+import openperipheral.common.tileentity.TileEntitySensor;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -25,6 +26,8 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler {
 		GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
 		if (block == OpenPeripheral.Blocks.playerInventory) {
 			TileEntityRenderer.instance.renderTileEntityAt(new TileEntityPlayerInventory(), 0.0D, 0.0D, 0.0D, 0.0F);
+		}else if (block == OpenPeripheral.Blocks.sensor) {
+			TileEntityRenderer.instance.renderTileEntityAt(new TileEntitySensor(), 0.0D, 0.0D, 0.0D, 0.0F);	
 		}
 		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 	}

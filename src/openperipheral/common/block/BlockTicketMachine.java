@@ -18,6 +18,8 @@ import openperipheral.OpenPeripheral;
 import openperipheral.common.config.ConfigSettings;
 import openperipheral.common.tileentity.TileEntityTicketMachine;
 import openperipheral.common.util.BlockUtils;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public class BlockTicketMachine extends BlockContainer {

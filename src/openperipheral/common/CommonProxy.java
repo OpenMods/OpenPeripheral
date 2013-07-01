@@ -1,6 +1,9 @@
 package openperipheral.common;
 
+import java.util.Map;
+
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -8,30 +11,50 @@ import openperipheral.OpenPeripheral;
 import openperipheral.common.block.BlockGlassesBridge;
 import openperipheral.common.block.BlockPlayerInventory;
 import openperipheral.common.block.BlockProxy;
+import openperipheral.common.block.BlockRobot;
+import openperipheral.common.block.BlockSensor;
 import openperipheral.common.block.BlockTicketMachine;
+import openperipheral.common.container.ContainerComputer;
 import openperipheral.common.container.ContainerGeneric;
 import openperipheral.common.core.Mods;
+import openperipheral.common.entity.EntityLazer;
+import openperipheral.common.entity.EntityRobot;
+import openperipheral.common.item.ItemGeneric;
 import openperipheral.common.item.ItemGlasses;
+import openperipheral.common.item.ItemRemote;
 import openperipheral.common.tileentity.TileEntityTicketMachine;
 import openperipheral.common.util.LanguageUtils;
 import openperipheral.common.util.RecipeUtils;
+import openperipheral.common.util.ReflectionHelper;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.ModContainer;
+import cpw.mods.fml.common.network.FMLNetworkHandler;
 import cpw.mods.fml.common.network.IGuiHandler;
+import cpw.mods.fml.common.network.NetworkModHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.registry.EntityRegistry;
 
 public class CommonProxy implements IGuiHandler {
 
 	public void init() {
 
 		OpenPeripheral.Items.glasses = new ItemGlasses();
+		OpenPeripheral.Items.remote = new ItemRemote();
+		OpenPeripheral.Items.generic = new ItemGeneric();
+		OpenPeripheral.Items.generic.initRecipes();
 
 		OpenPeripheral.Blocks.glassesBridge = new BlockGlassesBridge();
 		OpenPeripheral.Blocks.proxy = new BlockProxy();
 		OpenPeripheral.Blocks.playerInventory = new BlockPlayerInventory();
+		OpenPeripheral.Blocks.sensor = new BlockSensor();
+		OpenPeripheral.Blocks.robot = new BlockRobot();
+		
 		if (Loader.isModLoaded(Mods.RAILCRAFT)) {
 			OpenPeripheral.Blocks.ticketMachine = new BlockTicketMachine();
 			RecipeUtils.addTicketMachineRecipe();
 		}
+		
 		setupLanguages();
 
 		RecipeUtils.addGlassesRecipe();
@@ -39,8 +62,12 @@ public class CommonProxy implements IGuiHandler {
 		RecipeUtils.addBookRecipe();
 		RecipeUtils.addProxyRecipe();
 		RecipeUtils.addPIMRecipe();
+		RecipeUtils.addRemoteRecipe();
 
 		MinecraftForge.EVENT_BUS.register(new ChatCommandInterceptor());
+
+		EntityRegistry.registerModEntity(EntityRobot.class, "Robot", 600, OpenPeripheral.instance, 64, 1, true);
+		EntityRegistry.registerModEntity(EntityLazer.class, "Lazer", 601, OpenPeripheral.instance, 64, 1, true);
 
 		NetworkRegistry.instance().registerGuiHandler(OpenPeripheral.instance, this);
 	
@@ -58,6 +85,8 @@ public class CommonProxy implements IGuiHandler {
 		TileEntity tile = world.getBlockTileEntity(x, y, z);
 		if (ID == OpenPeripheral.Gui.ticketMachine.ordinal()) {
 			return new ContainerGeneric(player.inventory, tile, TileEntityTicketMachine.SLOTS);
+		}else if (ID == OpenPeripheral.Gui.remote.ordinal()) {
+			return new ContainerComputer();
 		}
 		return null;
 	}

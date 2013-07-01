@@ -14,9 +14,9 @@ public class PostChangeRegistry {
 		changeHandlers.add(handler);
 	}
 
-	public static void onPostChange(TileEntity tile, IMethodDefinition luaMethod, Object[] values) {
+	public static void onPostChange(Object target, IMethodDefinition luaMethod, Object[] values) {
 		for (IPostChangeHandler handler : changeHandlers) {
-			handler.execute(tile, luaMethod, values);
+			handler.execute(target, luaMethod, values);
 		}
 	}
 }

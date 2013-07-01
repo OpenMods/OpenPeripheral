@@ -71,7 +71,7 @@ public class DefinitionPowerProviderMethod implements IMethodDefinition {
 	}
 
 	@Override
-	public Object execute(TileEntity tile, Object[] args) throws Exception {
+	public Object execute(Object tile, Object[] args) throws Exception {
 		if (tile instanceof IPowerReceptor) {
 			IPowerReceptor receptor = (IPowerReceptor) tile;
 			IPowerProvider provider = receptor.getPowerProvider();

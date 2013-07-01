@@ -10,7 +10,11 @@ import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import openperipheral.common.tileentity.TileEntityGlassesBridge;
@@ -19,7 +23,7 @@ import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
 
 public class TickHandler implements ITickHandler {
-
+	
 	private static Map<Integer, LinkedBlockingQueue<FutureTask>> callbacks = Collections.synchronizedMap(new HashMap<Integer, LinkedBlockingQueue<FutureTask>>());
 
 	public static Future addTickCallback(World world, Callable callback) throws InterruptedException {
@@ -39,6 +43,7 @@ public class TickHandler implements ITickHandler {
 
 	@Override
 	public void tickEnd(EnumSet<TickType> type, Object... tickData) {
+		
 	}
 
 	@Override
@@ -49,6 +54,7 @@ public class TickHandler implements ITickHandler {
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickObjects) {
 
+		
 		if (type.contains(TickType.WORLD)) {
 
 			World world = (World) tickObjects[0];

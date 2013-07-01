@@ -57,9 +57,9 @@ public class GetBeeInfoMethod implements IMethodDefinition {
 	}
 
 	@Override
-	public Object execute(TileEntity tile, Object[] args) throws Exception {
-		if (tile instanceof IInventory) {
-			IInventory invent = (IInventory) tile;
+	public Object execute(Object target, Object[] args) throws Exception {
+		if (target instanceof IInventory) {
+			IInventory invent = (IInventory) target;
 			int slot = (Integer)args[0];
 			if (slot < invent.getSizeInventory()) {
 				ItemStack beeStack = invent.getStackInSlot(slot);

@@ -11,6 +11,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import openperipheral.OpenPeripheral;
+import openperipheral.common.item.ItemGeneric;
 
 public class RecipeUtils {
 
@@ -125,5 +126,20 @@ public class RecipeUtils {
 				.getRecipeList()
 				.add(new ShapedOreRecipe(getGuideItemStack(), new Object[] { "r", "c", "b", Character.valueOf('r'), new ItemStack(Item.redstone), Character.valueOf('c'),
 						new ItemStack(cable), Character.valueOf('b'), new ItemStack(Item.book) }));
+	}
+	
+	public static void addRemoteRecipe() {
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(
+				new ItemStack(OpenPeripheral.Items.remote),
+				new Object[] {
+					"apa",
+					"plp",
+					" r ",
+					Character.valueOf('l'), ItemGeneric.Metas.lcdScreen.newItemStack(),
+					Character.valueOf('a'), ItemGeneric.Metas.duckAntenna.newItemStack(),
+					Character.valueOf('p'), ItemGeneric.Metas.plasticSheet.newItemStack(),
+					Character.valueOf('r'), ItemGeneric.Metas.ribbonCable.newItemStack(),
+				}
+		));
 	}
 }

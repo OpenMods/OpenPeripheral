@@ -56,7 +56,7 @@ public class SGCraftIsConnected implements IMethodDefinition {
 	}
 
 	@Override
-	public Object execute(TileEntity tile, Object[] args) throws Exception {
+	public Object execute(Object tile, Object[] args) throws Exception {
 		return (Boolean) ReflectionHelper.callMethod("", tile, new String[] { "isConnected" });
 	}
 
