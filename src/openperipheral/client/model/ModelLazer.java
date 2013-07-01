@@ -33,6 +33,5 @@ public class ModelLazer extends ModelBase {
 
 	public void setRotationAngles(Entity par7Entity) {
 		laser.rotateAngleX = (float) Math.toRadians(par7Entity.rotationPitch);
-		System.out.println((float) Math.toRadians(par7Entity.rotationPitch));
 	}
 }

@@ -46,6 +46,8 @@ public class EntityRobot extends EntityCreature {
 	public double locationTargetZ = 0;
 	public boolean shouldMoveToTarget = false;
 	
+	private boolean isDisguised = false;
+	
 	protected IInventory inventory = new OPInventory("robot", false, 6);
 	
 	public EntityRobot(World par1World) {
