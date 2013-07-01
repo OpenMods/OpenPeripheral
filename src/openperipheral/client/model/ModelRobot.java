@@ -203,8 +203,9 @@ public class ModelRobot extends ModelBase {
 			
 			gun.rotationPointX = x;
 			gun.rotationPointZ = z;
-			gun.rotateAngleX = head.rotateAngleX;
+			//gun.rotateAngleX = 0;
 			gun.rotateAngleY = head.rotateAngleY;
+			gun.rotateAngleX = head.rotateAngleX;
 			gun.rotateAngleZ = robot.getWeaponSpin();
 
 			par2 *= 1.2;

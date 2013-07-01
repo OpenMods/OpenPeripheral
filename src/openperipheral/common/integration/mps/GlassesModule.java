@@ -14,6 +14,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Icon;
+import net.minecraft.util.StatCollector;
 import openperipheral.OpenPeripheral;
 import openperipheral.common.util.ReflectionHelper;
 
@@ -60,11 +61,6 @@ public class GlassesModule implements IPowerModule {
 	}
 
 	@Override
-	public String getName() {
-		return "OpenPeripheral Terminal Module";
-	}
-
-	@Override
 	public double applyPropertyModifiers(NBTTagCompound itemTag, String propertyName, double propertyValue) {
 		return propertyValue;
 	}
@@ -88,5 +84,15 @@ public class GlassesModule implements IPowerModule {
 	public boolean isAllowed() {
 		return true;
 	}
+
+	@Override
+    public String getDataName() {
+        return "Terminal Glasses Module";
+    }
+
+    @Override
+    public String getLocalizedName() {
+        return StatCollector.translateToLocal("item.openperipheral.glasses.name");
+    }
 
 }

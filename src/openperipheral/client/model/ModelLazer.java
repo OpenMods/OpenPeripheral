@@ -21,6 +21,7 @@ public class ModelLazer extends ModelBase {
 	}
 
 	public void render(Entity entity) {
+		setRotationAngles(entity);
 		laser.render(0.0625F);
 	}
 
@@ -30,4 +31,7 @@ public class ModelLazer extends ModelBase {
 		model.rotateAngleZ = z;
 	}
 
+	public void setRotationAngles(Entity par7Entity) {
+		laser.rotateAngleX = (float) Math.toRadians(par7Entity.rotationPitch);
+	}
 }

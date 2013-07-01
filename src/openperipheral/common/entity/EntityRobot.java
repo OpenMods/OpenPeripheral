@@ -46,6 +46,8 @@ public class EntityRobot extends EntityCreature {
 	public double locationTargetZ = 0;
 	public boolean shouldMoveToTarget = false;
 	
+	private boolean isDisguised = false;
+	
 	protected IInventory inventory = new OPInventory("robot", false, 6);
 	
 	public EntityRobot(World par1World) {
@@ -118,7 +120,7 @@ public class EntityRobot extends EntityCreature {
 		}
 		else
 		{
-			this.weaponSpin += .1f;
+			this.weaponSpin += .5f;
 		}
 	}
 	
@@ -245,5 +247,10 @@ public class EntityRobot extends EntityCreature {
 	{
 		return weaponSpin;
 	}
+
+    public float getEyeHeight()
+    {
+        return 2.2f;
+    }
 	
 }
