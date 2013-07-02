@@ -3,8 +3,8 @@ package openperipheral.common.postchange;
 import java.util.ArrayList;
 
 import net.minecraft.tileentity.TileEntity;
-import openperipheral.api.IMethodDefinition;
-import openperipheral.api.IPostChangeHandler;
+import openperipheral.common.interfaces.IPeripheralMethodDefinition;
+import openperipheral.common.interfaces.IPostChangeHandler;
 
 public class PostChangeRegistry {
 
@@ -14,7 +14,7 @@ public class PostChangeRegistry {
 		changeHandlers.add(handler);
 	}
 
-	public static void onPostChange(Object target, IMethodDefinition luaMethod, Object[] values) {
+	public static void onPostChange(Object target, IPeripheralMethodDefinition luaMethod, Object[] values) {
 		for (IPostChangeHandler handler : changeHandlers) {
 			handler.execute(target, luaMethod, values);
 		}

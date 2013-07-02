@@ -10,6 +10,10 @@ public class RestrictionMaximum implements IRestriction {
 	public RestrictionMaximum(JsonNode json) {
 		maximum = Integer.parseInt(json.getText());
 	}
+	
+	public RestrictionMaximum(int max) {
+		maximum = max;
+	}
 
 	@Override
 	public boolean isValid(Object value) {
@@ -23,7 +27,7 @@ public class RestrictionMaximum implements IRestriction {
 
 	@Override
 	public String getErrorMessage(int paramOffset) {
-		return String.format("Arguments %s must be no bigger than %s", paramOffset, maximum);
+		return String.format("Argument %s must be no bigger than %s", paramOffset, maximum);
 	}
 
 }

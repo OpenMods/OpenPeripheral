@@ -1,4 +1,4 @@
-package openperipheral.api;
+package openperipheral.common.interfaces;
 
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.EntityLiving;

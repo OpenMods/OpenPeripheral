@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import net.minecraft.tileentity.TileEntity;
 import openperipheral.api.IClassDefinition;
-import openperipheral.api.IMethodDefinition;
+import openperipheral.common.interfaces.IPeripheralMethodDefinition;
 import openperipheral.common.util.ReflectionHelper;
 
 public abstract class DefinitionMetaClass implements IClassDefinition {
@@ -21,7 +21,7 @@ public abstract class DefinitionMetaClass implements IClassDefinition {
 	}
 
 	@Override
-	public abstract ArrayList<IMethodDefinition> getMethods(TileEntity tile);
+	public abstract ArrayList<IPeripheralMethodDefinition> getMethods(TileEntity tile);
 
 	protected static Object getMetaTileEntity(TileEntity tile) {
 		return ReflectionHelper.callMethod(false, "", tile, new String[] { "getMetaTileEntity" });

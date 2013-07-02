@@ -11,8 +11,8 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 import net.minecraft.tileentity.TileEntity;
-import openperipheral.api.IMethodDefinition;
 import openperipheral.api.IRestriction;
+import openperipheral.common.interfaces.IPeripheralMethodDefinition;
 import openperipheral.common.restriction.RestrictionFactory;
 import openperipheral.common.util.ReflectionHelper;
 
@@ -21,7 +21,7 @@ import org.bouncycastle.util.encoders.Base64;
 import argo.jdom.JsonField;
 import argo.jdom.JsonNode;
 
-public class DefinitionJsonMethod implements IMethodDefinition {
+public class DefinitionJsonMethod implements IPeripheralMethodDefinition {
 
 	private ScriptEngineManager factory = new ScriptEngineManager();
 	protected ScriptEngine engine = factory.getEngineByName("JavaScript");
@@ -223,4 +223,5 @@ public class DefinitionJsonMethod implements IMethodDefinition {
 	public boolean needsSanitize() {
 		return getCallType() != CallType.SCRIPT;
 	}
+
 }

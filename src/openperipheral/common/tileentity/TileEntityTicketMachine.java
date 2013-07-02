@@ -11,9 +11,9 @@ import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet132TileEntityData;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-import openperipheral.api.IConditionalSlots;
-import openperipheral.api.IInventoryCallback;
 import openperipheral.common.core.OPInventory;
+import openperipheral.common.interfaces.IConditionalSlots;
+import openperipheral.common.interfaces.IInventoryCallback;
 import openperipheral.common.util.BlockUtils;
 import cpw.mods.fml.common.registry.GameRegistry;
 

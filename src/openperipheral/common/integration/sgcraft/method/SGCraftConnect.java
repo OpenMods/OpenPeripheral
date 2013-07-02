@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import net.minecraft.tileentity.TileEntity;
-import openperipheral.api.IMethodDefinition;
 import openperipheral.api.IRestriction;
+import openperipheral.common.interfaces.IPeripheralMethodDefinition;
 import openperipheral.common.restriction.RestrictionLength;
 import openperipheral.common.util.ReflectionHelper;
 
-public class SGCraftConnect implements IMethodDefinition {
+public class SGCraftConnect implements IPeripheralMethodDefinition {
 
 	private ArrayList<IRestriction> restrictions;
 	

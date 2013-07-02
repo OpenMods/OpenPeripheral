@@ -4,7 +4,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import openperipheral.api.IRestriction;
-import openperipheral.api.IRestrictionHandler;
+import openperipheral.api.RobotUpgradeManager;
 import openperipheral.client.PacketHandler;
 import openperipheral.common.CommonProxy;
 import openperipheral.common.block.BlockGlassesBridge;
@@ -33,9 +33,11 @@ import openperipheral.common.integration.sgcraft.SGCraftModule;
 import openperipheral.common.integration.thaumcraft.ThaumcraftModule;
 import openperipheral.common.integration.thermalexpansion.TEModule;
 import openperipheral.common.integration.vanilla.InventoryClassDefinition;
+import openperipheral.common.interfaces.IRestrictionHandler;
 import openperipheral.common.item.ItemGeneric;
 import openperipheral.common.item.ItemGlasses;
 import openperipheral.common.item.ItemRemote;
+import openperipheral.common.item.ItemRobot;
 import openperipheral.common.postchange.PostChangeMarkUpdate;
 import openperipheral.common.postchange.PostChangeRegistry;
 import openperipheral.common.postchange.PostChangeScript;
@@ -43,6 +45,8 @@ import openperipheral.common.restriction.RestrictionChoice;
 import openperipheral.common.restriction.RestrictionFactory;
 import openperipheral.common.restriction.RestrictionMaximum;
 import openperipheral.common.restriction.RestrictionMinimum;
+import openperipheral.common.robotupgrades.lazers.LazersUpgradeSupplier;
+import openperipheral.common.robotupgrades.movement.MovementUpgradeSupplier;
 import openperipheral.common.util.MountingUtils;
 import argo.jdom.JsonNode;
 import cpw.mods.fml.common.Loader;
@@ -76,6 +80,7 @@ public class OpenPeripheral {
 		public static ItemGlasses glasses;
 		public static ItemRemote remote;
 		public static ItemGeneric generic;
+		public static ItemRobot robot;
 	}
 
 	public static class Blocks {
@@ -89,7 +94,8 @@ public class OpenPeripheral {
 
 	public enum Gui {
 		ticketMachine,
-		remote
+		remote,
+		robot
 	};
 
 	public static int renderId;
@@ -174,6 +180,9 @@ public class OpenPeripheral {
 		DefinitionManager.addClassDefinition(new InventoryClassDefinition());
 
 		DefinitionManager.load();
+		
+		RobotUpgradeManager.registerUpgradeSupplier(new MovementUpgradeSupplier());
+		RobotUpgradeManager.registerUpgradeSupplier(new LazersUpgradeSupplier());
 		
 		TickRegistry.registerTickHandler(new TickHandler(), Side.SERVER);
 		ComputerCraftAPI.registerExternalPeripheral(TileEntity.class, peripheralHandler);

@@ -1,11 +1,11 @@
 package openperipheral.common.tileentity;
 
 import dan200.computer.api.IHostedPeripheral;
-import openperipheral.api.IConditionalSlots;
-import openperipheral.api.IInventoryCallback;
-import openperipheral.api.IPeripheralProvider;
-import openperipheral.api.ISensorEnvironment;
 import openperipheral.common.core.OPInventory;
+import openperipheral.common.interfaces.IConditionalSlots;
+import openperipheral.common.interfaces.IInventoryCallback;
+import openperipheral.common.interfaces.IPeripheralProvider;
+import openperipheral.common.interfaces.ISensorEnvironment;
 import openperipheral.common.peripheral.SensorPeripheral;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -26,7 +26,6 @@ public class TileEntitySensor extends TileEntity implements IInventory, IInvento
 	private OPInventory inventory = new OPInventory("sensor", false, 1);
 	
 	public TileEntitySensor() {
-		peripheral = new SensorPeripheral(this);
 	}
 	
 	public float getRotation() {
@@ -52,11 +51,6 @@ public class TileEntitySensor extends TileEntity implements IInventory, IInvento
 	@Override
 	public World getWorld() {
 		return worldObj;
-	}
-
-	@Override
-	public ItemStack getSensorCardStack() {
-		return inventory.getStackInSlot(0);
 	}
 
 	@Override
@@ -132,6 +126,11 @@ public class TileEntitySensor extends TileEntity implements IInventory, IInvento
 	@Override
 	public boolean isStackValidForSlot(int i, ItemStack itemstack) {
 		return inventory.isStackValidForSlot(i, itemstack);
+	}
+
+	@Override
+	public int getSensorRange() {
+		return 5;
 	}
 
 }

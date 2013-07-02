@@ -7,11 +7,11 @@ import buildcraft.api.power.IPowerProvider;
 import buildcraft.api.power.IPowerReceptor;
 
 import net.minecraft.tileentity.TileEntity;
-import openperipheral.api.IMethodDefinition;
 import openperipheral.api.IRestriction;
+import openperipheral.common.interfaces.IPeripheralMethodDefinition;
 import openperipheral.common.util.ReflectionHelper;
 
-public class DefinitionPowerProviderMethod implements IMethodDefinition {
+public class DefinitionPowerProviderMethod implements IPeripheralMethodDefinition {
 
 	private String name;
 	private String luaName;

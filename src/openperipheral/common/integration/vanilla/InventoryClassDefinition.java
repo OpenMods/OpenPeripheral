@@ -5,12 +5,12 @@ import java.util.ArrayList;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntity;
 import openperipheral.api.IClassDefinition;
-import openperipheral.api.IMethodDefinition;
 import openperipheral.common.config.ConfigSettings;
+import openperipheral.common.interfaces.IPeripheralMethodDefinition;
 
 public class InventoryClassDefinition implements IClassDefinition {
 
-	private ArrayList<IMethodDefinition> methods = new ArrayList<IMethodDefinition>();
+	private ArrayList<IPeripheralMethodDefinition> methods = new ArrayList<IPeripheralMethodDefinition>();
 	public InventoryClassDefinition() {
 		if (ConfigSettings.enabledExtendedInventory) {
 			methods.add(new InventoryMoveIntoMethod("pullIntoSlot", true));
@@ -29,7 +29,7 @@ public class InventoryClassDefinition implements IClassDefinition {
 	}
 
 	@Override
-	public ArrayList<IMethodDefinition> getMethods(TileEntity tile) {
+	public ArrayList<IPeripheralMethodDefinition> getMethods(TileEntity tile) {
 		return methods;
 	}
 

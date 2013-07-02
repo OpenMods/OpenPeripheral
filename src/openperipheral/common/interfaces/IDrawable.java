@@ -1,4 +1,4 @@
-package openperipheral.api;
+package openperipheral.common.interfaces;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

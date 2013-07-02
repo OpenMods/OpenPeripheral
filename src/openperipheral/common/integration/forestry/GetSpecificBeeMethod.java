@@ -7,10 +7,10 @@ import forestry.api.apiculture.IBeeHousing;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import openperipheral.api.IMethodDefinition;
 import openperipheral.api.IRestriction;
+import openperipheral.common.interfaces.IPeripheralMethodDefinition;
 
-public class GetSpecificBeeMethod implements IMethodDefinition {
+public class GetSpecificBeeMethod implements IPeripheralMethodDefinition {
 
 	private String methodName;
 	

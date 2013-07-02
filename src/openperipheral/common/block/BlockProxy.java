@@ -9,6 +9,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import openperipheral.OpenPeripheral;
@@ -101,6 +102,16 @@ public class BlockProxy extends BlockContainer {
 			return orientations.get(orientation)[side];
 		}
 		return Icons.side_left;
+	}
+
+	@Override
+	public boolean canBeReplacedByLeaves(World world, int x, int y, int z) {
+		return false;
+	}
+
+	@Override
+	public boolean isFlammable(IBlockAccess world, int x, int y, int z, int metadata, ForgeDirection face) {
+		return false;
 	}
 
 }

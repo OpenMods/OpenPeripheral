@@ -4,19 +4,19 @@ import java.util.ArrayList;
 
 import net.minecraft.tileentity.TileEntity;
 import openperipheral.api.IClassDefinition;
-import openperipheral.api.IMethodDefinition;
+import openperipheral.common.interfaces.IPeripheralMethodDefinition;
 import argo.jdom.JsonNode;
 
 public class DefinitionJsonClass implements IClassDefinition {
 
 	private String className;
-	private ArrayList<IMethodDefinition> methods;
+	private ArrayList<IPeripheralMethodDefinition> methods;
 
 	private Class javaClass = null;
 
 	public DefinitionJsonClass(JsonNode json) {
 
-		methods = new ArrayList<IMethodDefinition>();
+		methods = new ArrayList<IPeripheralMethodDefinition>();
 
 		className = json.getStringValue("className");
 		try {
@@ -40,7 +40,7 @@ public class DefinitionJsonClass implements IClassDefinition {
 	}
 
 	@Override
-	public ArrayList<IMethodDefinition> getMethods(TileEntity tile) {
+	public ArrayList<IPeripheralMethodDefinition> getMethods(TileEntity tile) {
 		return methods;
 	}
 

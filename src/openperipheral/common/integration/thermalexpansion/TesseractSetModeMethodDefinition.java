@@ -5,12 +5,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 import net.minecraft.tileentity.TileEntity;
-import openperipheral.api.IMethodDefinition;
 import openperipheral.api.IRestriction;
+import openperipheral.common.interfaces.IPeripheralMethodDefinition;
 import openperipheral.common.restriction.RestrictionChoice;
 import openperipheral.common.util.ReflectionHelper;
 
-public class TesseractSetModeMethodDefinition implements IMethodDefinition {
+public class TesseractSetModeMethodDefinition implements IPeripheralMethodDefinition {
 
 	private ArrayList<IRestriction> restrictions;
 	
