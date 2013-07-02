@@ -6,7 +6,7 @@ import java.io.IOException;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import openperipheral.api.IDrawable;
+import openperipheral.common.interfaces.IDrawable;
 import openperipheral.common.tileentity.TileEntityGlassesBridge;
 import openperipheral.common.util.ByteUtils;
 import openperipheral.common.util.FontSizeChecker;

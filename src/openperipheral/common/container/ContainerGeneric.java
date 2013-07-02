@@ -7,7 +7,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import openperipheral.api.IHasSimpleGui;
+import openperipheral.common.interfaces.IHasSyncedGui;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -43,8 +43,8 @@ public class ContainerGeneric extends Container {
 	@Override
 	public void addCraftingToCrafters(ICrafting crafting) {
 		super.addCraftingToCrafters(crafting);
-		if (tileentity instanceof IHasSimpleGui) {
-			int[] craftingValues = ((IHasSimpleGui) tileentity).getGuiValues();
+		if (tileentity instanceof IHasSyncedGui) {
+			int[] craftingValues = ((IHasSyncedGui) tileentity).getGuiValues();
 			for (int i = 0; i < craftingValues.length; i++) {
 				craftingProgress[i] = craftingValues[i];
 				crafting.sendProgressBarUpdate(this, i, craftingValues[i]);
@@ -60,9 +60,9 @@ public class ContainerGeneric extends Container {
 	public void detectAndSendChanges() {
 		super.detectAndSendChanges();
 
-		if (tileentity instanceof IHasSimpleGui) {
+		if (tileentity instanceof IHasSyncedGui) {
 
-			int[] newValues = ((IHasSimpleGui) tileentity).getGuiValues();
+			int[] newValues = ((IHasSyncedGui) tileentity).getGuiValues();
 
 			for (int i = 0; i < this.crafters.size(); ++i) {
 				ICrafting icrafting = (ICrafting) this.crafters.get(i);
@@ -84,8 +84,8 @@ public class ContainerGeneric extends Container {
 	}
 
 	public boolean enchantItem(EntityPlayer player, int button) {
-		if (tileentity instanceof IHasSimpleGui) {
-			((IHasSimpleGui) tileentity).onServerButtonClicked(player, button);
+		if (tileentity instanceof IHasSyncedGui) {
+			((IHasSyncedGui) tileentity).onServerButtonClicked(player, button);
 		}
 		return false;
 	}
@@ -191,8 +191,8 @@ public class ContainerGeneric extends Container {
 
 	@SideOnly(Side.CLIENT)
 	public void updateProgressBar(int par1, int par2) {
-		if (tileentity instanceof IHasSimpleGui) {
-			((IHasSimpleGui) tileentity).setGuiValue(par1, par2);
+		if (tileentity instanceof IHasSyncedGui) {
+			((IHasSyncedGui) tileentity).setGuiValue(par1, par2);
 		}
 	}
 }

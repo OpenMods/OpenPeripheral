@@ -6,11 +6,11 @@ import java.util.HashMap;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import openperipheral.api.IMethodDefinition;
 import openperipheral.api.IRestriction;
+import openperipheral.common.interfaces.IPeripheralMethodDefinition;
 import openperipheral.common.util.InventoryUtils;
 
-public class InventoryCondenseMethod implements IMethodDefinition {
+public class InventoryCondenseMethod implements IPeripheralMethodDefinition {
 
 	@Override
 	public HashMap<Integer, String> getReplacements() {

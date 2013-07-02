@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import openperipheral.api.IClassDefinition;
-import openperipheral.api.IModDefinition;
+import openperipheral.common.interfaces.IModDefinition;
 import argo.jdom.JsonNode;
 
 public class DefinitionJsonMod implements IModDefinition {

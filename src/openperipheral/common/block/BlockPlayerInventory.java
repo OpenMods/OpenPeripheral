@@ -7,7 +7,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeDirection;
 import openperipheral.OpenPeripheral;
 import openperipheral.common.config.ConfigSettings;
 import openperipheral.common.tileentity.TileEntityPlayerInventory;
@@ -65,6 +67,21 @@ public class BlockPlayerInventory extends BlockContainer {
 				}
 			}
 		}
+	}
+
+	@Override
+	public boolean isBlockSolidOnSide(World world, int x, int y, int z, ForgeDirection side) {
+        return side == ForgeDirection.DOWN;
+    }
+	
+	@Override
+	public boolean canBeReplacedByLeaves(World world, int x, int y, int z) {
+		return false;
+	}
+
+	@Override
+	public boolean isFlammable(IBlockAccess world, int x, int y, int z, int metadata, ForgeDirection face) {
+		return false;
 	}
 
 }

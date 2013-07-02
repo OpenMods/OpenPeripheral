@@ -4,15 +4,15 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import openperipheral.api.IMethodDefinition;
 import openperipheral.api.IRestriction;
 import openperipheral.api.LuaMethod;
+import openperipheral.common.interfaces.IPeripheralMethodDefinition;
 import openperipheral.common.util.ReflectionHelper;
 
-public class DefinitionLuaMethod implements IMethodDefinition {
+public class DefinitionLuaMethod implements IPeripheralMethodDefinition {
 
-	public static ArrayList<IMethodDefinition> getLuaMethodsForObject(Object target) {
-		ArrayList<IMethodDefinition> methodDefinitions = new ArrayList<IMethodDefinition>();
+	public static ArrayList<IPeripheralMethodDefinition> getLuaMethodsForObject(Object target) {
+		ArrayList<IPeripheralMethodDefinition> methodDefinitions = new ArrayList<IPeripheralMethodDefinition>();
 		Method[] methods = target.getClass().getMethods();
 		for (final Method method : methods) {
 			if (method.isAnnotationPresent(LuaMethod.class)) {
@@ -89,5 +89,6 @@ public class DefinitionLuaMethod implements IMethodDefinition {
 	public Object execute(Object target, Object[] args) throws Exception {
 		return ReflectionHelper.callMethod("", target, new String[] { name }, args);
 	}
+
 
 }

@@ -3,12 +3,12 @@ package openperipheral.common.integration.gregtech;
 import java.util.ArrayList;
 
 import net.minecraft.tileentity.TileEntity;
-import openperipheral.api.IMethodDefinition;
+import openperipheral.common.interfaces.IPeripheralMethodDefinition;
 import openperipheral.common.util.ReflectionHelper;
 
 public class DefinitionTeleporter extends DefinitionMetaClass {
 
-	private ArrayList<IMethodDefinition> methods = new ArrayList<IMethodDefinition>();
+	private ArrayList<IPeripheralMethodDefinition> methods = new ArrayList<IPeripheralMethodDefinition>();
 	
 	public DefinitionTeleporter() {
 		methods.add(new DefinitionMetaMethod("getX", new Class[] { }, new IGregTechMetaMethodCall() {
@@ -53,14 +53,14 @@ public class DefinitionTeleporter extends DefinitionMetaClass {
 	}
 	
 	@Override
-	public ArrayList<IMethodDefinition> getMethods(TileEntity tile) {
+	public ArrayList<IPeripheralMethodDefinition> getMethods(TileEntity tile) {
 		Object metaTileEntity = getMetaTileEntity(tile);
 		if (metaTileEntity != null) {
 			if (metaTileEntity.getClass().getName() == "gregtechmod.common.tileentities.GT_MetaTileEntity_Teleporter") {
 				return methods;
 			}
 		}
-		return new ArrayList<IMethodDefinition>();
+		return new ArrayList<IPeripheralMethodDefinition>();
 	}
 
 }

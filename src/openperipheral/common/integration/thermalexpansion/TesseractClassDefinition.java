@@ -4,13 +4,13 @@ import java.util.ArrayList;
 
 import net.minecraft.tileentity.TileEntity;
 import openperipheral.api.IClassDefinition;
-import openperipheral.api.IMethodDefinition;
+import openperipheral.common.interfaces.IPeripheralMethodDefinition;
 import openperipheral.common.util.ReflectionHelper;
 
 public class TesseractClassDefinition implements IClassDefinition {
 
 	private Class klazz = null;
-	private ArrayList<IMethodDefinition> methods = new ArrayList<IMethodDefinition>();
+	private ArrayList<IPeripheralMethodDefinition> methods = new ArrayList<IPeripheralMethodDefinition>();
 	
 	public TesseractClassDefinition() {
 		klazz = ReflectionHelper.getClass("thermalexpansion.block.tesseract.TileTesseractRoot");
@@ -27,7 +27,7 @@ public class TesseractClassDefinition implements IClassDefinition {
 	}
 
 	@Override
-	public ArrayList<IMethodDefinition> getMethods(TileEntity tile) {
+	public ArrayList<IPeripheralMethodDefinition> getMethods(TileEntity tile) {
 		return methods;
 	}
 

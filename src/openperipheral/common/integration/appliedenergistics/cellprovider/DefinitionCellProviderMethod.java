@@ -7,11 +7,11 @@ import appeng.api.me.tiles.ICellProvider;
 import appeng.api.me.util.IMEInventoryHandler;
 
 import net.minecraft.tileentity.TileEntity;
-import openperipheral.api.IMethodDefinition;
 import openperipheral.api.IRestriction;
+import openperipheral.common.interfaces.IPeripheralMethodDefinition;
 import openperipheral.common.util.ReflectionHelper;
 
-public class DefinitionCellProviderMethod implements IMethodDefinition {
+public class DefinitionCellProviderMethod implements IPeripheralMethodDefinition {
 
 	private String name;
 	private String luaName;

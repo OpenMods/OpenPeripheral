@@ -126,4 +126,24 @@ public class BlockTicketMachine extends BlockContainer {
         }
     	return true;
     }
+
+	@Override
+	public boolean isOpaqueCube() {
+		return false;
+	}
+
+	@Override
+	public int getRenderType() {
+		return OpenPeripheral.renderId;
+	}
+
+	@Override
+	public boolean canBeReplacedByLeaves(World world, int x, int y, int z) {
+		return false;
+	}
+
+	@Override
+	public boolean isFlammable(IBlockAccess world, int x, int y, int z, int metadata, ForgeDirection face) {
+		return false;
+	}
 }

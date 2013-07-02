@@ -10,7 +10,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import openperipheral.api.IInventoryCallback;
+import openperipheral.common.interfaces.IInventoryCallback;
 
 public class OPInventory implements IInventory, ISidedInventory {
 

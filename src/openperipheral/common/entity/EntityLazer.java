@@ -1,7 +1,12 @@
 package openperipheral.common.entity;
 
+import java.io.DataOutput;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.google.common.io.ByteArrayDataInput;
+import com.google.common.io.ByteArrayDataOutput;
 
 import openperipheral.codechicken.core.vec.Matrix4;
 import openperipheral.codechicken.core.vec.Rotation;
@@ -10,6 +15,7 @@ import openperipheral.common.util.BlockUtils;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -22,29 +28,30 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 import cpw.mods.fml.common.registry.IThrowableEntity;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class EntityLazer extends Entity implements IThrowableEntity {
+public class EntityLazer extends Entity implements IThrowableEntity, IEntityAdditionalSpawnData {
 
 	public EntityLiving shootingEntity;
 	private int ticksAlive;
 	public double directionX;
 	public double directionY;
 	public double directionZ;
+	public boolean isExplosive = false;
 	private Entity thrower;
 
 	public EntityLazer(World world) {
 		super(world);
 	}
 
-	public EntityLazer(World world, EntityRobot robot) {
+	public EntityLazer(World world, EntityCreature robot) {
 		super(world);
 
 		double radPitch = Math.toRadians(robot.rotationPitch);
 		double radYaw = -Math.toRadians(robot.rotationYawHead);
-		
 		
 		Vector3 velocity = new Vector3(0, 0, 1).
 							apply(new Rotation(radPitch, 1, 0, 0)
@@ -64,6 +71,10 @@ public class EntityLazer extends Entity implements IThrowableEntity {
 		this.directionZ = velocity.z;
 	}
 
+	public void setExplosive(boolean explosive) {
+		isExplosive = explosive;
+	}
+	
 	@Override
 	public Entity getThrower() {
 		return thrower;
@@ -157,7 +168,7 @@ public class EntityLazer extends Entity implements IThrowableEntity {
 	 * the original motion.
 	 */
 	protected float getMotionFactor() {
-		return 0.95F;
+		return 1.2F;
 	}
 
 	/**
@@ -172,6 +183,7 @@ public class EntityLazer extends Entity implements IThrowableEntity {
 		}else if (mop.typeOfHit == EnumMovingObjectType.ENTITY) {
 			onEntityHit(mop);
 		}
+		worldObj.createExplosion(this, posX, posY, posZ, 2, true);
 	}
 
 	private void onEntityHit(MovingObjectPosition mop) {
@@ -252,5 +264,22 @@ public class EntityLazer extends Entity implements IThrowableEntity {
 	@SideOnly(Side.CLIENT)
 	public int getBrightnessForRender(float par1) {
 		return 15728880;
+	}
+
+	@Override
+	public void writeSpawnData(ByteArrayDataOutput data) {
+		try {
+			writeStreamData(data);
+		} catch (IOException e) {
+		}
+	}
+	
+	private void writeStreamData(DataOutput data) throws IOException {
+		data.writeBoolean(isExplosive);
+	}
+
+	@Override
+	public void readSpawnData(ByteArrayDataInput data) {
+		isExplosive = data.readBoolean();
 	}
 }

@@ -2,7 +2,7 @@ package openperipheral.common.core;
 
 import java.util.WeakHashMap;
 
-import openperipheral.api.IPeripheralProvider;
+import openperipheral.common.interfaces.IPeripheralProvider;
 import openperipheral.common.peripheral.HostedPeripheral;
 
 import net.minecraft.tileentity.TileEntity;

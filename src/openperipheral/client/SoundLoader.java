@@ -27,7 +27,8 @@ public class SoundLoader {
 				"robothurt.ogg",
 				"robotdead1.ogg",
 				"robotdead2.ogg",
-				"lazer1.ogg"
+				"lazer1.ogg",
+				"robotready.ogg"
 		};
 
 		File resourcesDirectory = new File(mc.mcDataDir, "resources/openperipheral/");

@@ -1,4 +1,4 @@
-package openperipheral.api;
+package openperipheral.common.interfaces;
 
 import net.minecraft.inventory.IInventory;
 

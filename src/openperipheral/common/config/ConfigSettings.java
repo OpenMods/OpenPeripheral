@@ -43,6 +43,7 @@ public class ConfigSettings {
 	public static int glassesId = 1055;
 	public static int remoteId = 1056;
 	public static int genericItemId = 1057;
+	public static int robotItemId = 1058;
 	
 	public static int glassesBridgeId = 580;
 	public static int proxyBlockId = 581;

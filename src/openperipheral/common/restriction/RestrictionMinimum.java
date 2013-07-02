@@ -11,6 +11,10 @@ public class RestrictionMinimum implements IRestriction {
 		minimum = Integer.parseInt(json.getText());
 	}
 
+	public RestrictionMinimum(int min) {
+		minimum = min;
+	}
+	
 	@Override
 	public boolean isValid(Object value) {
 		if (value instanceof Byte) {
@@ -23,6 +27,6 @@ public class RestrictionMinimum implements IRestriction {
 
 	@Override
 	public String getErrorMessage(int paramOffset) {
-		return String.format("Arguments %s must no less than than %s", paramOffset, minimum);
+		return String.format("Argument %s must no less than than %s", paramOffset, minimum);
 	}
 }

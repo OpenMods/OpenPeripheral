@@ -13,12 +13,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import openperipheral.OpenPeripheral;
-import openperipheral.api.IAttachable;
-import openperipheral.api.IMethodDefinition;
 import openperipheral.api.IRestriction;
 import openperipheral.common.converter.TypeConversionRegistry;
 import openperipheral.common.core.TickHandler;
 import openperipheral.common.definition.DefinitionManager;
+import openperipheral.common.interfaces.IAttachable;
+import openperipheral.common.interfaces.IPeripheralMethodDefinition;
 import openperipheral.common.postchange.PostChangeRegistry;
 import openperipheral.common.util.StringUtils;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -61,12 +61,12 @@ public class HostedPeripheral extends AbstractPeripheral {
 		name = name.replace(" ", "_");
 		name = name.toLowerCase();
 	}
-
+	
 	@Override
-	public Object getTargetObject() {
+	public IAttachable getAttachable() {
 		World worldObj = getWorldObject();
 		if (worldObj != null) {
-			return worldObj.getBlockTileEntity(x, y, z);
+			return (IAttachable) worldObj.getBlockTileEntity(x, y, z);
 		}
 		return null;
 	}
@@ -100,8 +100,13 @@ public class HostedPeripheral extends AbstractPeripheral {
 	}
 
 	@Override
-	public ArrayList<IMethodDefinition> getMethods() {
-		return DefinitionManager.getMethodsForTile((TileEntity)getTargetObject());
+	public ArrayList<IPeripheralMethodDefinition> getMethods() {
+		return DefinitionManager.getMethodsForTile((TileEntity)getAttachable());
+	}
+
+	@Override
+	public Object getTargetObject(ArrayList args, IPeripheralMethodDefinition luaMethod) {
+		return getAttachable();
 	}
 
 }

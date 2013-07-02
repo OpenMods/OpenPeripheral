@@ -8,8 +8,8 @@ import java.util.Map.Entry;
 
 import net.minecraft.tileentity.TileEntity;
 import openperipheral.api.IClassDefinition;
-import openperipheral.api.IMethodDefinition;
 import openperipheral.common.config.ConfigSettings;
+import openperipheral.common.interfaces.IPeripheralMethodDefinition;
 import openperipheral.common.util.FileRetriever;
 import argo.jdom.JdomParser;
 import argo.jdom.JsonNode;
@@ -47,15 +47,15 @@ public class DefinitionManager {
 		}
 	}
 	
-	public static ArrayList<IMethodDefinition> getMethodsForTile(TileEntity tile) {
-		ArrayList<IMethodDefinition> methods = new ArrayList<IMethodDefinition>();
+	public static ArrayList<IPeripheralMethodDefinition> getMethodsForTile(TileEntity tile) {
+		ArrayList<IPeripheralMethodDefinition> methods = new ArrayList<IPeripheralMethodDefinition>();
 		for (Entry<Class, ArrayList<IClassDefinition>> entry : classList.entrySet()) {
 			if (entry.getKey().isAssignableFrom(tile.getClass())) {
 				for (IClassDefinition def : entry.getValue()) {
-					ArrayList<IMethodDefinition> meths = def.getMethods(tile);
-					for (IMethodDefinition methdef : meths) {
+					ArrayList<IPeripheralMethodDefinition> meths = def.getMethods(tile);
+					for (IPeripheralMethodDefinition methdef : meths) {
 						boolean dupe = false;
-						for (IMethodDefinition methdef2 : methods) {
+						for (IPeripheralMethodDefinition methdef2 : methods) {
 							if (methdef2.getLuaName().equals(methdef.getLuaName())) {
 								dupe = true;
 							}

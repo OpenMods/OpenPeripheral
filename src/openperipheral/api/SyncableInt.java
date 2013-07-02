@@ -1,4 +1,4 @@
-package openperipheral.common.core;
+package openperipheral.api;
 
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -49,7 +49,7 @@ public class SyncableInt {
 	public void toggle(int mask) {
 		if (is(mask)) {
 			value &= ~mask;
-		} else {
+		}else {
 			value |= mask;
 		}
 	}

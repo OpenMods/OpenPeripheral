@@ -5,10 +5,10 @@ import java.util.HashMap;
 
 import net.minecraft.inventory.IInventory;
 
-import openperipheral.api.IMethodDefinition;
 import openperipheral.api.IRestriction;
+import openperipheral.common.interfaces.IPeripheralMethodDefinition;
 
-public class InventoryStackInSlotMethod implements IMethodDefinition {
+public class InventoryStackInSlotMethod implements IPeripheralMethodDefinition {
 
 	@Override
 	public HashMap<Integer, String> getReplacements() {

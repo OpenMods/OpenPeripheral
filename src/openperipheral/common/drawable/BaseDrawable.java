@@ -5,8 +5,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import openperipheral.api.IDrawable;
 import openperipheral.common.converter.TypeConversionRegistry;
+import openperipheral.common.interfaces.IDrawable;
 import openperipheral.common.tileentity.TileEntityGlassesBridge;
 import openperipheral.common.util.ReflectionHelper;
 
