@@ -45,8 +45,9 @@ import openperipheral.common.restriction.RestrictionChoice;
 import openperipheral.common.restriction.RestrictionFactory;
 import openperipheral.common.restriction.RestrictionMaximum;
 import openperipheral.common.restriction.RestrictionMinimum;
-import openperipheral.common.robotupgrades.lazers.LazersUpgradeSupplier;
-import openperipheral.common.robotupgrades.movement.MovementUpgradeSupplier;
+import openperipheral.common.robotupgrades.lazers.LazersUpgradeProvider;
+import openperipheral.common.robotupgrades.movement.MovementUpgradeProvider;
+import openperipheral.common.robotupgrades.sensors.SensorUpgradeProvider;
 import openperipheral.common.util.MountingUtils;
 import argo.jdom.JsonNode;
 import cpw.mods.fml.common.Loader;
@@ -181,8 +182,9 @@ public class OpenPeripheral {
 
 		DefinitionManager.load();
 		
-		RobotUpgradeManager.registerUpgradeSupplier(new MovementUpgradeSupplier());
-		RobotUpgradeManager.registerUpgradeSupplier(new LazersUpgradeSupplier());
+		RobotUpgradeManager.registerUpgradeProvider(new MovementUpgradeProvider());
+		RobotUpgradeManager.registerUpgradeProvider(new LazersUpgradeProvider());
+		RobotUpgradeManager.registerUpgradeProvider(new SensorUpgradeProvider());
 		
 		TickRegistry.registerTickHandler(new TickHandler(), Side.SERVER);
 		ComputerCraftAPI.registerExternalPeripheral(TileEntity.class, peripheralHandler);

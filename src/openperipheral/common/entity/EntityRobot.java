@@ -7,9 +7,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 
+import openperipheral.OpenPeripheral;
 import openperipheral.api.IRobot;
 import openperipheral.api.IRobotMethod;
-import openperipheral.api.IRobotUpgradeDefinition;
+import openperipheral.api.IRobotUpgradeProvider;
 import openperipheral.api.IRobotUpgradeInstance;
 import openperipheral.api.RobotUpgradeManager;
 import openperipheral.common.config.ConfigSettings;
@@ -54,7 +55,7 @@ public class EntityRobot extends EntityCreature implements IRobot {
 	private int controllerX = 0;
 	private int controllerY = 0;
 	private int controllerZ = 0;
-	private String controllerUuid;
+	private String controllerUuid = "[none]";
 
 	private float weaponSpin = 0.f;
 
@@ -143,6 +144,9 @@ public class EntityRobot extends EntityCreature implements IRobot {
 				controller.registerRobot(robotId, this);
 			}
 			linkedToController = controller != null;
+			for (IRobotUpgradeInstance upgradeInstance : upgradeInstances.values()) {
+				upgradeInstance.update();
+			}
 		} else {
 			this.weaponSpin += .5f;
 		}
@@ -262,7 +266,7 @@ public class EntityRobot extends EntityCreature implements IRobot {
 			readUpgradesFromNBT(tag);
 		}
 		
-		for (IRobotUpgradeDefinition supplier : RobotUpgradeManager.getSuppliers()) {
+		for (IRobotUpgradeProvider supplier : RobotUpgradeManager.getProviders()) {
 			IRobotUpgradeInstance instance = supplier.provideUpgradeInstance(this);
 			
 		}
@@ -292,7 +296,7 @@ public class EntityRobot extends EntityCreature implements IRobot {
 					String name = upgradeTag.getName();
 					
 					// get the relevant upgrade supplier
-					IRobotUpgradeDefinition supplier = RobotUpgradeManager.getSupplierById(name);
+					IRobotUpgradeProvider supplier = RobotUpgradeManager.getSupplierById(name);
 					if (supplier != null) {
 						
 						// create a new instance
@@ -374,5 +378,19 @@ public class EntityRobot extends EntityCreature implements IRobot {
 			entry.getValue().writeToNBT(instanceTag);
 			upgrades.setCompoundTag(entry.getKey(), instanceTag);
 		}
+    }
+	
+	public boolean interact(EntityPlayer player) {
+        if (player.isSneaking() && !worldObj.isRemote) {
+        	ItemStack robot = new ItemStack(OpenPeripheral.Items.robot);
+        	NBTTagCompound tag = new NBTTagCompound();
+        	this.writeEntityToNBT(tag);
+        	robot.setTagCompound(tag);
+        	setDead();
+        	BlockUtils.dropItemStackInWorld(worldObj, posX, posY, posZ, robot);
+        	return true;
+        }
+		
+		return false;
     }
 }

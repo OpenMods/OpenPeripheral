@@ -6,20 +6,20 @@ import java.util.List;
 
 public class RobotUpgradeManager {
 	
-	private static List<IRobotUpgradeDefinition> suppliers = new ArrayList<IRobotUpgradeDefinition>();
+	private static List<IRobotUpgradeProvider> providers = new ArrayList<IRobotUpgradeProvider>();
 	
-	public static List<IRobotUpgradeDefinition> getSuppliers() {
-		return suppliers;
+	public static List<IRobotUpgradeProvider> getProviders() {
+		return providers;
 	}
 	
-	public static void registerUpgradeSupplier(IRobotUpgradeDefinition upgrade) {
-		suppliers.add(upgrade);
+	public static void registerUpgradeProvider(IRobotUpgradeProvider upgrade) {
+		providers.add(upgrade);
 	}
 	
-	public static IRobotUpgradeDefinition getSupplierById(String id) {
-		for (IRobotUpgradeDefinition supplier : suppliers) {
-			if (supplier.getUpgradeId().equals(id)) {
-				return supplier;
+	public static IRobotUpgradeProvider getSupplierById(String id) {
+		for (IRobotUpgradeProvider provider : providers) {
+			if (provider.getUpgradeId().equals(id)) {
+				return provider;
 			}
 		}
 		return null;

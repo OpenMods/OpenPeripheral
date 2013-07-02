@@ -1,4 +1,4 @@
-package openperipheral.common.robotupgrades.lazers;
+package openperipheral.common.robotupgrades.movement;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,26 +6,29 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 import openperipheral.api.IRobot;
 import openperipheral.api.IRobotMethod;
-import openperipheral.api.IRobotUpgradeDefinition;
+import openperipheral.api.IRobotUpgradeProvider;
 import openperipheral.api.IRobotUpgradeInstance;
 
-public class LazersUpgradeSupplier implements IRobotUpgradeDefinition {
+public class MovementUpgradeProvider implements IRobotUpgradeProvider {
 
 	ArrayList<IRobotMethod> methods;
 	
-	public LazersUpgradeSupplier() {
+	public MovementUpgradeProvider() {
 		methods = new ArrayList<IRobotMethod>();
-		methods.add(new MethodLazerFire());
+		methods.add(new MethodGoto());
+		methods.add(new MethodJump());
+		methods.add(new MethodSetPitch());
+		methods.add(new MethodSetYaw());
 	}
 	
 	@Override
 	public IRobotUpgradeInstance provideUpgradeInstance(IRobot robot) {
-		return new LazersUpgrade(robot);
+		return new MovementUpgrade(robot);
 	}
 
 	@Override
 	public String getUpgradeId() {
-		return "lazers";
+		return "movement";
 	}
 
 	@Override

@@ -10,7 +10,7 @@ import org.bouncycastle.util.Arrays;
 
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IHostedPeripheral;
-import openperipheral.api.IRobotUpgradeDefinition;
+import openperipheral.api.IRobotUpgradeProvider;
 import openperipheral.api.RobotUpgradeManager;
 import openperipheral.api.SyncableInt;
 import openperipheral.common.core.OPInventory;
@@ -188,7 +188,7 @@ public class TileEntityRobot extends TileEntity implements IPeripheralProvider, 
 				upgradesTag = new NBTTagCompound();
 			}
 
-			for (IRobotUpgradeDefinition supplier : RobotUpgradeManager.getSuppliers()) {
+			for (IRobotUpgradeProvider supplier : RobotUpgradeManager.getProviders()) {
 				NBTTagCompound upgradeTag = null;
 				if (!upgradesTag.hasKey(supplier.getUpgradeId())) {
 					upgradesTag.setCompoundTag(supplier.getUpgradeId(), new NBTTagCompound());

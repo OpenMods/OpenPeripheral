@@ -6,7 +6,7 @@ import java.util.List;
 
 import net.minecraft.world.World;
 import openperipheral.api.IRobotMethod;
-import openperipheral.api.IRobotUpgradeDefinition;
+import openperipheral.api.IRobotUpgradeProvider;
 import openperipheral.api.IRobotUpgradeInstance;
 import openperipheral.api.RobotUpgradeManager;
 import openperipheral.common.entity.EntityRobot;
@@ -29,7 +29,7 @@ public class RobotPeripheral extends AbstractPeripheral {
 		 */
 		methods = new ArrayList<IPeripheralMethodDefinition>();
 		methods.add(getRobotsMethod);
-		for(IRobotUpgradeDefinition supplier : RobotUpgradeManager.getSuppliers()) {
+		for(IRobotUpgradeProvider supplier : RobotUpgradeManager.getProviders()) {
 			List<IRobotMethod> robotMethods = supplier.getMethods();
 			if (robotMethods != null) {
 				for (IRobotMethod method : robotMethods) {

@@ -5,7 +5,7 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 
 
-public interface IRobotUpgradeDefinition {
+public interface IRobotUpgradeProvider {
 	
 	/**
 	 * Create a new instance of the robot upgrade.
