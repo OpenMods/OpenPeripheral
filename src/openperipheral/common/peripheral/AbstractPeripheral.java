@@ -12,6 +12,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.ModContainer;
 
 import openperipheral.OpenPeripheral;
+import openperipheral.api.IMultiReturn;
 import openperipheral.api.IRestriction;
 import openperipheral.common.converter.TypeConversionRegistry;
 import openperipheral.common.core.TickHandler;
@@ -144,6 +145,7 @@ public abstract class AbstractPeripheral implements IHostedPeripheral {
 		preExecute(methodDefinition, args);
 		final Object[] argsToUse = args.toArray(new Object[args.size()]);
 		if (isInstant) {
+			Object[] returnValues = null;
 			Object response = null;
 			try {
 				response = methodDefinition.execute(target, argsToUse);
@@ -151,13 +153,21 @@ public abstract class AbstractPeripheral implements IHostedPeripheral {
 				Throwable cause = ex.getCause();
 				throw new Exception(cause.getMessage());
 			}
-			response = TypeConversionRegistry.toLua(response);
+			if (response instanceof IMultiReturn) {
+				returnValues = ((IMultiReturn)response).getObjects();
+				for (int i = 0; i < returnValues.length; i++) {
+					returnValues[i] = TypeConversionRegistry.toLua(returnValues[i]);
+				}
+			}else {
+				returnValues = new Object[] { TypeConversionRegistry.toLua(response) };
+			}
 			PostChangeRegistry.onPostChange(target, methodDefinition, argsToUse);
-			return new Object[] { response };
+			return returnValues;
 		} else {
 			Future callback = TickHandler.addTickCallback(getWorldObject(), new Callable() {
 				@Override
 				public Object call() throws Exception {
+					Object[] returnValues = null;
 					Object response = null;
 					try {
 						response = methodDefinition.execute(target, argsToUse);
@@ -165,12 +175,19 @@ public abstract class AbstractPeripheral implements IHostedPeripheral {
 						Throwable cause = ex.getCause();
 						throw new Exception(cause.getMessage());
 					}
-					response = TypeConversionRegistry.toLua(response);
+					if (response instanceof IMultiReturn) {
+						returnValues = ((IMultiReturn)response).getObjects();
+						for (int i = 0; i < returnValues.length; i++) {
+							returnValues[i] = TypeConversionRegistry.toLua(returnValues[i]);
+						}
+					}else {
+						returnValues = new Object[] { TypeConversionRegistry.toLua(response) };
+					}
 					PostChangeRegistry.onPostChange(target, methodDefinition, argsToUse);
-					return response;
+					return returnValues;
 				}
 			});
-			return new Object[] { callback.get() };
+			return (Object[]) callback.get();
 		}
 	}
 

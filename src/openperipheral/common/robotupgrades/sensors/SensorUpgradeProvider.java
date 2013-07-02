@@ -50,4 +50,9 @@ public class SensorUpgradeProvider implements IRobotUpgradeProvider {
 		return methods;
 	}
 
+	@Override
+	public boolean isForced() {
+		return false;
+	}
+
 }

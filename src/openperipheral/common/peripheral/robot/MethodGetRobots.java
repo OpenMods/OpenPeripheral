@@ -1,4 +1,4 @@
-package openperipheral.common.peripheral;
+package openperipheral.common.peripheral.robot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,7 +7,7 @@ import openperipheral.api.IRestriction;
 import openperipheral.common.interfaces.IPeripheralMethodDefinition;
 import openperipheral.common.tileentity.TileEntityRobot;
 
-public class MethodDefinitionGetRobots implements IPeripheralMethodDefinition {
+public class MethodGetRobots implements IPeripheralMethodDefinition {
 
 	@Override
 	public HashMap<Integer, String> getReplacements() {

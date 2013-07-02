@@ -22,8 +22,8 @@ public class BlockRobot extends BlockContainer {
 		super(ConfigSettings.robotBlockId, Material.ground);
 		setHardness(0.5F);
 		setCreativeTab(OpenPeripheral.tabOpenPeripheral);
-		GameRegistry.registerBlock(this, "robot");
-		GameRegistry.registerTileEntity(TileEntityRobot.class, "robot");
+		GameRegistry.registerBlock(this, "openp_robot");
+		GameRegistry.registerTileEntity(TileEntityRobot.class, "openp_robot");
 		setUnlocalizedName("openperipheral.robot");
 	}
 

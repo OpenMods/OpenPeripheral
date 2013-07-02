@@ -27,5 +27,11 @@ public interface IRobotUpgradeProvider {
 	 */
 	public ItemStack getUpgradeItem();
 	
+	/**
+	 * Is this module installed by default and unable to be removed?
+	 * @return
+	 */
+	public boolean isForced();
+	
 	public List<IRobotMethod> getMethods();
 }

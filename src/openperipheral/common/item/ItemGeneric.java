@@ -24,6 +24,7 @@ import openperipheral.common.item.meta.MetaCarbon;
 import openperipheral.common.item.meta.MetaCoiledWire;
 import openperipheral.common.item.meta.MetaDuckAntenna;
 import openperipheral.common.item.meta.MetaElectrode;
+import openperipheral.common.item.meta.MetaEnergyCell;
 import openperipheral.common.item.meta.MetaLCDScreen;
 import openperipheral.common.item.meta.MetaLED;
 import openperipheral.common.item.meta.MetaMicroController;
@@ -62,7 +63,8 @@ public class ItemGeneric extends Item {
 		optoisolator(),
 		microcontroller(),
 		carbon(),
-		solarCell();
+		solarCell(),
+		energyCell();
 		
 		Metas() {
 			
@@ -103,6 +105,7 @@ public class ItemGeneric extends Item {
 		metaitems.put(Metas.microcontroller.ordinal(), new MetaMicroController());
 		metaitems.put(Metas.carbon.ordinal(), new MetaCarbon());
 		metaitems.put(Metas.solarCell.ordinal(), new MetaSolarCell());
+		metaitems.put(Metas.energyCell.ordinal(), new MetaEnergyCell());
 	}
 	
 	public void initRecipes() {
