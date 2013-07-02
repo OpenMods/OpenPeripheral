@@ -5,8 +5,8 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 import net.minecraft.tileentity.TileEntity;
-import openperipheral.api.IMethodDefinition;
-import openperipheral.api.IPostChangeHandler;
+import openperipheral.common.interfaces.IPeripheralMethodDefinition;
+import openperipheral.common.interfaces.IPostChangeHandler;
 import openperipheral.common.util.ReflectionHelper;
 
 import org.bouncycastle.util.encoders.Base64;
@@ -26,7 +26,7 @@ public class PostChangeScript implements IPostChangeHandler {
 	}
 
 	@Override
-	public void execute(Object target, IMethodDefinition luaMethod, Object[] values) {
+	public void execute(Object target, IPeripheralMethodDefinition luaMethod, Object[] values) {
 		
 		
 		String script = luaMethod.getPostScript();

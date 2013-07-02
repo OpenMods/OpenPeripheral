@@ -1,4 +1,4 @@
-package openperipheral.api;
+package openperipheral.common.interfaces;
 
 import dan200.computer.api.IComputerAccess;
 

@@ -10,7 +10,7 @@ import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
-import openperipheral.api.IMetaItem;
+import openperipheral.common.interfaces.IMetaItem;
 import openperipheral.common.item.ItemGeneric;
 
 public class MetaPlasticSheets implements IMetaItem {

@@ -9,7 +9,7 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 import openperipheral.OpenPeripheral;
-import openperipheral.api.IMetaItem;
+import openperipheral.common.interfaces.IMetaItem;
 import openperipheral.common.item.ItemGeneric;
 
 public class MetaSilislimeRubber implements IMetaItem {

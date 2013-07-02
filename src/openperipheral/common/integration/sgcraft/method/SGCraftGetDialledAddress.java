@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import net.minecraft.tileentity.TileEntity;
-import openperipheral.api.IMethodDefinition;
 import openperipheral.api.IRestriction;
+import openperipheral.common.interfaces.IPeripheralMethodDefinition;
 import openperipheral.common.util.ReflectionHelper;
 
-public class SGCraftGetDialledAddress implements IMethodDefinition {
+public class SGCraftGetDialledAddress implements IPeripheralMethodDefinition {
 
 	@Override
 	public HashMap<Integer, String> getReplacements() {
@@ -59,5 +59,6 @@ public class SGCraftGetDialledAddress implements IMethodDefinition {
 	public Object execute(Object tile, Object[] args) throws Exception {
 		return ReflectionHelper.getProperty("", tile, "dialledAddress" );
 	}
+
 
 }

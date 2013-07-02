@@ -22,6 +22,8 @@ import openperipheral.common.entity.EntityRobot;
 import openperipheral.common.item.ItemGeneric;
 import openperipheral.common.item.ItemGlasses;
 import openperipheral.common.item.ItemRemote;
+import openperipheral.common.item.ItemRobot;
+import openperipheral.common.tileentity.TileEntityRobot;
 import openperipheral.common.tileentity.TileEntityTicketMachine;
 import openperipheral.common.util.LanguageUtils;
 import openperipheral.common.util.RecipeUtils;
@@ -41,6 +43,7 @@ public class CommonProxy implements IGuiHandler {
 
 		OpenPeripheral.Items.glasses = new ItemGlasses();
 		OpenPeripheral.Items.remote = new ItemRemote();
+		OpenPeripheral.Items.robot = new ItemRobot();
 		OpenPeripheral.Items.generic = new ItemGeneric();
 		OpenPeripheral.Items.generic.initRecipes();
 
@@ -49,12 +52,12 @@ public class CommonProxy implements IGuiHandler {
 		OpenPeripheral.Blocks.playerInventory = new BlockPlayerInventory();
 		OpenPeripheral.Blocks.sensor = new BlockSensor();
 		OpenPeripheral.Blocks.robot = new BlockRobot();
-		
+
 		if (Loader.isModLoaded(Mods.RAILCRAFT)) {
 			OpenPeripheral.Blocks.ticketMachine = new BlockTicketMachine();
 			RecipeUtils.addTicketMachineRecipe();
 		}
-		
+
 		setupLanguages();
 
 		RecipeUtils.addGlassesRecipe();
@@ -70,7 +73,7 @@ public class CommonProxy implements IGuiHandler {
 		EntityRegistry.registerModEntity(EntityLazer.class, "Lazer", 601, OpenPeripheral.instance, 64, 1, true);
 
 		NetworkRegistry.instance().registerGuiHandler(OpenPeripheral.instance, this);
-	
+
 	}
 
 	public void registerRenderInformation() {
@@ -85,8 +88,10 @@ public class CommonProxy implements IGuiHandler {
 		TileEntity tile = world.getBlockTileEntity(x, y, z);
 		if (ID == OpenPeripheral.Gui.ticketMachine.ordinal()) {
 			return new ContainerGeneric(player.inventory, tile, TileEntityTicketMachine.SLOTS);
-		}else if (ID == OpenPeripheral.Gui.remote.ordinal()) {
+		} else if (ID == OpenPeripheral.Gui.remote.ordinal()) {
 			return new ContainerComputer();
+		} else if (ID == OpenPeripheral.Gui.robot.ordinal()) {
+			return new ContainerGeneric(player.inventory, tile, TileEntityRobot.SLOTS);
 		}
 		return null;
 	}

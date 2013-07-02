@@ -7,10 +7,10 @@ import java.util.HashMap;
 import javax.script.ScriptException;
 
 import net.minecraft.tileentity.TileEntity;
-import openperipheral.api.IMethodDefinition;
 import openperipheral.api.IRestriction;
+import openperipheral.common.interfaces.IPeripheralMethodDefinition;
 
-public class DefinitionMetaMethod implements IMethodDefinition {
+public class DefinitionMetaMethod implements IPeripheralMethodDefinition {
 	
 	private IGregTechMetaMethodCall callback;
 	private String luaName;

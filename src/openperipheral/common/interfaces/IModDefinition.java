@@ -1,6 +1,8 @@
-package openperipheral.api;
+package openperipheral.common.interfaces;
 
 import java.util.Map;
+
+import openperipheral.api.IClassDefinition;
 
 public interface IModDefinition {
 	public String getModId();

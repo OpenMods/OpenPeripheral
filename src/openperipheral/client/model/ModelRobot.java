@@ -181,41 +181,40 @@ public class ModelRobot extends ModelBase {
 	}
 
 	public void setRotationAngles(float par1, float par2, float par3, float par4, float par5, float par6, Entity entity) {
-		if (entity instanceof EntityRobot) {
 
-			EntityRobot robot = (EntityRobot) entity;
-			head.rotateAngleY = par4 / (180F / (float) Math.PI);
-	        head.rotateAngleX = par5 / (180F / (float)Math.PI);
-			shoulderleft.rotateAngleY = head.rotateAngleY;
-			shoulderright.rotateAngleY = head.rotateAngleY;
-			longarm.rotateAngleY = head.rotateAngleY;
-			melee.rotateAngleY = head.rotateAngleY;
-			shortarm.rotateAngleY = head.rotateAngleY;
+		EntityRobot robot = (EntityRobot) entity;
+		
+		head.rotateAngleY = par4 / (180F / (float) Math.PI);
+        head.rotateAngleX = par5 / (180F / (float)Math.PI);
+		shoulderleft.rotateAngleY = head.rotateAngleY;
+		shoulderright.rotateAngleY = head.rotateAngleY;
+		longarm.rotateAngleY = head.rotateAngleY;
+		melee.rotateAngleY = head.rotateAngleY;
+		shortarm.rotateAngleY = head.rotateAngleY;
 
-			shoulderleft.rotateAngleX = head.rotateAngleX;
-			shoulderright.rotateAngleX = head.rotateAngleX;
-			longarm.rotateAngleX = head.rotateAngleX;
-			melee.rotateAngleX = head.rotateAngleX;
-			shortarm.rotateAngleX = head.rotateAngleX;
+		shoulderleft.rotateAngleX = head.rotateAngleX;
+		shoulderright.rotateAngleX = head.rotateAngleX;
+		longarm.rotateAngleX = head.rotateAngleX;
+		melee.rotateAngleX = head.rotateAngleX;
+		shortarm.rotateAngleX = head.rotateAngleX;
 
-			float z = (float) (head.rotationPointZ + 10.0F * Math.sin(head.rotateAngleY));
-			float x = (float) (head.rotationPointX - 10.0F * Math.cos(head.rotateAngleY));
-			
-			gun.rotationPointX = x;
-			gun.rotationPointZ = z;
-			//gun.rotateAngleX = 0;
-			gun.rotateAngleY = head.rotateAngleY;
-			gun.rotateAngleX = head.rotateAngleX;
-			gun.rotateAngleZ = robot.getWeaponSpin();
+		float z = (float) (head.rotationPointZ + 10.0F * Math.sin(head.rotateAngleY));
+		float x = (float) (head.rotationPointX - 10.0F * Math.cos(head.rotateAngleY));
+		
+		gun.rotationPointX = x;
+		gun.rotationPointZ = z;
+		//gun.rotateAngleX = 0;
+		gun.rotateAngleY = head.rotateAngleY;
+		gun.rotateAngleX = head.rotateAngleX;
+		gun.rotateAngleZ = robot.getWeaponSpin();
 
-			par2 *= 1.2;
+		par2 *= 1.2;
 
-			leg1.rotateAngleX = MathHelper.cos(par1 * 0.6662F) * 1.4F * par2;
-			rotateLeg(par1, par2, leg1, legpart1, legpart2, foot1);
-			leg2.rotateAngleX = MathHelper.cos(par1 * 0.6662F + (float) Math.PI) * 1.4F * par2;
-			rotateLeg(par1, par2, leg2, legpart3, legpart4, foot2);
+		leg1.rotateAngleX = MathHelper.cos(par1 * 0.6662F) * 1.4F * par2;
+		rotateLeg(par1, par2, leg1, legpart1, legpart2, foot1);
+		leg2.rotateAngleX = MathHelper.cos(par1 * 0.6662F + (float) Math.PI) * 1.4F * par2;
+		rotateLeg(par1, par2, leg2, legpart3, legpart4, foot2);
 
-		}
 
 	}
 
@@ -228,6 +227,8 @@ public class ModelRobot extends ModelBase {
 		lower2.rotationPointZ = lower1.rotationPointZ;
 		if (upper.rotateAngleX > 0) {
 			lower1.rotateAngleX = (float) (upper.rotateAngleX * 1.5);
+		}else {
+			lower1.rotateAngleX = 0;
 		}
 		lower2.rotateAngleX = lower1.rotateAngleX;
 		z = (float) (lower1.rotationPointZ - 6.0F * Math.cos(lower1.rotateAngleX + (Math.PI / 2)));

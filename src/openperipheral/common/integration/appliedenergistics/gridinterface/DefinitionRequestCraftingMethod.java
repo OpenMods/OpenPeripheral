@@ -8,10 +8,10 @@ import appeng.api.me.util.IGridInterface;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import openperipheral.api.IMethodDefinition;
 import openperipheral.api.IRestriction;
+import openperipheral.common.interfaces.IPeripheralMethodDefinition;
 
-public class DefinitionRequestCraftingMethod implements IMethodDefinition {
+public class DefinitionRequestCraftingMethod implements IPeripheralMethodDefinition {
 
 	@Override
 	public HashMap<Integer, String> getReplacements() {
@@ -65,5 +65,4 @@ public class DefinitionRequestCraftingMethod implements IMethodDefinition {
 		}
 		return null;
 	}
-
 }

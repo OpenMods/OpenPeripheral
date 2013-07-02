@@ -14,10 +14,10 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.FakePlayer;
 
-import openperipheral.api.IMethodDefinition;
-import openperipheral.api.ISensorEnvironment;
 import openperipheral.api.LuaMethod;
 import openperipheral.common.definition.DefinitionLuaMethod;
+import openperipheral.common.interfaces.IPeripheralMethodDefinition;
+import openperipheral.common.interfaces.ISensorEnvironment;
 import openperipheral.common.sensor.IEntityData;
 import openperipheral.common.sensor.MinecartData;
 import openperipheral.common.sensor.PlayerData;
@@ -33,8 +33,6 @@ public class SensorPeripheral extends AbstractPeripheral {
 	HashMap<Integer, MinecartData> tempMinecarts = new HashMap<Integer, MinecartData>();
 	
 	private ThreadLock lock = new ThreadLock();
-	
-	private int range = 5;
 	
 	public SensorPeripheral(ISensorEnvironment env) {
 		this.env = env;
@@ -118,38 +116,41 @@ public class SensorPeripheral extends AbstractPeripheral {
 			lock.lock();
 			try {
 				
+				int range = env.getSensorRange();
+				
 				World world = getWorldObject();
 				Vec3 location = env.getLocation();
-				
-				List<Entity> entities = world.getEntitiesWithinAABB(Entity.class,
-						AxisAlignedBB.getAABBPool().getAABB(
-								location.xCoord,
-								location.yCoord,
-								location.zCoord, 
-								location.xCoord + 1,
-								location.yCoord + 1,
-								location.zCoord + 1).expand(range, range, range));
-
-				for (Entity entity : entities) {
-					try {
-						if (entity instanceof EntityPlayer) {
-							PlayerData newEntity = surroundingPlayers.get(entity.entityId);
-							if (newEntity == null) {
-								newEntity = new PlayerData();
+				if (location != null) {
+					List<Entity> entities = world.getEntitiesWithinAABB(Entity.class,
+							AxisAlignedBB.getAABBPool().getAABB(
+									location.xCoord,
+									location.yCoord,
+									location.zCoord, 
+									location.xCoord + 1,
+									location.yCoord + 1,
+									location.zCoord + 1).expand(range, range, range));
+	
+					for (Entity entity : entities) {
+						try {
+							if (entity instanceof EntityPlayer) {
+								PlayerData newEntity = surroundingPlayers.get(entity.entityId);
+								if (newEntity == null) {
+									newEntity = new PlayerData();
+								}
+								newEntity.fromEntity(env.getLocation(), (EntityPlayer)entity);
+								tempPlayers.put(((EntityPlayer) entity).username, newEntity);
+							}else if (entity instanceof EntityMinecart) {
+								MinecartData newEntity = surroundingMinecarts.get(entity.entityId);
+								if (newEntity == null) {
+									newEntity = new MinecartData();
+								}
+								newEntity.fromEntity(env.getLocation(), (EntityMinecart)entity);
+								tempMinecarts.put(((EntityMinecart) entity).entityId, newEntity);
 							}
-							newEntity.fromEntity(env.getLocation(), (EntityPlayer)entity);
-							tempPlayers.put(((EntityPlayer) entity).username, newEntity);
-						}else if (entity instanceof EntityMinecart) {
-							MinecartData newEntity = surroundingMinecarts.get(entity.entityId);
-							if (newEntity == null) {
-								newEntity = new MinecartData();
-							}
-							newEntity.fromEntity(env.getLocation(), (EntityMinecart)entity);
-							tempMinecarts.put(((EntityMinecart) entity).entityId, newEntity);
+							
+						} catch (Exception e) {
+							e.printStackTrace();
 						}
-						
-					} catch (Exception e) {
-						e.printStackTrace();
 					}
 				}
 				surroundingPlayers.clear();
@@ -164,11 +165,6 @@ public class SensorPeripheral extends AbstractPeripheral {
 		}
 		
 	}
-	
-	@Override
-	public Object getTargetObject() {
-		return this;
-	}
 
 	@Override
 	public World getWorldObject() {
@@ -177,8 +173,13 @@ public class SensorPeripheral extends AbstractPeripheral {
 
 
 	@Override
-	public ArrayList<IMethodDefinition> getMethods() {
-		return DefinitionLuaMethod.getLuaMethodsForObject(getTargetObject());
+	public ArrayList<IPeripheralMethodDefinition> getMethods() {
+		return DefinitionLuaMethod.getLuaMethodsForObject(this);
+	}
+
+	@Override
+	public Object getTargetObject(ArrayList args, IPeripheralMethodDefinition luaMethod) {
+		return this;
 	}
 	
 }

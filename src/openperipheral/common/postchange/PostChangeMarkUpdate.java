@@ -1,13 +1,13 @@
 package openperipheral.common.postchange;
 
 import net.minecraft.tileentity.TileEntity;
-import openperipheral.api.IMethodDefinition;
-import openperipheral.api.IPostChangeHandler;
+import openperipheral.common.interfaces.IPeripheralMethodDefinition;
+import openperipheral.common.interfaces.IPostChangeHandler;
 
 public class PostChangeMarkUpdate implements IPostChangeHandler {
 
 	@Override
-	public void execute(Object target, IMethodDefinition luaMethod, Object[] values) {
+	public void execute(Object target, IPeripheralMethodDefinition luaMethod, Object[] values) {
 
 		if (target instanceof TileEntity && luaMethod.getCauseTileUpdate()) {
 			TileEntity tile = (TileEntity) target;

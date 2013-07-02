@@ -3,7 +3,7 @@ package openperipheral.common.restriction;
 import java.util.HashMap;
 
 import openperipheral.api.IRestriction;
-import openperipheral.api.IRestrictionHandler;
+import openperipheral.common.interfaces.IRestrictionHandler;
 import argo.jdom.JsonField;
 
 public class RestrictionFactory {

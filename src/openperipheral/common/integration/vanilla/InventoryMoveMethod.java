@@ -7,11 +7,11 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-import openperipheral.api.IMethodDefinition;
 import openperipheral.api.IRestriction;
+import openperipheral.common.interfaces.IPeripheralMethodDefinition;
 import openperipheral.common.util.InventoryUtils;
 
-public class InventoryMoveMethod implements IMethodDefinition {
+public class InventoryMoveMethod implements IPeripheralMethodDefinition {
 
 	private String name;
 	private boolean pull;

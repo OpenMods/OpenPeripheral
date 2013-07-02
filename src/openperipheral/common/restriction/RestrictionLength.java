@@ -17,7 +17,7 @@ public class RestrictionLength implements IRestriction {
 
 	@Override
 	public String getErrorMessage(int paramOffset) {
-		return String.format("Arguments %s must exactly %s characters long", paramOffset, requiredLength);
+		return String.format("Argument %s must exactly %s characters long", paramOffset, requiredLength);
 	}
 
 }

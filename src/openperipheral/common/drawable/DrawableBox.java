@@ -5,7 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 import net.minecraft.client.renderer.Tessellator;
-import openperipheral.api.IDrawable;
+import openperipheral.common.interfaces.IDrawable;
 import openperipheral.common.tileentity.TileEntityGlassesBridge;
 import openperipheral.common.util.ByteUtils;
 
