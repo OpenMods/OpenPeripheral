@@ -23,8 +23,8 @@ public class BlockSensor extends BlockContainer {
 		super(ConfigSettings.sensorBlockId, Material.ground);
 		setHardness(0.5F);
 		setCreativeTab(OpenPeripheral.tabOpenPeripheral);
-		GameRegistry.registerBlock(this, "sensor");
-		GameRegistry.registerTileEntity(TileEntitySensor.class, "sensor");
+		GameRegistry.registerBlock(this, "openp_sensor");
+		GameRegistry.registerTileEntity(TileEntitySensor.class, "openp_sensor");
 		setUnlocalizedName("openperipheral.sensor");
 	}
 

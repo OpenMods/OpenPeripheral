@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.Vec3;
 import openperipheral.api.IRobot;
 import openperipheral.api.IRobotUpgradeInstance;
 import openperipheral.api.SyncableInt;
@@ -53,18 +54,10 @@ public class MovementUpgrade implements IRobotUpgradeInstance {
 	
 	@Override
 	public void writeToNBT(NBTTagCompound nbt) {
-		nbt.setDouble("targetX", targetX);
-		nbt.setDouble("targetY", targetY);
-		nbt.setDouble("targetZ", targetZ);
-		nbt.setBoolean("shouldMoveToTarget", shouldMoveToTarget);
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
-		targetX = nbt.getDouble("targetX");
-		targetY = nbt.getDouble("targetY");
-		targetZ = nbt.getDouble("targetZ");
-		shouldMoveToTarget = nbt.getBoolean("shouldMoveToTarget");
 	}
 
 	@Override
@@ -76,7 +69,7 @@ public class MovementUpgrade implements IRobotUpgradeInstance {
 
 	@Override
 	public void update() {
-
+		
 	}
 
 }
