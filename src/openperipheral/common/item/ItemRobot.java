@@ -10,9 +10,11 @@ import openperipheral.codechicken.core.vec.Vector3;
 import openperipheral.common.config.ConfigSettings;
 import openperipheral.common.entity.EntityRobot;
 import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
@@ -80,14 +82,17 @@ public class ItemRobot extends Item {
 			if (tag.hasKey("robotId")) {
 				list.add("Robot ID: " + tag.getInteger("robotId"));
 				if (tag.hasKey("upgrades")) {
-					Collection upgradesTags = ((NBTTagCompound)tag.getTag("upgrades")).getTags();
-					for (Iterator iterator = upgradesTags.iterator(); iterator.hasNext();) {
-						Object next = iterator.next();
-						if (next instanceof NBTTagCompound) {
-							NBTTagCompound upgradeTag = (NBTTagCompound)next;
-							list.add("Upgrade: " + upgradeTag.getName());
-						}
-				    }
+					NBTBase upgradesTag = tag.getTag("upgrades");
+					if (upgradesTag instanceof NBTTagCompound) {
+						Collection upgradesTags = ((NBTTagCompound)tag.getTag("upgrades")).getTags();
+						for (Iterator iterator = upgradesTags.iterator(); iterator.hasNext();) {
+							Object next = iterator.next();
+							if (next instanceof NBTTagCompound) {
+								NBTTagCompound upgradeTag = (NBTTagCompound)next;
+								list.add("Upgrade: " + upgradeTag.getName());
+							}
+					    }
+					}
 				}
 			}
 		}
