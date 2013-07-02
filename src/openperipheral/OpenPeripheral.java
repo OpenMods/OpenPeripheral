@@ -45,6 +45,7 @@ import openperipheral.common.restriction.RestrictionChoice;
 import openperipheral.common.restriction.RestrictionFactory;
 import openperipheral.common.restriction.RestrictionMaximum;
 import openperipheral.common.restriction.RestrictionMinimum;
+import openperipheral.common.robotupgrades.fuel.FuelUpgradeProvider;
 import openperipheral.common.robotupgrades.lazers.LazersUpgradeProvider;
 import openperipheral.common.robotupgrades.movement.MovementUpgradeProvider;
 import openperipheral.common.robotupgrades.sensors.SensorUpgradeProvider;
@@ -185,6 +186,7 @@ public class OpenPeripheral {
 		RobotUpgradeManager.registerUpgradeProvider(new MovementUpgradeProvider());
 		RobotUpgradeManager.registerUpgradeProvider(new LazersUpgradeProvider());
 		RobotUpgradeManager.registerUpgradeProvider(new SensorUpgradeProvider());
+		RobotUpgradeManager.registerUpgradeProvider(new FuelUpgradeProvider());
 		
 		TickRegistry.registerTickHandler(new TickHandler(), Side.SERVER);
 		ComputerCraftAPI.registerExternalPeripheral(TileEntity.class, peripheralHandler);

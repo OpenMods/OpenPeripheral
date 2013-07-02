@@ -64,9 +64,9 @@ public class HostedPeripheral extends AbstractPeripheral {
 	
 	@Override
 	public IAttachable getAttachable() {
-		World worldObj = getWorldObject();
-		if (worldObj != null) {
-			return (IAttachable) worldObj.getBlockTileEntity(x, y, z);
+		Object target = getTarget();
+		if (target instanceof IAttachable) {
+			return (IAttachable) target;
 		}
 		return null;
 	}
@@ -101,12 +101,18 @@ public class HostedPeripheral extends AbstractPeripheral {
 
 	@Override
 	public ArrayList<IPeripheralMethodDefinition> getMethods() {
-		return DefinitionManager.getMethodsForTile((TileEntity)getAttachable());
+		return DefinitionManager.getMethodsForTile((TileEntity)getTarget());
 	}
 
+	public Object getTarget() {
+		World worldObj = getWorldObject();
+		TileEntity te = worldObj.getBlockTileEntity(x, y, z);
+		return te;
+	}
+	
 	@Override
 	public Object getTargetObject(ArrayList args, IPeripheralMethodDefinition luaMethod) {
-		return getAttachable();
+		return getTarget();
 	}
 
 }

@@ -11,6 +11,7 @@ import openperipheral.api.IRobotUpgradeInstance;
 import openperipheral.api.RobotUpgradeManager;
 import openperipheral.common.entity.EntityRobot;
 import openperipheral.common.interfaces.IPeripheralMethodDefinition;
+import openperipheral.common.peripheral.robot.MethodGetRobots;
 import openperipheral.common.robotupgrades.RobotPeripheralMethod;
 import openperipheral.common.tileentity.TileEntityRobot;
 
@@ -19,7 +20,7 @@ public class RobotPeripheral extends AbstractPeripheral {
 	private ArrayList<IPeripheralMethodDefinition> methods;
 	private TileEntityRobot robotTile;
 	
-	private MethodDefinitionGetRobots getRobotsMethod = new MethodDefinitionGetRobots();
+	private MethodGetRobots getRobotsMethod = new MethodGetRobots();
 
 	public RobotPeripheral(TileEntityRobot tile) {
 		

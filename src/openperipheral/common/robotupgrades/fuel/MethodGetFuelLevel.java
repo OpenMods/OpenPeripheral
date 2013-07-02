@@ -1,18 +1,13 @@
-package openperipheral.common.robotupgrades.movement;
+package openperipheral.common.robotupgrades.fuel;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-
-import net.minecraft.util.Vec3;
 
 import openperipheral.api.IRestriction;
-import openperipheral.api.IRobot;
 import openperipheral.api.IRobotMethod;
 import openperipheral.api.IRobotUpgradeInstance;
-import openperipheral.api.SyncableInt;
 
-public class MethodGoto implements IRobotMethod {
-	
+public class MethodGetFuelLevel implements IRobotMethod {
+
 	@Override
 	public boolean needsSanitize() {
 		return true;
@@ -25,7 +20,7 @@ public class MethodGoto implements IRobotMethod {
 
 	@Override
 	public String getLuaName() {
-		return "goto";
+		return "getFuelLevel";
 	}
 
 	@Override
@@ -35,16 +30,12 @@ public class MethodGoto implements IRobotMethod {
 
 	@Override
 	public Class[] getRequiredParameters() {
-		return new Class[] { int.class, int.class, int.class };
+		return null;
 	}
 
 	@Override
 	public Object execute(IRobotUpgradeInstance instance, Object[] args) throws Exception {
-		int x = (Integer) args[0];
-		int y = (Integer) args[1];
-		int z = (Integer) args[2];
-		MovementUpgrade movementUpgrade = (MovementUpgrade) instance;
-		movementUpgrade.setTargetLocation(x, y, z);
-		return true;
+		return ((FuelUpgrade)instance).getRobot().getFuelLevel();
 	}
+
 }

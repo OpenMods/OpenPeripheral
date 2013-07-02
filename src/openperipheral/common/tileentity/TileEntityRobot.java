@@ -187,7 +187,11 @@ public class TileEntityRobot extends TileEntity implements IPeripheralProvider, 
 			} else {
 				upgradesTag = new NBTTagCompound();
 			}
+			
+			//TODO: make sure to install the fuel upgrade by default
 
+			//TODO: make a system for selecting which upgrades
+			
 			for (IRobotUpgradeProvider supplier : RobotUpgradeManager.getProviders()) {
 				NBTTagCompound upgradeTag = null;
 				if (!upgradesTag.hasKey(supplier.getUpgradeId())) {

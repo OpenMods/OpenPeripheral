@@ -38,4 +38,9 @@ public class LazersUpgradeProvider implements IRobotUpgradeProvider {
 		return methods;
 	}
 
+	@Override
+	public boolean isForced() {
+		return false;
+	}
+
 }
