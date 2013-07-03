@@ -2,6 +2,7 @@ package openperipheral.common.robotupgrades.sensors;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import net.minecraft.item.ItemStack;
 import openperipheral.api.IRobot;
@@ -31,18 +32,13 @@ public class ProviderSensorUpgrade implements IRobotUpgradeProvider {
 	}
 	
 	@Override
-	public IRobotUpgradeInstance provideUpgradeInstance(IRobot robot) {
+	public IRobotUpgradeInstance provideUpgradeInstance(IRobot robot, int tier) {
 		return new InstanceSensorUpgrade(robot);
 	}
 
 	@Override
 	public String getUpgradeId() {
 		return "sensors";
-	}
-
-	@Override
-	public ItemStack getUpgradeItem() {
-		return null;
 	}
 
 	@Override
@@ -53,6 +49,11 @@ public class ProviderSensorUpgrade implements IRobotUpgradeProvider {
 	@Override
 	public boolean isForced() {
 		return false;
+	}
+
+	@Override
+	public Map<Integer, ItemStack> getUpgradeItems() {
+		return null;
 	}
 
 }

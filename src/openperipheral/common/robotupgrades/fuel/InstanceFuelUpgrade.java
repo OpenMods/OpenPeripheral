@@ -38,4 +38,9 @@ public class InstanceFuelUpgrade implements IRobotUpgradeInstance {
 	public void update() {
 	}
 
+	@Override
+	public void onTierChanged(int tier) {
+		
+	}
+
 }
