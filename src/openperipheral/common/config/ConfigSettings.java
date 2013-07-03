@@ -53,6 +53,8 @@ public class ConfigSettings {
 	public static int robotBlockId = 585;
 	
 	public static boolean enabledExtendedInventory = true;
+	
+	public static boolean robotsEnabled = true;
 
 	public static void loadAndSaveConfig(File suggestedConfigFile) {
 
@@ -90,6 +92,10 @@ public class ConfigSettings {
 		prop = configFile.get("general", "enabledExtendedInventory", enabledExtendedInventory);
 		prop.comment = "Do you wish to enable the extended inventory methods? (pull, push, swap)";
 		enabledExtendedInventory = prop.getBoolean(enabledExtendedInventory);
+		
+		prop = configFile.get("general", "robotsEnabled", robotsEnabled);
+		prop.comment = "Are robots enabled?";
+		robotsEnabled = prop.getBoolean(robotsEnabled);
 
 		prop = configFile.get("items", "glassesId", glassesId);
 		prop.comment = "The id of the glasses";

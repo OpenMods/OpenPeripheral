@@ -13,7 +13,7 @@ import openperipheral.api.IRobotUpgradeInstance;
 import openperipheral.common.entity.EntityLazer;
 import openperipheral.common.item.meta.MetaEnergyCell;
 
-public class MethodLazerFire implements IRobotMethod {
+public class MethodFireLazer implements IRobotMethod {
 
 	@Override
 	public boolean needsSanitize() {
@@ -56,7 +56,7 @@ public class MethodLazerFire implements IRobotMethod {
 		int cellIndex = 0;
 		for (int i=0; i < inventory.getSizeInventory() - 1; i++) {
 			ItemStack slot = inventory.getStackInSlot(i);
-			if (slot != null && slot.stackSize > 0 && OpenPeripheral.Items.generic.isA(slot, MetaEnergyCell.class)) {
+			if (slot != null && slot.stackSize > 0 && OpenPeripheral.Items.generic.isA(slot, getAmmoClass())) {
 				cellStack = slot;
 				cellIndex = i;
 				break;
@@ -65,17 +65,29 @@ public class MethodLazerFire implements IRobotMethod {
 		if (cellStack != null) {
 			EntityCreature entity = ((InstanceLazersUpgrade)instance).getEntity();
 			entity.playSound("openperipheral.lazer", 1F, entity.worldObj.rand.nextFloat() + 0.4f);
-			EntityLazer lazer = new EntityLazer(entity.worldObj, entity);
+			EntityLazer lazer = createLazer(entity);
 			entity.worldObj.spawnEntityInWorld(lazer);
 			cellStack.stackSize--;
 			if (cellStack.stackSize == 0) {
 				inventory.setInventorySlotContents(cellIndex, null);
 			}
 			robot.setWeaponSpinSpeed(1.0f);
-			upgrade.modifyHeat(3);
+			upgrade.modifyHeat(getHeatModifier());
 			return true;
 		}
 		return false;
+	}
+
+	protected EntityLazer createLazer(EntityCreature entity) {
+		return new EntityLazer(entity.worldObj, entity);
+	}
+
+	public double getHeatModifier() {
+		return 3.0;
+	}
+	
+	public Class getAmmoClass() {
+		return MetaEnergyCell.class;
 	}
 
 }

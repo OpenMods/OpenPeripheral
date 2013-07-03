@@ -20,7 +20,8 @@ public class ProviderLazersUpgrade implements IRobotUpgradeProvider {
 	public ProviderLazersUpgrade() {
 		
 		methods = new ArrayList<IRobotMethod>();
-		methods.add(new MethodLazerFire());
+		methods.add(new MethodFireLazer());
+		methods.add(new MethodFireExplosive());
 		methods.add(new MethodGetHeat());
 		methods.add(new MethodGetLazerCoolingPerTick());
 		methods.add(new MethodMaxLazerHeat());
