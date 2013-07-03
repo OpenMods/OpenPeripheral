@@ -2,28 +2,16 @@ package openperipheral.common.item;
 
 import java.util.List;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.ModContainer;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import openperipheral.OpenPeripheral;
-import openperipheral.common.config.ConfigSettings;
-import openperipheral.common.util.RecipeUtils;
-import openperipheral.common.util.ReflectionHelper;
-import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
-import net.minecraftforge.common.FakePlayer;
+import openperipheral.OpenPeripheral;
+import openperipheral.common.config.ConfigSettings;
 
 public class ItemRemote extends Item {
 
@@ -102,7 +90,6 @@ public class ItemRemote extends Item {
 	    	ns.setInteger("y", y);
 	    	ns.setInteger("z", z);
 	    	ns.setByte("dmg", (byte)((world.getBlockMetadata(x, y, z) & 0x8) >> 3));
-	    	System.out.println("DMG = "+ns.getByte("dmg"));
 	    	tag.setTag("openpRemote", ns);
 	    	if (!world.isRemote) {
 	    		player.sendChatToPlayer("Linked remote terminal");

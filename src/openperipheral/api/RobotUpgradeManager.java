@@ -1,8 +1,9 @@
 package openperipheral.api;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+
+import net.minecraft.item.ItemStack;
 
 public class RobotUpgradeManager {
 	
@@ -16,9 +17,25 @@ public class RobotUpgradeManager {
 		providers.add(upgrade);
 	}
 	
-	public static IRobotUpgradeProvider getSupplierById(String id) {
+	public static IRobotUpgradeProvider getProviderById(String id) {
 		for (IRobotUpgradeProvider provider : providers) {
 			if (provider.getUpgradeId().equals(id)) {
+				return provider;
+			}
+		}
+		return null;
+	}
+	
+	public static IRobotUpgradeProvider getProviderForStack(ItemStack stack) {
+		if (stack == null) {
+			return null;
+		}
+		for (IRobotUpgradeProvider provider : providers) {
+			ItemStack upgradeStack = provider.getUpgradeItem();
+			if (upgradeStack == null) {
+				continue;
+			}
+			if (upgradeStack.itemID == stack.itemID && upgradeStack.getItemDamage() == stack.getItemDamage()) {
 				return provider;
 			}
 		}

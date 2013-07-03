@@ -3,13 +3,11 @@ package openperipheral.common.integration.appliedenergistics.cellprovider;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import appeng.api.me.tiles.ICellProvider;
-import appeng.api.me.util.IMEInventoryHandler;
-
-import net.minecraft.tileentity.TileEntity;
 import openperipheral.api.IRestriction;
 import openperipheral.common.interfaces.IPeripheralMethodDefinition;
 import openperipheral.common.util.ReflectionHelper;
+import appeng.api.me.tiles.ICellProvider;
+import appeng.api.me.util.IMEInventoryHandler;
 
 public class DefinitionCellProviderMethod implements IPeripheralMethodDefinition {
 

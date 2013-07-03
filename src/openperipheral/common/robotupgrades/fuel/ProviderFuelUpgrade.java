@@ -1,4 +1,4 @@
-package openperipheral.common.robotupgrades.movement;
+package openperipheral.common.robotupgrades.fuel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,29 +6,26 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 import openperipheral.api.IRobot;
 import openperipheral.api.IRobotMethod;
-import openperipheral.api.IRobotUpgradeProvider;
 import openperipheral.api.IRobotUpgradeInstance;
+import openperipheral.api.IRobotUpgradeProvider;
 
-public class MovementUpgradeProvider implements IRobotUpgradeProvider {
+public class ProviderFuelUpgrade implements IRobotUpgradeProvider {
 
-	ArrayList<IRobotMethod> methods;
-	
-	public MovementUpgradeProvider() {
+	private ArrayList<IRobotMethod> methods;
+	public ProviderFuelUpgrade() {
 		methods = new ArrayList<IRobotMethod>();
-		methods.add(new MethodGoto());
-		methods.add(new MethodJump());
-		methods.add(new MethodSetPitch());
-		methods.add(new MethodSetYaw());
+		methods.add(new MethodGetFuelLevel());
+		methods.add(new MethodRefuel());
 	}
 	
 	@Override
 	public IRobotUpgradeInstance provideUpgradeInstance(IRobot robot) {
-		return new MovementUpgrade(robot);
+		return new InstanceFuelUpgrade(robot);
 	}
 
 	@Override
 	public String getUpgradeId() {
-		return "movement";
+		return "fuel";
 	}
 
 	@Override
@@ -43,7 +40,7 @@ public class MovementUpgradeProvider implements IRobotUpgradeProvider {
 
 	@Override
 	public boolean isForced() {
-		return false;
+		return true;
 	}
 
 }

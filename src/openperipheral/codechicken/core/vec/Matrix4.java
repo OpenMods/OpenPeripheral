@@ -8,7 +8,7 @@ import java.nio.ByteOrder;
 import java.nio.DoubleBuffer;
 
 import org.lwjgl.opengl.GL11;
-import openperipheral.codechicken.core.vec.Rotation;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

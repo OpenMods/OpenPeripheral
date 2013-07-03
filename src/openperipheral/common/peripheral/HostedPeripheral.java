@@ -1,30 +1,16 @@
 package openperipheral.common.peripheral;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map.Entry;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import openperipheral.OpenPeripheral;
-import openperipheral.api.IRestriction;
-import openperipheral.common.converter.TypeConversionRegistry;
-import openperipheral.common.core.TickHandler;
 import openperipheral.common.definition.DefinitionManager;
 import openperipheral.common.interfaces.IAttachable;
 import openperipheral.common.interfaces.IPeripheralMethodDefinition;
-import openperipheral.common.postchange.PostChangeRegistry;
-import openperipheral.common.util.StringUtils;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.ModContainer;
-import dan200.computer.api.IComputerAccess;
-import dan200.computer.api.IHostedPeripheral;
 
 public class HostedPeripheral extends AbstractPeripheral {
 

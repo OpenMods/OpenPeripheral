@@ -25,6 +25,7 @@ item.openperipheral.solarcell.name=Solar Cell
 item.openperipheral.thinwire.name=Thin Wire
 item.openperipheral.transistor.name=Transistor
 item.openperipheral.energycell.name=Energy Cell
+item.openperipheral.robot.name=OpenMech: Warrior
 
 itemGroup.tabOpenPeripheral=OpenPeripheral 
 

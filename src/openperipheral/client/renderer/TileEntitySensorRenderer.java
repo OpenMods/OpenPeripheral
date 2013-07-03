@@ -1,14 +1,12 @@
 package openperipheral.client.renderer;
 
-import org.lwjgl.opengl.GL11;
-import openperipheral.OpenPeripheral;
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.tileentity.TileEntity;
 import openperipheral.client.model.ModelSensor;
 import openperipheral.common.config.ConfigSettings;
 import openperipheral.common.tileentity.TileEntitySensor;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.tileentity.TileEntity;
+
+import org.lwjgl.opengl.GL11;
 
 public class TileEntitySensorRenderer extends TileEntitySpecialRenderer {
 

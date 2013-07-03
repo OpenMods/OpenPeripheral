@@ -5,14 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.common.io.ByteArrayDataInput;
-import com.google.common.io.ByteArrayDataOutput;
-
-import openperipheral.codechicken.core.vec.Matrix4;
-import openperipheral.codechicken.core.vec.Rotation;
-import openperipheral.codechicken.core.vec.Vector3;
-import openperipheral.common.util.BlockUtils;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
@@ -28,6 +20,13 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import openperipheral.codechicken.core.vec.Rotation;
+import openperipheral.codechicken.core.vec.Vector3;
+import openperipheral.common.util.BlockUtils;
+
+import com.google.common.io.ByteArrayDataInput;
+import com.google.common.io.ByteArrayDataOutput;
+
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 import cpw.mods.fml.common.registry.IThrowableEntity;
 import cpw.mods.fml.relauncher.Side;

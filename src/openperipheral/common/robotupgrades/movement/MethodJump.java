@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.ForgeHooks;
-
 import openperipheral.api.IRestriction;
 import openperipheral.api.IRobot;
 import openperipheral.api.IRobotMethod;
@@ -40,7 +39,7 @@ public class MethodJump implements IRobotMethod {
 
 	@Override
 	public Object execute(IRobotUpgradeInstance instance, Object[] args) throws Exception {
-		IRobot robot = ((MovementUpgrade)instance).getRobot();
+		IRobot robot = ((InstanceMovementUpgrade)instance).getRobot();
 		EntityCreature creature = robot.getEntity();
 		creature.motionY = 0.41999998688697815D;
 

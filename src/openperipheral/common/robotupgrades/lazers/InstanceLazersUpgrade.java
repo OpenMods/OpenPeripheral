@@ -5,14 +5,14 @@ import java.util.HashMap;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.nbt.NBTTagCompound;
-import openperipheral.api.IRobotUpgradeInstance;
 import openperipheral.api.IRobot;
+import openperipheral.api.IRobotUpgradeInstance;
 
-public class LazersUpgrade implements IRobotUpgradeInstance {
+public class InstanceLazersUpgrade implements IRobotUpgradeInstance {
 
 	private IRobot robot;
 	
-	public LazersUpgrade(IRobot robot) {
+	public InstanceLazersUpgrade(IRobot robot) {
 		this.robot = robot;
 		System.out.println("Created lazer upgrade");
 	}

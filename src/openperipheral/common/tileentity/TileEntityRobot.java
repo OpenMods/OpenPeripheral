@@ -6,13 +6,15 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.UUID;
 
-import org.bouncycastle.util.Arrays;
-
-import dan200.computer.api.IComputerAccess;
-import dan200.computer.api.IHostedPeripheral;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import openperipheral.api.IRobotUpgradeProvider;
 import openperipheral.api.RobotUpgradeManager;
-import openperipheral.api.SyncableInt;
 import openperipheral.common.core.OPInventory;
 import openperipheral.common.entity.EntityRobot;
 import openperipheral.common.interfaces.IAttachable;
@@ -20,21 +22,11 @@ import openperipheral.common.interfaces.IConditionalSlots;
 import openperipheral.common.interfaces.IHasSyncedGui;
 import openperipheral.common.interfaces.IInventoryCallback;
 import openperipheral.common.interfaces.IPeripheralProvider;
-import openperipheral.common.interfaces.ISensorEnvironment;
 import openperipheral.common.peripheral.RobotPeripheral;
-import openperipheral.common.peripheral.SensorPeripheral;
 import openperipheral.common.util.GuiValueHolder;
 import openperipheral.common.util.MiscUtils;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Vec3;
-import net.minecraft.world.World;
+import dan200.computer.api.IComputerAccess;
+import dan200.computer.api.IHostedPeripheral;
 
 public class TileEntityRobot extends TileEntity implements IPeripheralProvider, IHasSyncedGui, IAttachable, IConditionalSlots, ISidedInventory, IInventory,
 		IInventoryCallback {
@@ -51,7 +43,7 @@ public class TileEntityRobot extends TileEntity implements IPeripheralProvider, 
 	 */
 	private List<IComputerAccess> computers = new ArrayList<IComputerAccess>();
 
-	public static final int ROBOT_ITEM_SLOT = 2;
+	public static final int ROBOT_ITEM_SLOT = 0;
 
 	protected GuiValueHolder guiValues = new GuiValueHolder();
 
@@ -68,7 +60,7 @@ public class TileEntityRobot extends TileEntity implements IPeripheralProvider, 
 	/**
 	 * The inventory for upgrades and fuel
 	 */
-	private OPInventory inventory = new OPInventory("robottile", false, 3);
+	private OPInventory inventory = new OPInventory("robottile", false, 1);
 
 	/**
 	 * A uuid is kept to make sure that this is a unique instance of this tile
@@ -86,7 +78,7 @@ public class TileEntityRobot extends TileEntity implements IPeripheralProvider, 
 	/**
 	 * The slot positions for the gui. {x, y}, {x, y}
 	 */
-	public static final int[] SLOTS = new int[] { 38, 34, 62, 34, 119, 34 };
+	public static final int[] SLOTS = new int[] { 80, 34 };
 
 	public TileEntityRobot() {
 		inventory.addCallback(this);
@@ -159,11 +151,16 @@ public class TileEntityRobot extends TileEntity implements IPeripheralProvider, 
 		return renderRot;
 	}
 
+	/**
+	 * Called whenever the inventory changes
+	 */
 	@Override
-	public void onInventoryChanged(IInventory inventory) {
+	public void onInventoryChanged(IInventory inventory, int slotNumber) {
 		if (worldObj.isRemote){
 			return;
 		}
+		
+		// if there's a robot in the slot, re-link it to this controller
 		ItemStack robotStack = inventory.getStackInSlot(ROBOT_ITEM_SLOT);
 		if (robotStack != null) {
 			NBTTagCompound tag = robotStack.getTagCompound();
@@ -179,28 +176,6 @@ public class TileEntityRobot extends TileEntity implements IPeripheralProvider, 
 			tag.setInteger("controllerX", xCoord);
 			tag.setInteger("controllerY", yCoord);
 			tag.setInteger("controllerZ", zCoord);
-
-			// TODO: do logic for selecting which upgrades
-			NBTTagCompound upgradesTag = null;
-			if (tag.hasKey("upgrades")) {
-				upgradesTag = (NBTTagCompound) tag.getTag("upgrades");
-			} else {
-				upgradesTag = new NBTTagCompound();
-			}
-			
-			//TODO: make sure to install the fuel upgrade by default
-
-			//TODO: make a system for selecting which upgrades
-			
-			for (IRobotUpgradeProvider supplier : RobotUpgradeManager.getProviders()) {
-				NBTTagCompound upgradeTag = null;
-				if (!upgradesTag.hasKey(supplier.getUpgradeId())) {
-					upgradesTag.setCompoundTag(supplier.getUpgradeId(), new NBTTagCompound());
-				}
-			}
-
-			tag.setTag("upgrades", upgradesTag);
-
 		}
 	}
 

@@ -3,12 +3,10 @@ package openperipheral.common.integration.forestry;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import forestry.api.apiculture.IBeeHousing;
-
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import openperipheral.api.IRestriction;
 import openperipheral.common.interfaces.IPeripheralMethodDefinition;
+import forestry.api.apiculture.IBeeHousing;
 
 public class GetSpecificBeeMethod implements IPeripheralMethodDefinition {
 

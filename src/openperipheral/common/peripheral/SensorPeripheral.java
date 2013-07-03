@@ -3,22 +3,17 @@ package openperipheral.common.peripheral;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-import net.minecraftforge.common.FakePlayer;
-
 import openperipheral.api.LuaMethod;
 import openperipheral.common.definition.DefinitionLuaMethod;
 import openperipheral.common.interfaces.IPeripheralMethodDefinition;
 import openperipheral.common.interfaces.ISensorEnvironment;
-import openperipheral.common.sensor.IEntityData;
 import openperipheral.common.sensor.MinecartData;
 import openperipheral.common.sensor.PlayerData;
 import openperipheral.common.util.ThreadLock;

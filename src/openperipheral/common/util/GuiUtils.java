@@ -5,7 +5,6 @@ import java.util.Map;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
-import openperipheral.common.container.ContainerComputer;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.network.FMLNetworkHandler;

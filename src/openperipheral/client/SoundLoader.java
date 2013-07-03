@@ -5,12 +5,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 
-import openperipheral.OpenPeripheral;
-import openperipheral.common.config.ConfigSettings;
-
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
 import net.minecraftforge.event.ForgeSubscribe;
+import openperipheral.OpenPeripheral;
+import openperipheral.common.config.ConfigSettings;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
