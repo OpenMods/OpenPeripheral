@@ -185,11 +185,13 @@ public class OpenPeripheral {
 
 		DefinitionManager.load();
 		
-		RobotUpgradeManager.registerUpgradeProvider(new ProviderMovementUpgrade());
-		RobotUpgradeManager.registerUpgradeProvider(new ProviderLazersUpgrade());
-		RobotUpgradeManager.registerUpgradeProvider(new ProviderSensorUpgrade());
-		RobotUpgradeManager.registerUpgradeProvider(new ProviderFuelUpgrade());
-		RobotUpgradeManager.registerUpgradeProvider(new ProviderInventoryUpgrade());
+		if (ConfigSettings.robotsEnabled) {
+			RobotUpgradeManager.registerUpgradeProvider(new ProviderMovementUpgrade());
+			RobotUpgradeManager.registerUpgradeProvider(new ProviderLazersUpgrade());
+			RobotUpgradeManager.registerUpgradeProvider(new ProviderSensorUpgrade());
+			RobotUpgradeManager.registerUpgradeProvider(new ProviderFuelUpgrade());
+			RobotUpgradeManager.registerUpgradeProvider(new ProviderInventoryUpgrade());
+		}
 		
 		TickRegistry.registerTickHandler(new TickHandler(), Side.SERVER);
 		ComputerCraftAPI.registerExternalPeripheral(TileEntity.class, peripheralHandler);

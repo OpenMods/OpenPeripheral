@@ -19,6 +19,7 @@ import openperipheral.client.renderer.TileEntityPlayerInventoryRenderer;
 import openperipheral.client.renderer.TileEntityRobotRenderer;
 import openperipheral.client.renderer.TileEntitySensorRenderer;
 import openperipheral.common.CommonProxy;
+import openperipheral.common.config.ConfigSettings;
 import openperipheral.common.container.ContainerComputer;
 import openperipheral.common.container.ContainerGeneric;
 import openperipheral.common.container.ContainerRobot;
@@ -74,9 +75,13 @@ public class ClientProxy extends CommonProxy {
 		RenderingRegistry.registerBlockHandler(new BlockRenderingHandler());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPlayerInventory.class, new TileEntityPlayerInventoryRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySensor.class, new TileEntitySensorRenderer());
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRobot.class, new TileEntityRobotRenderer());
+		
 
-		RenderingRegistry.registerEntityRenderingHandler(EntityRobot.class, new RenderRobot(new ModelRobot(), 0.7F));
-		RenderingRegistry.registerEntityRenderingHandler(EntityLazer.class, new RenderLazer());
+		if (ConfigSettings.robotsEnabled) {
+			ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRobot.class, new TileEntityRobotRenderer());
+	
+			RenderingRegistry.registerEntityRenderingHandler(EntityRobot.class, new RenderRobot(new ModelRobot(), 0.7F));
+			RenderingRegistry.registerEntityRenderingHandler(EntityLazer.class, new RenderLazer());
+		}
 	}
 }

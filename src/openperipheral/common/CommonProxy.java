@@ -13,6 +13,7 @@ import openperipheral.common.block.BlockProxy;
 import openperipheral.common.block.BlockRobot;
 import openperipheral.common.block.BlockSensor;
 import openperipheral.common.block.BlockTicketMachine;
+import openperipheral.common.config.ConfigSettings;
 import openperipheral.common.container.ContainerComputer;
 import openperipheral.common.container.ContainerGeneric;
 import openperipheral.common.container.ContainerRobot;
@@ -38,15 +39,19 @@ public class CommonProxy implements IGuiHandler {
 
 		OpenPeripheral.Items.glasses = new ItemGlasses();
 		OpenPeripheral.Items.remote = new ItemRemote();
-		OpenPeripheral.Items.robot = new ItemRobot();
 		OpenPeripheral.Items.generic = new ItemGeneric();
+		if (ConfigSettings.robotsEnabled) {
+			OpenPeripheral.Items.robot = new ItemRobot();
+		}
 		OpenPeripheral.Items.generic.initRecipes();
 
 		OpenPeripheral.Blocks.glassesBridge = new BlockGlassesBridge();
 		OpenPeripheral.Blocks.proxy = new BlockProxy();
 		OpenPeripheral.Blocks.playerInventory = new BlockPlayerInventory();
 		OpenPeripheral.Blocks.sensor = new BlockSensor();
-		OpenPeripheral.Blocks.robot = new BlockRobot();
+		if (ConfigSettings.robotsEnabled) {
+			OpenPeripheral.Blocks.robot = new BlockRobot();
+		}
 
 		if (Loader.isModLoaded(Mods.RAILCRAFT)) {
 			OpenPeripheral.Blocks.ticketMachine = new BlockTicketMachine();
@@ -63,10 +68,12 @@ public class CommonProxy implements IGuiHandler {
 		RecipeUtils.addRemoteRecipe();
 
 		MinecraftForge.EVENT_BUS.register(new ChatCommandInterceptor());
-
-		EntityRegistry.registerModEntity(EntityRobot.class, "Robot", 600, OpenPeripheral.instance, 64, 1, true);
-		EntityRegistry.registerModEntity(EntityLazer.class, "Lazer", 601, OpenPeripheral.instance, 64, 1, true);
-
+		
+		if (ConfigSettings.robotsEnabled) {
+			EntityRegistry.registerModEntity(EntityRobot.class, "Robot", 600, OpenPeripheral.instance, 64, 1, true);
+			EntityRegistry.registerModEntity(EntityLazer.class, "Lazer", 601, OpenPeripheral.instance, 64, 1, true);
+		}
+		
 		NetworkRegistry.instance().registerGuiHandler(OpenPeripheral.instance, this);
 
 	}
