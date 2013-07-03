@@ -40,4 +40,10 @@ public class InstanceInventoryUpgrade implements IRobotUpgradeInstance {
 
 	}
 
+	@Override
+	public void onTierChanged(int tier) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

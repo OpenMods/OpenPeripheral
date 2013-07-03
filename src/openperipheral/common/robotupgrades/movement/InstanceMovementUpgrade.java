@@ -70,4 +70,10 @@ public class InstanceMovementUpgrade implements IRobotUpgradeInstance {
 		
 	}
 
+	@Override
+	public void onTierChanged(int tier) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

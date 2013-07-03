@@ -14,7 +14,6 @@ public class InstanceLazersUpgrade implements IRobotUpgradeInstance {
 	
 	public InstanceLazersUpgrade(IRobot robot) {
 		this.robot = robot;
-		System.out.println("Created lazer upgrade");
 	}
 	
 	public IRobot getRobot() {
@@ -46,6 +45,12 @@ public class InstanceLazersUpgrade implements IRobotUpgradeInstance {
 	public void update() {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void onTierChanged(int tier) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -1,6 +1,7 @@
 package openperipheral.api;
 
 import java.util.List;
+import java.util.Map;
 
 import net.minecraft.item.ItemStack;
 
@@ -13,7 +14,7 @@ public interface IRobotUpgradeProvider {
 	 * another upgrade, create another upgradedefinition!
 	 * @return
 	 */
-	public IRobotUpgradeInstance provideUpgradeInstance(IRobot robot);
+	public IRobotUpgradeInstance provideUpgradeInstance(IRobot robot, int tier);
 	
 	/**
 	 * A unique string ID
@@ -22,10 +23,10 @@ public interface IRobotUpgradeProvider {
 	public String getUpgradeId();
 	
 	/**
-	 * The itemstack required for the upgrade
+	 * tier/itemstack
 	 * @return
 	 */
-	public ItemStack getUpgradeItem();
+	public Map<Integer, ItemStack> getUpgradeItems();
 	
 	/**
 	 * Is this module installed by default and unable to be removed?

@@ -9,5 +9,6 @@ public interface IRobotUpgradeInstance {
 	public void writeToNBT(NBTTagCompound nbt);
 	public void readFromNBT(NBTTagCompound nbt);
 	public HashMap<Integer, EntityAIBase> getAITasks();
+	public void onTierChanged(int tier);
 	public void update();
 }
