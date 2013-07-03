@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import net.minecraft.entity.EntityCreature;
+import net.minecraft.entity.WatchableObject;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -30,6 +31,7 @@ import openperipheral.common.interfaces.IInventoryCallback;
 import openperipheral.common.tileentity.TileEntityRobot;
 import openperipheral.common.util.BlockUtils;
 import openperipheral.common.util.InventoryUtils;
+import openperipheral.common.util.ReflectionHelper;
 
 public class EntityRobot extends EntityCreature implements IRobot, IInventoryCallback {
 
@@ -48,7 +50,7 @@ public class EntityRobot extends EntityCreature implements IRobot, IInventoryCal
 	 */
 	private float weaponSpin = 0.f;
 
-	private float weaponSpinSpeed = 0.5f;
+	private float weaponSpinSpeed = 0;
 
 	private float fuelLevel = 0;
 
@@ -80,6 +82,8 @@ public class EntityRobot extends EntityCreature implements IRobot, IInventoryCal
 	private HashMap<EntityAIBase, IRobotUpgradeInstance> upgradeAIMap;
 
 	private NBTTagCompound upgradesNBT = new NBTTagCompound();
+	
+	private String[] dataWatcherMethod = new String[] { "getWatchedObject" };
 
 	public EntityRobot(World par1World) {
 		super(par1World);
@@ -96,6 +100,12 @@ public class EntityRobot extends EntityCreature implements IRobot, IInventoryCal
 	}
 
 	@Override
+	public void entityInit() {
+		super.entityInit();
+		this.dataWatcher.addObject(11, 0.0F);
+	}
+	
+	@Override
 	public float getMoveSpeed() {
 		return moveSpeed;
 	}
@@ -107,17 +117,21 @@ public class EntityRobot extends EntityCreature implements IRobot, IInventoryCal
 
 	@Override
 	public float getWeaponSpinSpeed() {
-		return weaponSpinSpeed;
+		WatchableObject object = (WatchableObject)ReflectionHelper.callMethod("", this.dataWatcher, dataWatcherMethod, 11);
+		return (Float)(object.getObject());
 	}
 
 	@Override
 	public void setWeaponSpinSpeed(float speed) {
 		weaponSpinSpeed = speed;
+        this.dataWatcher.updateObject(11, weaponSpinSpeed);
 	}
 
 	@Override
 	public void modifyWeaponSpinSpeed(float speed) {
 		weaponSpinSpeed += speed;
+		weaponSpinSpeed = Math.max(0, weaponSpinSpeed);
+        this.dataWatcher.updateObject(11, weaponSpinSpeed);
 	}
 
 	/**
@@ -167,6 +181,8 @@ public class EntityRobot extends EntityCreature implements IRobot, IInventoryCal
 		if (worldObj.isRemote) {
 			return;
 		}
+		
+		System.out.println("onInventoryChanged");
 
 		HashMap<String, Integer> tiers = new HashMap<String, Integer>();
 
@@ -202,6 +218,8 @@ public class EntityRobot extends EntityCreature implements IRobot, IInventoryCal
 				// create a new instance
 				IRobotUpgradeInstance instance = provider.provideUpgradeInstance(this, tier);
 
+				System.out.println("created new upgrade instance, tier = " + tier);
+				
 				// check if there's any information stored in our upgrades nbt
 				if (upgradesNBT.hasKey(providerId)) {
 
@@ -243,6 +261,9 @@ public class EntityRobot extends EntityCreature implements IRobot, IInventoryCal
 
 		upgradeTiers.clear();
 		upgradeTiers.putAll(tiers);
+		
+
+		System.out.println("upgradeTiers = "+ upgradeTiers.size());
 
 		// remove any instances that are no longer valid
 		for (String instanceKey : upgradeInstances.keySet()) {
@@ -326,6 +347,7 @@ public class EntityRobot extends EntityCreature implements IRobot, IInventoryCal
 	public void onEntityUpdate() {
 		super.onEntityUpdate();
 		if (!worldObj.isRemote) {
+			
 			// check we can still find the controller
 			TileEntityRobot controller = (TileEntityRobot) getController();
 			if (controller != null) {
@@ -440,6 +462,8 @@ public class EntityRobot extends EntityCreature implements IRobot, IInventoryCal
 			if (tag.hasKey("upgrades")) {
 				upgradesNBT = tag.getCompoundTag("upgrades");
 			}
+			onInventoryChanged(inventory,0);
+			
 		}
 		return true;
 	}
@@ -483,6 +507,7 @@ public class EntityRobot extends EntityCreature implements IRobot, IInventoryCal
 		if (tag.hasKey("upgrades")) {
 			upgradesNBT = tag.getCompoundTag("upgrades");
 		}
+		onInventoryChanged(inventory, 0);
 	}
 
 	public void writeEntityToNBT(NBTTagCompound tag) {
