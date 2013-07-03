@@ -67,4 +67,10 @@ public class InstanceSensorUpgrade implements IRobotUpgradeInstance, ISensorEnvi
 		return 5;
 	}
 
+	@Override
+	public void onTierChanged(int tier) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

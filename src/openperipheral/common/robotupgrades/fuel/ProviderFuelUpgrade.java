@@ -2,6 +2,7 @@ package openperipheral.common.robotupgrades.fuel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import net.minecraft.item.ItemStack;
 import openperipheral.api.IRobot;
@@ -19,18 +20,13 @@ public class ProviderFuelUpgrade implements IRobotUpgradeProvider {
 	}
 	
 	@Override
-	public IRobotUpgradeInstance provideUpgradeInstance(IRobot robot) {
+	public IRobotUpgradeInstance provideUpgradeInstance(IRobot robot, int tier) {
 		return new InstanceFuelUpgrade(robot);
 	}
 
 	@Override
 	public String getUpgradeId() {
 		return "fuel";
-	}
-
-	@Override
-	public ItemStack getUpgradeItem() {
-		return null;
 	}
 
 	@Override
@@ -41,6 +37,12 @@ public class ProviderFuelUpgrade implements IRobotUpgradeProvider {
 	@Override
 	public boolean isForced() {
 		return true;
+	}
+
+	@Override
+	public Map<Integer, ItemStack> getUpgradeItems() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
