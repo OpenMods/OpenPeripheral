@@ -4,9 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLiving;
@@ -15,7 +12,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
-
 import openperipheral.OpenPeripheral;
 import openperipheral.common.config.ConfigSettings;
 import openperipheral.common.interfaces.IMetaItem;
@@ -39,6 +35,8 @@ import openperipheral.common.item.meta.MetaSilislimeRubber;
 import openperipheral.common.item.meta.MetaSolarCell;
 import openperipheral.common.item.meta.MetaThinWire;
 import openperipheral.common.item.meta.MetaTransistor;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemGeneric extends Item {
 

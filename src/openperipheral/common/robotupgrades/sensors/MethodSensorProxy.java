@@ -46,7 +46,7 @@ public abstract class MethodSensorProxy implements IRobotMethod {
 	
 	@Override
 	public Object execute(IRobotUpgradeInstance instance, Object[] args) throws Exception {
-		return executeOnSensor(((SensorUpgrade) instance).getSensor(), args);
+		return executeOnSensor(((InstanceSensorUpgrade) instance).getSensor(), args);
 	}
 
 }

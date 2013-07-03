@@ -6,15 +6,15 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 import openperipheral.api.IRobot;
 import openperipheral.api.IRobotMethod;
-import openperipheral.api.IRobotUpgradeProvider;
 import openperipheral.api.IRobotUpgradeInstance;
+import openperipheral.api.IRobotUpgradeProvider;
 import openperipheral.common.peripheral.SensorPeripheral;
 
-public class SensorUpgradeProvider implements IRobotUpgradeProvider {
+public class ProviderSensorUpgrade implements IRobotUpgradeProvider {
 
 	private ArrayList<IRobotMethod> methods;
 	
-	public SensorUpgradeProvider() {
+	public ProviderSensorUpgrade() {
 		methods = new ArrayList<IRobotMethod>();
 		methods.add(new MethodSensorProxy("getPlayerNames") {
 			@Override
@@ -32,7 +32,7 @@ public class SensorUpgradeProvider implements IRobotUpgradeProvider {
 	
 	@Override
 	public IRobotUpgradeInstance provideUpgradeInstance(IRobot robot) {
-		return new SensorUpgrade(robot);
+		return new InstanceSensorUpgrade(robot);
 	}
 
 	@Override

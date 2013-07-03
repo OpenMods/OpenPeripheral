@@ -3,13 +3,12 @@ package openperipheral.common.sensor;
 import java.util.Collection;
 import java.util.HashMap;
 
-import openperipheral.common.util.InventoryUtils;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.EnumMovingObjectType;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
+import openperipheral.common.util.InventoryUtils;
 
 public class PlayerData extends HashMap implements IEntityData {
 

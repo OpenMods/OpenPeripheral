@@ -1,17 +1,14 @@
 package openperipheral.client.renderer;
 
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.tileentity.TileEntity;
 import openperipheral.client.model.ModelBlockFrame;
-import openperipheral.client.model.ModelPlayerInventory;
 import openperipheral.client.model.ModelRobot;
 import openperipheral.common.config.ConfigSettings;
 import openperipheral.common.entity.EntityRobot;
 import openperipheral.common.tileentity.TileEntityRobot;
-import openperipheral.common.tileentity.TileEntitySensor;
 
 import org.lwjgl.opengl.GL11;
-
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.tileentity.TileEntity;
 
 public class TileEntityRobotRenderer extends TileEntitySpecialRenderer {
 

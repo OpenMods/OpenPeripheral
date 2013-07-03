@@ -4,20 +4,18 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import openperipheral.OpenPeripheral;
-import openperipheral.codechicken.core.vec.Rotation;
-import openperipheral.codechicken.core.vec.Vector3;
-import openperipheral.common.config.ConfigSettings;
-import openperipheral.common.entity.EntityRobot;
 import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
+import openperipheral.OpenPeripheral;
+import openperipheral.codechicken.core.vec.Rotation;
+import openperipheral.codechicken.core.vec.Vector3;
+import openperipheral.common.config.ConfigSettings;
+import openperipheral.common.entity.EntityRobot;
 
 public class ItemRobot extends Item {
 
@@ -58,13 +56,12 @@ public class ItemRobot extends Item {
 				world.isAirBlock(blockX, blockY+2, blockZ)) {
 
 		    	EntityRobot robot = new EntityRobot(world);
-		    	if (robot.setUpgradesFromStack(stack)) {
+		    	if (robot.createFromItem(stack)) {
 			    	robot.setPositionAndRotation(pos.x, pos.y + 0.5, pos.z, 0, 0);
 			    	world.spawnEntityInWorld(robot);
 			    	robot.playSound("openperipheral.robotready", 1F, 1F);
 			    	stack.stackSize = 0;
-			    	//player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
-		    	} else {
+			    } else {
 		    		// make sure he's gone
 		    		robot.setDead();
 		    		// tell the player
@@ -79,23 +76,16 @@ public class ItemRobot extends Item {
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
 		if (stack.hasTagCompound()) {
 			NBTTagCompound tag = stack.getTagCompound();
-			if (tag.hasKey("robotId")) {
-				list.add("Robot ID: " + tag.getInteger("robotId"));
-				if (tag.hasKey("upgrades")) {
-					NBTBase upgradesTag = tag.getTag("upgrades");
-					if (upgradesTag instanceof NBTTagCompound) {
-						Collection upgradesTags = ((NBTTagCompound)tag.getTag("upgrades")).getTags();
-						for (Iterator iterator = upgradesTags.iterator(); iterator.hasNext();) {
-							Object next = iterator.next();
-							if (next instanceof NBTTagCompound) {
-								NBTTagCompound upgradeTag = (NBTTagCompound)next;
-								list.add("Upgrade: " + upgradeTag.getName());
-							}
-					    }
-					}
-				}
+			if (tag.hasKey("robotId") &&
+				tag.hasKey("controllerX") && 
+				tag.hasKey("controllerY") && 
+				tag.hasKey("controllerZ")) {
+				list.add(String.format("Linked to %s, %s, %s",
+							tag.getInteger("controllerX"),
+							tag.getInteger("controllerY"),
+							tag.getInteger("controllerZ")));
+				list.add(String.format("with ID: %s", tag.getInteger("robotId")));
 			}
 		}
 	}
-
 }

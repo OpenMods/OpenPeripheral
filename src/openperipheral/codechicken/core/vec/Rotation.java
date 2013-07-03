@@ -5,10 +5,9 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 
 import net.minecraft.entity.player.EntityPlayer;
+import openperipheral.codechicken.core.alg.MathHelper;
 
 import org.lwjgl.opengl.GL11;
-
-import openperipheral.codechicken.core.alg.MathHelper;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

@@ -3,13 +3,11 @@ package openperipheral.common.integration.buildcraft.powerprovider;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import buildcraft.api.power.IPowerProvider;
-import buildcraft.api.power.IPowerReceptor;
-
-import net.minecraft.tileentity.TileEntity;
 import openperipheral.api.IRestriction;
 import openperipheral.common.interfaces.IPeripheralMethodDefinition;
 import openperipheral.common.util.ReflectionHelper;
+import buildcraft.api.power.IPowerProvider;
+import buildcraft.api.power.IPowerReceptor;
 
 public class DefinitionPowerProviderMethod implements IPeripheralMethodDefinition {
 

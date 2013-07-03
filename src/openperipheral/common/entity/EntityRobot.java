@@ -1,5 +1,6 @@
 package openperipheral.common.entity;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -15,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import openperipheral.OpenPeripheral;
@@ -25,12 +27,12 @@ import openperipheral.api.IRobotUpgradeProvider;
 import openperipheral.api.RobotUpgradeManager;
 import openperipheral.common.config.ConfigSettings;
 import openperipheral.common.core.OPInventory;
-import openperipheral.common.peripheral.SensorPeripheral;
+import openperipheral.common.interfaces.IInventoryCallback;
 import openperipheral.common.tileentity.TileEntityRobot;
 import openperipheral.common.util.BlockUtils;
 import openperipheral.common.util.InventoryUtils;
 
-public class EntityRobot extends EntityCreature implements IRobot {
+public class EntityRobot extends EntityCreature implements IRobot, IInventoryCallback {
 
 	/**
 	 * the location and id of the controller
@@ -54,8 +56,13 @@ public class EntityRobot extends EntityCreature implements IRobot {
 	/**
 	 * The main inventory
 	 */
-	protected OPInventory inventory = new OPInventory("robot", false, 16);
+	protected OPInventory inventory = new OPInventory("robot", false, 27);
 
+	/**
+	 * A map of currently installed instanceIds to module instance objects
+	 */
+	private HashMap<String, IRobotUpgradeInstance> upgradeInstances;
+	
 	/**
 	 * map of method name to upgrade instance, so we know what object handles
 	 * the called method
@@ -63,18 +70,24 @@ public class EntityRobot extends EntityCreature implements IRobot {
 	private HashMap<String, IRobotUpgradeInstance> upgradeMethodMap;
 	
 	/**
-	 * A map of currently installed instanceIds to module instance objects
+	 * a map of upgrade instance id to upgrade AI objects. We need this
+	 * to make sure we can remove any when the upgrade is disabled
 	 */
-	private HashMap<String, IRobotUpgradeInstance> upgradeInstances;
+	private HashMap<EntityAIBase, IRobotUpgradeInstance> upgradeAIMap;
+	
+	
+	private NBTTagCompound upgradesNBT = new NBTTagCompound();
 	
 	public EntityRobot(World par1World) {
 		super(par1World);
 		upgradeMethodMap = new HashMap<String, IRobotUpgradeInstance>();
 		upgradeInstances = new HashMap<String, IRobotUpgradeInstance>();
+		upgradeAIMap = new HashMap<EntityAIBase, IRobotUpgradeInstance>();
 		this.health = this.getMaxHealth();
 		this.setSize(1F, 3F);
 		this.moveSpeed = 0.22F;
 		this.getNavigator().setAvoidsWater(true);
+		inventory.addCallback(this);
 		this.texture = String.format("%s/models/robot.png", ConfigSettings.TEXTURES_PATH);
 	}
 
@@ -139,6 +152,101 @@ public class EntityRobot extends EntityCreature implements IRobot {
 	}
 	
 	/**
+	 * This is called whenever the inventory is changed
+	 */
+	@Override
+	public void onInventoryChanged(IInventory inventory, int slotNumber) {
+		
+		if (worldObj.isRemote) {
+			return;
+		}
+		
+		ArrayList<String> validInstances = new ArrayList<String>();
+		
+		for (int i = 0; i < inventory.getSizeInventory() - 1; i++) {
+
+			ItemStack stack = inventory.getStackInSlot(i);
+			IRobotUpgradeProvider provider = RobotUpgradeManager.getProviderForStack(stack);
+			
+			if (provider == null) {
+				continue;
+			}
+			
+			String providerId = provider.getUpgradeId();
+			
+			validInstances.add(providerId);
+			
+			if (!upgradeInstances.containsKey(providerId)) {
+				
+				// create a new instance
+				IRobotUpgradeInstance instance = provider.provideUpgradeInstance(this);
+				
+				// check if there's any information stored in our upgrades nbt
+				if (upgradesNBT.hasKey(providerId)) {
+					
+					// let it read the nbt tag
+					instance.readFromNBT(upgradesNBT.getCompoundTag(providerId));
+				}
+				
+				// add all the methods to our method map
+				for (IRobotMethod method : provider.getMethods()) {
+					upgradeMethodMap.put(method.getLuaName(), instance);
+				}
+				
+				HashMap<Integer, EntityAIBase> aiTasks = instance.getAITasks();
+				if (aiTasks != null) {
+					for (Entry<Integer, EntityAIBase> entry : aiTasks.entrySet()) {
+						tasks.addTask(entry.getKey(), entry.getValue());
+						upgradeAIMap.put(entry.getValue(), instance);
+					}
+				}
+
+				// add the instance to our instances list
+				upgradeInstances.put(provider.getUpgradeId(), instance);
+			
+			}
+			
+		}
+		// remove any instances that are no longer valid
+		for (String instanceKey : upgradeInstances.keySet()) {
+			if (!validInstances.contains(instanceKey)) {
+				
+				IRobotUpgradeInstance instanceV = upgradeInstances.get(instanceKey);
+				
+				// remove any lingering methods
+				Iterator<Entry<String, IRobotUpgradeInstance>> iterator = upgradeMethodMap.entrySet().iterator();
+				while (iterator.hasNext()) {
+				     Entry<String, IRobotUpgradeInstance> entry = iterator.next();
+				     if (entry.getValue() == instanceV) {
+				    	 iterator.remove();
+				     }
+				}
+				
+				// remove any lingering AI
+				Iterator<Entry<EntityAIBase, IRobotUpgradeInstance>> aiIterator = upgradeAIMap.entrySet().iterator();
+				while (aiIterator.hasNext()) {
+				     Entry<EntityAIBase, IRobotUpgradeInstance> entry = aiIterator.next();
+				     if (entry.getValue() == instanceV) {
+				    	 this.tasks.removeTask(entry.getKey());
+				    	 aiIterator.remove();
+				     }
+				}
+				upgradeInstances.remove(instanceKey);
+			}
+		}
+		
+	}
+	
+	@Override
+	public MovingObjectPosition getLookingAt() {
+		Vec3 posVec = getLocation();
+		posVec.yCoord += getEyeHeight();
+        Vec3 lookVec = getLook(1.0f);
+        Vec3 targetVec = posVec.addVector(lookVec.xCoord * 10f, lookVec.yCoord * 10f, lookVec.zCoord * 10f);
+        return worldObj.rayTraceBlocks(posVec, targetVec);
+	}
+	
+	/**
 	 * Path finding range
 	 */
 	@Override
@@ -174,24 +282,6 @@ public class EntityRobot extends EntityCreature implements IRobot {
 					entity.setDead();
 				}
 			}
-		}
-	}
-
-	//TODO: move to inventory module
-	public void dropAll() {
-		for (int i = 0; i < inventory.getSizeInventory(); i++) {
-			ItemStack stack = inventory.getStackInSlot(i);
-			if (stack != null) {
-				EntityItem entityitem = new EntityItem(worldObj, posX, posY, posZ, stack);
-				Vec3 lookVec = this.getLookVec();
-				entityitem.setVelocity(lookVec.xCoord * 0.3, lookVec.yCoord * 0.3, lookVec.zCoord * 0.3);
-				if (stack.hasTagCompound()) {
-					entityitem.getEntityItem().setTagCompound((NBTTagCompound) stack.getTagCompound().copy());
-				}
-				entityitem.delayBeforeCanPickup = 10;
-				worldObj.spawnEntityInWorld(entityitem);
-			}
-			inventory.setInventorySlotContents(i, null);
 		}
 	}
 
@@ -290,9 +380,7 @@ public class EntityRobot extends EntityCreature implements IRobot {
 		return worldObj;
 	}
 
-	public boolean setUpgradesFromStack(ItemStack stack) {
-
-		upgradeMethodMap.clear();
+	public boolean createFromItem(ItemStack stack) {
 
 		/**
 		 * This is where we'd read the available tags and decide which upgrades
@@ -300,6 +388,7 @@ public class EntityRobot extends EntityCreature implements IRobot {
 		 */
 		if (stack.hasTagCompound()) {
 			NBTTagCompound tag = (NBTTagCompound) stack.getTagCompound().copy();
+			inventory.readFromNBT(tag);
 			controllerX = tag.getInteger("controllerX");
 			controllerY = tag.getInteger("controllerY");
 			controllerZ = tag.getInteger("controllerZ");
@@ -310,67 +399,11 @@ public class EntityRobot extends EntityCreature implements IRobot {
 				return false;
 			}
 			controller.registerRobot(robotId, this);
-			readUpgradesFromNBT(tag);
-		}
-
-		for (IRobotUpgradeProvider supplier : RobotUpgradeManager.getProviders()) {
-			IRobotUpgradeInstance instance = supplier.provideUpgradeInstance(this);
-
-		}
-		return true;
-	}
-
-	private void readUpgradesFromNBT(NBTTagCompound tag) {
-
-		// make sure we remove any instances, because we're refreshing
-		// all of the data
-		this.tasks.taskEntries.clear();
-		upgradeInstances.clear();
-		upgradeMethodMap.clear();
-
-		// if we've got an upgrades nbt tag
-		if (tag.hasKey("upgrades")) {
-
-			NBTTagCompound upgradesTag = tag.getCompoundTag("upgrades");
-			Collection upgradesTags = upgradesTag.getTags();
-
-			for (Iterator iterator = upgradesTags.iterator(); iterator.hasNext();) {
-				Object next = iterator.next();
-				if (next instanceof NBTTagCompound) {
-
-					// get the tag and its name
-					NBTTagCompound upgradeTag = (NBTTagCompound) next;
-					String name = upgradeTag.getName();
-
-					// get the relevant upgrade supplier
-					IRobotUpgradeProvider supplier = RobotUpgradeManager.getSupplierById(name);
-					if (supplier != null) {
-
-						// create a new instance
-						IRobotUpgradeInstance instance = supplier.provideUpgradeInstance(this);
-
-						// let it read the nbt tag
-						instance.readFromNBT(upgradeTag);
-
-						// add all the methods to our method map
-						for (IRobotMethod method : supplier.getMethods()) {
-							upgradeMethodMap.put(method.getLuaName(), instance);
-						}
-
-						// add the instance to our instances list
-						upgradeInstances.put(supplier.getUpgradeId(), instance);
-
-						// append all the AI tasks
-						HashMap<Integer, EntityAIBase> aiTasks = instance.getAITasks();
-						if (aiTasks != null) {
-							for (Entry<Integer, EntityAIBase> entry : aiTasks.entrySet()) {
-								this.tasks.addTask(entry.getKey(), entry.getValue());
-							}
-						}
-					}
-				}
+			if (tag.hasKey("upgrades")) {
+				upgradesNBT = tag.getCompoundTag("upgrades");
 			}
 		}
+		return true;
 	}
 
 	public IRobotUpgradeInstance getInstanceForLuaMethod(String methodName) {
@@ -409,7 +442,9 @@ public class EntityRobot extends EntityCreature implements IRobot {
 		controllerUuid = tag.getString("controllerUuid");
 		robotId = tag.getInteger("robotId");
 		inventory.readFromNBT(tag);
-		readUpgradesFromNBT(tag);
+		if (tag.hasKey("upgrades")) {
+			upgradesNBT = tag.getCompoundTag("upgrades");
+		}
 	}
 
 	public void writeEntityToNBT(NBTTagCompound tag) {
@@ -435,15 +470,20 @@ public class EntityRobot extends EntityCreature implements IRobot {
 	 */
 	@Override
 	public boolean interact(EntityPlayer player) {
-		if (player.isSneaking() && !worldObj.isRemote) {
-			ItemStack robot = new ItemStack(OpenPeripheral.Items.robot);
-			NBTTagCompound tag = new NBTTagCompound();
-			this.writeEntityToNBT(tag);
-			robot.setTagCompound(tag);
-			setDead();
-			BlockUtils.dropItemStackInWorld(worldObj, posX, posY, posZ, robot);
-			return true;
+		if (!worldObj.isRemote) {
+			if (player.isSneaking()) {
+				ItemStack robot = new ItemStack(OpenPeripheral.Items.robot);
+				NBTTagCompound tag = new NBTTagCompound();
+				this.writeEntityToNBT(tag);
+				robot.setTagCompound(tag);
+				setDead();
+				BlockUtils.dropItemStackInWorld(worldObj, posX, posY, posZ, robot);
+				return true;
+			}else {
+				player.openGui(OpenPeripheral.instance, OpenPeripheral.Gui.robotEntity.ordinal(), player.worldObj, entityId, 0, 0);
+			}
 		}
+		
 		return false;
 	}
 }

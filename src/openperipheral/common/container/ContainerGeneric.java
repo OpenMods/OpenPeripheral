@@ -6,28 +6,33 @@ import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import openperipheral.common.interfaces.IHasSyncedGui;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class ContainerGeneric extends Container {
 
-	private int inventorySize;
-	private TileEntity tileentity;
+	protected int inventorySize;
+	protected IInventory inventory;
 	protected IInventory playerInventory;
 
-	private int[] craftingProgress = new int[16];
+	protected int[] craftingProgress = new int[16];
 
-	public ContainerGeneric(IInventory playerInventory, TileEntity tileentity, int[] slots) {
-		this.inventorySize = slots.length / 2;
+	public ContainerGeneric(IInventory playerInventory, IInventory inventory, int[] slots) {
+		this.inventorySize = inventory.getSizeInventory();
 		this.playerInventory = playerInventory;
-		this.tileentity = tileentity;
-
+		this.inventory = inventory;
+		addInventorySlots(slots);
+		addPlayerInventorySlots();
+	}
+	
+	protected void addInventorySlots(int[] slots) {
 		for (int i = 0, slotId = 0; i < slots.length; i += 2, slotId++) {
-			addSlotToContainer(new ConditionalSlot((IInventory) tileentity, slotId, slots[i], slots[i + 1]));
+			addSlotToContainer(new ConditionalSlot(inventory, slotId, slots[i], slots[i + 1]));
 		}
-
+	}
+	
+	protected void addPlayerInventorySlots() {
 		for (int l = 0; l < 3; l++) {
 			for (int k1 = 0; k1 < 9; k1++) {
 				addSlotToContainer(new Slot(playerInventory, k1 + l * 9 + 9, 8 + k1 * 18, 84 + l * 18));
@@ -37,14 +42,13 @@ public class ContainerGeneric extends Container {
 		for (int i1 = 0; i1 < 9; i1++) {
 			addSlotToContainer(new Slot(playerInventory, i1, 8 + i1 * 18, 142));
 		}
-
 	}
 
 	@Override
 	public void addCraftingToCrafters(ICrafting crafting) {
 		super.addCraftingToCrafters(crafting);
-		if (tileentity instanceof IHasSyncedGui) {
-			int[] craftingValues = ((IHasSyncedGui) tileentity).getGuiValues();
+		if (inventory instanceof IHasSyncedGui) {
+			int[] craftingValues = ((IHasSyncedGui) inventory).getGuiValues();
 			for (int i = 0; i < craftingValues.length; i++) {
 				craftingProgress[i] = craftingValues[i];
 				crafting.sendProgressBarUpdate(this, i, craftingValues[i]);
@@ -60,9 +64,9 @@ public class ContainerGeneric extends Container {
 	public void detectAndSendChanges() {
 		super.detectAndSendChanges();
 
-		if (tileentity instanceof IHasSyncedGui) {
+		if (inventory instanceof IHasSyncedGui) {
 
-			int[] newValues = ((IHasSyncedGui) tileentity).getGuiValues();
+			int[] newValues = ((IHasSyncedGui) inventory).getGuiValues();
 
 			for (int i = 0; i < this.crafters.size(); ++i) {
 				ICrafting icrafting = (ICrafting) this.crafters.get(i);
@@ -84,18 +88,14 @@ public class ContainerGeneric extends Container {
 	}
 
 	public boolean enchantItem(EntityPlayer player, int button) {
-		if (tileentity instanceof IHasSyncedGui) {
-			((IHasSyncedGui) tileentity).onServerButtonClicked(player, button);
+		if (inventory instanceof IHasSyncedGui) {
+			((IHasSyncedGui) inventory).onServerButtonClicked(player, button);
 		}
 		return false;
 	}
 
 	public int getInventorySize() {
 		return inventorySize;
-	}
-
-	public TileEntity getTileEntity() {
-		return this.tileentity;
 	}
 
 	@Override
@@ -191,8 +191,8 @@ public class ContainerGeneric extends Container {
 
 	@SideOnly(Side.CLIENT)
 	public void updateProgressBar(int par1, int par2) {
-		if (tileentity instanceof IHasSyncedGui) {
-			((IHasSyncedGui) tileentity).setGuiValue(par1, par2);
+		if (inventory instanceof IHasSyncedGui) {
+			((IHasSyncedGui) inventory).setGuiValue(par1, par2);
 		}
 	}
 }

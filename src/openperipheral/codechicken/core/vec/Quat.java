@@ -3,6 +3,7 @@ package openperipheral.codechicken.core.vec;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+
 import openperipheral.codechicken.core.alg.MathHelper;
 
 public class Quat

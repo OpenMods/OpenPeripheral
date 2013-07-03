@@ -1,4 +1,4 @@
-package openperipheral.common.robotupgrades.fuel;
+package openperipheral.common.robotupgrades.movement;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,22 +9,26 @@ import openperipheral.api.IRobotMethod;
 import openperipheral.api.IRobotUpgradeInstance;
 import openperipheral.api.IRobotUpgradeProvider;
 
-public class FuelUpgradeProvider implements IRobotUpgradeProvider {
+public class ProviderMovementUpgrade implements IRobotUpgradeProvider {
 
-	private ArrayList<IRobotMethod> methods;
-	public FuelUpgradeProvider() {
+	ArrayList<IRobotMethod> methods;
+	
+	public ProviderMovementUpgrade() {
 		methods = new ArrayList<IRobotMethod>();
-		methods.add(new MethodGetFuelLevel());
+		methods.add(new MethodGoto());
+		methods.add(new MethodJump());
+		methods.add(new MethodSetPitch());
+		methods.add(new MethodSetYaw());
 	}
 	
 	@Override
 	public IRobotUpgradeInstance provideUpgradeInstance(IRobot robot) {
-		return new FuelUpgrade(robot);
+		return new InstanceMovementUpgrade(robot);
 	}
 
 	@Override
 	public String getUpgradeId() {
-		return "fuel";
+		return "movement";
 	}
 
 	@Override
@@ -39,7 +43,7 @@ public class FuelUpgradeProvider implements IRobotUpgradeProvider {
 
 	@Override
 	public boolean isForced() {
-		return true;
+		return false;
 	}
 
 }

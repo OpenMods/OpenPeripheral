@@ -2,7 +2,6 @@ package openperipheral.common.postchange;
 
 import java.util.ArrayList;
 
-import net.minecraft.tileentity.TileEntity;
 import openperipheral.common.interfaces.IPeripheralMethodDefinition;
 import openperipheral.common.interfaces.IPostChangeHandler;
 

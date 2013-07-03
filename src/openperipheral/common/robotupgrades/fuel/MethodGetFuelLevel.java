@@ -35,7 +35,7 @@ public class MethodGetFuelLevel implements IRobotMethod {
 
 	@Override
 	public Object execute(IRobotUpgradeInstance instance, Object[] args) throws Exception {
-		return ((FuelUpgrade)instance).getRobot().getFuelLevel();
+		return ((InstanceFuelUpgrade)instance).getRobot().getFuelLevel();
 	}
 
 }

@@ -1,13 +1,12 @@
 package openperipheral.common;
 
-import java.util.Map;
-
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import openperipheral.OpenPeripheral;
+import openperipheral.api.IRobot;
 import openperipheral.common.block.BlockGlassesBridge;
 import openperipheral.common.block.BlockPlayerInventory;
 import openperipheral.common.block.BlockProxy;
@@ -16,6 +15,7 @@ import openperipheral.common.block.BlockSensor;
 import openperipheral.common.block.BlockTicketMachine;
 import openperipheral.common.container.ContainerComputer;
 import openperipheral.common.container.ContainerGeneric;
+import openperipheral.common.container.ContainerRobot;
 import openperipheral.common.core.Mods;
 import openperipheral.common.entity.EntityLazer;
 import openperipheral.common.entity.EntityRobot;
@@ -27,13 +27,8 @@ import openperipheral.common.tileentity.TileEntityRobot;
 import openperipheral.common.tileentity.TileEntityTicketMachine;
 import openperipheral.common.util.LanguageUtils;
 import openperipheral.common.util.RecipeUtils;
-import openperipheral.common.util.ReflectionHelper;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.ModContainer;
-import cpw.mods.fml.common.network.FMLNetworkHandler;
 import cpw.mods.fml.common.network.IGuiHandler;
-import cpw.mods.fml.common.network.NetworkModHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.EntityRegistry;
 
@@ -85,14 +80,17 @@ public class CommonProxy implements IGuiHandler {
 
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		if (ID == OpenPeripheral.Gui.robotEntity.ordinal()) {
+			return new ContainerRobot(player.inventory, (IRobot)player.worldObj.getEntityByID(x));
+		}
 		TileEntity tile = world.getBlockTileEntity(x, y, z);
 		if (ID == OpenPeripheral.Gui.ticketMachine.ordinal()) {
-			return new ContainerGeneric(player.inventory, tile, TileEntityTicketMachine.SLOTS);
+			return new ContainerGeneric(player.inventory, (IInventory)tile, TileEntityTicketMachine.SLOTS);
 		} else if (ID == OpenPeripheral.Gui.remote.ordinal()) {
 			return new ContainerComputer();
 		} else if (ID == OpenPeripheral.Gui.robot.ordinal()) {
-			return new ContainerGeneric(player.inventory, tile, TileEntityRobot.SLOTS);
-		}
+			return new ContainerGeneric(player.inventory, (IInventory)tile, TileEntityRobot.SLOTS);
+		} 
 		return null;
 	}
 

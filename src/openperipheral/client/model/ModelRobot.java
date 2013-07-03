@@ -1,15 +1,12 @@
 package openperipheral.client.model;
 
-import openperipheral.common.entity.EntityRobot;
-
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.MathHelper;
-import net.minecraft.util.Vec3;
-import net.minecraft.util.Vec3Pool;
+import openperipheral.common.entity.EntityRobot;
+
+import org.lwjgl.opengl.GL11;
 
 public class ModelRobot extends ModelBase {
 	// fields

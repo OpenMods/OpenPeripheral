@@ -4,12 +4,10 @@ import java.util.HashMap;
 
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.Vec3;
 import openperipheral.api.IRobot;
 import openperipheral.api.IRobotUpgradeInstance;
-import openperipheral.api.SyncableInt;
 
-public class MovementUpgrade implements IRobotUpgradeInstance {
+public class InstanceMovementUpgrade implements IRobotUpgradeInstance {
 
 	private double targetX;
 	private double targetY;
@@ -17,7 +15,7 @@ public class MovementUpgrade implements IRobotUpgradeInstance {
 	private boolean shouldMoveToTarget = false;
 	private IRobot robot;
 	
-	public MovementUpgrade(IRobot robot) {
+	public InstanceMovementUpgrade(IRobot robot) {
 		this.robot = robot;
 	}
 	

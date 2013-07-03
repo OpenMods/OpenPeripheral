@@ -11,12 +11,12 @@ import openperipheral.api.IRobotUpgradeInstance;
 import openperipheral.common.interfaces.ISensorEnvironment;
 import openperipheral.common.peripheral.SensorPeripheral;
 
-public class SensorUpgrade implements IRobotUpgradeInstance, ISensorEnvironment {
+public class InstanceSensorUpgrade implements IRobotUpgradeInstance, ISensorEnvironment {
 
 	private SensorPeripheral sensorPeripheral;
 	private IRobot robot;
 	
-	public SensorUpgrade(IRobot robot) {
+	public InstanceSensorUpgrade(IRobot robot) {
 		sensorPeripheral = new SensorPeripheral(this);
 		this.robot = robot;
 	}
