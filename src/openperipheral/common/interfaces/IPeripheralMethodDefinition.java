@@ -5,9 +5,6 @@ import java.util.HashMap;
 
 import openperipheral.api.IRestriction;
 
-
-import net.minecraft.tileentity.TileEntity;
-
 public interface IPeripheralMethodDefinition {
 	public HashMap<Integer, String> getReplacements();
 	public String getPostScript();

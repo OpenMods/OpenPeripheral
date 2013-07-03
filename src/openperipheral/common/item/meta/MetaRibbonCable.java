@@ -8,8 +8,6 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.ShapedOreRecipe;
-import net.minecraftforge.oredict.ShapelessOreRecipe;
-import openperipheral.OpenPeripheral;
 import openperipheral.common.interfaces.IMetaItem;
 import openperipheral.common.item.ItemGeneric;
 

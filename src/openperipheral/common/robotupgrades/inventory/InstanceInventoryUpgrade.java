@@ -1,30 +1,33 @@
-package openperipheral.common.robotupgrades.fuel;
+package openperipheral.common.robotupgrades.inventory;
 
 import java.util.HashMap;
 
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.nbt.NBTTagCompound;
-import openperipheral.api.IRobot;
 import openperipheral.api.IRobotUpgradeInstance;
+import openperipheral.api.IRobot;
 
-public class FuelUpgrade implements IRobotUpgradeInstance {
+public class InstanceInventoryUpgrade implements IRobotUpgradeInstance {
 
 	private IRobot robot;
 	
-	public FuelUpgrade(IRobot robot) {
+	public InstanceInventoryUpgrade(IRobot robot) {
 		this.robot = robot;
 	}
 	
 	public IRobot getRobot() {
 		return robot;
 	}
-	
+
 	@Override
 	public void writeToNBT(NBTTagCompound nbt) {
+
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override
@@ -34,6 +37,7 @@ public class FuelUpgrade implements IRobotUpgradeInstance {
 
 	@Override
 	public void update() {
+
 	}
 
 }

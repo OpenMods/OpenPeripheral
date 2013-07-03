@@ -6,8 +6,8 @@ import java.util.List;
 
 import net.minecraft.world.World;
 import openperipheral.api.IRobotMethod;
-import openperipheral.api.IRobotUpgradeProvider;
 import openperipheral.api.IRobotUpgradeInstance;
+import openperipheral.api.IRobotUpgradeProvider;
 import openperipheral.api.RobotUpgradeManager;
 import openperipheral.common.entity.EntityRobot;
 import openperipheral.common.interfaces.IPeripheralMethodDefinition;

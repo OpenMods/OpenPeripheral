@@ -6,21 +6,21 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 import openperipheral.api.IRobot;
 import openperipheral.api.IRobotMethod;
-import openperipheral.api.IRobotUpgradeProvider;
 import openperipheral.api.IRobotUpgradeInstance;
+import openperipheral.api.IRobotUpgradeProvider;
 
-public class LazersUpgradeProvider implements IRobotUpgradeProvider {
+public class ProviderLazersUpgrade implements IRobotUpgradeProvider {
 
 	ArrayList<IRobotMethod> methods;
 	
-	public LazersUpgradeProvider() {
+	public ProviderLazersUpgrade() {
 		methods = new ArrayList<IRobotMethod>();
 		methods.add(new MethodLazerFire());
 	}
 	
 	@Override
 	public IRobotUpgradeInstance provideUpgradeInstance(IRobot robot) {
-		return new LazersUpgrade(robot);
+		return new InstanceLazersUpgrade(robot);
 	}
 
 	@Override

@@ -2,9 +2,8 @@ package openperipheral.api;
 
 import java.util.ArrayList;
 
-import openperipheral.common.interfaces.IPeripheralMethodDefinition;
-
 import net.minecraft.tileentity.TileEntity;
+import openperipheral.common.interfaces.IPeripheralMethodDefinition;
 
 public interface IClassDefinition {
 

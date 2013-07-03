@@ -1,22 +1,20 @@
 package openperipheral.common.robotupgrades.movement;
 
-import openperipheral.api.IRobot;
-import openperipheral.api.IRobotUpgradeInstance;
-import openperipheral.common.entity.EntityRobot;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.pathfinding.PathEntity;
 import net.minecraft.pathfinding.PathNavigate;
+import openperipheral.api.IRobot;
 
 public class EntityAIGotoLocation extends EntityAIBase {
 
 	private IRobot robot;
-	private MovementUpgrade instance;
+	private InstanceMovementUpgrade instance;
 	private PathNavigate navigator;
 	
 	public static final String NO_PATH_AVAILABLE = "no_path_available";
 	public static final String PATH_FINISHED = "path_finished";
 	
-	public EntityAIGotoLocation(MovementUpgrade instance, IRobot robot) {
+	public EntityAIGotoLocation(InstanceMovementUpgrade instance, IRobot robot) {
 		this.robot = robot;
 		this.instance = instance;
 		this.navigator = robot.getEntity().getNavigator();

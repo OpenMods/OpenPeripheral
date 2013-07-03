@@ -7,7 +7,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
@@ -18,8 +17,6 @@ import openperipheral.OpenPeripheral;
 import openperipheral.common.config.ConfigSettings;
 import openperipheral.common.tileentity.TileEntityTicketMachine;
 import openperipheral.common.util.BlockUtils;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public class BlockTicketMachine extends BlockContainer {
@@ -126,16 +123,6 @@ public class BlockTicketMachine extends BlockContainer {
         }
     	return true;
     }
-
-	@Override
-	public boolean isOpaqueCube() {
-		return false;
-	}
-
-	@Override
-	public int getRenderType() {
-		return OpenPeripheral.renderId;
-	}
 
 	@Override
 	public boolean canBeReplacedByLeaves(World world, int x, int y, int z) {

@@ -1,15 +1,10 @@
 package openperipheral.common.robotupgrades.movement;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-
-import net.minecraft.util.Vec3;
 
 import openperipheral.api.IRestriction;
-import openperipheral.api.IRobot;
 import openperipheral.api.IRobotMethod;
 import openperipheral.api.IRobotUpgradeInstance;
-import openperipheral.api.SyncableInt;
 
 public class MethodGoto implements IRobotMethod {
 	
@@ -43,7 +38,7 @@ public class MethodGoto implements IRobotMethod {
 		int x = (Integer) args[0];
 		int y = (Integer) args[1];
 		int z = (Integer) args[2];
-		MovementUpgrade movementUpgrade = (MovementUpgrade) instance;
+		InstanceMovementUpgrade movementUpgrade = (InstanceMovementUpgrade) instance;
 		movementUpgrade.setTargetLocation(x, y, z);
 		return true;
 	}

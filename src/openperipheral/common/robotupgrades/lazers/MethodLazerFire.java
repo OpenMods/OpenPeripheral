@@ -3,7 +3,6 @@ package openperipheral.common.robotupgrades.lazers;
 import java.util.ArrayList;
 
 import net.minecraft.entity.EntityCreature;
-
 import openperipheral.api.IRestriction;
 import openperipheral.api.IRobotMethod;
 import openperipheral.api.IRobotUpgradeInstance;
@@ -38,7 +37,7 @@ public class MethodLazerFire implements IRobotMethod {
 
 	@Override
 	public Object execute(IRobotUpgradeInstance instance, Object[] args) throws Exception {
-		EntityCreature entity = ((LazersUpgrade)instance).getEntity();
+		EntityCreature entity = ((InstanceLazersUpgrade)instance).getEntity();
 		entity.playSound("openperipheral.lazer", 1F, entity.worldObj.rand.nextFloat() + 0.4f);
 		EntityLazer lazer = new EntityLazer(entity.worldObj, entity);
 		entity.worldObj.spawnEntityInWorld(lazer);

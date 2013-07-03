@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import openperipheral.api.IRestriction;
-import openperipheral.api.IRobot;
 import openperipheral.api.IRobotMethod;
 import openperipheral.api.IRobotUpgradeInstance;
 import openperipheral.common.interfaces.IPeripheralMethodDefinition;

@@ -1,10 +1,5 @@
 package openperipheral.common.block;
 
-import openperipheral.OpenPeripheral;
-import openperipheral.common.config.ConfigSettings;
-import openperipheral.common.tileentity.TileEntityProxy;
-import openperipheral.common.tileentity.TileEntitySensor;
-import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -13,6 +8,10 @@ import net.minecraft.util.Icon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+import openperipheral.OpenPeripheral;
+import openperipheral.common.config.ConfigSettings;
+import openperipheral.common.tileentity.TileEntitySensor;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 public class BlockSensor extends BlockContainer {
 

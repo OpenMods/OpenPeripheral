@@ -2,10 +2,9 @@ package openperipheral.common.core;
 
 import java.util.WeakHashMap;
 
+import net.minecraft.tileentity.TileEntity;
 import openperipheral.common.interfaces.IPeripheralProvider;
 import openperipheral.common.peripheral.HostedPeripheral;
-
-import net.minecraft.tileentity.TileEntity;
 import dan200.computer.api.IHostedPeripheral;
 import dan200.computer.api.IPeripheral;
 import dan200.computer.api.IPeripheralHandler;

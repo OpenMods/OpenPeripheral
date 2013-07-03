@@ -1,16 +1,12 @@
 package openperipheral.client.renderer;
 
+import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.entity.Entity;
 import openperipheral.client.model.ModelLazer;
 import openperipheral.common.config.ConfigSettings;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
-
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.entity.Entity;
-import net.minecraft.item.Item;
-import net.minecraft.util.Icon;
 
 public class RenderLazer extends Render {
 

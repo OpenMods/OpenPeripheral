@@ -1,19 +1,18 @@
 package openperipheral.common.tileentity;
 
-import dan200.computer.api.IHostedPeripheral;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Vec3;
+import net.minecraft.world.World;
 import openperipheral.common.core.OPInventory;
 import openperipheral.common.interfaces.IConditionalSlots;
 import openperipheral.common.interfaces.IInventoryCallback;
 import openperipheral.common.interfaces.IPeripheralProvider;
 import openperipheral.common.interfaces.ISensorEnvironment;
 import openperipheral.common.peripheral.SensorPeripheral;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Vec3;
-import net.minecraft.world.World;
+import dan200.computer.api.IHostedPeripheral;
 
 public class TileEntitySensor extends TileEntity implements IInventory, IInventoryCallback, IConditionalSlots, IPeripheralProvider, ISensorEnvironment {
 
@@ -64,7 +63,7 @@ public class TileEntitySensor extends TileEntity implements IInventory, IInvento
 	}
 
 	@Override
-	public void onInventoryChanged(IInventory inventory) {
+	public void onInventoryChanged(IInventory inventory, int slotNumber) {
 		
 	}
 

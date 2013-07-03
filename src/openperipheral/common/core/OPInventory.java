@@ -55,7 +55,7 @@ public class OPInventory implements IInventory, ISidedInventory {
 			if (this.inventoryContents[stackIndex].stackSize <= byAmount) {
 				itemstack = this.inventoryContents[stackIndex];
 				this.inventoryContents[stackIndex] = null;
-				this.onInventoryChanged();
+				this.onInventoryChanged(stackIndex);
 				return itemstack;
 			} else {
 				itemstack = this.inventoryContents[stackIndex].splitStack(byAmount);
@@ -64,7 +64,7 @@ public class OPInventory implements IInventory, ISidedInventory {
 					this.inventoryContents[stackIndex] = null;
 				}
 
-				this.onInventoryChanged();
+				this.onInventoryChanged(stackIndex);
 				return itemstack;
 			}
 		} else {
@@ -127,9 +127,9 @@ public class OPInventory implements IInventory, ISidedInventory {
 		return true;
 	}
 
-	public void onInventoryChanged() {
+	public void onInventoryChanged(int slotNumber) {
 		for (int i = 0; i < callbacks.size(); ++i) {
-			callbacks.get(i).onInventoryChanged(this);
+			callbacks.get(i).onInventoryChanged(this, slotNumber);
 		}
 	}
 
@@ -157,7 +157,7 @@ public class OPInventory implements IInventory, ISidedInventory {
 			itemstack.stackSize = this.getInventoryStackLimit();
 		}
 
-		this.onInventoryChanged();
+		this.onInventoryChanged(i);
 	}
 
 	public void writeToNBT(NBTTagCompound tag) {
@@ -173,6 +173,13 @@ public class OPInventory implements IInventory, ISidedInventory {
 		}
 
 		tag.setTag("Items", nbttaglist);
+	}
+
+	/**
+	 *  This bastard never even gets called, so ignore it
+	 */
+	@Override
+	public void onInventoryChanged() {
 	}
 
 }

@@ -3,13 +3,11 @@ package openperipheral.common.integration.appliedenergistics.gridinterface;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import appeng.api.me.util.ICraftRequest;
-import appeng.api.me.util.IGridInterface;
-
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import openperipheral.api.IRestriction;
 import openperipheral.common.interfaces.IPeripheralMethodDefinition;
+import appeng.api.me.util.ICraftRequest;
+import appeng.api.me.util.IGridInterface;
 
 public class DefinitionRequestCraftingMethod implements IPeripheralMethodDefinition {
 

@@ -8,7 +8,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
-import openperipheral.OpenPeripheral;
 import openperipheral.common.interfaces.IMetaItem;
 import openperipheral.common.item.ItemGeneric;
 

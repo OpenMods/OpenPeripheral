@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import net.minecraft.tileentity.TileEntity;
 import openperipheral.api.IRestriction;
 import openperipheral.common.interfaces.IPeripheralMethodDefinition;
 import openperipheral.common.restriction.RestrictionChoice;

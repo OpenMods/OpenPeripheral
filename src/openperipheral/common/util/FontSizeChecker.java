@@ -5,7 +5,6 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import net.minecraft.client.renderer.RenderEngine;
 import net.minecraft.util.ChatAllowedCharacters;
 import openperipheral.OpenPeripheral;
 import openperipheral.common.config.ConfigSettings;

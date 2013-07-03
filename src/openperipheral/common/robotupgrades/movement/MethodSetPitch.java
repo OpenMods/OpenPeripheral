@@ -3,7 +3,6 @@ package openperipheral.common.robotupgrades.movement;
 import java.util.ArrayList;
 
 import net.minecraft.entity.EntityCreature;
-
 import openperipheral.api.IRestriction;
 import openperipheral.api.IRobot;
 import openperipheral.api.IRobotMethod;
@@ -48,7 +47,7 @@ public class MethodSetPitch implements IRobotMethod {
 
 	@Override
 	public Object execute(IRobotUpgradeInstance instance, Object[] args) throws Exception {
-		IRobot robot = ((MovementUpgrade)instance).getRobot();
+		IRobot robot = ((InstanceMovementUpgrade)instance).getRobot();
 		EntityCreature creature = robot.getEntity();
 		double direction = (Double)args[0];
 		creature.rotationPitch = (float)direction;

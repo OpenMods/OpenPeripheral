@@ -14,7 +14,6 @@ import net.minecraftforge.common.ForgeDirection;
 import openperipheral.common.core.OPInventory;
 import openperipheral.common.interfaces.IConditionalSlots;
 import openperipheral.common.interfaces.IInventoryCallback;
-import openperipheral.common.util.BlockUtils;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public class TileEntityTicketMachine extends TileEntity implements IInventory, ISidedInventory, IInventoryCallback, IConditionalSlots {
@@ -214,7 +213,7 @@ public class TileEntityTicketMachine extends TileEntity implements IInventory, I
 	}
 
 	@Override
-	public void onInventoryChanged(IInventory inventory) {
+	public void onInventoryChanged(IInventory inventory, int slotNumber) {
 		if (!worldObj.isRemote) {
 			boolean nowHasTicket = inventory.getStackInSlot(2) != null;
 			if (nowHasTicket != hasTicket) {

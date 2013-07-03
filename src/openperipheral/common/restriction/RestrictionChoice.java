@@ -2,7 +2,6 @@ package openperipheral.common.restriction;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 
 import openperipheral.api.IRestriction;
 import argo.jdom.JsonNode;

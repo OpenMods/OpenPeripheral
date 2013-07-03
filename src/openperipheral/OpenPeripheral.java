@@ -45,10 +45,11 @@ import openperipheral.common.restriction.RestrictionChoice;
 import openperipheral.common.restriction.RestrictionFactory;
 import openperipheral.common.restriction.RestrictionMaximum;
 import openperipheral.common.restriction.RestrictionMinimum;
-import openperipheral.common.robotupgrades.fuel.FuelUpgradeProvider;
-import openperipheral.common.robotupgrades.lazers.LazersUpgradeProvider;
-import openperipheral.common.robotupgrades.movement.MovementUpgradeProvider;
-import openperipheral.common.robotupgrades.sensors.SensorUpgradeProvider;
+import openperipheral.common.robotupgrades.fuel.ProviderFuelUpgrade;
+import openperipheral.common.robotupgrades.inventory.ProviderInventoryUpgrade;
+import openperipheral.common.robotupgrades.lazers.ProviderLazersUpgrade;
+import openperipheral.common.robotupgrades.movement.ProviderMovementUpgrade;
+import openperipheral.common.robotupgrades.sensors.ProviderSensorUpgrade;
 import openperipheral.common.util.MountingUtils;
 import argo.jdom.JsonNode;
 import cpw.mods.fml.common.Loader;
@@ -97,7 +98,8 @@ public class OpenPeripheral {
 	public enum Gui {
 		ticketMachine,
 		remote,
-		robot
+		robot,
+		robotEntity
 	};
 
 	public static int renderId;
@@ -183,10 +185,11 @@ public class OpenPeripheral {
 
 		DefinitionManager.load();
 		
-		RobotUpgradeManager.registerUpgradeProvider(new MovementUpgradeProvider());
-		RobotUpgradeManager.registerUpgradeProvider(new LazersUpgradeProvider());
-		RobotUpgradeManager.registerUpgradeProvider(new SensorUpgradeProvider());
-		RobotUpgradeManager.registerUpgradeProvider(new FuelUpgradeProvider());
+		RobotUpgradeManager.registerUpgradeProvider(new ProviderMovementUpgrade());
+		RobotUpgradeManager.registerUpgradeProvider(new ProviderLazersUpgrade());
+		RobotUpgradeManager.registerUpgradeProvider(new ProviderSensorUpgrade());
+		RobotUpgradeManager.registerUpgradeProvider(new ProviderFuelUpgrade());
+		RobotUpgradeManager.registerUpgradeProvider(new ProviderInventoryUpgrade());
 		
 		TickRegistry.registerTickHandler(new TickHandler(), Side.SERVER);
 		ComputerCraftAPI.registerExternalPeripheral(TileEntity.class, peripheralHandler);

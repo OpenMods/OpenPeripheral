@@ -8,16 +8,11 @@ import java.util.HashMap;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 
-import net.minecraft.tileentity.TileEntity;
 import openperipheral.api.IRestriction;
 import openperipheral.common.interfaces.IPeripheralMethodDefinition;
 import openperipheral.common.restriction.RestrictionFactory;
 import openperipheral.common.util.ReflectionHelper;
-
-import org.bouncycastle.util.encoders.Base64;
-
 import argo.jdom.JsonField;
 import argo.jdom.JsonNode;
 

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import net.minecraft.inventory.IInventory;
-
 import openperipheral.api.IRestriction;
 import openperipheral.common.interfaces.IPeripheralMethodDefinition;
 
