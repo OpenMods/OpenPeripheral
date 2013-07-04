@@ -3,18 +3,19 @@ package openperipheral.client.renderer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import openperipheral.client.model.ModelBlockFrame;
-import openperipheral.client.model.ModelRobot;
+import openperipheral.client.model.ModelRobotWarrior;
 import openperipheral.common.config.ConfigSettings;
 import openperipheral.common.entity.EntityRobot;
+import openperipheral.common.entity.EntityRobotWarrior;
 import openperipheral.common.tileentity.TileEntityRobot;
 
 import org.lwjgl.opengl.GL11;
 
 public class TileEntityRobotRenderer extends TileEntitySpecialRenderer {
 
-	private ModelRobot model = new ModelRobot();
+	private ModelRobotWarrior model = new ModelRobotWarrior();
 	private ModelBlockFrame frame = new ModelBlockFrame();
-	private EntityRobot robot = new EntityRobot(null);
+	private EntityRobot robot = new EntityRobotWarrior(null);
 	
 	@Override
 	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTicks) {

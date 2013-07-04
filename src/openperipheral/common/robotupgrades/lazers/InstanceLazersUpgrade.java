@@ -5,6 +5,7 @@ import java.util.HashMap;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.nbt.NBTTagCompound;
+import openperipheral.api.ILazerRobot;
 import openperipheral.api.IRobot;
 import openperipheral.api.IRobotUpgradeInstance;
 
@@ -13,7 +14,7 @@ public class InstanceLazersUpgrade implements IRobotUpgradeInstance {
 	private static final String TAG_OVERHEATED = "o";
 	private static final String TAG_HEAT = "h";
 	
-	private IRobot robot;
+	private ILazerRobot robot;
 	
 	/**
 	 * The current heat of the lazer
@@ -32,11 +33,11 @@ public class InstanceLazersUpgrade implements IRobotUpgradeInstance {
 	
 	
 	public InstanceLazersUpgrade(IRobot robot, int tier) {
-		this.robot = robot;
+		this.robot = (ILazerRobot)robot;
 		this.tier = tier;
 	}
 	
-	public IRobot getRobot() {
+	public ILazerRobot getRobot() {
 		return robot;
 	}
 	

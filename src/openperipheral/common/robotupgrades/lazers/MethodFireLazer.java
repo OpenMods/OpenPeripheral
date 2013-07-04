@@ -6,6 +6,7 @@ import net.minecraft.entity.EntityCreature;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import openperipheral.OpenPeripheral;
+import openperipheral.api.ILazerRobot;
 import openperipheral.api.IRestriction;
 import openperipheral.api.IRobot;
 import openperipheral.api.IRobotMethod;
@@ -43,7 +44,7 @@ public class MethodFireLazer implements IRobotMethod {
 	@Override
 	public Object execute(IRobotUpgradeInstance instance, Object[] args) throws Exception {
 		InstanceLazersUpgrade upgrade = (InstanceLazersUpgrade) instance;
-		IRobot robot = upgrade.getRobot();
+		ILazerRobot robot = upgrade.getRobot();
 		IInventory inventory = robot.getInventory();
 		ItemStack cellStack = null;
 		if (upgrade.isOverheated()) {

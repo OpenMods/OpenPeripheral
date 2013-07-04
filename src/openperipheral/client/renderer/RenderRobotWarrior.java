@@ -6,9 +6,9 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class RenderRobot extends RenderLiving {
+public class RenderRobotWarrior extends RenderLiving {
 
-	public RenderRobot(ModelBase par1ModelBase, float par2) {
+	public RenderRobotWarrior(ModelBase par1ModelBase, float par2) {
 		super(par1ModelBase, par2);
 	}
 	

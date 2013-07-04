@@ -7,6 +7,7 @@ import java.util.Map;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import openperipheral.api.EnumRobotType;
 import openperipheral.api.IRobot;
 import openperipheral.api.IRobotMethod;
 import openperipheral.api.IRobotUpgradeInstance;
@@ -51,6 +52,11 @@ public class ProviderMovementUpgrade implements IRobotUpgradeProvider {
 	@Override
 	public boolean isForced() {
 		return false;
+	}
+
+	@Override
+	public boolean isApplicableForRobot(IRobot robot) {
+		return true;
 	}
 
 }

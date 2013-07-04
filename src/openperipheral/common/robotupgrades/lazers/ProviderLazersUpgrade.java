@@ -7,6 +7,7 @@ import java.util.Map;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import openperipheral.api.EnumRobotType;
 import openperipheral.api.IRobot;
 import openperipheral.api.IRobotMethod;
 import openperipheral.api.IRobotUpgradeInstance;
@@ -55,6 +56,11 @@ public class ProviderLazersUpgrade implements IRobotUpgradeProvider {
 	@Override
 	public Map<Integer, ItemStack> getUpgradeItems() {
 		return upgradeItems;
+	}
+
+	@Override
+	public boolean isApplicableForRobot(IRobot robot) {
+		return true;
 	}
 
 }

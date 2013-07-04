@@ -18,12 +18,16 @@ public interface IRobot {
 	public float getFuelLevel();
 	public void setFuelLevel(float fuel);
 	public void modifyFuelLevel(float fuel);
-	public float getWeaponSpinSpeed();
-	public void setWeaponSpinSpeed(float speed);
-	public void modifyWeaponSpinSpeed(float speed);
+	public void setPitch(float pitch);
+	public float getPitch();
+	public void setYaw(float yaw);
+	public float getYaw();
+	public void setMaxHealth(int maxHealth);
+	public int getMaxHealth();
 	public void fireEvent(String eventName, Object[] args);
 	public void fireEvent(String eventName);
 	public boolean isLinkedToController();
 	public IInventory getInventory();
 	public MovingObjectPosition getLookingAt();
+	public EnumRobotType getRobotType();
 }
