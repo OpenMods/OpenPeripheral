@@ -41,7 +41,7 @@ public class MethodSetYaw implements IRobotMethod {
 		EntityCreature creature = robot.getEntity();
 		double direction = (Double)args[0];
 		float fDirection = (float) direction;
-		creature.renderYawOffset = creature.prevRotationYawHead = creature.rotationYawHead = creature.prevRotationYaw = creature.rotationYaw = fDirection;
+		// TODO setyaw
 		return true;
 	}
 

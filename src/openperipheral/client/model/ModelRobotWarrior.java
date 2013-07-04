@@ -5,10 +5,11 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.MathHelper;
 import openperipheral.common.entity.EntityRobot;
+import openperipheral.common.entity.EntityRobotWarrior;
 
 import org.lwjgl.opengl.GL11;
 
-public class ModelRobot extends ModelBase {
+public class ModelRobotWarrior extends ModelBase {
 	// fields
 	ModelRenderer shoulderright;
 	ModelRenderer head;
@@ -29,7 +30,7 @@ public class ModelRobot extends ModelBase {
 	ModelRenderer shortarm;
 	ModelRenderer melee;
 
-	public ModelRobot() {
+	public ModelRobotWarrior() {
 		textureWidth = 128;
 		textureHeight = 32;
 
@@ -179,7 +180,7 @@ public class ModelRobot extends ModelBase {
 
 	public void setRotationAngles(float par1, float par2, float par3, float par4, float par5, float par6, Entity entity) {
 
-		EntityRobot robot = (EntityRobot) entity;
+		EntityRobotWarrior robot = (EntityRobotWarrior) entity;
 		
 		head.rotateAngleY = par4 / (180F / (float) Math.PI);
         head.rotateAngleX = par5 / (180F / (float)Math.PI);

@@ -12,9 +12,9 @@ import openperipheral.api.IRobot;
 import openperipheral.client.gui.GuiRobot;
 import openperipheral.client.gui.GuiRobotEntity;
 import openperipheral.client.gui.GuiTicketMachine;
-import openperipheral.client.model.ModelRobot;
+import openperipheral.client.model.ModelRobotWarrior;
 import openperipheral.client.renderer.RenderLazer;
-import openperipheral.client.renderer.RenderRobot;
+import openperipheral.client.renderer.RenderRobotWarrior;
 import openperipheral.client.renderer.TileEntityPlayerInventoryRenderer;
 import openperipheral.client.renderer.TileEntityRobotRenderer;
 import openperipheral.client.renderer.TileEntitySensorRenderer;
@@ -26,6 +26,7 @@ import openperipheral.common.container.ContainerRobot;
 import openperipheral.common.core.Mods;
 import openperipheral.common.entity.EntityLazer;
 import openperipheral.common.entity.EntityRobot;
+import openperipheral.common.entity.EntityRobotWarrior;
 import openperipheral.common.tileentity.TileEntityPlayerInventory;
 import openperipheral.common.tileentity.TileEntityRobot;
 import openperipheral.common.tileentity.TileEntitySensor;
@@ -80,7 +81,7 @@ public class ClientProxy extends CommonProxy {
 		if (ConfigSettings.robotsEnabled) {
 			ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRobot.class, new TileEntityRobotRenderer());
 	
-			RenderingRegistry.registerEntityRenderingHandler(EntityRobot.class, new RenderRobot(new ModelRobot(), 0.7F));
+			RenderingRegistry.registerEntityRenderingHandler(EntityRobotWarrior.class, new RenderRobotWarrior(new ModelRobotWarrior(), 0.7F));
 			RenderingRegistry.registerEntityRenderingHandler(EntityLazer.class, new RenderLazer());
 		}
 	}

@@ -34,5 +34,16 @@ public interface IRobotUpgradeProvider {
 	 */
 	public boolean isForced();
 	
+	/**
+	 * Get available methods. Ideally you should cache these methods yourself
+	 * @return
+	 */
 	public List<IRobotMethod> getMethods();
+	
+	/**
+	 * Is the upgrade applicable for this robot type?
+	 * @param type
+	 * @return
+	 */
+	public boolean isApplicableForRobot(IRobot robot);
 }

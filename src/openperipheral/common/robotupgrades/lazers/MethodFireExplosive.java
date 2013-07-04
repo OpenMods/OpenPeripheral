@@ -24,7 +24,6 @@ public class MethodFireExplosive extends MethodFireLazer implements IRobotMethod
 	
 	@Override
 	public Class getAmmoClass() {
-		//TODO: change to explosive cells
 		return MetaEnergyCell.class;
 	}
 

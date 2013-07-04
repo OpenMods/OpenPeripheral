@@ -1,43 +1,47 @@
-package openperipheral.common.robotupgrades.inventory;
+package openperipheral.common.robotupgrades.targeting;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import openperipheral.api.EnumRobotType;
 import openperipheral.api.IRobot;
 import openperipheral.api.IRobotMethod;
 import openperipheral.api.IRobotUpgradeInstance;
 import openperipheral.api.IRobotUpgradeProvider;
 
-public class ProviderInventoryUpgrade implements IRobotUpgradeProvider {
+public class ProviderTargetingUpgrade implements IRobotUpgradeProvider {
 
 	private ArrayList<IRobotMethod> methods;
+	private HashMap<Integer, ItemStack> upgrades;
 	
-	private HashMap<Integer, ItemStack> upgradeItems;
-	
-	public ProviderInventoryUpgrade() {
+	public ProviderTargetingUpgrade() {
 		methods = new ArrayList<IRobotMethod>();
-		methods.add(new MethodDrop());
-		methods.add(new MethodMoveItem("pushItem", true));
-		methods.add(new MethodMoveItem("pullItem", false));
+		methods.add(new MethodLookAt());
+		methods.add(new MethodAimAt());
 		
-		upgradeItems = new HashMap<Integer, ItemStack>();
-		upgradeItems.put(1, new ItemStack(Block.hopperBlock));
-		upgradeItems.put(2, new ItemStack(Block.chest));
+		upgrades = new HashMap<Integer, ItemStack>();
+		
+		//TOOD: change to something better
+		upgrades.put(1, new ItemStack(Item.appleRed));
+		
 	}
-
+	
 	@Override
 	public IRobotUpgradeInstance provideUpgradeInstance(IRobot robot, int tier) {
-		return new InstanceInventoryUpgrade(robot);
+		return new InstanceTargetingUpgrade(robot, tier);
 	}
 
 	@Override
 	public String getUpgradeId() {
-		return "inventory";
+		return "targeting";
+	}
+
+	@Override
+	public Map<Integer, ItemStack> getUpgradeItems() {
+		return upgrades;
 	}
 
 	@Override
@@ -48,11 +52,6 @@ public class ProviderInventoryUpgrade implements IRobotUpgradeProvider {
 	@Override
 	public List<IRobotMethod> getMethods() {
 		return methods;
-	}
-
-	@Override
-	public Map<Integer, ItemStack> getUpgradeItems() {
-		return upgradeItems;
 	}
 
 	@Override

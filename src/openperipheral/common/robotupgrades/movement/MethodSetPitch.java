@@ -42,15 +42,15 @@ public class MethodSetPitch implements IRobotMethod {
 
 	@Override
 	public Class[] getRequiredParameters() {
-		return new Class[] { double.class };
+		return new Class[] { float.class };
 	}
 
 	@Override
 	public Object execute(IRobotUpgradeInstance instance, Object[] args) throws Exception {
 		IRobot robot = ((InstanceMovementUpgrade)instance).getRobot();
 		EntityCreature creature = robot.getEntity();
-		double direction = (Double)args[0];
-		creature.rotationPitch = (float)direction;
+		float direction = (Float)args[0];
+		robot.setPitch(direction);
 		return true;
 	}
 

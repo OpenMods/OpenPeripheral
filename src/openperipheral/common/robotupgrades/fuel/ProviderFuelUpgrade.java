@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.item.ItemStack;
+import openperipheral.api.EnumRobotType;
 import openperipheral.api.IRobot;
 import openperipheral.api.IRobotMethod;
 import openperipheral.api.IRobotUpgradeInstance;
@@ -43,6 +44,11 @@ public class ProviderFuelUpgrade implements IRobotUpgradeProvider {
 	public Map<Integer, ItemStack> getUpgradeItems() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public boolean isApplicableForRobot(IRobot robot) {
+		return true;
 	}
 
 }
