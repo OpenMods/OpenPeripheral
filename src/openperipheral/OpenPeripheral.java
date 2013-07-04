@@ -50,6 +50,7 @@ import openperipheral.common.robotupgrades.inventory.ProviderInventoryUpgrade;
 import openperipheral.common.robotupgrades.lazers.ProviderLazersUpgrade;
 import openperipheral.common.robotupgrades.movement.ProviderMovementUpgrade;
 import openperipheral.common.robotupgrades.sensors.ProviderSensorUpgrade;
+import openperipheral.common.robotupgrades.targeting.ProviderTargetingUpgrade;
 import openperipheral.common.util.MountingUtils;
 import argo.jdom.JsonNode;
 import cpw.mods.fml.common.Loader;
@@ -191,6 +192,7 @@ public class OpenPeripheral {
 			RobotUpgradeManager.registerUpgradeProvider(new ProviderSensorUpgrade());
 			RobotUpgradeManager.registerUpgradeProvider(new ProviderFuelUpgrade());
 			RobotUpgradeManager.registerUpgradeProvider(new ProviderInventoryUpgrade());
+			RobotUpgradeManager.registerUpgradeProvider(new ProviderTargetingUpgrade());
 		}
 		
 		TickRegistry.registerTickHandler(new TickHandler(), Side.SERVER);

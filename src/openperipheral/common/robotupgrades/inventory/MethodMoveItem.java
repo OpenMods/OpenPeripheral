@@ -65,11 +65,15 @@ public class MethodMoveItem implements IRobotMethod {
 		
 		// get what we're looking at
 		MovingObjectPosition mop = robot.getLookingAt();
-		
+
+		System.out.println("here3");
+		System.out.println(mop);
 		// if we're looking at a tile and it's an inventory...
 		if (mop == null || mop.typeOfHit != EnumMovingObjectType.TILE) {
 			return false;
 		}
+		System.out.println("here4");
+		
 		TileEntity lookingAtTile = world.getBlockTileEntity(mop.blockX, mop.blockY, mop.blockZ);
 		if (!(lookingAtTile instanceof IInventory)) {
 			return false;

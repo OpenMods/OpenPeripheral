@@ -16,6 +16,7 @@ import openperipheral.codechicken.core.vec.Rotation;
 import openperipheral.codechicken.core.vec.Vector3;
 import openperipheral.common.config.ConfigSettings;
 import openperipheral.common.entity.EntityRobot;
+import openperipheral.common.entity.EntityRobotWarrior;
 
 public class ItemRobot extends Item {
 
@@ -55,7 +56,7 @@ public class ItemRobot extends Item {
 				world.isAirBlock(blockX, blockY+1, blockZ) &&
 				world.isAirBlock(blockX, blockY+2, blockZ)) {
 
-		    	EntityRobot robot = new EntityRobot(world);
+		    	EntityRobot robot = new EntityRobotWarrior(world);
 		    	if (robot.createFromItem(stack)) {
 			    	robot.setPositionAndRotation(pos.x, pos.y + 0.5, pos.z, 0, 0);
 			    	world.spawnEntityInWorld(robot);
