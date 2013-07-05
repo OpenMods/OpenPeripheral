@@ -3,7 +3,7 @@ package openperipheral.api;
 import java.util.ArrayList;
 
 import net.minecraft.tileentity.TileEntity;
-import openperipheral.common.interfaces.IPeripheralMethodDefinition;
+import openperipheral.core.interfaces.IPeripheralMethodDefinition;
 
 public interface IClassDefinition {
 
