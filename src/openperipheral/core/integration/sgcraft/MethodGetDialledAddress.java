@@ -1,0 +1,63 @@
+package openperipheral.core.integration.sgcraft;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import openperipheral.api.IRestriction;
+import openperipheral.core.interfaces.IPeripheralMethodDefinition;
+import openperipheral.core.util.ReflectionHelper;
+
+public class MethodGetDialledAddress implements IPeripheralMethodDefinition {
+
+	@Override
+	public HashMap<Integer, String> getReplacements() {
+		return null;
+	}
+
+	@Override
+	public String getPostScript() {
+		return null;
+	}
+
+	@Override
+	public boolean getCauseTileUpdate() {
+		return false;
+	}
+
+	@Override
+	public Class[] getRequiredParameters() {
+		return new Class[] { };
+	}
+
+	@Override
+	public boolean isInstant() {
+		return false;
+	}
+
+	@Override
+	public String getLuaName() {
+		return "getDialledAddress";
+	}
+
+	@Override
+	public boolean isValid() {
+		return true;
+	}
+
+	@Override
+	public boolean needsSanitize() {
+		return false;
+	}
+
+	@Override
+	public ArrayList<IRestriction> getRestrictions(int index) {
+		return null;
+	}
+
+	@Override
+	public Object execute(Object tile, Object[] args) throws Exception {
+		return ReflectionHelper.getProperty("", tile, "dialledAddress" );
+	}
+
+
+}
