@@ -15,8 +15,8 @@ import openperipheral.OpenPeripheral;
 import openperipheral.codechicken.core.vec.Rotation;
 import openperipheral.codechicken.core.vec.Vector3;
 import openperipheral.core.ConfigSettings;
-import openperipheral.robots.common.entity.EntityRobot;
-import openperipheral.robots.common.entity.EntityRobotWarrior;
+import openperipheral.robots.entity.EntityRobot;
+import openperipheral.robots.entity.EntityRobotWarrior;
 
 public class ItemRobot extends Item {
 

@@ -14,7 +14,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import openperipheral.core.util.MiscUtils;
-import openperipheral.glasses.common.block.TileEntityGlassesBridge;
+import openperipheral.glasses.block.TileEntityGlassesBridge;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
 

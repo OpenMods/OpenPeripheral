@@ -17,9 +17,9 @@ import openperipheral.core.definition.DefinitionLuaMethod;
 import openperipheral.core.interfaces.IPeripheralMethodDefinition;
 import openperipheral.core.interfaces.ISensorEnvironment;
 import openperipheral.core.util.ThreadLock;
-import openperipheral.sensor.common.MinecartData;
-import openperipheral.sensor.common.MobData;
-import openperipheral.sensor.common.PlayerData;
+import openperipheral.sensor.MinecartData;
+import openperipheral.sensor.MobData;
+import openperipheral.sensor.PlayerData;
 
 public class SensorPeripheral extends AbstractPeripheral {
 	

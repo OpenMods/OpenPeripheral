@@ -4,9 +4,9 @@ import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import openperipheral.core.ConfigSettings;
 import openperipheral.core.client.ModelBlockFrame;
-import openperipheral.robots.common.block.TileEntityRobot;
-import openperipheral.robots.common.entity.EntityRobot;
-import openperipheral.robots.common.entity.EntityRobotWarrior;
+import openperipheral.robots.block.TileEntityRobot;
+import openperipheral.robots.entity.EntityRobot;
+import openperipheral.robots.entity.EntityRobotWarrior;
 
 import org.lwjgl.opengl.GL11;
 

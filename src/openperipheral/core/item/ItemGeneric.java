@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLiving;
@@ -15,26 +16,7 @@ import net.minecraft.world.World;
 import openperipheral.OpenPeripheral;
 import openperipheral.core.ConfigSettings;
 import openperipheral.core.interfaces.IMetaItem;
-import openperipheral.core.item.meta.MetaCapacitor;
-import openperipheral.core.item.meta.MetaCarbon;
-import openperipheral.core.item.meta.MetaCoiledWire;
-import openperipheral.core.item.meta.MetaDuckAntenna;
-import openperipheral.core.item.meta.MetaElectrode;
-import openperipheral.core.item.meta.MetaEnergyCell;
-import openperipheral.core.item.meta.MetaLCDScreen;
-import openperipheral.core.item.meta.MetaLED;
-import openperipheral.core.item.meta.MetaMicroController;
-import openperipheral.core.item.meta.MetaOptoIsolator;
-import openperipheral.core.item.meta.MetaPCB;
-import openperipheral.core.item.meta.MetaPlasticSheets;
-import openperipheral.core.item.meta.MetaPreparedBoard;
-import openperipheral.core.item.meta.MetaRawPlastic;
-import openperipheral.core.item.meta.MetaResistor;
-import openperipheral.core.item.meta.MetaRibbonCable;
-import openperipheral.core.item.meta.MetaSilislimeRubber;
-import openperipheral.core.item.meta.MetaSolarCell;
-import openperipheral.core.item.meta.MetaThinWire;
-import openperipheral.core.item.meta.MetaTransistor;
+import openperipheral.core.item.meta.MetaGeneric;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -62,7 +44,10 @@ public class ItemGeneric extends Item {
 		microcontroller(),
 		carbon(),
 		solarCell(),
-		energyCell();
+		energyCell(),
+		opticalLense(),
+		focusLense(),
+		lazerSight();
 		
 		Metas() {
 			
@@ -84,26 +69,29 @@ public class ItemGeneric extends Item {
 		setMaxDamage(0);
 		setMaxStackSize(64);
 		setCreativeTab(OpenPeripheral.tabOpenPeripheral);
-		metaitems.put(Metas.thinWire.ordinal(), new MetaThinWire());
-		metaitems.put(Metas.ribbonCable.ordinal(), new MetaRibbonCable());
-		metaitems.put(Metas.coiledWire.ordinal(), new MetaCoiledWire());
-		metaitems.put(Metas.electrode.ordinal(), new MetaElectrode());
-		metaitems.put(Metas.resistor.ordinal(), new MetaResistor());
-		metaitems.put(Metas.silislime.ordinal(), new MetaSilislimeRubber());
-		metaitems.put(Metas.duckAntenna.ordinal(), new MetaDuckAntenna());
-		metaitems.put(Metas.transistor.ordinal(), new MetaTransistor());
-		metaitems.put(Metas.lcdScreen.ordinal(), new MetaLCDScreen());
-		metaitems.put(Metas.pcb.ordinal(), new MetaPCB());
-		metaitems.put(Metas.rawPlastic.ordinal(), new MetaRawPlastic());
-		metaitems.put(Metas.plasticSheet.ordinal(), new MetaPlasticSheets());
-		metaitems.put(Metas.preparedPCB.ordinal(), new MetaPreparedBoard());
-		metaitems.put(Metas.led.ordinal(), new MetaLED());
-		metaitems.put(Metas.capacitor.ordinal(), new MetaCapacitor());
-		metaitems.put(Metas.optoisolator.ordinal(), new MetaOptoIsolator());
-		metaitems.put(Metas.microcontroller.ordinal(), new MetaMicroController());
-		metaitems.put(Metas.carbon.ordinal(), new MetaCarbon());
-		metaitems.put(Metas.solarCell.ordinal(), new MetaSolarCell());
-		metaitems.put(Metas.energyCell.ordinal(), new MetaEnergyCell());
+		metaitems.put(Metas.thinWire.ordinal(), new MetaGeneric("thinwire", new Object[] { 1, Metas.thinWire, Metas.ribbonCable }, new Object[] { 9, Metas.thinWire, Metas.coiledWire }));
+		metaitems.put(Metas.ribbonCable.ordinal(), new MetaGeneric("ribboncable", 1, "www", "www", "www", 'w', Metas.thinWire));
+		metaitems.put(Metas.coiledWire.ordinal(), new MetaGeneric("coiledwire", 1, Metas.thinWire));
+		metaitems.put(Metas.electrode.ordinal(), new MetaGeneric("electrode", 1, "t", "i", "i", 't', new ItemStack(Block.torchRedstoneActive), 'i', new ItemStack(Item.ingotIron)));
+		metaitems.put(Metas.resistor.ordinal(), new MetaGeneric("resistor", 1, "wcw", "w w", 'w', Metas.thinWire, 'c', Metas.carbon));
+		metaitems.put(Metas.silislime.ordinal(), new MetaGeneric("silislimerubber", Item.slimeBall.itemID, 0, Metas.silislime, 0.5f));
+		metaitems.put(Metas.duckAntenna.ordinal(), new MetaGeneric("duckantenna", 1, "ss", "sw", "sw", 's', Metas.silislime, 'w', Metas.coiledWire));
+		metaitems.put(Metas.transistor.ordinal(), new MetaGeneric("transistor", 1, " c ", "www", 'c', Metas.carbon, 'w', Metas.thinWire));
+		metaitems.put(Metas.lcdScreen.ordinal(), new MetaGeneric("lcdscreen", 1, "ggg", "eee", "wpt", 'g', new ItemStack(Block.thinGlass), 'e', Metas.electrode, 'w', Metas.ribbonCable, 'p', Metas.preparedPCB, 't', Metas.thinWire));
+		metaitems.put(Metas.pcb.ordinal(), new MetaGeneric("pcb", 1, "rrr", "ppp", 'r', new ItemStack(Item.redstone), 'p', Metas.plasticSheet));
+		metaitems.put(Metas.rawPlastic.ordinal(), new MetaGeneric("rawplastic", itemID, Metas.rawPlastic.ordinal(), Metas.rawPlastic, 0.5f));
+		metaitems.put(Metas.plasticSheet.ordinal(), new MetaGeneric("plasticsheets", 4, "rr", "rr", 'r', Metas.rawPlastic));
+		metaitems.put(Metas.preparedPCB.ordinal(), new MetaGeneric("preparedboard", 1, Metas.pcb, Metas.resistor, Metas.transistor, Metas.led, Metas.capacitor, Metas.optoisolator, Metas.thinWire, Metas.microcontroller));
+		metaitems.put(Metas.led.ordinal(), new MetaGeneric("led", 1, " g ", "w w", 'g', new ItemStack(Block.glass), 'w', Metas.thinWire));
+		metaitems.put(Metas.capacitor.ordinal(), new MetaGeneric("capacitor", 1, "srs", "srs", "w w", 's', Metas.plasticSheet, 'r', Metas.silislime, 'w', Metas.thinWire));
+		metaitems.put(Metas.optoisolator.ordinal(), new MetaGeneric("optoisolator", 1, "wcw", "l s", "wcw", 'w', Metas.thinWire, 'c', Metas.carbon, 'l', Metas.led, 's', Metas.solarCell));
+		metaitems.put(Metas.microcontroller.ordinal(), new MetaGeneric("microcontroller", 1, "www", "cic", "www", 'i', new ItemStack(Item.comparator), 'c', Metas.carbon, 'w', Metas.thinWire));
+		metaitems.put(Metas.carbon.ordinal(), new MetaGeneric("carbon", Item.coal.itemID, 0, Metas.carbon, 0.5f));
+		metaitems.put(Metas.solarCell.ordinal(), new MetaGeneric("solarcell", 9, new ItemStack(Block.daylightSensor)));
+		metaitems.put(Metas.energyCell.ordinal(), new MetaGeneric("energycell", 1, Metas.plasticSheet, new ItemStack(Item.redstone)));
+		metaitems.put(Metas.opticalLense.ordinal(), new MetaGeneric("opticallense"));
+		metaitems.put(Metas.focusLense.ordinal(), new MetaGeneric("focuslense"));
+		metaitems.put(Metas.lazerSight.ordinal(), new MetaGeneric("lazersight"));
 	}
 	
 	public void initRecipes() {
@@ -177,15 +165,6 @@ public class ItemGeneric extends Item {
 		return metaitems.get(id);
 	}
 
-	public Entry<Integer, IMetaItem> getMetaEntry(Class klass) {
-		for (Entry<Integer, IMetaItem> entry : this.metaitems.entrySet()) {
-			if (entry.getValue().getClass().equals(klass)) {
-				return entry;
-			}
-		}
-		return null;
-	}
-
 	public IMetaItem getMeta(ItemStack itemStack) {
 		return getMeta(itemStack.getItemDamage());
 	}
@@ -198,6 +177,15 @@ public class ItemGeneric extends Item {
 		return new ItemStack(this, number, id);
 	}
 
+	public ItemStack newItemStack(IMetaItem meta, int size) {
+	    for (Entry<Integer, IMetaItem> o: metaitems.entrySet()) {
+	    	if (o.getValue().equals(meta)) {
+	    		return newItemStack(o.getKey(), size);
+	    	}
+	    }
+	    return null;
+	}
+	
 	public ItemStack newItemStack(Metas metaenum, int number) {
 		return new ItemStack(this, number, metaenum.ordinal());
 	}
@@ -206,12 +194,8 @@ public class ItemGeneric extends Item {
 		return new ItemStack(this, 1, metaenum.ordinal());
 	}
 
-	public boolean isA(ItemStack stack, Class klazz) {
-		IMetaItem meta = getMeta(stack);
-		if (meta == null || !klazz.isAssignableFrom(meta.getClass())) {
-			return false;
-		}
-		return true;
+	public boolean isA(ItemStack stack, Metas meta) {
+		return getMeta(stack) == metaitems.get(meta.ordinal());
 	}
 	
 }
