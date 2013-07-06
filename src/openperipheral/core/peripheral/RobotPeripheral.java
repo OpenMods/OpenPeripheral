@@ -8,10 +8,10 @@ import openperipheral.api.IRobotUpgradeInstance;
 import openperipheral.api.IRobotUpgradeProvider;
 import openperipheral.api.RobotUpgradeManager;
 import openperipheral.core.interfaces.IPeripheralMethodDefinition;
-import openperipheral.robots.common.MethodGetRobots;
-import openperipheral.robots.common.RobotPeripheralMethod;
-import openperipheral.robots.common.block.TileEntityRobot;
-import openperipheral.robots.common.entity.EntityRobot;
+import openperipheral.robots.MethodGetRobots;
+import openperipheral.robots.RobotPeripheralMethod;
+import openperipheral.robots.block.TileEntityRobot;
+import openperipheral.robots.entity.EntityRobot;
 
 public class RobotPeripheral extends AbstractPeripheral {
 	

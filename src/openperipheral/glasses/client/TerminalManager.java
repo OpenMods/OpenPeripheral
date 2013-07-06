@@ -20,8 +20,8 @@ import net.minecraftforge.event.ForgeSubscribe;
 import openperipheral.core.interfaces.IDrawable;
 import openperipheral.core.util.ByteUtils;
 import openperipheral.core.util.PacketChunker;
-import openperipheral.glasses.common.drawable.DrawableBox;
-import openperipheral.glasses.common.drawable.DrawableText;
+import openperipheral.glasses.drawable.DrawableBox;
+import openperipheral.glasses.drawable.DrawableText;
 import cpw.mods.fml.common.network.IConnectionHandler;
 import cpw.mods.fml.common.network.Player;
 

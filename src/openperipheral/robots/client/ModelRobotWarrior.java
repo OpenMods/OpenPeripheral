@@ -4,8 +4,8 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.MathHelper;
-import openperipheral.robots.common.entity.EntityRobot;
-import openperipheral.robots.common.entity.EntityRobotWarrior;
+import openperipheral.robots.entity.EntityRobot;
+import openperipheral.robots.entity.EntityRobotWarrior;
 
 import org.lwjgl.opengl.GL11;
 
