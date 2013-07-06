@@ -1,6 +1,7 @@
 package openperipheral.core.client;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.resources.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import openperipheral.core.ConfigSettings;
 import openperipheral.core.block.TileEntityTicketMachine;
@@ -12,6 +13,8 @@ public class GuiTicketMachine extends GuiContainer {
 
 	private TileEntityTicketMachine ticketMachine;
 
+	private static final ResourceLocation background = new ResourceLocation("openperipheral", "textures/gui/ticketmachine.png");
+	
 	public GuiTicketMachine(ContainerGeneric container, TileEntityTicketMachine tileentity) {
 		super(container);
 		ticketMachine = tileentity;
@@ -31,7 +34,7 @@ public class GuiTicketMachine extends GuiContainer {
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		int left = (this.width - this.xSize) / 2;
 		int top = (this.height - this.ySize) / 2;
-		this.mc.renderEngine.bindTexture(ConfigSettings.TEXTURES_PATH + "/gui/ticketmachine.png");
+		this.mc.renderEngine.func_110577_a(background);
 		this.drawTexturedModalRect(left, top, 0, 0, this.xSize, this.ySize);
 	}
 

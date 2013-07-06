@@ -1,7 +1,7 @@
 package openperipheral.core.item.meta;
 
 import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -16,7 +16,7 @@ import openperipheral.core.item.ItemGeneric;
 public class MetaThinWire implements IMetaItem {
 
 	private Icon icon;
-	
+
 	@Override
 	public Icon getIcon() {
 		return icon;
@@ -28,7 +28,7 @@ public class MetaThinWire implements IMetaItem {
 	}
 
 	@Override
-	public boolean hitEntity(ItemStack itemStack, EntityLiving target, EntityLiving player) {
+	public boolean hitEntity(ItemStack itemStack, EntityLivingBase target, EntityLivingBase player) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -63,7 +63,7 @@ public class MetaThinWire implements IMetaItem {
 					"r",
 					"i",
 					Character.valueOf('r'), new ItemStack(Item.redstone),
-					Character.valueOf('i'), new ItemStack(Item.ingotIron),			
+					Character.valueOf('i'), new ItemStack(Item.ingotIron),
 				}
 		));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(
@@ -71,7 +71,7 @@ public class MetaThinWire implements IMetaItem {
 				new Object[] {
 					"iri",
 					Character.valueOf('r'), new ItemStack(Item.redstone),
-					Character.valueOf('i'), new ItemStack(Item.ingotIron),			
+					Character.valueOf('i'), new ItemStack(Item.ingotIron),
 				}
 		));
 		CraftingManager.getInstance().getRecipeList().add(new ShapelessOreRecipe(

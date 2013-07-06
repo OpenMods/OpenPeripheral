@@ -2,7 +2,7 @@ package openperipheral.core.item.meta;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
@@ -15,7 +15,7 @@ import openperipheral.core.item.ItemGeneric;
 public class MetaLED implements IMetaItem {
 
 	private Icon icon;
-	
+
 	@Override
 	public Icon getIcon() {
 		return icon;
@@ -27,7 +27,7 @@ public class MetaLED implements IMetaItem {
 	}
 
 	@Override
-	public boolean hitEntity(ItemStack itemStack, EntityLiving target, EntityLiving player) {
+	public boolean hitEntity(ItemStack itemStack, EntityLivingBase target, EntityLivingBase player) {
 		return false;
 	}
 
@@ -59,7 +59,7 @@ public class MetaLED implements IMetaItem {
 					" g ",
 					"w w",
 					Character.valueOf('g'), new ItemStack(Block.glass),
-					Character.valueOf('w'), ItemGeneric.Metas.thinWire.newItemStack()		
+					Character.valueOf('w'), ItemGeneric.Metas.thinWire.newItemStack()
 				}
 		));
 	}

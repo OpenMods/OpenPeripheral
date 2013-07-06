@@ -1,7 +1,7 @@
 package openperipheral.core.item.meta;
 
 import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
@@ -14,7 +14,7 @@ import openperipheral.core.item.ItemGeneric;
 public class MetaOptoIsolator implements IMetaItem {
 
 	private Icon icon;
-	
+
 	@Override
 	public Icon getIcon() {
 		return icon;
@@ -26,7 +26,7 @@ public class MetaOptoIsolator implements IMetaItem {
 	}
 
 	@Override
-	public boolean hitEntity(ItemStack itemStack, EntityLiving target, EntityLiving player) {
+	public boolean hitEntity(ItemStack itemStack, EntityLivingBase target, EntityLivingBase player) {
 		return false;
 	}
 
@@ -61,7 +61,7 @@ public class MetaOptoIsolator implements IMetaItem {
 					Character.valueOf('w'), ItemGeneric.Metas.thinWire.newItemStack(),
 					Character.valueOf('c'), ItemGeneric.Metas.carbon.newItemStack(),
 					Character.valueOf('l'), ItemGeneric.Metas.led.newItemStack(),
-					Character.valueOf('s'), ItemGeneric.Metas.solarCell.newItemStack()		
+					Character.valueOf('s'), ItemGeneric.Metas.solarCell.newItemStack()
 				}
 		));
 	}

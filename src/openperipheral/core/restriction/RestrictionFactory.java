@@ -1,10 +1,13 @@
 package openperipheral.core.restriction;
 
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 import openperipheral.api.IRestriction;
 import openperipheral.core.interfaces.IRestrictionHandler;
 import argo.jdom.JsonField;
+import argo.jdom.JsonNode;
+import argo.jdom.JsonStringNode;
 
 public class RestrictionFactory {
 
@@ -14,9 +17,9 @@ public class RestrictionFactory {
 		restrictionHandlers.put(key, restriction);
 	}
 
-	public static IRestriction createFromJson(JsonField json) {
+	public static IRestriction createFromJson(Entry<JsonStringNode, JsonNode> json) {
 
-		String restrictionKey = json.getName().getText();
+		String restrictionKey = json.getKey().getText();
 
 		IRestrictionHandler handler = restrictionHandlers.get(restrictionKey);
 

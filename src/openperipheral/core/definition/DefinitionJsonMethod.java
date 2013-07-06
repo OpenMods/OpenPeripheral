@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -15,6 +16,7 @@ import openperipheral.core.restriction.RestrictionFactory;
 import openperipheral.core.util.ReflectionHelper;
 import argo.jdom.JsonField;
 import argo.jdom.JsonNode;
+import argo.jdom.JsonStringNode;
 
 public class DefinitionJsonMethod implements IPeripheralMethodDefinition {
 
@@ -71,8 +73,8 @@ public class DefinitionJsonMethod implements IPeripheralMethodDefinition {
 		}
 
 		if (json.isNode("replacements")) {
-			for (JsonField replacementField : json.getNode("replacements").getFieldList()) {
-				replacements.put(Integer.parseInt(replacementField.getName().getText()), replacementField.getValue().getText());
+			for (Entry<JsonStringNode, JsonNode> replacementField : json.getNode("replacements").getFields().entrySet()) {
+				replacements.put(Integer.parseInt(replacementField.getKey().getText()), replacementField.getValue().getText());
 			}
 		}
 
@@ -103,9 +105,9 @@ public class DefinitionJsonMethod implements IPeripheralMethodDefinition {
 
 		if (json.isNode("restrictions")) {
 
-			for (JsonField restrictionField : json.getNode("restrictions").getFieldList()) {
+			for (Entry<JsonStringNode, JsonNode> restrictionField : json.getNode("restrictions").getFields().entrySet()) {
 
-				String stringParamId = restrictionField.getName().getText();
+				String stringParamId = restrictionField.getKey().getText();
 				JsonNode fields = restrictionField.getValue();
 
 				int paramId = -1;
@@ -118,7 +120,7 @@ public class DefinitionJsonMethod implements IPeripheralMethodDefinition {
 
 					ArrayList<IRestriction> paramRestrictions = new ArrayList<IRestriction>();
 
-					for (JsonField field : fields.getFieldList()) {
+					for (Entry<JsonStringNode, JsonNode> field : fields.getFields().entrySet()) {
 
 						IRestriction restriction = RestrictionFactory.createFromJson(field);
 

@@ -1,7 +1,7 @@
 package openperipheral.core.item.meta;
 
 import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
@@ -23,7 +23,7 @@ public class MetaSingleDigitDisplay implements IMetaItem {
 	}
 
 	@Override
-	public boolean hitEntity(ItemStack itemStack, EntityLiving target, EntityLiving player) {
+	public boolean hitEntity(ItemStack itemStack, EntityLivingBase target, EntityLivingBase player) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -55,7 +55,7 @@ public class MetaSingleDigitDisplay implements IMetaItem {
 	@Override
 	public void addRecipe() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }
