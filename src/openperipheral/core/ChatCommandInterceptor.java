@@ -5,7 +5,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.ServerChatEvent;
 import openperipheral.core.util.MiscUtils;
-import openperipheral.glasses.common.block.TileEntityGlassesBridge;
+import openperipheral.glasses.block.TileEntityGlassesBridge;
 
 public class ChatCommandInterceptor {
 

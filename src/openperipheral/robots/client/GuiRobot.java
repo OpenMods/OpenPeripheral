@@ -5,7 +5,7 @@ import org.lwjgl.opengl.GL11;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 import openperipheral.core.ConfigSettings;
-import openperipheral.robots.common.block.TileEntityRobot;
+import openperipheral.robots.block.TileEntityRobot;
 
 public class GuiRobot extends GuiContainer {
 

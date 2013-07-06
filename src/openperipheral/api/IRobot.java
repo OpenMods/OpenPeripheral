@@ -16,6 +16,7 @@ public interface IRobot {
 	public World getWorld();
 	public float getEyeHeight();
 	public float getFuelLevel();
+	public boolean hasFuel();
 	public void setFuelLevel(float fuel);
 	public void modifyFuelLevel(float fuel);
 	public void setPitch(float pitch);

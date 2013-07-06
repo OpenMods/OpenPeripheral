@@ -7,7 +7,7 @@ import net.minecraft.world.IBlockAccess;
 import openperipheral.OpenPeripheral;
 import openperipheral.core.block.TileEntityPlayerInventory;
 import openperipheral.core.block.TileEntitySensor;
-import openperipheral.robots.common.block.TileEntityRobot;
+import openperipheral.robots.block.TileEntityRobot;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
