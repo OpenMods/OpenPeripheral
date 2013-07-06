@@ -122,6 +122,14 @@ public abstract class EntityRobot extends EntityCreature implements IRobot, IInv
 	public void setFuelLevel(float fuel) {
 		fuelLevel = fuel;
 	}
+	
+	/**
+	 * Check to see if the robot has any fuel available
+	 */
+	public boolean hasFuel() {
+		return true;
+		//return fuelLevel > 0;
+	}
 
 	/**
 	 * add or remove fuel

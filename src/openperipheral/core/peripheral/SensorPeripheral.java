@@ -1,10 +1,12 @@
 package openperipheral.core.peripheral;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
@@ -16,21 +18,26 @@ import openperipheral.core.interfaces.IPeripheralMethodDefinition;
 import openperipheral.core.interfaces.ISensorEnvironment;
 import openperipheral.core.util.ThreadLock;
 import openperipheral.sensor.common.MinecartData;
+import openperipheral.sensor.common.MobData;
 import openperipheral.sensor.common.PlayerData;
 
 public class SensorPeripheral extends AbstractPeripheral {
 	
 	private ISensorEnvironment env;
 	private HashMap<String, PlayerData> surroundingPlayers = new HashMap<String, PlayerData>();
+	private HashMap<Integer, MobData> surroundingMobs = new HashMap<Integer, MobData>();
 	private HashMap<Integer, MinecartData> surroundingMinecarts = new HashMap<Integer, MinecartData>();
 
 	HashMap<String, PlayerData> tempPlayers = new HashMap<String, PlayerData>();
 	HashMap<Integer, MinecartData> tempMinecarts = new HashMap<Integer, MinecartData>();
+	HashMap<Integer, MobData> tempMobs = new HashMap<Integer, MobData>();
 	
 	private ThreadLock lock = new ThreadLock();
+	private List<Object> exclusions;
 	
-	public SensorPeripheral(ISensorEnvironment env) {
+	public SensorPeripheral(ISensorEnvironment env, Object ... exclude) {
 		this.env = env;
+		exclusions = Arrays.asList(exclude);
 	}
 	
 	@LuaMethod
@@ -48,6 +55,37 @@ public class SensorPeripheral extends AbstractPeripheral {
 		return null;
 	}
 	
+
+	public Integer[] getMobIds() {
+		try {
+			lock.lock();
+			try {
+				return surroundingMobs.keySet().toArray(new Integer[surroundingMobs.size()]);
+			} finally {
+				lock.unlock();
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return null;
+	}
+
+	@LuaMethod
+	public HashMap getMobData(int mobid) {
+		try {
+			lock.lock();
+			try {
+				if (surroundingMobs.containsKey(mobid)) {
+					return surroundingMobs.get(mobid);
+				}
+			} finally {
+				lock.unlock();
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return null;
+	}
 	@LuaMethod
 	public HashMap getPlayerData(String username) {
 		try {
@@ -106,6 +144,7 @@ public class SensorPeripheral extends AbstractPeripheral {
 	@Override
 	public void update() {
 		tempPlayers.clear();
+		tempMobs.clear();
 		tempMinecarts.clear();
 		try {
 			lock.lock();
@@ -126,6 +165,9 @@ public class SensorPeripheral extends AbstractPeripheral {
 									location.zCoord + 1).expand(range, range, range));
 	
 					for (Entity entity : entities) {
+						if (exclusions.contains(entity)) {
+							continue;
+						}
 						try {
 							if (entity instanceof EntityPlayer) {
 								PlayerData newEntity = surroundingPlayers.get(entity.entityId);
@@ -141,6 +183,14 @@ public class SensorPeripheral extends AbstractPeripheral {
 								}
 								newEntity.fromEntity(env.getLocation(), (EntityMinecart)entity);
 								tempMinecarts.put(((EntityMinecart) entity).entityId, newEntity);
+							}else if (entity instanceof EntityLiving) {
+								MobData newEntity = surroundingMobs.get(entity.entityId);
+								if (newEntity == null) {
+									newEntity = new MobData();
+								}
+								newEntity.fromEntity(env.getLocation(), (EntityLiving)entity);
+								tempMobs.put(((EntityLiving) entity).entityId, newEntity);
+								
 							}
 							
 						} catch (Exception e) {
@@ -152,6 +202,8 @@ public class SensorPeripheral extends AbstractPeripheral {
 				surroundingPlayers.putAll(tempPlayers);
 				surroundingMinecarts.clear();
 				surroundingMinecarts.putAll(tempMinecarts);
+				surroundingMobs.clear();
+				surroundingMobs.putAll(tempMobs);
 			} finally {
 				lock.unlock();
 			}
@@ -176,5 +228,6 @@ public class SensorPeripheral extends AbstractPeripheral {
 	public Object getTargetObject(ArrayList args, IPeripheralMethodDefinition luaMethod) {
 		return this;
 	}
+
 	
 }

@@ -1,16 +1,21 @@
 package openperipheral.robots.common.upgrade.sensor;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraft.item.ItemStack;
+import openperipheral.OpenPeripheral;
 import openperipheral.api.IRobot;
 import openperipheral.api.IRobotUpgradeInstance;
 import openperipheral.api.IRobotUpgradeProvider;
 
 public class ProviderSensorUpgrade implements IRobotUpgradeProvider {
 
+	private HashMap<Integer, ItemStack> upgrades;
 	
 	public ProviderSensorUpgrade() {
+		upgrades = new HashMap<Integer, ItemStack>();
+		upgrades.put(1, new ItemStack(OpenPeripheral.Blocks.sensor));
 	}
 	
 	@Override
@@ -30,7 +35,7 @@ public class ProviderSensorUpgrade implements IRobotUpgradeProvider {
 
 	@Override
 	public Map<Integer, ItemStack> getUpgradeItems() {
-		return null;
+		return upgrades;
 	}
 
 	@Override

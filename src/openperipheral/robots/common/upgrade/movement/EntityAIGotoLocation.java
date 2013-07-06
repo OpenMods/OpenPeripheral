@@ -13,6 +13,7 @@ public class EntityAIGotoLocation extends EntityAIBase {
 
 	public static final String NO_PATH_AVAILABLE = "no_path_available";
 	public static final String PATH_FINISHED = "path_finished";
+	public static final String NO_FUEL_AVAILABLE = "no_fuel";
 
 	public EntityAIGotoLocation(InstanceMovementUpgrade instance, IRobot robot) {
 		this.robot = robot;
@@ -22,12 +23,17 @@ public class EntityAIGotoLocation extends EntityAIBase {
 
 	@Override
 	public boolean shouldExecute() {
-		return instance.shouldMoveToTarget();
+		return instance.shouldMoveToTarget() && robot.hasFuel();
 	}
 
 	public boolean continueExecuting() {
 		boolean hasPath = !navigator.noPath();
-		instance.setShouldMoveToTarget(hasPath);
+		boolean hasFuel = robot.hasFuel();
+		instance.setShouldMoveToTarget(hasPath && hasFuel);
+		if (!hasFuel) {
+			robot.fireEvent(NO_FUEL_AVAILABLE);
+			return false;
+		}
 		if (!hasPath) {
 			PathEntity path = navigator.getPath();
 			if (path == null) {

@@ -10,6 +10,7 @@ import java.util.concurrent.Future;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import openperipheral.OpenPeripheral;
+import openperipheral.api.IMultiReturn;
 import openperipheral.api.IRestriction;
 import openperipheral.core.TickHandler;
 import openperipheral.core.converter.TypeConversionRegistry;
@@ -149,8 +150,9 @@ public abstract class AbstractPeripheral implements IHostedPeripheral {
 				Throwable cause = ex.getCause();
 				throw new Exception(cause.getMessage());
 			}
-			if (response instanceof Object[]) {
-				returnValues = (Object[]) response;
+
+			if (response instanceof IMultiReturn) {
+				returnValues = ((IMultiReturn) response).getObjects();
 				for (int i = 0; i < returnValues.length; i++) {
 					returnValues[i] = TypeConversionRegistry.toLua(returnValues[i]);
 				}
@@ -171,8 +173,8 @@ public abstract class AbstractPeripheral implements IHostedPeripheral {
 						Throwable cause = ex.getCause();
 						throw new Exception(cause.getMessage());
 					}
-					if (response instanceof Object[]) {
-						returnValues = (Object[])response;
+					if (response instanceof IMultiReturn) {
+						returnValues = ((IMultiReturn) response).getObjects();
 						for (int i = 0; i < returnValues.length; i++) {
 							returnValues[i] = TypeConversionRegistry.toLua(returnValues[i]);
 						}

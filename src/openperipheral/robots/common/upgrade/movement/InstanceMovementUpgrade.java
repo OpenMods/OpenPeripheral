@@ -8,6 +8,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.ForgeHooks;
+import openperipheral.api.IMultiReturn;
 import openperipheral.api.IRobot;
 import openperipheral.api.IRobotUpgradeInstance;
 import openperipheral.api.LuaMethod;
@@ -83,11 +84,21 @@ public class InstanceMovementUpgrade implements IRobotUpgradeInstance {
 	}
 	
 	@LuaMethod
-	public Object[] getLocation() {
-		Vec3 loc = robot.getLocation();
-		return new Object[] { loc.xCoord, loc.yCoord, loc.zCoord };
+	public IMultiReturn getLocation() {
+		final Vec3 loc = robot.getLocation();
+		return new IMultiReturn() {
+			@Override
+			public Object[] getObjects() {
+				return new Object[] {
+					loc.xCoord,
+					loc.yCoord,
+					loc.zCoord
+				};
+			}
+		};
 	}
 	
+	@LuaMethod
 	public void jump() {
 		EntityCreature creature = robot.getEntity();
 		creature.motionY = 0.41999998688697815D;

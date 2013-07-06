@@ -18,7 +18,7 @@ public class InstanceSensorUpgrade implements IRobotUpgradeInstance, ISensorEnvi
 	private IRobot robot;
 	
 	public InstanceSensorUpgrade(IRobot robot) {
-		sensorPeripheral = new SensorPeripheral(this);
+		sensorPeripheral = new SensorPeripheral(this, robot.getEntity());
 		this.robot = robot;
 	}
 	
@@ -65,7 +65,7 @@ public class InstanceSensorUpgrade implements IRobotUpgradeInstance, ISensorEnvi
 
 	@Override
 	public int getSensorRange() {
-		return 5;
+		return 16;
 	}
 
 	@Override
@@ -82,6 +82,16 @@ public class InstanceSensorUpgrade implements IRobotUpgradeInstance, ISensorEnvi
 	@LuaMethod
 	public HashMap getPlayerData(String playerName) {
 		return sensorPeripheral.getPlayerData(playerName);
+	}
+	
+	@LuaMethod
+	public Integer[] getMobIds() {
+		return sensorPeripheral.getMobIds();
+	}
+	
+	@LuaMethod
+	public HashMap getMobData(int mobId) {
+		return sensorPeripheral.getMobData(mobId);
 	}
 	
 	@LuaMethod

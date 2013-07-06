@@ -42,6 +42,7 @@ public class EntityLazer extends Entity implements IThrowableEntity, IEntityAddi
 	public double directionZ;
 	public boolean isExplosive = false;
 	private Entity thrower;
+	private int hitCount = 0;
 
 	public EntityLazer(World world) {
 		super(world);
@@ -185,6 +186,9 @@ public class EntityLazer extends Entity implements IThrowableEntity, IEntityAddi
 		}
 		if (this.isExplosive) {
 			worldObj.createExplosion(this, posX, posY, posZ, 2, true);
+		}
+		if (hitCount++ > 5 || isExplosive) {
+			this.setDead();
 		}
 	}
 

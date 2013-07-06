@@ -29,7 +29,6 @@ public class ProviderFuelUpgrade implements IRobotUpgradeProvider {
 
 	@Override
 	public Map<Integer, ItemStack> getUpgradeItems() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
