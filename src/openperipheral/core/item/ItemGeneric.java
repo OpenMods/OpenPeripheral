@@ -47,7 +47,10 @@ public class ItemGeneric extends Item {
 		energyCell(),
 		opticalLense(),
 		focusLense(),
-		lazerSight();
+		lazerSight(),
+		tier1targeting(),
+		tier2targeting(),
+		tier3targeting();
 		
 		Metas() {
 			
@@ -89,9 +92,12 @@ public class ItemGeneric extends Item {
 		metaitems.put(Metas.carbon.ordinal(), new MetaGeneric("carbon", Item.coal.itemID, 0, Metas.carbon, 0.5f));
 		metaitems.put(Metas.solarCell.ordinal(), new MetaGeneric("solarcell", 9, new ItemStack(Block.daylightSensor)));
 		metaitems.put(Metas.energyCell.ordinal(), new MetaGeneric("energycell", 1, Metas.plasticSheet, new ItemStack(Item.redstone)));
-		metaitems.put(Metas.opticalLense.ordinal(), new MetaGeneric("opticallense"));
-		metaitems.put(Metas.focusLense.ordinal(), new MetaGeneric("focuslense"));
-		metaitems.put(Metas.lazerSight.ordinal(), new MetaGeneric("lazersight"));
+		metaitems.put(Metas.opticalLense.ordinal(), new MetaGeneric("opticallense", 1, "ppp", "pgp", "ppp", 'p', Metas.plasticSheet,  'g', new ItemStack(Block.thinGlass)));
+		metaitems.put(Metas.focusLense.ordinal(), new MetaGeneric("focuslense", 1, "pmp", "o o", "pcp", 'p', Metas.plasticSheet, 'o', Metas.opticalLense, 'm', Metas.microcontroller, 'c', Metas.preparedPCB));
+		metaitems.put(Metas.lazerSight.ordinal(), new MetaGeneric("lazersight", 1, "spp", "lrc", "ppp", 's', Metas.solarCell, 'p', Metas.plasticSheet, 'l', Metas.led, 'r', Metas.ribbonCable, 'c', Metas.preparedPCB));
+		metaitems.put(Metas.tier1targeting.ordinal(), new MetaGeneric("tier1targeting", 1, "ppp", "pop", "pmp", 'p', Metas.plasticSheet, 'o', Metas.opticalLense, 'm', Metas.microcontroller));
+		metaitems.put(Metas.tier2targeting.ordinal(), new MetaGeneric("tier2targeting", 1, Metas.tier1targeting, Metas.focusLense));
+		metaitems.put(Metas.tier3targeting.ordinal(), new MetaGeneric("tier3targeting", 1, Metas.tier2targeting, Metas.lazerSight));
 	}
 	
 	public void initRecipes() {
