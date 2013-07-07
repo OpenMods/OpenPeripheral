@@ -40,39 +40,32 @@ public class ReflectionHelper {
 		return getProperty(getClass(className), instance, fields);
 	}
 
-	public static Object callMethod(boolean replace, String className, Object instance, String[] methodNames, Object... args) {
+	public static Object callMethod(boolean replace, String className, Object instance, String[] methodNames, Object... args) throws Exception {
 		return callMethod(replace, getClass(className), instance, methodNames, args);
 	}
 
-	public static Object callMethod(String className, Object instance, String[] methodNames, Object... args) {
+	public static Object callMethod(String className, Object instance, String[] methodNames, Object... args) throws Exception {
 		return callMethod(getClass(className), instance, methodNames, args);
 	}
 
-	public static Object callMethod(boolean replace, Class klazz, Object instance, String[] methodNames, Object... args) {
+	public static Object callMethod(boolean replace, Class klazz, Object instance, String[] methodNames, Object... args) throws Exception {
 		Method m = getMethod(klazz == null ? instance.getClass() : klazz, methodNames, args.length);
-		if (m == null) {
-			return null;
-		}
 		if (m != null) {
-			try {
-				Class[] types = m.getParameterTypes();
-				List<Object> argumentList = Arrays.asList(args);
-				if (replace) {
-					for (int i = 0; i < argumentList.size(); i++) {
-						Object newType = TypeConversionRegistry.fromLua(argumentList.get(i), types[i]);
-						argumentList.set(i, newType);
-					}
+			Class[] types = m.getParameterTypes();
+			List<Object> argumentList = Arrays.asList(args);
+			if (replace) {
+				for (int i = 0; i < argumentList.size(); i++) {
+					Object newType = TypeConversionRegistry.fromLua(argumentList.get(i), types[i]);
+					argumentList.set(i, newType);
 				}
-				Object response = m.invoke(instance, argumentList.toArray(new Object[args.length]));
-				return response;
-			} catch (Exception e) {
-				e.printStackTrace();
 			}
+			Object response = m.invoke(instance, argumentList.toArray(new Object[args.length]));
+			return response;
 		}
 		return null;
 	}
 
-	public static Object callMethod(Class klazz, Object instance, String[] methodNames, Object... args) {
+	public static Object callMethod(Class klazz, Object instance, String[] methodNames, Object... args) throws Exception {
 		return callMethod(true, klazz, instance, methodNames, args);
 	}
 

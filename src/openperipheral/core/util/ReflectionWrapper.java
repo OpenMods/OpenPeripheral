@@ -12,11 +12,11 @@ public class ReflectionWrapper {
 		return target;
 	}
 
-	public ReflectionWrapper call(boolean replace, String methodName, Object... args) {
+	public ReflectionWrapper call(boolean replace, String methodName, Object... args) throws Exception {
 		return new ReflectionWrapper(ReflectionHelper.callMethod(replace, "", target, new String[] { methodName }, args));
 	}
 
-	public ReflectionWrapper call(String[] methodNames, Object... args) {
+	public ReflectionWrapper call(String[] methodNames, Object... args) throws Exception {
 		return new ReflectionWrapper(ReflectionHelper.callMethod("", target, methodNames, args));
 	}
 

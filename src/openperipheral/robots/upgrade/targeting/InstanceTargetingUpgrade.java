@@ -64,8 +64,10 @@ public class InstanceTargetingUpgrade implements IRobotUpgradeInstance {
 	}
 	
 	@LuaMethod
-	public void aimAt(double x, double y, double z) {
-
+	public void aimAt(double x, double y, double z) throws Exception {
+		if (tier < 2) {
+			throw new Exception("A higher tier upgrade is required");
+		}
 		double radYaw = -Math.toRadians(robot.getYaw());
 		
 		Vector3 pos = new Vector3(-20/16D, 0, 0)
