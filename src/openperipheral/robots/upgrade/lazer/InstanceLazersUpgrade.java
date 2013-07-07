@@ -126,16 +126,21 @@ public class InstanceLazersUpgrade implements IRobotUpgradeInstance {
 	}
 	
 	@LuaMethod
-	public boolean fire() {
-		return fireLazer(ItemGeneric.Metas.energyCell, false, 3);
+	public boolean fireLight() {
+		return fireLazer(ItemGeneric.Metas.lightEnergyCell, false, false, 2);
+	}
+	
+	@LuaMethod
+	public boolean fireMedium() {
+		return fireLazer(ItemGeneric.Metas.mediumEnergyCell, true, false, 3);
 	}
 
 	@LuaMethod
-	public boolean fireExplosive() {
-		return fireLazer(ItemGeneric.Metas.energyCell, true, 7);
+	public boolean fireHeavy() {
+		return fireLazer(ItemGeneric.Metas.heavyEnergyCell, true, true, 4);
 	}
 	
-	public boolean fireLazer(Metas ammoItem, boolean isExplosive, double heatModifier) {
+	public boolean fireLazer(Metas ammoItem, boolean canDamageBlocks, boolean isExplosive, double heatModifier) {
 		IInventory inventory = robot.getInventory();
 		ItemStack cellStack = null;
 		if (isOverheated()) {
@@ -159,6 +164,7 @@ public class InstanceLazersUpgrade implements IRobotUpgradeInstance {
 			entity.playSound("openperipheral.lazer", 1F, entity.worldObj.rand.nextFloat() + 0.4f);
 			EntityLazer lazer = new EntityLazer(entity.worldObj, entity);
 			lazer.setExplosive(isExplosive);
+			lazer.setDamageBlocks(canDamageBlocks);
 			entity.worldObj.spawnEntityInWorld(lazer);
 			cellStack.stackSize--;
 			if (cellStack.stackSize == 0) {

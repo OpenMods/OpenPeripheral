@@ -24,6 +24,11 @@ public abstract class DefinitionMetaClass implements IClassDefinition {
 	public abstract ArrayList<IPeripheralMethodDefinition> getMethods(TileEntity tile);
 
 	protected static Object getMetaTileEntity(TileEntity tile) {
-		return ReflectionHelper.callMethod(false, "", tile, new String[] { "getMetaTileEntity" });
+		try {
+			return ReflectionHelper.callMethod(false, "", tile, new String[] { "getMetaTileEntity" });
+		}catch (Exception e) {
+			
+		}
+		return null;
 	}
 }

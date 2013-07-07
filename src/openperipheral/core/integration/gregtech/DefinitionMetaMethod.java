@@ -69,7 +69,7 @@ public class DefinitionMetaMethod implements IPeripheralMethodDefinition {
 	}
 
 	@Override
-	public Object execute(Object tile, Object[] args) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, ScriptException {
+	public Object execute(Object tile, Object[] args) throws Exception {
 		if (tile instanceof TileEntity) {
 			Object metaTileEntity = DefinitionMetaClass.getMetaTileEntity((TileEntity)tile);
 			if (metaTileEntity != null) {

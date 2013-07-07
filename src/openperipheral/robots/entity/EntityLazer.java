@@ -37,10 +37,11 @@ public class EntityLazer extends Entity implements IThrowableEntity, IEntityAddi
 
 	public EntityLiving shootingEntity;
 	private int ticksAlive;
-	public double directionX;
-	public double directionY;
-	public double directionZ;
-	public boolean isExplosive = false;
+	private double directionX;
+	private double directionY;
+	private double directionZ;
+	private boolean isExplosive = false;
+	private boolean canDamageBlocks = false;
 	private Entity thrower;
 	private int hitCount = 0;
 
@@ -179,7 +180,7 @@ public class EntityLazer extends Entity implements IThrowableEntity, IEntityAddi
 		if (mop == null) {
 			return;
 		}
-		if (mop.typeOfHit == EnumMovingObjectType.TILE) {
+		if (canDamageBlocks && mop.typeOfHit == EnumMovingObjectType.TILE) {
 			onBlockHit(mop);
 		}else if (mop.typeOfHit == EnumMovingObjectType.ENTITY) {
 			onEntityHit(mop);
@@ -289,5 +290,9 @@ public class EntityLazer extends Entity implements IThrowableEntity, IEntityAddi
 	@Override
 	public void readSpawnData(ByteArrayDataInput data) {
 		isExplosive = data.readBoolean();
+	}
+
+	public void setDamageBlocks(boolean canDamageBlocks) {
+		this.canDamageBlocks = canDamageBlocks;
 	}
 }
