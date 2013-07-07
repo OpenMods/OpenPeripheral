@@ -8,6 +8,7 @@ import net.minecraft.item.ItemStack;
 import openperipheral.api.IRobot;
 import openperipheral.api.IRobotUpgradeInstance;
 import openperipheral.api.IRobotUpgradeProvider;
+import openperipheral.core.item.ItemGeneric.Metas;
 
 public class ProviderTargetingUpgrade implements IRobotUpgradeProvider {
 
@@ -17,8 +18,9 @@ public class ProviderTargetingUpgrade implements IRobotUpgradeProvider {
 		
 		upgrades = new HashMap<Integer, ItemStack>();
 		
-		//TOOD: change to something better
-		upgrades.put(1, new ItemStack(Item.appleRed));
+		upgrades.put(1, Metas.tier1targeting.newItemStack());
+		upgrades.put(2, Metas.tier2targeting.newItemStack());
+		upgrades.put(3, Metas.tier3targeting.newItemStack());
 		
 	}
 	

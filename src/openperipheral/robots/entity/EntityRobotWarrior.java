@@ -42,8 +42,12 @@ public class EntityRobotWarrior extends EntityRobot implements ILazerRobot {
 	
 	@Override
 	public float getWeaponSpinSpeed() {
-		WatchableObject object = (WatchableObject)ReflectionHelper.callMethod("", this.dataWatcher, dataWatcherMethod, 11);
-		return (Float)(object.getObject());
+		try {
+			WatchableObject object = (WatchableObject)ReflectionHelper.callMethod("", this.dataWatcher, dataWatcherMethod, 11);
+			return (Float)(object.getObject());
+		}catch(Exception e) {
+			return 0;
+		}
 	}
 	
 	@Override

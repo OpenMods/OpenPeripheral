@@ -60,7 +60,7 @@ public class PostChangeScript implements IPostChangeHandler {
 		return ReflectionHelper.getProperty(className, instance, fields);
 	}
 
-	public Object callMethod(String className, Object instance, String[] methodNames, Object... args) {
+	public Object callMethod(String className, Object instance, String[] methodNames, Object... args) throws Exception {
 		return ReflectionHelper.callMethod(className, instance, methodNames, args);
 	}
 

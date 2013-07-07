@@ -44,7 +44,9 @@ public class ItemGeneric extends Item {
 		microcontroller(),
 		carbon(),
 		solarCell(),
-		energyCell(),
+		lightEnergyCell(),
+		mediumEnergyCell(),
+		heavyEnergyCell(),
 		opticalLense(),
 		focusLense(),
 		lazerSight(),
@@ -91,7 +93,9 @@ public class ItemGeneric extends Item {
 		metaitems.put(Metas.microcontroller.ordinal(), new MetaGeneric("microcontroller", 1, "www", "cic", "www", 'i', new ItemStack(Item.comparator), 'c', Metas.carbon, 'w', Metas.thinWire));
 		metaitems.put(Metas.carbon.ordinal(), new MetaGeneric("carbon", Item.coal.itemID, 0, Metas.carbon, 0.5f));
 		metaitems.put(Metas.solarCell.ordinal(), new MetaGeneric("solarcell", 9, new ItemStack(Block.daylightSensor)));
-		metaitems.put(Metas.energyCell.ordinal(), new MetaGeneric("energycell", 1, Metas.plasticSheet, new ItemStack(Item.redstone)));
+		metaitems.put(Metas.lightEnergyCell.ordinal(), new MetaGeneric("lightenergycell", ConfigSettings.cellsPerRedstone, Metas.plasticSheet, new ItemStack(Item.redstone)));
+		metaitems.put(Metas.mediumEnergyCell.ordinal(), new MetaGeneric("mediumenergycell", 1, Metas.plasticSheet, Metas.lightEnergyCell, new ItemStack(Item.lightStoneDust)));
+		metaitems.put(Metas.heavyEnergyCell.ordinal(), new MetaGeneric("heavyenergycell", 1, Metas.plasticSheet, Metas.mediumEnergyCell, new ItemStack(Item.gunpowder)));
 		metaitems.put(Metas.opticalLense.ordinal(), new MetaGeneric("opticallense", 1, "ppp", "pgp", "ppp", 'p', Metas.plasticSheet,  'g', new ItemStack(Block.thinGlass)));
 		metaitems.put(Metas.focusLense.ordinal(), new MetaGeneric("focuslense", 1, "pmp", "o o", "pcp", 'p', Metas.plasticSheet, 'o', Metas.opticalLense, 'm', Metas.microcontroller, 'c', Metas.preparedPCB));
 		metaitems.put(Metas.lazerSight.ordinal(), new MetaGeneric("lazersight", 1, "spp", "lrc", "ppp", 's', Metas.solarCell, 'p', Metas.plasticSheet, 'l', Metas.led, 'r', Metas.ribbonCable, 'c', Metas.preparedPCB));
