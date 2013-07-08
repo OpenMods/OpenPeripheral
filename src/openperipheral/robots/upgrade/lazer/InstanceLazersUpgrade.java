@@ -131,12 +131,18 @@ public class InstanceLazersUpgrade implements IRobotUpgradeInstance {
 	}
 	
 	@LuaMethod
-	public boolean fireMedium() {
+	public boolean fireMedium() throws Exception {
+		if (tier < 2) {
+			throw new Exception("At least a tier 2 lazer upgrade required");
+		}
 		return fireLazer(ItemGeneric.Metas.mediumEnergyCell, true, false, 3);
 	}
 
 	@LuaMethod
-	public boolean fireHeavy() {
+	public boolean fireHeavy() throws Exception {
+		if (tier < 3) {
+			throw new Exception("At least a tier 3 lazer upgrade required");
+		}
 		return fireLazer(ItemGeneric.Metas.heavyEnergyCell, true, true, 4);
 	}
 	
@@ -151,7 +157,7 @@ public class InstanceLazersUpgrade implements IRobotUpgradeInstance {
 			return false;
 		}
 		int cellIndex = 0;
-		for (int i=0; i < inventory.getSizeInventory() - 1; i++) {
+		for (int i=0; i < inventory.getSizeInventory(); i++) {
 			ItemStack slot = inventory.getStackInSlot(i);
 			if (slot != null && slot.stackSize > 0 && OpenPeripheral.Items.generic.isA(slot, ammoItem)) {
 				cellStack = slot;

@@ -8,6 +8,7 @@ import net.minecraft.item.ItemStack;
 import openperipheral.api.IRobot;
 import openperipheral.api.IRobotUpgradeInstance;
 import openperipheral.api.IRobotUpgradeProvider;
+import openperipheral.core.item.ItemGeneric.Metas;
 
 public class ProviderInventoryUpgrade implements IRobotUpgradeProvider {
 	
@@ -16,13 +17,13 @@ public class ProviderInventoryUpgrade implements IRobotUpgradeProvider {
 	public ProviderInventoryUpgrade() {
 		
 		upgradeItems = new HashMap<Integer, ItemStack>();
-		upgradeItems.put(1, new ItemStack(Block.hopperBlock));
-		upgradeItems.put(2, new ItemStack(Block.chest));
+		upgradeItems.put(1, Metas.tier1inventory.newItemStack());
+		upgradeItems.put(2, Metas.tier2inventory.newItemStack());
 	}
 
 	@Override
 	public IRobotUpgradeInstance provideUpgradeInstance(IRobot robot, int tier) {
-		return new InstanceInventoryUpgrade(robot);
+		return new InstanceInventoryUpgrade(robot, tier);
 	}
 
 	@Override

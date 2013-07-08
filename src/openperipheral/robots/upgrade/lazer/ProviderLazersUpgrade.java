@@ -11,17 +11,17 @@ import openperipheral.api.EnumRobotType;
 import openperipheral.api.IRobot;
 import openperipheral.api.IRobotUpgradeInstance;
 import openperipheral.api.IRobotUpgradeProvider;
+import openperipheral.core.item.ItemGeneric.Metas;
 
 public class ProviderLazersUpgrade implements IRobotUpgradeProvider {
 
 	HashMap<Integer, ItemStack> upgradeItems;
 	
 	public ProviderLazersUpgrade() {
-		
-		//TODO: proper items
 		upgradeItems = new HashMap<Integer, ItemStack>();
-		upgradeItems.put(1, new ItemStack(Item.axeGold));
-		upgradeItems.put(2, new ItemStack(Item.axeDiamond));
+		upgradeItems.put(1, Metas.tier1lazer.newItemStack());
+		upgradeItems.put(2, Metas.tier2lazer.newItemStack());
+		upgradeItems.put(3, Metas.tier3lazer.newItemStack());
 	}
 	
 	@Override
