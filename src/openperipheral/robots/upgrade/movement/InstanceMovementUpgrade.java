@@ -20,9 +20,11 @@ public class InstanceMovementUpgrade implements IRobotUpgradeInstance {
 	private double targetZ;
 	private boolean shouldMoveToTarget = false;
 	private IRobot robot;
+	private int tier;
 	
-	public InstanceMovementUpgrade(IRobot robot) {
+	public InstanceMovementUpgrade(IRobot robot, int tier) {
 		this.robot = robot;
+		this.tier = tier;
 	}
 	
 	public IRobot getRobot() {
@@ -79,12 +81,14 @@ public class InstanceMovementUpgrade implements IRobotUpgradeInstance {
 
 	@Override
 	public void onTierChanged(int tier) {
-		// TODO Auto-generated method stub
-		
+		this.tier = tier;
 	}
 	
 	@LuaMethod
-	public IMultiReturn getLocation() {
+	public IMultiReturn getLocation() throws Exception {
+		if (tier < 3) {
+			throw new Exception("At least a tier 3 movement upgrade required");
+		}
 		final Vec3 loc = robot.getLocation();
 		return new IMultiReturn() {
 			@Override
@@ -99,7 +103,10 @@ public class InstanceMovementUpgrade implements IRobotUpgradeInstance {
 	}
 	
 	@LuaMethod
-	public void jump() {
+	public void jump() throws Exception {
+		if (tier < 2) {
+			throw new Exception("At least a tier 2 movement upgrade required");
+		}
 		EntityCreature creature = robot.getEntity();
 		creature.motionY = 0.41999998688697815D;
 

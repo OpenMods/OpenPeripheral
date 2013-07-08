@@ -23,9 +23,11 @@ import openperipheral.core.util.InventoryUtils;
 public class InstanceInventoryUpgrade implements IRobotUpgradeInstance {
 
 	private IRobot robot;
+	private int tier;
 	
-	public InstanceInventoryUpgrade(IRobot robot) {
+	public InstanceInventoryUpgrade(IRobot robot, int tier) {
 		this.robot = robot;
+		this.tier = tier;
 	}
 	
 	public IRobot getRobot() {
@@ -55,8 +57,7 @@ public class InstanceInventoryUpgrade implements IRobotUpgradeInstance {
 
 	@Override
 	public void onTierChanged(int tier) {
-		// TODO Auto-generated method stub
-		
+		this.tier = tier;
 	}
 	
 	@LuaMethod
@@ -110,6 +111,9 @@ public class InstanceInventoryUpgrade implements IRobotUpgradeInstance {
 	}
 	
 	public int moveItem(int slot, int maxAmount, boolean fromRobot) throws Exception {
+		if (tier < 2) {
+			throw new Exception("At least a tier 2 inventory upgrade required");
+		}
 		IInventory inventory = robot.getInventory();
 		World world = robot.getWorld();
 		slot--;
@@ -137,7 +141,7 @@ public class InstanceInventoryUpgrade implements IRobotUpgradeInstance {
 		}
 		
 		// if the slot if out of bounds, throw an error
-		if (slot < 0 || slot > fromInventory.getSizeInventory() - 1) {
+		if (slot < 0 || slot >= fromInventory.getSizeInventory()) {
 			throw new Exception("Invalid slot number specified");
 		}
 		
@@ -163,6 +167,9 @@ public class InstanceInventoryUpgrade implements IRobotUpgradeInstance {
 	}
 	
 	public int moveItemInto(int slot, int maxAmount, int intoSlot, boolean fromRobot) throws Exception {
+		if (tier < 3) {
+			throw new Exception("At least a tier 3 inventory upgrade required");
+		}
 		IInventory inventory = robot.getInventory();
 		World world = robot.getWorld();
 		
@@ -193,7 +200,7 @@ public class InstanceInventoryUpgrade implements IRobotUpgradeInstance {
 		}
 		
 		// if the slot if out of bounds, throw an error
-		if (slot < 0 || slot > fromInventory.getSizeInventory() - 1) {
+		if (slot < 0 || slot >= fromInventory.getSizeInventory()) {
 			throw new Exception("Invalid slot number specified");
 		}
 		
@@ -223,7 +230,7 @@ public class InstanceInventoryUpgrade implements IRobotUpgradeInstance {
 		IInventory inventory = robot.getInventory();
 		Vec3 location = robot.getLocation();
 		slot--;
-		if (slot < 0 || slot > inventory.getSizeInventory()-1) {
+		if (slot < 0 || slot >= inventory.getSizeInventory()) {
 			throw new Exception("Invalid slot specified");
 		}
 		ItemStack stack = inventory.getStackInSlot(slot);

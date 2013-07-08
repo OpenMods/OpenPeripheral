@@ -131,6 +131,9 @@ public class TileEntityRobot extends TileEntity implements IPeripheralProvider, 
 	 * @param args
 	 */
 	public void fireEvent(String eventName, Object... args) {
+		if (args == null) {
+			args = new Object[0];
+		}
 		for (IComputerAccess computer : computers) {
 			args = MiscUtils.append(args, computer.getAttachmentName());
 			computer.queueEvent(eventName, args);
@@ -305,17 +308,17 @@ public class TileEntityRobot extends TileEntity implements IPeripheralProvider, 
 		return peripheral;
 	}
 
-	public void registerRobot(int robotId, EntityRobot entityRobot) {
+	public boolean registerRobot(int robotId, EntityRobot entityRobot) {
 		if (robots.containsKey(robotId)) {
-			int currentRobotEntityId = robots.get(robotId);
-			if (currentRobotEntityId != entityRobot.entityId) {
-				Entity currentRobot = worldObj.getEntityByID(currentRobotEntityId);
-				if (currentRobot != null) {
-					currentRobot.setDead();
-				}
+			int currentRobotId = robots.get(robotId);
+			Entity currentRobot = worldObj.getEntityByID(currentRobotId); 
+			if (currentRobot != null && currentRobot != entityRobot && !currentRobot.isDead) {
+				entityRobot.setDead();
 			}
+			return false;
 		}
 		robots.put(robotId, entityRobot.entityId);
+		return true;
 	}
 
 	public void unregisterRobot(int robotId) {

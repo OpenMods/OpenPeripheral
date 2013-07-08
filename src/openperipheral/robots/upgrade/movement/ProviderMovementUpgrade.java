@@ -8,19 +8,21 @@ import net.minecraft.item.ItemStack;
 import openperipheral.api.IRobot;
 import openperipheral.api.IRobotUpgradeInstance;
 import openperipheral.api.IRobotUpgradeProvider;
+import openperipheral.core.item.ItemGeneric.Metas;
 
 public class ProviderMovementUpgrade implements IRobotUpgradeProvider {
 	
-	private HashMap<Integer, ItemStack> items = new HashMap<Integer, ItemStack>();
+	private HashMap<Integer, ItemStack> upgradeItems = new HashMap<Integer, ItemStack>();
 	
 	public ProviderMovementUpgrade() {
-		items.put(1, new ItemStack(Item.bootsIron));
-		items.put(2, new ItemStack(Item.bootsDiamond));
+		upgradeItems.put(1, Metas.tier1movement.newItemStack());
+		upgradeItems.put(2, Metas.tier2movement.newItemStack());
+		upgradeItems.put(3, Metas.tier3movement.newItemStack());
 	}
 	
 	@Override
 	public IRobotUpgradeInstance provideUpgradeInstance(IRobot robot, int tier) {
-		return new InstanceMovementUpgrade(robot);
+		return new InstanceMovementUpgrade(robot, tier);
 	}
 
 	@Override
@@ -30,7 +32,7 @@ public class ProviderMovementUpgrade implements IRobotUpgradeProvider {
 
 	@Override
 	public Map<Integer, ItemStack> getUpgradeItems() {
-		return items;
+		return upgradeItems;
 	}
 
 	@Override

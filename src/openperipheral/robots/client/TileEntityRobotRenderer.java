@@ -25,8 +25,8 @@ public class TileEntityRobotRenderer extends TileEntitySpecialRenderer {
 		bindTextureByName(ConfigSettings.TEXTURES_PATH + "/models/blockframe.png");
 		frame.render();
 		GL11.glPushMatrix();
-		GL11.glScalef(0.1f, 0.1f, 0.1f);
-		GL11.glTranslatef(0, 1f, 0);
+		GL11.glScalef(0.2f, 0.2f, 0.2f);
+		GL11.glTranslatef(0, 2f, 0);
 		GL11.glRotatef(robotTE.getRenderRot(), 0F, 1.0F, 0.0F);
 		bindTextureByName(ConfigSettings.TEXTURES_PATH + "/models/robot.png");
 		model.render(robot, 0, 0, 0, 0, 0, 0.0625F);

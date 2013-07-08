@@ -7,6 +7,7 @@ import net.minecraft.world.World;
 import openperipheral.api.IRobotUpgradeInstance;
 import openperipheral.api.IRobotUpgradeProvider;
 import openperipheral.api.RobotUpgradeManager;
+import openperipheral.core.interfaces.IAttachable;
 import openperipheral.core.interfaces.IPeripheralMethodDefinition;
 import openperipheral.robots.MethodGetRobots;
 import openperipheral.robots.RobotPeripheralMethod;
@@ -75,5 +76,10 @@ public class RobotPeripheral extends AbstractPeripheral {
 			throw new Exception("Unable to execute command. Do you have the correct upgrade enabled?");
 		}
 		return instance;
+	}
+	
+	@Override
+	public IAttachable getAttachable() {
+		return robotTile;
 	}
 }
