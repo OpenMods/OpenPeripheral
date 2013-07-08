@@ -25,13 +25,13 @@ import dan200.computer.api.IHostedPeripheral;
 
 public abstract class AbstractPeripheral implements IHostedPeripheral {
 
-	static class MySecurityManager extends SecurityManager {
+	public static class MySecurityManager extends SecurityManager {
 		public String getCallerClassName(int callStackDepth) {
 			return getClassContext()[callStackDepth].getName();
 		}
 	}
 
-	private final static MySecurityManager mySecurityManager = new MySecurityManager();
+	public final static MySecurityManager mySecurityManager = new MySecurityManager();
 
 	protected String name = "peripheral";
 	protected ArrayList<IPeripheralMethodDefinition> methods;

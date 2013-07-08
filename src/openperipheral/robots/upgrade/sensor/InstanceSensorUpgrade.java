@@ -16,10 +16,12 @@ public class InstanceSensorUpgrade implements IRobotUpgradeInstance, ISensorEnvi
 
 	private SensorPeripheral sensorPeripheral;
 	private IRobot robot;
+	private int tier;
 	
-	public InstanceSensorUpgrade(IRobot robot) {
+	public InstanceSensorUpgrade(IRobot robot, int tier) {
 		sensorPeripheral = new SensorPeripheral(this, robot.getEntity());
 		this.robot = robot;
+		this.tier = tier;
 	}
 	
 	public SensorPeripheral getSensor() {
@@ -64,44 +66,54 @@ public class InstanceSensorUpgrade implements IRobotUpgradeInstance, ISensorEnvi
 	}
 
 	@Override
+	@LuaMethod
 	public int getSensorRange() {
-		return 16;
+		return 10 * this.tier;
 	}
 
 	@Override
 	public void onTierChanged(int tier) {
-		// TODO Auto-generated method stub
-		
+		this.tier = tier;
 	}
 	
-	@LuaMethod
-	public String[] getPlayerNames() {
+	@LuaMethod(onTick=false)
+	public String[] getPlayerNames() throws Exception {
+		if (tier < 2) {
+			throw new Exception("At least a tier 2 sensor upgrade required");
+		}
 		return sensorPeripheral.getPlayerNames();
 	}
 	
-	@LuaMethod
-	public HashMap getPlayerData(String playerName) {
+	@LuaMethod(onTick=false)
+	public HashMap getPlayerData(String playerName) throws Exception {
+		if (tier < 2) {
+			throw new Exception("At least a tier 2 sensor upgrade required");
+		}
 		return sensorPeripheral.getPlayerData(playerName);
 	}
 	
-	@LuaMethod
+	@LuaMethod(onTick=false)
 	public Integer[] getMobIds() {
 		return sensorPeripheral.getMobIds();
 	}
 	
-	@LuaMethod
+	@LuaMethod(onTick=false)
 	public HashMap getMobData(int mobId) {
 		return sensorPeripheral.getMobData(mobId);
 	}
 	
-	@LuaMethod
+	@LuaMethod(onTick=false)
 	public Integer[] getMinecartIds() {
 		return sensorPeripheral.getMinecartIds();
 	}
 	
-	@LuaMethod
+	@LuaMethod(onTick=false)
 	public HashMap getMinecartData(int minecartId) {
 		return sensorPeripheral.getMinecartData(minecartId);
 	}
 
+	@LuaMethod
+	public HashMap sonicScan() {
+		return sensorPeripheral.sonicScan();
+	}
 }

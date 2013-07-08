@@ -84,7 +84,7 @@ public class RecipeUtils {
 						new ItemStack(Block.obsidian), Character.valueOf('r'), new ItemStack(Item.redstone), Character.valueOf('c'), new ItemStack(Block.chest), }));
 	}
 
-	private static Block getCCBlock(String fieldName) {
+	public static Block getCCBlock(String fieldName) {
 		Block block = null;
 		try {
 			Class cc = Class.forName("dan200.ComputerCraft$Blocks");
@@ -137,7 +137,7 @@ public class RecipeUtils {
 					" r ",
 					Character.valueOf('l'), ItemGeneric.Metas.lcdScreen.newItemStack(),
 					Character.valueOf('a'), ItemGeneric.Metas.duckAntenna.newItemStack(),
-					Character.valueOf('p'), ItemGeneric.Metas.plasticSheet.newItemStack(),
+					Character.valueOf('p'), ItemGeneric.Metas.plasticCasing.newItemStack(),
 					Character.valueOf('r'), ItemGeneric.Metas.ribbonCable.newItemStack(),
 				}
 		));

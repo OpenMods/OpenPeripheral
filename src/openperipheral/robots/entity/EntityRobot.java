@@ -24,6 +24,7 @@ import openperipheral.core.ConfigSettings;
 import openperipheral.core.OPInventory;
 import openperipheral.core.interfaces.IInventoryCallback;
 import openperipheral.core.interfaces.IPeripheralMethodDefinition;
+import openperipheral.core.peripheral.AbstractPeripheral;
 import openperipheral.core.util.BlockUtils;
 import openperipheral.robots.RobotPeripheralMethod;
 import openperipheral.robots.block.TileEntityRobot;
@@ -204,7 +205,7 @@ public abstract class EntityRobot extends EntityCreature implements IRobot, IInv
 		// providers that match a given itemstack. If multiple items from
 		// a single provider is available, we find the one with the highest
 		// tier and use that
-		for (int i = 0; i < inventory.getSizeInventory() - 1; i++) {
+		for (int i = 0; i < inventory.getSizeInventory(); i++) {
 
 			ItemStack stack = inventory.getStackInSlot(i);
 			IRobotUpgradeProvider provider = RobotUpgradeManager.getProviderForStack(stack);
@@ -231,6 +232,9 @@ public abstract class EntityRobot extends EntityCreature implements IRobot, IInv
 
 			String providerId = tierEntry.getKey();
 			int tier = tierEntry.getValue();
+			
+			System.out.println(providerId);
+			System.out.println(tier);
 
 			IRobotUpgradeProvider provider = RobotUpgradeManager.getProviderById(providerId);
 
@@ -351,6 +355,7 @@ public abstract class EntityRobot extends EntityCreature implements IRobot, IInv
 
 			// check we can still find the controller
 			TileEntityRobot controller = (TileEntityRobot) getController();
+
 			if (controller != null) {
 				controller.registerRobot(robotId, this);
 			}
@@ -469,10 +474,13 @@ public abstract class EntityRobot extends EntityCreature implements IRobot, IInv
 			if (controller == null) {
 				return false;
 			}
-			controller.registerRobot(robotId, this);
+			if (!controller.registerRobot(robotId, this)) {
+				return false;
+			}
 			if (tag.hasKey("upgrades")) {
 				upgradesNBT = tag.getCompoundTag("upgrades");
 			}
+
 			onInventoryChanged(inventory, 0);
 
 		}
@@ -503,9 +511,12 @@ public abstract class EntityRobot extends EntityCreature implements IRobot, IInv
 	}
 
 	public void setDead() {
-		TileEntityRobot controller = (TileEntityRobot) getController();
-		if (controller != null) {
-			controller.unregisterRobot(robotId);
+		System.out.println(AbstractPeripheral.mySecurityManager.getCallerClassName(2));
+		if (!worldObj.isRemote) { 
+			TileEntityRobot controller = (TileEntityRobot) getController();
+			if (controller != null) {
+				controller.unregisterRobot(robotId);
+			}
 		}
 		super.setDead();
 	}

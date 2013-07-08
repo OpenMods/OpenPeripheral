@@ -55,7 +55,7 @@ public class InstanceFuelUpgrade implements IRobotUpgradeInstance {
 	@LuaMethod
 	public boolean refuel(int slot, int maxAmount) {
 		IInventory inventory = robot.getInventory();
-		if (slot < 0 || slot > inventory.getSizeInventory()-1) {
+		if (slot < 0 || slot >= inventory.getSizeInventory()) {
 			return false;
 		}
 		ItemStack fuelStack = inventory.getStackInSlot(slot);
