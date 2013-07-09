@@ -1,5 +1,0 @@
-mkdir creates a directory in the current location.
-
-ex:
-"mkdir foo" creates a directory named "foo".
-"mkdir ../foo" creates a directory named "foo" in the directory above the current directory.
