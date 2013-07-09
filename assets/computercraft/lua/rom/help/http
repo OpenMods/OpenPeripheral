@@ -1,0 +1,8 @@
+Functions in the HTTP API:
+http.request( url, postData* )
+http.get( url )
+http.post( url, postData )
+*optional
+
+The HTTP API must be enabled in ComputerCraft.cfg before being used.
+A period of time after a http.request() call is made, a "http_success" or "http_failure" event will be raised. Arguments are the url and a file handle if successful. http.get() and http.post() block until this event fires.

@@ -2,24 +2,28 @@ package openperipheral.core;
 
 import java.lang.reflect.Method;
 
-import org.bouncycastle.util.Arrays;
-
 import openperipheral.api.LuaMethod;
 
 public class MethodDeclaration {
 
-	private boolean isOnTick = false;
-	private Method method;
-	private Class[] requiredParameters;
-	private String luaName;
+	protected boolean isOnTick = false;
+	protected Method method;
+	protected Class[] requiredParameters;
+	protected String luaName;
+	protected Object target;
 	
-	public MethodDeclaration(LuaMethod luaMethod, Method method) {
+	public MethodDeclaration(LuaMethod luaMethod, Method method, Object target) {
 		isOnTick = luaMethod.onTick();
 		this.method = method;
 		luaName = luaMethod.name();
 		if (luaName.equals("[none set]")) {
 			luaName = method.getName();
 		}
+		this.target = target;
+		initalize();
+	}
+	
+	public void initalize() {
 		Class[] allParameters = method.getParameterTypes();
 		requiredParameters = new Class[allParameters.length - 2];
 	    System.arraycopy(allParameters, 2, requiredParameters, 0, requiredParameters.length);
@@ -39,5 +43,9 @@ public class MethodDeclaration {
 	
 	public String getLuaName() {
 		return luaName;
+	}
+
+	public Object getTarget() {
+		return target;
 	}
 }

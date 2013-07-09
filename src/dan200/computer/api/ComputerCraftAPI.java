@@ -20,6 +20,7 @@ public class ComputerCraftAPI
 	 */
 	public static int createUniqueNumberedSaveDir( World world, String parentSubPath )
 	{
+		findCC();
 		if( computerCraft_createUniqueNumberedSaveDir != null )
 		{
 			try {
@@ -36,6 +37,7 @@ public class ComputerCraftAPI
 	 */
 	public static IWritableMount createSaveDirMount( World world, String subPath, long capacity )
 	{
+		findCC();
 		if( computerCraft_createSaveDirMount != null )
 		{
 			try {
@@ -50,12 +52,13 @@ public class ComputerCraftAPI
 	/**
 	 * TODO: Document me.
 	 */
-	public static IMount createResourceMount( String domain, String subPath )
+	public static IMount createResourceMount( Class modClass, String domain, String subPath )
 	{
+		findCC();
 		if( computerCraft_createResourceMount != null )
 		{
 			try {
-				return (IMount)computerCraft_createResourceMount.invoke( null, domain, subPath );
+				return (IMount)computerCraft_createResourceMount.invoke( null, modClass, domain, subPath );
 			} catch (Exception e){
 				// It failed
 			}
@@ -96,16 +99,16 @@ public class ComputerCraftAPI
 					World.class, String.class
 				} );
 				computerCraft_createSaveDirMount = findCCMethod( "createSaveDirMount", new Class[] {
-					World.class, String.class, Long.class
+					World.class, String.class, Long.TYPE
 				} );
 				computerCraft_createResourceMount = findCCMethod( "createResourceMount", new Class[] {
-					String.class, String.class
+					Class.class, String.class, String.class
 				} );
 				computerCraft_registerExternalPeripheral = findCCMethod( "registerExternalPeripheral", new Class[] { 
 					Class.class, IPeripheralHandler.class 
 				} );
 			} catch( Exception e ) {
-				System.out.println("ComputerCraftAPI: ComputerCraft not found.");
+				net.minecraft.server.MinecraftServer.getServer().logInfo( "ComputerCraftAPI: ComputerCraft not found." );
 			} finally {
 				ccSearched = true;
 			}
@@ -116,9 +119,8 @@ public class ComputerCraftAPI
 	{
 		try {
 			return computerCraft.getMethod( name, args );
-			
 		} catch( NoSuchMethodException e ) {
-			System.out.println("ComputerCraftAPI: ComputerCraft method " + name + " not found.");
+			net.minecraft.server.MinecraftServer.getServer().logInfo( "ComputerCraftAPI: ComputerCraft method " + name + " not found." );
 			return null;
 		}
 	}	

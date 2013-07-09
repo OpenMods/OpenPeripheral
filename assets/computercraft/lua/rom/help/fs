@@ -1,0 +1,15 @@
+Functions in the Filesystem API:
+fs.list( path )
+fs.exists( path )
+fs.isDir( path )
+fs.isReadOnly( path )
+fs.getName( path )
+fs.getSize( path )
+fs.getDrive( path )
+fs.makeDir( path )
+fs.move( path, path )
+fs.copy( path, path )
+fs.delete( path )
+fs.combine( path, localpath )
+fs.open( path, mode )
+Available fs.open() modes are "r", "w", "a", "rb", "wb" and "ab".

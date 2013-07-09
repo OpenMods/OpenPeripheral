@@ -1,0 +1,15 @@
+The rednet API provides a simple computer networking model using modems.
+
+Functions in the rednet API:
+rednet.open( side )
+rednet.close( side )
+rednet.isOpen( side )
+rednet.send( receiverID, message ) -- Send to a specific computer
+rednet.broadcast( message ) -- Send to all computers
+rednet.receive( timeout ) -- Returns: senderID, message
+
+Events fired by the rednet API:
+"rednet_message" when a message is received. Arguments are senderID, message
+Type "help events" to learn about the event system.
+
+Rednet is not the only way to use modems for networking. Interfacing with the modem directly using the peripheral API and listening for the "modem_message" event allows for more control.

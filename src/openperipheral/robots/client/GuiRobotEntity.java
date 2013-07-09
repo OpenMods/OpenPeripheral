@@ -1,11 +1,10 @@
 package openperipheral.robots.client;
 
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.resources.ResourceLocation;
-import openperipheral.core.ConfigSettings;
+import net.minecraft.util.ResourceLocation;
 import openperipheral.core.container.ContainerGeneric;
+
+import org.lwjgl.opengl.GL11;
 
 public class GuiRobotEntity extends GuiContainer {
 

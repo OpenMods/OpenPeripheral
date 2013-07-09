@@ -7,7 +7,6 @@ import java.util.Map.Entry;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -17,9 +16,7 @@ import net.minecraft.world.World;
 import openperipheral.OpenPeripheral;
 import openperipheral.core.ConfigSettings;
 import openperipheral.core.interfaces.IMetaItem;
-import openperipheral.core.item.meta.MetaGeneric;
 import openperipheral.core.util.RecipeUtils;
-import scala.util.regexp.Base.Meta;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -120,7 +117,7 @@ public class ItemGeneric extends Item {
 		metaitems.put(Metas.carbon.ordinal(), new MetaGeneric("carbon", Item.coal.itemID, 0, Metas.carbon, 0.5f));
 		metaitems.put(Metas.solarCell.ordinal(), new MetaGeneric("solarcell", 9, new ItemStack(Block.daylightSensor)));
 		metaitems.put(Metas.lightEnergyCell.ordinal(), new MetaGeneric("lightenergycell", ConfigSettings.cellsPerRedstone, Metas.plasticCasing, new ItemStack(Item.redstone)));
-		metaitems.put(Metas.mediumEnergyCell.ordinal(), new MetaGeneric("mediumenergycell", 1, Metas.plasticCasing, Metas.lightEnergyCell, new ItemStack(Item.lightStoneDust)));
+		metaitems.put(Metas.mediumEnergyCell.ordinal(), new MetaGeneric("mediumenergycell", 1, Metas.plasticCasing, Metas.lightEnergyCell, new ItemStack(Item.glowstone)));
 		metaitems.put(Metas.heavyEnergyCell.ordinal(), new MetaGeneric("heavyenergycell", 1, Metas.plasticCasing, Metas.mediumEnergyCell, new ItemStack(Item.gunpowder)));
 		metaitems.put(Metas.opticalLense.ordinal(), new MetaGeneric("opticallense", 1, "ppp", "pgp", "ppp", 'p', Metas.plasticCasing,  'g', new ItemStack(Block.thinGlass)));
 		metaitems.put(Metas.focusLense.ordinal(), new MetaGeneric("focuslense", 1, "pmp", "o o", "pcp", 'p', Metas.plasticCasing, 'o', Metas.opticalLense, 'm', Metas.microcontroller, 'c', Metas.preparedPCB));

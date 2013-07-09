@@ -1,9 +1,8 @@
 package openperipheral.core.client;
 
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.client.resources.ResourceLocation;
 import net.minecraft.tileentity.TileEntity;
-import openperipheral.core.ConfigSettings;
+import net.minecraft.util.ResourceLocation;
 import openperipheral.core.block.TileEntityPlayerInventory;
 
 import org.lwjgl.opengl.GL11;

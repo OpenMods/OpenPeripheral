@@ -1,0 +1,13 @@
+local tArgs = { ... }
+
+-- Get where a directory is mounted
+local sPath = shell.dir()
+if tArgs[1] ~= nil then
+	sPath = shell.resolve( tArgs[1] )
+end
+
+if fs.exists( sPath ) then
+	print( fs.getDrive( sPath ) )
+else
+	print( "No such path" )
+end

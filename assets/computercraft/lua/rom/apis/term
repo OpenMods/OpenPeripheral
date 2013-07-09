@@ -1,0 +1,49 @@
+
+native = term.native or term
+
+local redirectTarget = native
+local tRedirectStack = {}
+
+local function wrap( _sFunction )
+	return function( ... )
+		return redirectTarget[ _sFunction ]( ... )
+	end
+end
+
+local term = {}
+term.redirect = function( _object )
+	if _object == nil or type( _object ) ~= "table" then
+		error( "Invalid redirect object" )
+	end
+	for k,v in pairs( native ) do
+		if type( k ) == "string" and type( v ) == "function" then
+			if type( _object[k] ) ~= "function" then
+				_object[k] = function() 
+					term.restore()
+					error( "Redirect object is missing method "..k..". Restoring.")
+				end
+			end
+		end
+	end
+
+	tRedirectStack[#tRedirectStack + 1] = redirectTarget
+	redirectTarget = _object
+end
+term.restore = function()
+	if #tRedirectStack > 0 then
+		redirectTarget = tRedirectStack[#tRedirectStack] 
+		tRedirectStack[#tRedirectStack] = nil
+	end
+end
+for k,v in pairs( native ) do
+	if type( k ) == "string" and type( v ) == "function" then
+		if term[k] == nil then
+			term[k] = wrap( k )
+		end
+	end
+end
+	
+local env = getfenv()
+for k,v in pairs( term ) do
+	env[k] = v
+end

@@ -3,12 +3,10 @@ package openperipheral.core.converter;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.liquids.ILiquidTank;
-import net.minecraftforge.liquids.LiquidStack;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidTank;
 import openperipheral.api.ITypeConverter;
-import openperipheral.core.util.InventoryUtils;
 
 public class ConverterILiquidTank implements ITypeConverter {
 
@@ -19,17 +17,17 @@ public class ConverterILiquidTank implements ITypeConverter {
 
 	@Override
 	public Object toLua(Object o) {
-		if (o instanceof ILiquidTank) {
-			ILiquidTank t = (ILiquidTank) o;
+		if (o instanceof IFluidTank) {
+			IFluidTank t = (IFluidTank) o;
 			Map map = new HashMap();
 			map.put("capacity", t.getCapacity());
-			map.put("pressure", t.getTankPressure());
-			LiquidStack lyqyd = t.getLiquid();
+			map.put("amount", t.getFluidAmount());
+			FluidStack lyqyd = t.getInfo().fluid;
 			if (lyqyd != null) {
-				map.put("id", lyqyd.itemID);
-				map.put("name", InventoryUtils.getNameForItemStack(new ItemStack(Item.itemsList[lyqyd.itemID])));
-				map.put("rawName", InventoryUtils.getRawNameForStack(new ItemStack(Item.itemsList[lyqyd.itemID])));
-				map.put("amount", lyqyd.amount);
+				map.put("id", lyqyd.fluidID);
+				Fluid fluid = lyqyd.getFluid();
+				map.put("name", fluid.getName());
+				map.put("rawName", fluid.getLocalizedName());
 			}
 			return map;
 		}

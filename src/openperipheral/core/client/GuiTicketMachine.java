@@ -1,9 +1,8 @@
 package openperipheral.core.client;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.resources.ResourceLocation;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
-import openperipheral.core.ConfigSettings;
 import openperipheral.core.block.TileEntityTicketMachine;
 import openperipheral.core.container.ContainerGeneric;
 

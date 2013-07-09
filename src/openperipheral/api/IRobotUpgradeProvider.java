@@ -1,6 +1,5 @@
 package openperipheral.api;
 
-import java.util.List;
 import java.util.Map;
 
 import net.minecraft.item.ItemStack;

@@ -1,0 +1,5 @@
+redpulse outputs a pulsing redstone signal from a specific side of the computer.
+
+ex:
+"redpulse left 5" sends 5 1-second pulses from the left side of the computer.
+"redpulse right 50 0.1" sends 50 0.1-second pulses from the right side of the computer.

@@ -1,105 +1,160 @@
 package openperipheral.core.peripheral;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map.Entry;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 
-import net.minecraft.block.Block;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import openperipheral.api.IMultiReturn;
 import openperipheral.core.AdapterManager;
 import openperipheral.core.MethodDeclaration;
+import openperipheral.core.TickHandler;
+import openperipheral.core.converter.TypeConversionRegistry;
 import openperipheral.core.interfaces.IAttachable;
-import openperipheral.core.interfaces.IPeripheralMethodDefinition;
+import openperipheral.core.util.MiscUtils;
+import dan200.computer.api.IComputerAccess;
+import dan200.computer.api.IHostedPeripheral;
+import dan200.computer.api.ILuaContext;
 
-public class HostedPeripheral extends AbstractPeripheral {
+public class HostedPeripheral implements IHostedPeripheral {
 
+	protected ArrayList<MethodDeclaration> methods;
+	protected String[] methodNames;
+	protected String type;
+	protected Object target;
 	protected World worldObj;
-	protected int x;
-	protected int y;
-	protected int z;
+	
+	public HostedPeripheral(Object target, World worldObj) {
 
-	public HostedPeripheral(TileEntity tile) {
+		this.target = target;
+		this.worldObj = worldObj;
 		
-		worldObj = tile.worldObj;
-		x = tile.xCoord;
-		y = tile.yCoord;
-		z = tile.zCoord;
+		initialize();
 		
-		Block blockType = tile.getBlockType();
-		
-		ItemStack is = new ItemStack(blockType, 1, blockType.getDamageValue(tile.worldObj, tile.xCoord, tile.yCoord, tile.zCoord));
+	}
+	
+	public void initialize() {
 
-		try {
-			name = is.getDisplayName();
-		} catch (Exception e) {
-			try {
-				name = is.getItemName();
-			} catch (Exception e2) {
-			}
+		methods = AdapterManager.getMethodsForTarget(target);
+		
+		methodNames = new String[methods.size()];
+		for (int i = 0; i < methods.size(); i++) {
+			methodNames[i] = methods.get(i).getLuaName();
 		}
-
-		if (name == null) {
-			name = tile.getClass().getName();
-		}
-
-		name = name.replace(".", "_");
-		name = name.replace(" ", "_");
-		name = name.toLowerCase();
+		type = MiscUtils.getNameForTarget(target);
 	}
 	
 	@Override
-	public IAttachable getAttachable() {
-		Object target = getTarget();
-		if (target instanceof IAttachable) {
-			return (IAttachable) target;
-		}
-		return null;
+	public String getType() {
+		return type;
 	}
 
 	@Override
+	public String[] getMethodNames() {
+		return methodNames;
+	}
+	
 	public World getWorldObject() {
 		return worldObj;
 	}
 
 	@Override
-	protected void replaceArguments(ArrayList<Object> args, HashMap<Integer, String> replacements) {
-		if (replacements == null) {
-			return;
+	public Object[] callMethod(final IComputerAccess computer, ILuaContext context,
+			int index, Object[] arguments) throws Exception {
+		
+		final MethodDeclaration method = methods.get(index);
+		
+		final Object[] formattedParameters = formatParameters(computer, method, arguments);
+		
+		if (method.onTick()) {
+			Future callback = TickHandler.addTickCallback(getWorldObject(), new Callable() {
+				@Override
+				public Object call() throws Exception {
+					Object[] response = formatResponse(method.getMethod().invoke(method.getTarget(), formattedParameters));
+					computer.queueEvent("openperipheral_response", response);
+					return null;
+				}
+			});
+			Object[] event = context.pullEvent("openperipheral_response");
+			Object[] response = new Object[event.length - 1];
+			System.arraycopy(event, 1, response, 0, response.length);
+			return response;
+		}else {
+			return formatResponse(method.getMethod().invoke(method.getTarget(), formattedParameters));
 		}
-		for (Entry<Integer, String> replacement : replacements.entrySet()) {
-			String r = replacement.getValue();
-			Object v = null;
-			if (r.equals("x")) {
-				v = x;
-			} else if (r.equals("y")) {
-				v = y;
-			} else if (r.equals("z")) {
-				v = z;
-			} else if (r.equals("world")) {
-				v = getWorldObject();
-			}
-			if (v != null) {
-				args.add(replacement.getKey(), v);
-			}
-		}
-	}
-
-	@Override
-	public ArrayList<MethodDeclaration> getMethods() {
-		return AdapterManager.getMethodsForTarget(getTarget());
-	}
-
-	public Object getTarget() {
-		World worldObj = getWorldObject();
-		TileEntity te = worldObj.getBlockTileEntity(x, y, z);
-		return te;
 	}
 	
-	@Override
-	public Object getTargetObject(ArrayList args, IPeripheralMethodDefinition luaMethod) {
-		return getTarget();
+	protected Object[] formatParameters(IComputerAccess computer, MethodDeclaration method, Object[] arguments) throws Exception {
+		
+		Class[] requiredParameters = method.getRequiredParameters();
+		
+		if (requiredParameters.length != arguments.length) {
+			throw new Exception(String.format("Invalid number of parameters. Expected %s", requiredParameters.length));
+		}
+		
+		for (int i = 0; i < arguments.length; i++) {
+			arguments[i] = TypeConversionRegistry.fromLua(arguments[i], requiredParameters[i]);
+		}
+		
+		Object[] newArgs = new Object[arguments.length + 2];
+		System.arraycopy(arguments, 0, newArgs, 2, arguments.length);
+		
+		newArgs[0] = computer;
+		newArgs[1] = target;
+		
+		return newArgs;
 	}
+	
+	protected Object[] formatResponse(Object response) {
+		
+		Object[] returnValues;
+		
+		if (response instanceof IMultiReturn) {
+			returnValues = ((IMultiReturn) response).getObjects();
+			for (int i = 0; i < returnValues.length; i++) {
+				returnValues[i] = TypeConversionRegistry.toLua(returnValues[i]);
+			}
+		}else {
+			returnValues = new Object[] { TypeConversionRegistry.toLua(response) };
+		}
+		
+		return returnValues;
+	}
+
+	@Override
+	public boolean canAttachToSide(int side) {
+		return true;
+	}
+
+	@Override
+	public void attach(IComputerAccess computer) {
+		if (target instanceof IAttachable) {
+			((IAttachable)target).addComputer(computer);
+		}
+	}
+
+	@Override
+	public void detach(IComputerAccess computer) {
+		if (target instanceof IAttachable) {
+			((IAttachable)target).removeComputer(computer);
+		}
+	}
+
+	@Override
+	public void update() {
+		
+	}
+
+	@Override
+	public void readFromNBT(NBTTagCompound nbttagcompound) {
+		
+	}
+
+	@Override
+	public void writeToNBT(NBTTagCompound nbttagcompound) {
+
+	}
+	
 
 }

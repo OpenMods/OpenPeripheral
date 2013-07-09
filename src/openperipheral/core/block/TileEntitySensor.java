@@ -9,18 +9,14 @@ import net.minecraft.world.World;
 import openperipheral.core.OPInventory;
 import openperipheral.core.interfaces.IConditionalSlots;
 import openperipheral.core.interfaces.IInventoryCallback;
-import openperipheral.core.interfaces.IPeripheralProvider;
 import openperipheral.core.interfaces.ISensorEnvironment;
-import openperipheral.core.peripheral.SensorPeripheral;
-import dan200.computer.api.IHostedPeripheral;
 
-public class TileEntitySensor extends TileEntity implements IInventory, IInventoryCallback, IConditionalSlots, IPeripheralProvider, ISensorEnvironment {
+public class TileEntitySensor extends TileEntity implements IInventory, IInventoryCallback, IConditionalSlots, ISensorEnvironment {
 
 	private final static float rotationSpeed = 3.0F;
 	
 	private float rotation;
 	
-	private SensorPeripheral peripheral;
 	
 	private OPInventory inventory = new OPInventory("sensor", false, 1);
 	
@@ -34,7 +30,7 @@ public class TileEntitySensor extends TileEntity implements IInventory, IInvento
 	@Override
 	public void updateEntity() {
 		rotation = (rotation + rotationSpeed) % 360;
-		peripheral.update();
+		//peripheral.update();
 	}
 
 	@Override
@@ -52,10 +48,12 @@ public class TileEntitySensor extends TileEntity implements IInventory, IInvento
 		return worldObj;
 	}
 
+	/*
 	@Override
 	public IHostedPeripheral providePeripheral() {
-		return peripheral;
+		//return peripheral;
 	}
+	*/
 
 	@Override
 	public boolean canTakeStack(int slotNumber, EntityPlayer player) {
@@ -123,8 +121,8 @@ public class TileEntitySensor extends TileEntity implements IInventory, IInvento
 	}
 
 	@Override
-	public boolean isStackValidForSlot(int i, ItemStack itemstack) {
-		return inventory.isStackValidForSlot(i, itemstack);
+	public boolean isItemValidForSlot(int i, ItemStack itemstack) {
+		return inventory.isItemValidForSlot(i, itemstack);
 	}
 
 	@Override

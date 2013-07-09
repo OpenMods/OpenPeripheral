@@ -14,7 +14,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import openperipheral.core.util.MiscUtils;
-import openperipheral.core.util.ThreadLock;
 import openperipheral.glasses.block.TileEntityGlassesBridge;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
@@ -22,7 +21,6 @@ import cpw.mods.fml.common.TickType;
 public class TickHandler implements ITickHandler {
 	
 	private static Map<Integer, LinkedBlockingQueue<FutureTask>> callbacks = Collections.synchronizedMap(new HashMap<Integer, LinkedBlockingQueue<FutureTask>>());
-	private ThreadLock lock = new ThreadLock();
 	
 	public static Future addTickCallback(World world, Callable callback) throws InterruptedException {
 		int worldId = world.provider.dimensionId;
@@ -45,14 +43,15 @@ public class TickHandler implements ITickHandler {
 		if (type.contains(TickType.WORLD)) {
 
 			World world = (World) tickObjects[0];
-
-			int worldId = world.provider.dimensionId;
-			if (callbacks.containsKey(worldId)) {
-				LinkedBlockingQueue<FutureTask> callbackList = callbacks.get(worldId);
-				FutureTask callback = callbackList.poll();
-				while (callback != null) {
-					callback.run();
-					callback = callbackList.poll();
+			if (!world.isRemote) {
+				int worldId = world.provider.dimensionId;
+				if (callbacks.containsKey(worldId)) {
+					LinkedBlockingQueue<FutureTask> callbackList = callbacks.get(worldId);
+					FutureTask callback = callbackList.poll();
+					while (callback != null) {
+						callback.run();
+						callback = callbackList.poll();
+					}
 				}
 			}
 		}

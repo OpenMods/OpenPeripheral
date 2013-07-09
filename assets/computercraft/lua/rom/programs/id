@@ -1,0 +1,30 @@
+
+local sSide = nil
+local tArgs = { ... }
+if #tArgs > 0 then
+	sSide = tostring( tArgs[1] )
+end
+
+if sSide == nil then
+	print( "This is computer #"..os.getComputerID() )
+	
+	local label = os.getComputerLabel()
+	if label then
+		print( "This computer is labelled \""..label.."\"" )
+	end
+
+else
+	local bData = disk.hasData( sSide )
+	if not bData then
+		print( "No disk in "..sSide.." disk drive" )
+		return
+	end
+	
+	print( "The disk is #"..disk.getDiskID( sSide ) )
+
+	local label = disk.getLabel( sSide )
+	if label then
+		print( "The disk is labelled \""..label.."\"" )
+	end
+end
+

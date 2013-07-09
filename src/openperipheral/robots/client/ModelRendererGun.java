@@ -55,7 +55,7 @@ public class ModelRendererGun extends ModelRenderer {
                     this.compileDisplayList(par1);
                 }
 
-                GL11.glTranslatef(this.field_82906_o, this.field_82908_p, this.field_82907_q);
+                GL11.glTranslatef(this.offsetX, this.offsetY, this.offsetZ);
                 int i;
 
                 if (this.rotateAngleX == 0.0F && this.rotateAngleY == 0.0F && this.rotateAngleZ == 0.0F)
@@ -122,7 +122,7 @@ public class ModelRendererGun extends ModelRenderer {
                     GL11.glPopMatrix();
                 }
 
-                GL11.glTranslatef(-this.field_82906_o, -this.field_82908_p, -this.field_82907_q);
+                GL11.glTranslatef(-this.offsetX, -this.offsetY, -this.offsetZ);
             }
         }
     }

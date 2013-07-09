@@ -24,7 +24,6 @@ import openperipheral.robots.ContainerRobot;
 import openperipheral.robots.block.BlockRobot;
 import openperipheral.robots.block.TileEntityRobot;
 import openperipheral.robots.entity.EntityLazer;
-import openperipheral.robots.entity.EntityRobot;
 import openperipheral.robots.entity.EntityRobotWarrior;
 import openperipheral.sensor.block.BlockSensor;
 import cpw.mods.fml.common.Loader;
