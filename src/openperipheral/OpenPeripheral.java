@@ -5,6 +5,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import openperipheral.api.IRestriction;
 import openperipheral.api.RobotUpgradeManager;
+import openperipheral.core.AdapterManager;
 import openperipheral.core.CommonProxy;
 import openperipheral.core.ConfigSettings;
 import openperipheral.core.Mods;
@@ -20,16 +21,14 @@ import openperipheral.core.converter.ConverterForgeDirection;
 import openperipheral.core.converter.ConverterILiquidTank;
 import openperipheral.core.converter.ConverterItemStack;
 import openperipheral.core.converter.TypeConversionRegistry;
-import openperipheral.core.definition.DefinitionManager;
 import openperipheral.core.integration.appliedenergistics.AEModule;
 import openperipheral.core.integration.buildcraft.BCModule;
 import openperipheral.core.integration.forestry.ForestryModule;
-import openperipheral.core.integration.gregtech.GregTechModule;
 import openperipheral.core.integration.mps.MPSModule;
 import openperipheral.core.integration.sgcraft.SGCraftModule;
 import openperipheral.core.integration.thaumcraft.ThaumcraftModule;
 import openperipheral.core.integration.thermalexpansion.TEModule;
-import openperipheral.core.integration.vanilla.InventoryClassDefinition;
+import openperipheral.core.integration.vanilla.InventoryAdapter;
 import openperipheral.core.interfaces.IRestrictionHandler;
 import openperipheral.core.item.ItemGeneric;
 import openperipheral.core.item.ItemGlasses;
@@ -71,7 +70,7 @@ public class OpenPeripheral {
 	@Instance(value = "OpenPeripheral")
 	public static OpenPeripheral instance;
 
-	@SidedProxy(clientSide = "openperipheral.core.client.ClientProxy", serverSide = "openperipheral.core.common.CommonProxy")
+	@SidedProxy(clientSide = "openperipheral.core.client.ClientProxy", serverSide = "openperipheral.core.CommonProxy")
 	public static CommonProxy proxy;
 
 	public static CreativeTabs tabOpenPeripheral = new CreativeTabs("tabOpenPeripheral") {
@@ -165,10 +164,6 @@ public class OpenPeripheral {
 		if (Loader.isModLoaded(Mods.THAUMCRAFT)) {
 			ThaumcraftModule.init();
 		}
-		
-		if (Loader.isModLoaded(Mods.GREGTECH)) {
-			GregTechModule.init();
-		}
 
 		if (Loader.isModLoaded(Mods.MPS)) {
 			MPSModule.init();
@@ -182,9 +177,7 @@ public class OpenPeripheral {
 			TEModule.init();
 		}
 		
-		DefinitionManager.addClassDefinition(new InventoryClassDefinition());
-
-		DefinitionManager.load();
+		AdapterManager.addPeripheralAdapter(new InventoryAdapter());
 		
 		if (ConfigSettings.robotsEnabled) {
 			RobotUpgradeManager.registerUpgradeProvider(new ProviderMovementUpgrade());

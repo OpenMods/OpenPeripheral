@@ -1,11 +1,11 @@
 package openperipheral.core.integration.sgcraft;
 
-import openperipheral.core.definition.DefinitionManager;
+import openperipheral.core.AdapterManager;
 
 public class SGCraftModule {
 
 	public static void init() {
-		DefinitionManager.addClassDefinition(new DefinitionBaseSGTileClass());
+		AdapterManager.addPeripheralAdapter(new SGTileAdapter());
 	}
 	
 }

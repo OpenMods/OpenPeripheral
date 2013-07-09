@@ -1,21 +1,21 @@
-/**
- * This file is part of the public ComputerCraft API - http://www.computercraft.info
- * Copyright Daniel Ratcliffe, 2011-2013. This API may be redistributed unmodified and in full only.
- * For help using the API, and posting your mods, visit the forums at computercraft.info.
- */
-
 package dan200.computer.api;
 
-/**
- * TODO: Document me
- */
-public interface IMedia
+import net.minecraft.item.ItemStack;
+
+public abstract interface IMedia
 {
-	public String getLabel( net.minecraft.item.ItemStack stack );
-	public boolean setLabel( net.minecraft.item.ItemStack stack, String label );
-	
-	public String getAudioTitle( net.minecraft.item.ItemStack stack );
-	public String getAudioRecordName( net.minecraft.item.ItemStack stack );	
-    
-    public String mountData( net.minecraft.item.ItemStack stack, IComputerAccess computer );
+  public abstract String getLabel(ItemStack paramItemStack);
+
+  public abstract boolean setLabel(ItemStack paramItemStack, String paramString);
+
+  public abstract String getAudioTitle(ItemStack paramItemStack);
+
+  public abstract String getAudioRecordName(ItemStack paramItemStack);
+
+  public abstract String mountData(ItemStack paramItemStack, IComputerAccess paramIComputerAccess);
 }
+
+/* Location:           C:\Users\mikeef\Documents\OpenPeripheral_161\forge\mcp\jars\mods\ComputerCraft\
+ * Qualified Name:     dan200.computer.api.IMedia
+ * JD-Core Version:    0.6.2
+ */

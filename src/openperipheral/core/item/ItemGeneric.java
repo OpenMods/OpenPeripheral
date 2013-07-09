@@ -8,6 +8,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -202,7 +203,7 @@ public class ItemGeneric extends Item {
 	}
 
 	@Override
-	public boolean hitEntity(ItemStack itemStack, EntityLiving target, EntityLiving player) {
+	public boolean hitEntity(ItemStack itemStack, EntityLivingBase target, EntityLivingBase player) {
 		IMetaItem meta = getMeta(itemStack.getItemDamage());
 		if (meta != null) {
 			return meta.hitEntity(itemStack, target, player);

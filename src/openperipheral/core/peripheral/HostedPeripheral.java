@@ -8,7 +8,8 @@ import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import openperipheral.core.definition.DefinitionManager;
+import openperipheral.core.AdapterManager;
+import openperipheral.core.MethodDeclaration;
 import openperipheral.core.interfaces.IAttachable;
 import openperipheral.core.interfaces.IPeripheralMethodDefinition;
 
@@ -86,8 +87,8 @@ public class HostedPeripheral extends AbstractPeripheral {
 	}
 
 	@Override
-	public ArrayList<IPeripheralMethodDefinition> getMethods() {
-		return DefinitionManager.getMethodsForTile((TileEntity)getTarget());
+	public ArrayList<MethodDeclaration> getMethods() {
+		return AdapterManager.getMethodsForTarget(getTarget());
 	}
 
 	public Object getTarget() {

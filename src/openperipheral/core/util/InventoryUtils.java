@@ -142,4 +142,34 @@ public class InventoryUtils {
 		}
 		return response;
 	}
+	
+	public static int moveItemInto(IInventory fromInventory, int slot, IInventory targetInventory, int intoSlot, int maxAmount) {
+		int merged = 0;
+		ItemStack stack = fromInventory.getStackInSlot(slot);
+		if (stack == null) {
+			return merged;
+		}
+		ItemStack clonedStack = stack.copy();
+		clonedStack.stackSize = Math.min(clonedStack.stackSize, maxAmount);
+		int amountToMerge = clonedStack.stackSize;
+		InventoryUtils.tryMergeStacks(targetInventory, intoSlot, clonedStack);
+		merged = (amountToMerge - clonedStack.stackSize);
+		fromInventory.decrStackSize(slot, merged);
+		return merged;
+	}
+	
+	public static int moveItem(IInventory fromInventory, int slot, IInventory targetInventory, int maxAmount) {
+		int merged = 0;
+		ItemStack stack = fromInventory.getStackInSlot(slot);
+		if (stack == null) {
+			return 0;
+		}
+		ItemStack clonedStack = stack.copy();
+		clonedStack.stackSize = Math.min(clonedStack.stackSize, maxAmount);
+		int amountToMerge = clonedStack.stackSize;
+		InventoryUtils.insertItemIntoInventory(targetInventory, clonedStack);
+		merged = (amountToMerge - clonedStack.stackSize);
+		fromInventory.decrStackSize(slot, merged);
+		return merged;
+	}
 }

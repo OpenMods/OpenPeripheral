@@ -1,6 +1,6 @@
 package openperipheral.core.integration.thermalexpansion;
 
-import openperipheral.core.definition.DefinitionManager;
+import openperipheral.core.AdapterManager;
 
 public class TEModule {
 	
@@ -11,6 +11,6 @@ public class TEModule {
 	};
 	
 	public static void init() {
-		DefinitionManager.addClassDefinition(new TesseractClassDefinition());
+		AdapterManager.addPeripheralAdapter(new TesseractAdapter());
 	}
 }

@@ -12,6 +12,7 @@ import net.minecraft.world.World;
 import openperipheral.OpenPeripheral;
 import openperipheral.api.IMultiReturn;
 import openperipheral.api.IRestriction;
+import openperipheral.core.MethodDeclaration;
 import openperipheral.core.TickHandler;
 import openperipheral.core.converter.TypeConversionRegistry;
 import openperipheral.core.interfaces.IAttachable;
@@ -25,25 +26,15 @@ import dan200.computer.api.IHostedPeripheral;
 
 public abstract class AbstractPeripheral implements IHostedPeripheral {
 
-	public static class MySecurityManager extends SecurityManager {
-		public String getCallerClassName(int callStackDepth) {
-			return getClassContext()[callStackDepth].getName();
-		}
-	}
-
-	public final static MySecurityManager mySecurityManager = new MySecurityManager();
-
 	protected String name = "peripheral";
-	protected ArrayList<IPeripheralMethodDefinition> methods;
+	protected ArrayList<MethodDeclaration> methods;
 	protected String[] methodNames;
 
 	public AbstractPeripheral() {
 		
 	}
 	
-	public abstract ArrayList<IPeripheralMethodDefinition> getMethods();
-	
-	private ArrayList<IPeripheralMethodDefinition> getMethodsCached() {
+	private ArrayList<MethodDeclaration> getMethodsCached() {
 		if (methods == null) {
 			methods = getMethods();
 		}
@@ -60,7 +51,7 @@ public abstract class AbstractPeripheral implements IHostedPeripheral {
 		if (methodNames == null) {
 			ArrayList<String> mNames = new ArrayList<String>();
 			mNames.add("listMethods");
-			for (IPeripheralMethodDefinition method : getMethodsCached()) {
+			for (MethodDeclaration method : getMethodsCached()) {
 				mNames.add(method.getLuaName());
 			}
 			methodNames = mNames.toArray(new String[mNames.size()]);
@@ -83,23 +74,17 @@ public abstract class AbstractPeripheral implements IHostedPeripheral {
 				|| callerClass.equals("openperipheral.common.tileentity.TileEntityProxy");
 
 		
-		final IPeripheralMethodDefinition methodDefinition = getMethodsCached().get(methodId);
+		final MethodDeclaration methodDefinition = getMethodsCached().get(methodId);
 		
 		if (methodDefinition != null) {
 
 			ArrayList<Object> args = new ArrayList(Arrays.asList(arguments));
-			
-			if (!methodDefinition.needsSanitize()) {
-				return executeMethod(isCableCall || methodDefinition.isInstant(), methodDefinition, args);
-			}
 
-			Class[] requiredParameters = getRequiredParameters(methodDefinition);
+			Class[] requiredParameters = methodDefinition.getRequiredParameters();
 			
 			if (requiredParameters != null) {
 
 				checkParameterCount(args, methodDefinition.getRequiredParameters());
-				
-				replaceArguments(args, methodDefinition.getReplacements());
 				
 				for (int i = 0; i < requiredParameters.length; i++) {
 					Object converted = TypeConversionRegistry.fromLua(args.get(i), requiredParameters[i]);
@@ -113,18 +98,7 @@ public abstract class AbstractPeripheral implements IHostedPeripheral {
 				
 			}
 
-			for (int i = 0; i < args.size(); i++) {
-				ArrayList<IRestriction> restrictions = methodDefinition.getRestrictions(i);
-				if (restrictions != null) {
-					for (IRestriction restriction : restrictions) {
-						if (!restriction.isValid(args.get(i))) {
-							throw new Exception(restriction.getErrorMessage(i + 1));
-						}
-					}
-				}
-			}
-
-			return executeMethod(isCableCall || methodDefinition.isInstant(), methodDefinition, args);
+			return executeMethod(isCableCall || !methodDefinition.onTick(), methodDefinition, args);
 		}
 
 		return null;
@@ -137,62 +111,10 @@ public abstract class AbstractPeripheral implements IHostedPeripheral {
 		}
 	}
 
-	private Object[] executeMethod(boolean isInstant, final IPeripheralMethodDefinition methodDefinition, ArrayList args) throws Exception {
-		final Object target = getTargetObject(args, methodDefinition);
-		preExecute(methodDefinition, args);
-		final Object[] argsToUse = args.toArray(new Object[args.size()]);
-		if (isInstant) {
-			Object[] returnValues = null;
-			Object response = null;
-			try {
-				response = methodDefinition.execute(target, argsToUse);
-			}catch (InvocationTargetException ex) {
-				Throwable cause = ex.getCause();
-				throw new Exception(cause.getMessage());
-			}
-
-			if (response instanceof IMultiReturn) {
-				returnValues = ((IMultiReturn) response).getObjects();
-				for (int i = 0; i < returnValues.length; i++) {
-					returnValues[i] = TypeConversionRegistry.toLua(returnValues[i]);
-				}
-			}else {
-				returnValues = new Object[] { TypeConversionRegistry.toLua(response) };
-			}
-			PostChangeRegistry.onPostChange(target, methodDefinition, argsToUse);
-			return returnValues;
-		} else {
-			Future callback = TickHandler.addTickCallback(getWorldObject(), new Callable() {
-				@Override
-				public Object call() throws Exception {
-					Object[] returnValues = null;
-					Object response = null;
-					try {
-						response = methodDefinition.execute(target, argsToUse);
-					} catch(InvocationTargetException ex) {
-						Throwable cause = ex.getCause();
-						throw new Exception(cause.getMessage());
-					}
-					if (response instanceof IMultiReturn) {
-						returnValues = ((IMultiReturn) response).getObjects();
-						for (int i = 0; i < returnValues.length; i++) {
-							returnValues[i] = TypeConversionRegistry.toLua(returnValues[i]);
-						}
-					}else {
-						returnValues = new Object[] { TypeConversionRegistry.toLua(response) };
-					}
-					PostChangeRegistry.onPostChange(target, methodDefinition, argsToUse);
-					return returnValues;
-				}
-			});
-			return (Object[]) callback.get();
-		}
+	private Object[] executeMethod(boolean isInstant, final MethodDeclaration methodDefinition, ArrayList args) throws Exception {
+		
 	}
 
-	protected abstract void replaceArguments(ArrayList<Object> args, HashMap<Integer, String> replacements);
-
-	public void preExecute(IPeripheralMethodDefinition method, ArrayList args) {
-	}
 	
 	@Override
 	public boolean canAttachToSide(int side) {

@@ -38,8 +38,7 @@ import net.minecraft.src.BaseMod;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import openperipheral.OpenPeripheral;
-import openperipheral.core.definition.DefinitionJsonMethod;
-import openperipheral.core.definition.DefinitionManager;
+import openperipheral.core.AdapterManager;
 import openperipheral.core.interfaces.IPeripheralMethodDefinition;
 import openperipheral.core.util.ReflectionHelper;
 import cpw.mods.fml.common.Mod;
@@ -142,7 +141,7 @@ public class OpenPeripheralDocs implements ICommand {
 								
 							}
 							JsonArrayNodeBuilder jsonMethods = anArrayBuilder();
-							ArrayList<IPeripheralMethodDefinition> methods = DefinitionManager.getMethodsForTile(te);
+							ArrayList<IPeripheralMethodDefinition> methods = AdapterManager.getMethodsForTile(te);
 							for (IPeripheralMethodDefinition method : methods) {
 								JsonObjectNodeBuilder jsonMethod = anObjectBuilder();
 								jsonMethod.withField("name", aStringBuilder(method.getLuaName()));
@@ -193,7 +192,7 @@ public class OpenPeripheralDocs implements ICommand {
 												object.withField("mod", aStringBuilder("Vanilla"));
 											}
 											JsonArrayNodeBuilder jsonMethods = anArrayBuilder();
-											ArrayList<IPeripheralMethodDefinition> methods = DefinitionManager.getMethodsForTile(te);
+											ArrayList<IPeripheralMethodDefinition> methods = AdapterManager.getMethodsForTile(te);
 											for (IPeripheralMethodDefinition method : methods) {
 												JsonObjectNodeBuilder jsonMethod = anObjectBuilder();
 												jsonMethod.withField("name", aStringBuilder(method.getLuaName()));

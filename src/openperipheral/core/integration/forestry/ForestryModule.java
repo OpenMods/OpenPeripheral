@@ -1,7 +1,7 @@
 package openperipheral.core.integration.forestry;
 
+import openperipheral.core.AdapterManager;
 import openperipheral.core.converter.TypeConversionRegistry;
-import openperipheral.core.definition.DefinitionManager;
 
 public class ForestryModule {
 
@@ -9,9 +9,8 @@ public class ForestryModule {
 		TypeConversionRegistry.registryTypeConverter(new ConverterEnumHumidity());
 		TypeConversionRegistry.registryTypeConverter(new ConverterEnumTemperature());
 		TypeConversionRegistry.registryTypeConverter(new ConverterFruitFamily());
-		DefinitionManager.addClassDefinition(new GenericBeeInfoClassDefinition("forestry.apiculture.gadgets.TileApiaristChest"));
-		DefinitionManager.addClassDefinition(new GenericBeeInfoClassDefinition("forestry.apiculture.gadgets.TileAlvearyPlain"));
-		DefinitionManager.addClassDefinition(new BeeHousingClassDefinition());
+		AdapterManager.addPeripheralAdapter(new ApiaristChestAdapter());
+		AdapterManager.addPeripheralAdapter(new BeeHousingAdapter());
 	}
 
 }
