@@ -2,7 +2,7 @@ package openperipheral.core.util;
 
 import java.util.Random;
 
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -14,7 +14,7 @@ import net.minecraftforge.common.ForgeDirection;
 
 public class BlockUtils {
 
-	public static ForgeDirection get2dOrientation(EntityLiving entity) {
+	public static ForgeDirection get2dOrientation(EntityLivingBase entity) {
 		int l = MathHelper.floor_double(entity.rotationYaw * 4.0F / 360.0F + 0.5D) & 0x3;
 		switch (l) {
 		case 0:
@@ -30,7 +30,7 @@ public class BlockUtils {
 
 	}
 
-	public static ForgeDirection get3dOrientation(EntityLiving entity) {
+	public static ForgeDirection get3dOrientation(EntityLivingBase entity) {
 		if (entity.rotationPitch > 66.5F) {
 			return ForgeDirection.DOWN;
 		} else if (entity.rotationPitch < -66.5F) {
@@ -67,5 +67,12 @@ public class BlockUtils {
 				}
 			}
 		}
+	}
+
+	public static TileEntity getTileInDirection(TileEntity tile, ForgeDirection direction) {
+		int targetX = tile.xCoord + direction.offsetX;
+		int targetY = tile.yCoord + direction.offsetY;
+		int targetZ = tile.zCoord + direction.offsetZ;
+		return tile.worldObj.getBlockTileEntity(targetX, targetY, targetZ);
 	}
 }

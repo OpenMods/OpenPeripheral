@@ -5,12 +5,11 @@ import java.util.Calendar;
 
 import net.minecraft.item.ItemStack;
 import openperipheral.OpenPeripheral;
-import openperipheral.core.Mods;
-import cpw.mods.fml.common.Loader;
 
 public class MiscUtils {
 	public static boolean canBeGlasses(ItemStack stack) {
-		return stack != null && (stack.getItem() == OpenPeripheral.Items.glasses || (Loader.isModLoaded(Mods.MPS) && MPSUtils.isValidHelmet(stack)));
+		// || (Loader.isModLoaded(Mods.MPS) && MPSUtils.isValidHelmet(stack)))
+		return stack != null && (stack.getItem() == OpenPeripheral.Items.glasses);
 	}
 
 	public static int getHoliday() {
@@ -34,5 +33,9 @@ public class MiscUtils {
 	    arr = Arrays.copyOf(arr, N + 1);
 	    arr[N] = element;
 	    return arr;
+	}
+	
+	public static String getNameForTarget(Object target) {
+		return "test";
 	}
 }

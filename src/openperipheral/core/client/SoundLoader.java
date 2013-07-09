@@ -51,7 +51,7 @@ public class SoundLoader {
 					streamOut.close();
 				}
 
-				event.manager.soundPoolSounds.addSound("openperipheral/" + fileName, soundFile);
+				//event.manager.soundPoolSounds.addSound("openperipheral/" + fileName, soundFile);
 			} catch (Exception e) {
 				System.out.println("Couldnt load "+ fileName);
 			}

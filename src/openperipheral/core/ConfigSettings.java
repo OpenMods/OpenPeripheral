@@ -13,7 +13,7 @@ import net.minecraftforge.common.Property;
 import openperipheral.OpenPeripheral;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.ModContainer;
-import cpw.mods.fml.relauncher.FMLRelauncher;
+import cpw.mods.fml.relauncher.FMLLaunchHandler;
 
 public class ConfigSettings {
 
@@ -129,8 +129,8 @@ public class ConfigSettings {
 
 		File baseDirectory = null;
 
-		if (FMLRelauncher.side() == "CLIENT") {
-			baseDirectory = Minecraft.getMinecraftDir();
+		if (FMLLaunchHandler.side().isClient()) {
+			baseDirectory = Minecraft.getMinecraft().mcDataDir;
 		} else {
 			baseDirectory = new File(".");
 		}
@@ -152,7 +152,7 @@ public class ConfigSettings {
 		String url;
 		try {
 			url = String.format("http://www.openccsensors.info/op_analytics?version=%s&side=%s&forge=%s", URLEncoder.encode(container.getVersion(), charset),
-					URLEncoder.encode(FMLRelauncher.side(), charset), URLEncoder.encode(ForgeVersion.getVersion(), charset));
+					URLEncoder.encode(FMLLaunchHandler.side().name(), charset), URLEncoder.encode(ForgeVersion.getVersion(), charset));
 			URLConnection connection = new URL(url).openConnection();
 			connection.setConnectTimeout(4000);
 			connection.setRequestProperty("Accept-Charset", charset);

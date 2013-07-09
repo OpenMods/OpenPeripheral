@@ -1,0 +1,5 @@
+Functions in the Paint Utilities API:
+paintutils.drawPixel( x, y, [color] )
+paintutils.drawLine( startX, startY, [color] )
+paintutils.loadImage( path )
+paintutils.drawImage( image, x, y )

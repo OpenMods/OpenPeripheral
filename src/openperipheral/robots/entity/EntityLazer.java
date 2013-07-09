@@ -108,7 +108,7 @@ public class EntityLazer extends Entity implements IThrowableEntity, IEntityAddi
 
 		Vec3 vec3 = this.worldObj.getWorldVec3Pool().getVecFromPool(this.posX, this.posY, this.posZ);
 		Vec3 vec31 = this.worldObj.getWorldVec3Pool().getVecFromPool(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
-		MovingObjectPosition movingobjectposition = this.worldObj.rayTraceBlocks(vec3, vec31);
+		MovingObjectPosition movingobjectposition = this.worldObj.clip(vec3, vec31);
 		vec3 = this.worldObj.getWorldVec3Pool().getVecFromPool(this.posX, this.posY, this.posZ);
 		vec31 = this.worldObj.getWorldVec3Pool().getVecFromPool(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
 

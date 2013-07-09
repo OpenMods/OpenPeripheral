@@ -2,10 +2,11 @@ package openperipheral.core.block;
 
 import java.util.HashMap;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
@@ -15,9 +16,8 @@ import net.minecraftforge.common.ForgeDirection;
 import openperipheral.OpenPeripheral;
 import openperipheral.core.ConfigSettings;
 import openperipheral.core.util.BlockUtils;
+import openperipheral.core.util.ReflectionHelper;
 import cpw.mods.fml.common.registry.GameRegistry;
-import dan200.computer.api.IHostedPeripheral;
-import dan200.computer.api.IPeripheral;
 
 public class BlockProxy extends BlockContainer {
 
@@ -42,7 +42,7 @@ public class BlockProxy extends BlockContainer {
 	}
 
 	@Override
-	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving entityliving, ItemStack itemStack) {
+	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityliving, ItemStack itemStack) {
 		super.onBlockPlacedBy(world, z, y, z, entityliving, itemStack);
 		ForgeDirection orientation = BlockUtils.get3dOrientation(entityliving);
 		world.setBlockMetadataWithNotify(x, y, z, orientation.getOpposite().ordinal(), 3);
@@ -53,22 +53,31 @@ public class BlockProxy extends BlockContainer {
 		refreshProxiedPeripheral(world, x, y, z);
 	}
 
-	public static void refreshProxiedPeripheral(World world, int x, int y, int z) {
-		TileEntity te = world.getBlockTileEntity(x, y, z);
+	public void refreshProxiedPeripheral(World world, int x, int y, int z) {
+
+		TileEntity selfTe = world.getBlockTileEntity(x, y, z);
 		int metaData = world.getBlockMetadata(x, y, z);
 		ForgeDirection orientation = ForgeDirection.getOrientation(metaData);
 		ForgeDirection behind = orientation.getOpposite();
-		if (te != null && te instanceof TileEntityProxy) {
+		
+		if (selfTe != null && selfTe instanceof TileEntityProxy) {
 			TileEntity targetTe = world.getBlockTileEntity(x + behind.offsetX, y + behind.offsetY, z + behind.offsetZ);
-			if (targetTe != null) {
-				if (targetTe instanceof IPeripheral) {
-					((TileEntityProxy) te).setPeripheral((IPeripheral) targetTe);
-				} else {
-					IHostedPeripheral peripheral = OpenPeripheral.peripheralHandler.getPeripheral(targetTe);
-					((TileEntityProxy) te).setPeripheral(peripheral);
-				}
-			} else {
-				((TileEntityProxy) te).setPeripheral(null);
+			OpenPeripheral.peripheralHandler.invalidate(targetTe);
+			OpenPeripheral.peripheralHandler.invalidate(selfTe);
+			((TileEntityProxy) selfTe).setTarget(targetTe, orientation.ordinal());
+			int cableX = x + orientation.offsetX;
+			int cableY = y + orientation.offsetY;
+			int cableZ = z + orientation.offsetZ;
+			world.notifyBlockOfNeighborChange(cableX, cableY, cableZ, blockID);
+			int cableBlockId = world.getBlockId(cableX, cableY, cableZ);
+			Block cableBlock = Block.blocksList[cableBlockId];
+			TileEntity cableTe = world.getBlockTileEntity(cableX, cableY, cableZ);
+			try {
+				// if you see this dan200, please be aware that it wasn't me that added this line
+				// it may look like me, and I'm sure the git blame list says it was me
+				// but... it's wrong. Wasn't me. Hey, look over there! Something shiny!
+				ReflectionHelper.callMethod("", cableTe, new String[] { "networkChanged"});
+			} catch (Exception e) {
 			}
 		}
 	}

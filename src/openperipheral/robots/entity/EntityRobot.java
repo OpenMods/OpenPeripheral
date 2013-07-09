@@ -20,13 +20,11 @@ import openperipheral.api.IRobot;
 import openperipheral.api.IRobotUpgradeInstance;
 import openperipheral.api.IRobotUpgradeProvider;
 import openperipheral.api.RobotUpgradeManager;
-import openperipheral.core.ConfigSettings;
 import openperipheral.core.OPInventory;
 import openperipheral.core.interfaces.IInventoryCallback;
-import openperipheral.core.interfaces.IPeripheralMethodDefinition;
-import openperipheral.core.peripheral.AbstractPeripheral;
 import openperipheral.core.util.BlockUtils;
-import openperipheral.robots.RobotPeripheralMethod;
+import openperipheral.robots.RobotMethodDeclaration;
+import openperipheral.robots.RobotPeripheral;
 import openperipheral.robots.block.TileEntityRobot;
 
 public abstract class EntityRobot extends EntityCreature implements IRobot, IInventoryCallback {
@@ -43,7 +41,6 @@ public abstract class EntityRobot extends EntityCreature implements IRobot, IInv
 
 	private float fuelLevel = 0;
 
-	private int maxHealth = 50;
 
 	/**
 	 * The main inventory
@@ -80,12 +77,9 @@ public abstract class EntityRobot extends EntityCreature implements IRobot, IInv
 		upgradeInstances = new HashMap<String, IRobotUpgradeInstance>();
 		upgradeAIMap = new HashMap<EntityAIBase, IRobotUpgradeInstance>();
 		upgradeTiers = new HashMap<String, Integer>();
-		this.health = this.getMaxHealth();
 		this.setSize(1F, 3F);
-		this.moveSpeed = 0.22F;
 		this.getNavigator().setAvoidsWater(true);
 		inventory.addCallback(this);
-		this.texture = String.format("%s/models/robot.png", ConfigSettings.TEXTURES_PATH);
 	}
 
 	/**
@@ -93,7 +87,7 @@ public abstract class EntityRobot extends EntityCreature implements IRobot, IInv
 	 */
 	@Override
 	public float getMoveSpeed() {
-		return moveSpeed;
+		return 0;
 	}
 
 	/**
@@ -101,7 +95,7 @@ public abstract class EntityRobot extends EntityCreature implements IRobot, IInv
 	 */
 	@Override
 	public void setMoveSpeed(float speed) {
-		moveSpeed = speed;
+		//moveSpeed = speed;
 	}
 
 	/**
@@ -233,9 +227,6 @@ public abstract class EntityRobot extends EntityCreature implements IRobot, IInv
 			String providerId = tierEntry.getKey();
 			int tier = tierEntry.getValue();
 			
-			System.out.println(providerId);
-			System.out.println(tier);
-
 			IRobotUpgradeProvider provider = RobotUpgradeManager.getProviderById(providerId);
 
 			if (!upgradeInstances.containsKey(providerId)) {
@@ -251,7 +242,7 @@ public abstract class EntityRobot extends EntityCreature implements IRobot, IInv
 				}
 
 				// add all the methods to our method map
-				for (IPeripheralMethodDefinition method : RobotPeripheralMethod.getMethodsForProvider(provider)) {
+				for (RobotMethodDeclaration method : RobotPeripheral.getMethodsForProvider(provider)) {
 					upgradeMethodMap.put(method.getLuaName(), instance);
 				}
 
@@ -330,16 +321,16 @@ public abstract class EntityRobot extends EntityCreature implements IRobot, IInv
 		// TODO: robots should be able to drop into other robots, so we need to
 		// add logic for checking entities too
 		Vec3 targetVec = posVec.addVector(lookVec.xCoord * 10f, lookVec.yCoord * 10f, lookVec.zCoord * 10f);
-		return worldObj.rayTraceBlocks(posVec, targetVec);
+		return worldObj.clip(posVec, targetVec);
 	}
 
 	/**
 	 * Path finding range
 	 */
-	@Override
+	/*@Override
 	protected int func_96121_ay() {
 		return 32;
-	}
+	}*/
 
 	/**
 	 * doesn't appear to work
@@ -407,7 +398,8 @@ public abstract class EntityRobot extends EntityCreature implements IRobot, IInv
 	 */
 	@Override
 	public int getMaxHealth() {
-		return maxHealth;
+		return 20;
+		//return maxHealth;
 	}
 
 	/**
@@ -415,7 +407,7 @@ public abstract class EntityRobot extends EntityCreature implements IRobot, IInv
 	 */
 	@Override
 	public void setMaxHealth(int health) {
-		maxHealth = health;
+		//maxHealth = health;
 	}
 
 	@Override
@@ -511,7 +503,6 @@ public abstract class EntityRobot extends EntityCreature implements IRobot, IInv
 	}
 
 	public void setDead() {
-		System.out.println(AbstractPeripheral.mySecurityManager.getCallerClassName(2));
 		if (!worldObj.isRemote) { 
 			TileEntityRobot controller = (TileEntityRobot) getController();
 			if (controller != null) {

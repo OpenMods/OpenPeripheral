@@ -3,7 +3,6 @@ package openperipheral.robots.upgrade.inventory;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import openperipheral.api.IRobot;
 import openperipheral.api.IRobotUpgradeInstance;

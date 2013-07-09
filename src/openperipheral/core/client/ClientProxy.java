@@ -28,7 +28,6 @@ import openperipheral.robots.client.RenderLazer;
 import openperipheral.robots.client.RenderRobotWarrior;
 import openperipheral.robots.client.TileEntityRobotRenderer;
 import openperipheral.robots.entity.EntityLazer;
-import openperipheral.robots.entity.EntityRobot;
 import openperipheral.robots.entity.EntityRobotWarrior;
 import openperipheral.sensor.client.TileEntitySensorRenderer;
 import cpw.mods.fml.client.registry.ClientRegistry;
@@ -73,11 +72,13 @@ public class ClientProxy extends CommonProxy {
 		NetworkRegistry.instance().registerConnectionHandler(terminalManager);
 
 		RenderingRegistry.registerBlockHandler(new BlockRenderingHandler());
+		
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityPlayerInventory.class, new TileEntityPlayerInventoryRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySensor.class, new TileEntitySensorRenderer());
 		
 
 		if (ConfigSettings.robotsEnabled) {
+			
 			ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRobot.class, new TileEntityRobotRenderer());
 	
 			RenderingRegistry.registerEntityRenderingHandler(EntityRobotWarrior.class, new RenderRobotWarrior(new ModelRobotWarrior(), 0.7F));

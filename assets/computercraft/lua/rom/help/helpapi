@@ -1,0 +1,4 @@
+Functions in the help API:
+help.setPath( path )
+help.lookup( topic )
+help.topics()

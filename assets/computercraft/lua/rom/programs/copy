@@ -1,0 +1,13 @@
+
+local tArgs = { ... }
+if #tArgs < 2 then
+	print( "Usage: cp <source> <destination>" )
+	return
+end
+
+local sSource = shell.resolve( tArgs[1] )
+local sDest = shell.resolve( tArgs[2] )
+if fs.exists( sDest ) and fs.isDir( sDest ) then
+	sDest = fs.combine( sDest, fs.getName(sSource) )
+end
+fs.copy( sSource, sDest )

@@ -30,7 +30,7 @@ import openperipheral.glasses.client.TerminalManager;
 import openperipheral.glasses.drawable.DrawableBox;
 import openperipheral.glasses.drawable.DrawableText;
 import dan200.computer.api.IComputerAccess;
-import dan200.computer.core.ILuaObject;
+import dan200.computer.api.ILuaObject;
 
 public class TileEntityGlassesBridge extends TileEntity implements IAttachable {
 

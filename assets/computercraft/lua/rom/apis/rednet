@@ -1,0 +1,97 @@
+
+CHANNEL_BROADCAST = 65535
+
+local tValidSides = {}
+for n,sSide in ipairs( rs.getSides() ) do
+	tValidSides[ sSide ] = true
+end
+
+function open( sSide )
+	if type( sSide ) ~= "string" then
+		error( "string expected" )
+	end
+	if not tValidSides[sSide] then
+		error( "Invalid side" )
+	end
+	if peripheral.getType( sSide ) ~= "modem" then	
+		error( "No modem on "..sSide.." side" )
+	end
+	peripheral.call( sSide, "open", os.getComputerID() )
+	peripheral.call( sSide, "open", CHANNEL_BROADCAST )
+end
+
+function close( sSide )
+	if type( sSide ) ~= "string" then
+		error( "string expected" )
+	end
+	if not tValidSides[sSide] then
+		error( "Invalid side" )
+	end
+	if peripheral.getType( sSide ) ~= "modem" then	
+		error( "No modem on "..sSide.." side" )
+	end
+	peripheral.call( sSide, "close", os.getComputerID() )
+	peripheral.call( sSide, "close", CHANNEL_BROADCAST )
+end
+
+function isOpen( sSide )
+	if type( sSide ) ~= "string" then
+		error( "string expected" )
+	end
+	if not tValidSides[sSide] then
+		error( "Invalid side" )
+	end
+	if peripheral.getType( sSide ) == "modem" then	
+		return peripheral.call( sSide, "isOpen", os.getComputerID() ) and peripheral.call( sSide, "isOpen", CHANNEL_BROADCAST )
+	end
+	return false
+end
+
+function send( nRecipient, sMessage )
+	for n,sSide in ipairs( rs.getSides() ) do
+		if isOpen( sSide ) then
+			peripheral.call( sSide, "transmit", nRecipient, os.getComputerID(), sMessage )
+			return true
+		end
+	end
+	error( "No open sides" )
+end
+
+function broadcast( sMessage )
+	send( CHANNEL_BROADCAST, sMessage )
+end
+
+function receive( nTimeout )
+	local timer = nil
+	local sFilter = nil
+	if nTimeout then
+		timer = os.startTimer( nTimeout )
+		sFilter = nil
+	else
+		sFilter = "rednet_message"
+	end
+	while true do
+		local e, p1, p2, p3, p4, p5 = os.pullEvent( sFilter )
+		if e == "rednet_message" then
+			local nSenderID, sMessage, nDistance = p1, p2, p3
+			return nSenderID, sMessage, nDistance
+		elseif e == "timer" and p1 == timer then
+			return nil
+		end
+	end
+end
+
+local bRunning = false
+function run()
+	if bRunning then
+		error( "rednet is already running" )
+	end
+	bRunning = true
+	
+	while bRunning do
+		local sEvent, sSide, sChannel, sReplyChannel, sMessage, nDistance = os.pullEventRaw( "modem_message" )
+		if sEvent == "modem_message" and isOpen( sSide ) and (sChannel == os.getComputerID() or sChannel == CHANNEL_BROADCAST) then
+			os.queueEvent( "rednet_message", sReplyChannel, sMessage, nDistance )
+		end
+	end
+end

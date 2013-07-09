@@ -1,14 +1,11 @@
 package openperipheral.core.item;
 
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import openperipheral.OpenPeripheral;
@@ -66,7 +63,8 @@ public class ItemRobot extends Item {
 		    		// make sure he's gone
 		    		robot.setDead();
 		    		// tell the player
-		    		player.sendChatToPlayer("Unable to spawn robot. Are you sure he's linked up to an active controller?");
+		    		//TODO: fix
+		    		//player.sendChatToPlayer("Unable to spawn robot. Are you sure he's linked up to an active controller?");
 		    	}
 			}
 			

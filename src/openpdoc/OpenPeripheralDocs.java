@@ -1,54 +1,18 @@
 package openpdoc;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
-import com.google.common.collect.ImmutableTable;
-import com.google.common.collect.ImmutableTable.Builder;
-import com.google.common.collect.Table.Cell;
-
-import static argo.jdom.JsonNodeBuilders.*;
-import argo.format.JsonFormatter;
-import argo.format.PrettyJsonFormatter;
-import argo.jdom.JsonArrayNodeBuilder;
-import argo.jdom.JsonObjectNodeBuilder;
-import argo.jdom.JsonRootNode;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.ServerCommandManager;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
-import net.minecraft.src.BaseMod;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
-import openperipheral.OpenPeripheral;
-import openperipheral.core.definition.DefinitionJsonMethod;
-import openperipheral.core.definition.DefinitionManager;
-import openperipheral.core.interfaces.IPeripheralMethodDefinition;
-import openperipheral.core.util.ReflectionHelper;
+import argo.format.JsonFormatter;
+import argo.format.PrettyJsonFormatter;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.registry.GameData;
-import dan200.computer.api.IPeripheral;
 
 @Mod(modid = "OpenPeripheralDocs", name = "OpenPeripheralDocs", version = "0.1.0")
 public class OpenPeripheralDocs implements ICommand {
@@ -98,7 +62,7 @@ public class OpenPeripheralDocs implements ICommand {
 	public void processCommand(ICommandSender icommandsender, String[] astring) {
 		HashMap<Integer, String> blockModMap = new HashMap<Integer,String>();
 		
-		
+		/*
 		ImmutableTable<String, String, Integer> modObjectTable = (ImmutableTable<String, String, Integer>)ReflectionHelper.getProperty(GameData.class, "", "modObjectTable");
 		
 		for (Cell<String, String, Integer> c : modObjectTable.cellSet())
@@ -142,7 +106,7 @@ public class OpenPeripheralDocs implements ICommand {
 								
 							}
 							JsonArrayNodeBuilder jsonMethods = anArrayBuilder();
-							ArrayList<IPeripheralMethodDefinition> methods = DefinitionManager.getMethodsForTile(te);
+							ArrayList<IPeripheralMethodDefinition> methods = AdapterManager.getMethodsForTile(te);
 							for (IPeripheralMethodDefinition method : methods) {
 								JsonObjectNodeBuilder jsonMethod = anObjectBuilder();
 								jsonMethod.withField("name", aStringBuilder(method.getLuaName()));
@@ -193,7 +157,7 @@ public class OpenPeripheralDocs implements ICommand {
 												object.withField("mod", aStringBuilder("Vanilla"));
 											}
 											JsonArrayNodeBuilder jsonMethods = anArrayBuilder();
-											ArrayList<IPeripheralMethodDefinition> methods = DefinitionManager.getMethodsForTile(te);
+											ArrayList<IPeripheralMethodDefinition> methods = AdapterManager.getMethodsForTile(te);
 											for (IPeripheralMethodDefinition method : methods) {
 												JsonObjectNodeBuilder jsonMethod = anObjectBuilder();
 												jsonMethod.withField("name", aStringBuilder(method.getLuaName()));
@@ -237,6 +201,7 @@ public class OpenPeripheralDocs implements ICommand {
 			bw.write(jsonText);
 			bw.close();
 		}catch (Exception f2) { }
+		*/
 
 	}
 
