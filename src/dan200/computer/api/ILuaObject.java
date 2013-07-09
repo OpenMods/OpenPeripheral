@@ -6,10 +6,8 @@
 
 package dan200.computer.api;
 
-/**
- * TODO: Document me
- */
-public interface IPeripheralHandler 
+public interface ILuaObject
 {
-	public IHostedPeripheral getPeripheral( net.minecraft.tileentity.TileEntity tile );
+    public String[] getMethodNames();
+    public Object[] callMethod( ILuaContext context, int method, Object[] arguments ) throws Exception;
 }

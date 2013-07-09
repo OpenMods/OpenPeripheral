@@ -9,7 +9,9 @@ package dan200.computer.api;
 /**
  * TODO: Document me
  */
-public interface IPeripheralHandler 
+public interface ILuaContext
 {
-	public IHostedPeripheral getPeripheral( net.minecraft.tileentity.TileEntity tile );
+	public Object[] pullEvent( String filter ) throws Exception, InterruptedException;
+	public Object[] pullEventRaw( String filter ) throws InterruptedException;
+	public Object[] yield( Object[] arguments ) throws InterruptedException;
 }
