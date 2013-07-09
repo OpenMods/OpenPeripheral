@@ -1,9 +1,9 @@
 package openperipheral.robots;
 
-import openperipheral.api.IRobot;
-import openperipheral.core.container.ContainerGeneric;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
+import openperipheral.api.IRobot;
+import openperipheral.core.container.ContainerGeneric;
 
 public class ContainerRobot extends ContainerGeneric {
 

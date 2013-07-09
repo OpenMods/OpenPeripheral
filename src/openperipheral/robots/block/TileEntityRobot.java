@@ -13,17 +13,15 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import openperipheral.api.IRobotUpgradeProvider;
-import openperipheral.api.RobotUpgradeManager;
 import openperipheral.core.OPInventory;
 import openperipheral.core.interfaces.IAttachable;
 import openperipheral.core.interfaces.IConditionalSlots;
 import openperipheral.core.interfaces.IHasSyncedGui;
 import openperipheral.core.interfaces.IInventoryCallback;
 import openperipheral.core.interfaces.IPeripheralProvider;
-import openperipheral.core.peripheral.RobotPeripheral;
 import openperipheral.core.util.GuiValueHolder;
 import openperipheral.core.util.MiscUtils;
+import openperipheral.robots.RobotPeripheral;
 import openperipheral.robots.entity.EntityRobot;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IHostedPeripheral;
@@ -82,7 +80,7 @@ public class TileEntityRobot extends TileEntity implements IPeripheralProvider, 
 
 	public TileEntityRobot() {
 		inventory.addCallback(this);
-		peripheral = new RobotPeripheral(this);
+		peripheral = new RobotPeripheral(this, worldObj);
 	}
 
 	/**
@@ -251,8 +249,8 @@ public class TileEntityRobot extends TileEntity implements IPeripheralProvider, 
 	}
 
 	@Override
-	public boolean isStackValidForSlot(int slot, ItemStack stack) {
-		return inventory.isStackValidForSlot(slot, stack);
+	public boolean isItemValidForSlot(int slot, ItemStack stack) {
+		return inventory.isItemValidForSlot(slot, stack);
 	}
 
 	@Override

@@ -3,7 +3,7 @@ package openperipheral.core.interfaces;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
-import dan200.computer.core.ILuaObject;
+import dan200.computer.api.ILuaObject;
 
 public interface IDrawable extends ILuaObject {
 	public int getX();

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import openperipheral.api.ITypeConverter;
-import dan200.computer.core.ILuaObject;
+import dan200.computer.api.ILuaObject;
 
 public class TypeConversionRegistry {
 

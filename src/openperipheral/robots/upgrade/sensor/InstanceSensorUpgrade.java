@@ -10,23 +10,23 @@ import openperipheral.api.IRobot;
 import openperipheral.api.IRobotUpgradeInstance;
 import openperipheral.api.LuaMethod;
 import openperipheral.core.interfaces.ISensorEnvironment;
-import openperipheral.core.peripheral.SensorPeripheral;
 
 public class InstanceSensorUpgrade implements IRobotUpgradeInstance, ISensorEnvironment {
 
-	private SensorPeripheral sensorPeripheral;
+	//private SensorPeripheral sensorPeripheral;
 	private IRobot robot;
 	private int tier;
 	
 	public InstanceSensorUpgrade(IRobot robot, int tier) {
-		sensorPeripheral = new SensorPeripheral(this, robot.getEntity());
+		//sensorPeripheral = new SensorPeripheral(this, robot.getEntity());
 		this.robot = robot;
 		this.tier = tier;
 	}
 	
+	/*
 	public SensorPeripheral getSensor() {
 		return sensorPeripheral;
-	}
+	}*/
 	
 	@Override
 	public void writeToNBT(NBTTagCompound nbt) {
@@ -47,7 +47,7 @@ public class InstanceSensorUpgrade implements IRobotUpgradeInstance, ISensorEnvi
 
 	@Override
 	public void update() {
-		sensorPeripheral.update();
+		//sensorPeripheral.update();
 	}
 
 	@Override
@@ -81,7 +81,7 @@ public class InstanceSensorUpgrade implements IRobotUpgradeInstance, ISensorEnvi
 		if (tier < 2) {
 			throw new Exception("At least a tier 2 sensor upgrade required");
 		}
-		return sensorPeripheral.getPlayerNames();
+		return null;//sensorPeripheral.getPlayerNames();
 	}
 	
 	@LuaMethod(onTick=false)
@@ -89,31 +89,31 @@ public class InstanceSensorUpgrade implements IRobotUpgradeInstance, ISensorEnvi
 		if (tier < 2) {
 			throw new Exception("At least a tier 2 sensor upgrade required");
 		}
-		return sensorPeripheral.getPlayerData(playerName);
+		return null;//sensorPeripheral.getPlayerData(playerName);
 	}
 	
 	@LuaMethod(onTick=false)
 	public Integer[] getMobIds() {
-		return sensorPeripheral.getMobIds();
+		return null;//sensorPeripheral.getMobIds();
 	}
 	
 	@LuaMethod(onTick=false)
 	public HashMap getMobData(int mobId) {
-		return sensorPeripheral.getMobData(mobId);
+		return null;//sensorPeripheral.getMobData(mobId);
 	}
 	
 	@LuaMethod(onTick=false)
 	public Integer[] getMinecartIds() {
-		return sensorPeripheral.getMinecartIds();
+		return null;//sensorPeripheral.getMinecartIds();
 	}
 	
 	@LuaMethod(onTick=false)
 	public HashMap getMinecartData(int minecartId) {
-		return sensorPeripheral.getMinecartData(minecartId);
+		return null;//sensorPeripheral.getMinecartData(minecartId);
 	}
 
 	@LuaMethod
 	public HashMap sonicScan() {
-		return sensorPeripheral.sonicScan();
+		return null;//sensorPeripheral.sonicScan();
 	}
 }

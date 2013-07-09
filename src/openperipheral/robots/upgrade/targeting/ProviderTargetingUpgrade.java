@@ -3,7 +3,6 @@ package openperipheral.robots.upgrade.targeting;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import openperipheral.api.IRobot;
 import openperipheral.api.IRobotUpgradeInstance;

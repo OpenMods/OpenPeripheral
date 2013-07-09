@@ -1,0 +1,6 @@
+redset sets the state of the redstone signal from a specific side of the computer.
+
+ex:
+"redset left true" turns on the left redstone output.
+"redset right blue false" turns off the blue wire in the bundled cable on the right redstone output.
+"redset back 42" sets the wires in the bundled cable on the back redstone output to the binary value 42.

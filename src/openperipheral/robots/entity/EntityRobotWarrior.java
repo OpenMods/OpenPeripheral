@@ -1,10 +1,10 @@
 package openperipheral.robots.entity;
 
+import net.minecraft.entity.WatchableObject;
+import net.minecraft.world.World;
 import openperipheral.api.EnumRobotType;
 import openperipheral.api.ILazerRobot;
 import openperipheral.core.util.ReflectionHelper;
-import net.minecraft.entity.WatchableObject;
-import net.minecraft.world.World;
 
 public class EntityRobotWarrior extends EntityRobot implements ILazerRobot {
 	
@@ -24,26 +24,26 @@ public class EntityRobotWarrior extends EntityRobot implements ILazerRobot {
 	@Override
 	public void entityInit() {
 		super.entityInit();
-		this.dataWatcher.addObject(11, 0.0F);
+		this.dataWatcher.addObject(12, 0.0F);
 	}
 	
 	@Override
 	public void setWeaponSpinSpeed(float speed) {
 		weaponSpinSpeed = speed;
-        this.dataWatcher.updateObject(11, weaponSpinSpeed);
+        this.dataWatcher.updateObject(12, weaponSpinSpeed);
 	}
 
 	@Override
 	public void modifyWeaponSpinSpeed(float speed) {
 		weaponSpinSpeed += speed;
 		weaponSpinSpeed = Math.max(0, weaponSpinSpeed);
-        this.dataWatcher.updateObject(11, weaponSpinSpeed);
+        this.dataWatcher.updateObject(12, weaponSpinSpeed);
 	}
 	
 	@Override
 	public float getWeaponSpinSpeed() {
 		try {
-			WatchableObject object = (WatchableObject)ReflectionHelper.callMethod("", this.dataWatcher, dataWatcherMethod, 11);
+			WatchableObject object = (WatchableObject)ReflectionHelper.callMethod("", this.dataWatcher, dataWatcherMethod, 12);
 			return (Float)(object.getObject());
 		}catch(Exception e) {
 			return 0;

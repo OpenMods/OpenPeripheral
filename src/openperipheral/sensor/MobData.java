@@ -3,14 +3,12 @@ package openperipheral.sensor;
 import java.util.Collection;
 import java.util.HashMap;
 
-import openperipheral.core.util.InventoryUtils;
-
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.EnumMovingObjectType;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
+import openperipheral.core.util.InventoryUtils;
 
 public class MobData extends HashMap implements IEntityData {
 
@@ -30,7 +28,7 @@ public class MobData extends HashMap implements IEntityData {
 		put("potionEffects", potionEffects);
 	}
 	
-	public void fromEntity(Vec3 sensorPosition, EntityLiving living) {
+	public void fromEntity(Vec3 sensorPosition, EntityLivingBase living) {
 
 		potionEffects.clear();
 		
@@ -41,10 +39,9 @@ public class MobData extends HashMap implements IEntityData {
 		InventoryUtils.itemstackToMap((HashMap)armour.get("leggings"), living.getCurrentItemOrArmor(2));
 		InventoryUtils.itemstackToMap((HashMap)armour.get("chestplate"), living.getCurrentItemOrArmor(3));
 		InventoryUtils.itemstackToMap((HashMap)armour.get("helmet"), living.getCurrentItemOrArmor(4));
-		put("health", living.getHealth());
+		//TODO: fix
+		//put("health", living.getHealth());
 		put("isAirborne", living.isAirBorne);
-		put("isJumping", living.isJumping);
-		put("isBlocking", living.isBlocking());
 		put("isBurning", living.isBurning());
 		put("isAlive", living.isEntityAlive());
 		put("isInWater", living.isInWater());
@@ -56,7 +53,6 @@ public class MobData extends HashMap implements IEntityData {
 		put("isWet", living.isWet());
 		put("isChild", living.isChild());
 		put("isDead", living.isDead);
-		put("isHome", living.isWithinHomeDistanceCurrentPosition());
 		put("yaw", living.rotationYaw);
 		put("pitch", living.rotationPitch);
 		put("yawHead", living.rotationYawHead);
@@ -70,7 +66,7 @@ public class MobData extends HashMap implements IEntityData {
         Vec3 posVec = living.worldObj.getWorldVec3Pool().getVecFromPool(living.posX, living.posY + 1.62F, living.posZ);
         Vec3 lookVec = living.getLook(1.0f);
         Vec3 targetVec = posVec.addVector(lookVec.xCoord * 10f, lookVec.yCoord * 10f, lookVec.zCoord * 10f);
-        MovingObjectPosition mop = living.worldObj.rayTraceBlocks(posVec, targetVec);
+        MovingObjectPosition mop = living.worldObj.clip(posVec, targetVec);
     	put("IsLookingAtBlock", false);
         if (mop != null) {
         	put("IsLookingAtBlock", mop.typeOfHit == EnumMovingObjectType.TILE);

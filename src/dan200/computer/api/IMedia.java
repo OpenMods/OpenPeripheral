@@ -5,17 +5,19 @@
  */
 
 package dan200.computer.api;
+import net.minecraft.world.World;
+import net.minecraft.item.ItemStack;
 
 /**
  * TODO: Document me
  */
 public interface IMedia
 {
-	public String getLabel( net.minecraft.item.ItemStack stack );
-	public boolean setLabel( net.minecraft.item.ItemStack stack, String label );
+	public String getLabel( ItemStack stack );
+	public boolean setLabel( ItemStack stack, String label );
 	
-	public String getAudioTitle( net.minecraft.item.ItemStack stack );
-	public String getAudioRecordName( net.minecraft.item.ItemStack stack );	
+	public String getAudioTitle( ItemStack stack );
+	public String getAudioRecordName( ItemStack stack );	
     
-    public String mountData( net.minecraft.item.ItemStack stack, IComputerAccess computer );
+    public IMount createDataMount( ItemStack stack, World world );
 }

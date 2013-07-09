@@ -1,0 +1,4 @@
+rm deletes a file or a directory and its contents.
+
+ex:
+"rm foo" will delete the file foo.

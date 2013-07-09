@@ -94,7 +94,7 @@ public class TileEntityTicketMachine extends TileEntity implements IInventory, I
 	}
 
 	@Override
-	public boolean isStackValidForSlot(int i, ItemStack itemstack) {
+	public boolean isItemValidForSlot(int i, ItemStack itemstack) {
 		if (itemstack == null) {
 			return false;
 		}
@@ -116,7 +116,7 @@ public class TileEntityTicketMachine extends TileEntity implements IInventory, I
 		ItemStack inkStack = inventory.getStackInSlot(1);
 		ItemStack outputStack = inventory.getStackInSlot(2);
 		try {
-			if (isStackValidForSlot(0, paperStack) && isStackValidForSlot(1, inkStack) && outputStack == null) {
+			if (isItemValidForSlot(0, paperStack) && isItemValidForSlot(1, inkStack) && outputStack == null) {
 				ItemStack output = new ItemStack(ticketItem);
 				NBTTagCompound tag = new NBTTagCompound();
 				tag.setString("owner", owner);
@@ -204,7 +204,7 @@ public class TileEntityTicketMachine extends TileEntity implements IInventory, I
 
 	@Override
 	public boolean canInsertItem(int i, ItemStack itemstack, int j) {
-		return isStackValidForSlot(i, itemstack);
+		return isItemValidForSlot(i, itemstack);
 	}
 
 	@Override

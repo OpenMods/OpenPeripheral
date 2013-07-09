@@ -1,0 +1,21 @@
+-- Colours (for lovers of british spelling)
+local fnFile, err = loadfile("/rom/apis/colors")
+if not fnFile then
+	error( err )
+end
+
+local tColors = {}
+setmetatable( tColors, { __index = _G } )
+setfenv( fnFile, tColors )
+fnFile( tColors )
+
+local tColours = getfenv()
+for k,v in pairs( tColors ) do
+	tColours[k] = v
+end
+
+tColours.gray = nil
+tColours.grey = tColors.gray
+
+tColours.lightGray = nil
+tColours.lightGrey = tColors.lightGray

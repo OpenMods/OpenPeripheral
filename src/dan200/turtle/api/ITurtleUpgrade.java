@@ -81,7 +81,12 @@ public interface ITurtleUpgrade
 	public boolean useTool( ITurtleAccess turtle, TurtleSide side, TurtleVerb verb, int direction );
 
 	/**
-	 * TODO: Document me
+	 * Called to obtain the Icon to be used when rendering a turtle peripheral. Needs to be a "block" 
+	 * type Icon for now, as there is no way to determine which texture sheet an Icon is from by the 
+	 * Icon itself.
+	 * @param turtle Access to the turtle that the peripheral resides on.
+	 * @param side Which side of the turtle (left or right) the peripheral resides on.
+	 * @return The Icon that you wish to be used to render your turtle peripheral.
 	 */
 	public Icon getIcon( ITurtleAccess turtle, TurtleSide side );
 }

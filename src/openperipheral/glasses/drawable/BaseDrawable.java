@@ -9,6 +9,7 @@ import openperipheral.core.converter.TypeConversionRegistry;
 import openperipheral.core.interfaces.IDrawable;
 import openperipheral.core.util.ReflectionHelper;
 import openperipheral.glasses.block.TileEntityGlassesBridge;
+import dan200.computer.api.ILuaContext;
 
 public abstract class BaseDrawable implements IDrawable {
 
@@ -32,7 +33,7 @@ public abstract class BaseDrawable implements IDrawable {
 	}
 
 	@Override
-	public Object[] callMethod(int methodId, Object[] arguments) throws Exception {
+	public Object[] callMethod(ILuaContext context, int methodId, Object[] arguments) throws Exception {
 
 		if (deleted) {
 			return null;

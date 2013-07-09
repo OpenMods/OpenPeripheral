@@ -1,0 +1,84 @@
+
+local function isDrive( side )
+	return peripheral.getType( side ) == "drive"
+end
+
+function isPresent( side )
+	if isDrive( side ) then
+		return peripheral.call( side, "isDiskPresent" )
+	end
+	return false
+end
+
+function getLabel( side )
+	if isDrive( side ) then
+		return peripheral.call( side, "getDiskLabel" )
+	end
+	return nil
+end
+
+function setLabel( side, label )
+	if isDrive( side ) then
+		peripheral.call( side, "setDiskLabel", label )
+	end
+end
+
+function hasData( side )
+	if isDrive( side ) then
+		return peripheral.call( side, "hasData" )
+	end
+	return false
+end
+
+function getMountPath( side )
+	if isDrive( side ) then
+		return peripheral.call( side, "getMountPath" )
+	end
+	return nil
+end
+
+function hasAudio( side )
+	if isDrive( side ) then
+		return peripheral.call( side, "hasAudio" )
+	end
+	return false
+end
+
+function getAudioTitle( side )
+	if isDrive( side ) then
+		return peripheral.call( side, "getAudioTitle" )
+	end
+	return nil
+end
+
+function playAudio( side )
+	if isDrive( side ) then
+		peripheral.call( side, "playAudio" )
+	end
+end
+
+function stopAudio( side )
+	if not side then
+		for n,sSide in ipairs( peripheral.getNames() ) do
+			stopAudio( sSide )
+		end
+	else
+		if isDrive( side ) then
+			peripheral.call( side, "stopAudio" )
+		end
+	end
+end
+
+function eject( side )
+	if isDrive( side ) then
+		peripheral.call( side, "ejectDisk" )
+	end
+end
+
+function getID( side )
+	if isDrive( side ) then
+		return peripheral.call( side, "getDiskID" )
+	end
+	return nil
+end
+

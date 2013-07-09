@@ -92,7 +92,8 @@ public class ItemRemote extends Item {
 	    	ns.setByte("dmg", (byte)((world.getBlockMetadata(x, y, z) & 0x8) >> 3));
 	    	tag.setTag("openpRemote", ns);
 	    	if (!world.isRemote) {
-	    		player.sendChatToPlayer("Linked remote terminal");
+	    		//TODO: fix
+	    		//player.sendChatToPlayer("Linked remote terminal");
 	    	}
 	    	stack.setTagCompound(tag);
 	    	return false;
