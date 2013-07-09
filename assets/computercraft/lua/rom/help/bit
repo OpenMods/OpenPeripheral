@@ -1,7 +1,0 @@
-Functions in the bit manipulation API:
-bit.bnot(n)          -- bitwise not (~n)
-bit.band(m, n)       -- bitwise and (m & n)
-bit.bor(m, n)        -- bitwise or (m | n)
-bit.bxor(m, n)       -- bitwise xor (m ^ n)
-bit.brshift(n, bits) -- right shift (n >> bits)
-bit.blshift(n, bits) -- left shift (n << bits)
