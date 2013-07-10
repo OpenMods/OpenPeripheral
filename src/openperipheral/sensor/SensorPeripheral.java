@@ -1,6 +1,7 @@
 package openperipheral.sensor;
 
 import openperipheral.core.AdapterManager;
+import openperipheral.core.interfaces.ISensorEnvironment;
 import openperipheral.core.peripheral.HostedPeripheral;
 import openperipheral.core.util.MiscUtils;
 import net.minecraft.nbt.NBTTagCompound;
@@ -11,7 +12,7 @@ import dan200.computer.api.ILuaContext;
 
 public class SensorPeripheral extends HostedPeripheral implements IHostedPeripheral {
 
-	public SensorPeripheral(Object target, World worldObj) {
+	public SensorPeripheral(ISensorEnvironment target, World worldObj) {
 		super(target, worldObj);
 	}
 	
@@ -24,7 +25,9 @@ public class SensorPeripheral extends HostedPeripheral implements IHostedPeriphe
 		for (int i = 0; i < methods.size(); i++) {
 			methodNames[i] = methods.get(i).getLuaName();
 		}
+		
 		type = MiscUtils.getNameForTarget(target);
+
 	}
 	
 

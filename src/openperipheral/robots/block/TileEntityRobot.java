@@ -29,7 +29,7 @@ import dan200.computer.api.IHostedPeripheral;
 public class TileEntityRobot extends TileEntity implements IPeripheralProvider, IHasSyncedGui, IAttachable, IConditionalSlots, ISidedInventory, IInventory,
 		IInventoryCallback {
 
-	private IHostedPeripheral peripheral;
+	private IHostedPeripheral peripheral = new RobotPeripheral(this, worldObj);
 
 	/**
 	 * A map of robot ids to minecraft entitiy ids of currently connected robots
@@ -80,7 +80,6 @@ public class TileEntityRobot extends TileEntity implements IPeripheralProvider, 
 
 	public TileEntityRobot() {
 		inventory.addCallback(this);
-		peripheral = new RobotPeripheral(this, worldObj);
 	}
 
 	/**
@@ -160,7 +159,7 @@ public class TileEntityRobot extends TileEntity implements IPeripheralProvider, 
 		if (worldObj.isRemote){
 			return;
 		}
-		
+
 		// if there's a robot in the slot, re-link it to this controller
 		ItemStack robotStack = inventory.getStackInSlot(ROBOT_ITEM_SLOT);
 		if (robotStack != null) {
@@ -174,6 +173,7 @@ public class TileEntityRobot extends TileEntity implements IPeripheralProvider, 
 				tag.setString("controllerUuid", uuid);
 				tag.setInteger("robotId", robotIdCounter++);
 			}
+
 			tag.setInteger("controllerX", xCoord);
 			tag.setInteger("controllerY", yCoord);
 			tag.setInteger("controllerZ", zCoord);

@@ -108,19 +108,11 @@ public class InstanceMovementUpgrade implements IRobotUpgradeInstance {
 			throw new Exception("At least a tier 2 movement upgrade required");
 		}
 		EntityCreature creature = robot.getEntity();
-		creature.motionY = 0.41999998688697815D;
-
-		creature.motionY *= 1;
-
-		if (creature.isSprinting()) {
-			float f = creature.rotationYaw * 0.017453292F;
-			creature.motionX -= (double) (MathHelper.sin(f) * 0.2F);
-			creature.motionZ += (double) (MathHelper.cos(f) * 0.2F);
+		if (!robot.isJumping()) {
+			creature.getJumpHelper().setJumping();
+			ForgeHooks.onLivingJump(creature);
+			creature.playSound("openperipheral.robotjump", 1F, 1F);
 		}
-
-		creature.isAirBorne = true;
-		ForgeHooks.onLivingJump(creature);
-		creature.playSound("openperipheral.robotjump", 1F, 1F);
 	}
 	
 	@LuaMethod

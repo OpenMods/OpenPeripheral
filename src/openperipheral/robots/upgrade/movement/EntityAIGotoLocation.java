@@ -31,15 +31,15 @@ public class EntityAIGotoLocation extends EntityAIBase {
 		boolean hasFuel = robot.hasFuel();
 		instance.setShouldMoveToTarget(hasPath && hasFuel);
 		if (!hasFuel) {
-			robot.fireEvent(NO_FUEL_AVAILABLE);
+			robot.fireEvent(NO_FUEL_AVAILABLE, robot.getRobotId());
 			return false;
 		}
 		if (!hasPath) {
 			PathEntity path = navigator.getPath();
 			if (path == null) {
-				robot.fireEvent(NO_PATH_AVAILABLE);
+				robot.fireEvent(NO_PATH_AVAILABLE, robot.getRobotId());
 			} else if (path.isFinished()) {
-				robot.fireEvent(PATH_FINISHED);
+				robot.fireEvent(PATH_FINISHED, robot.getRobotId());
 			}
 		}
 		return hasPath;

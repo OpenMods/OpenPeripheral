@@ -20,6 +20,9 @@ import dan200.computer.api.ILuaContext;
 
 public class HostedPeripheral implements IHostedPeripheral {
 
+	public static final String EVENT_SUCCESS = "openperipheral_success";
+	public static final String EVENT_ERROR = "openperipheral_error";
+	
 	protected ArrayList<MethodDeclaration> methods;
 	protected String[] methodNames;
 	protected String type;
@@ -68,39 +71,59 @@ public class HostedPeripheral implements IHostedPeripheral {
 		
 		final Object[] formattedParameters = formatParameters(computer, method, arguments);
 		
+		return callOnTarget(computer, context, method, method.getTarget(), formattedParameters);
+	}
+	
+	protected Object[] callOnTarget(final IComputerAccess computer, ILuaContext context, final MethodDeclaration method, final Object target, final Object[] parameters) throws Exception {
+
+		// if it's on the tick, lets add a callback to execute on the tick
 		if (method.onTick()) {
+			
 			Future callback = TickHandler.addTickCallback(getWorldObject(), new Callable() {
 				@Override
 				public Object call() throws Exception {
+
+					// on the tick, we execute the method, format the response, then stick it into an event
 					try {
-						Object[] response = formatResponse(method.getMethod().invoke(method.getTarget(), formattedParameters));
-						Object[] prefixedResponse = new Object[response.length + 1];
-						System.arraycopy(response, 0, prefixedResponse, 1, response.length);
-						prefixedResponse[0] = 1; // success
-						computer.queueEvent("openperipheral_response", prefixedResponse);
+						Object[] response = formatResponse(method.getMethod().invoke(target, parameters));
+						computer.queueEvent(EVENT_SUCCESS, response);
+
 					}catch(Throwable e) {
 						if (e instanceof InvocationTargetException) {
 							e = ((InvocationTargetException) e).getCause();
 						}
-						computer.queueEvent("openperipheral_response", new Object[] { 0, e.getMessage() });
+						computer.queueEvent(EVENT_ERROR, new Object[] { 0, e.getMessage() });
 					}
 					return null;
 				}
 			});
-			Object[] event = context.pullEvent("openperipheral_response");
 			
-			// if the object returned is an exception/error, lets throw it.
-			if (((int)(double)(Double)event[1]) == 0) {
-				throw new Exception((String)(event[2]));
+			// while we don't have an OpenPeripheral event
+			while (true) {
+				
+				// pull the event
+				Object[] event = context.pullEvent(null);
+				
+				// get the event name
+				String eventName = (String) event[0];
+				
+				// if it's an error, throw an exception
+				if (eventName.equals(EVENT_ERROR)) {
+					throw new Exception((String) event[1]);
+				
+				// if it's a success, trim the event name from it and return the response
+				}else if (eventName.equals(EVENT_SUCCESS)) {
+					
+					Object[] response = new Object[event.length - 1];
+					System.arraycopy(event, 1, response, 0, response.length);
+					return response;
+				}
 			}
 			
-			// return the result
-			Object[] response = new Object[event.length - 2];
-			System.arraycopy(event, 2, response, 0, response.length);
-			return response;
-			
 		}else {
-			return formatResponse(method.getMethod().invoke(method.getTarget(), formattedParameters));
+			// no thread safety needed, lets just call the method, format the 
+			// response and return it straight away
+			return formatResponse(method.getMethod().invoke(target, parameters));
 		}
 	}
 	

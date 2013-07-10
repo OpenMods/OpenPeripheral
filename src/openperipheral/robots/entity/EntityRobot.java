@@ -38,6 +38,7 @@ public abstract class EntityRobot extends EntityCreature implements IRobot, IInv
 	private String controllerUuid = "[none]";
 	private boolean linkedToController = false;
 	private int robotId = 0;
+	private float moveSpeed = 0.3f;
 
 	private float fuelLevel = 0;
 
@@ -87,7 +88,7 @@ public abstract class EntityRobot extends EntityCreature implements IRobot, IInv
 	 */
 	@Override
 	public float getMoveSpeed() {
-		return 0;
+		return moveSpeed;
 	}
 
 	/**
@@ -95,7 +96,12 @@ public abstract class EntityRobot extends EntityCreature implements IRobot, IInv
 	 */
 	@Override
 	public void setMoveSpeed(float speed) {
-		//moveSpeed = speed;
+		moveSpeed = speed;
+	}
+	
+	@Override
+	public int getRobotId() {
+		return robotId;
 	}
 
 	/**
@@ -175,6 +181,12 @@ public abstract class EntityRobot extends EntityCreature implements IRobot, IInv
 		return inventory;
 	}
 
+	@Override
+    public boolean isJumping()
+    {
+        return isJumping;
+    }
+	
 	/**
 	 * This is called whenever the inventory is changed
 	 */
@@ -449,7 +461,6 @@ public abstract class EntityRobot extends EntityCreature implements IRobot, IInv
 	 * @return if it was made or not
 	 */
 	public boolean createFromItem(ItemStack stack) {
-
 		/**
 		 * This is where we'd read the available tags and decide which upgrades
 		 * to apply
@@ -460,6 +471,7 @@ public abstract class EntityRobot extends EntityCreature implements IRobot, IInv
 			controllerX = tag.getInteger("controllerX");
 			controllerY = tag.getInteger("controllerY");
 			controllerZ = tag.getInteger("controllerZ");
+
 			controllerUuid = tag.getString("controllerUuid");
 			robotId = tag.getInteger("robotId");
 			TileEntityRobot controller = (TileEntityRobot) getController();
@@ -490,12 +502,11 @@ public abstract class EntityRobot extends EntityCreature implements IRobot, IInv
 
 	@Override
 	public void fireEvent(String eventName) {
-		fireEvent(eventName, null);
+		fireEvent(eventName);
 	}
 
-	// TODO: get controller and fire the event
 	@Override
-	public void fireEvent(String eventName, Object[] args) {
+	public void fireEvent(String eventName, Object ... args) {
 		TileEntity te = getController();
 		if (te instanceof TileEntityRobot) {
 			((TileEntityRobot)te).fireEvent(eventName, args);
