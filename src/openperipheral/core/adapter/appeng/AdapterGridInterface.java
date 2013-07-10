@@ -1,11 +1,11 @@
-package openperipheral.core.adapter;
+package openperipheral.core.adapter.appeng;
 
 import net.minecraft.item.ItemStack;
-import dan200.computer.api.IComputerAccess;
+import openperipheral.api.IPeripheralAdapter;
 import appeng.api.exceptions.AppEngTileMissingException;
 import appeng.api.me.util.ICraftRequest;
 import appeng.api.me.util.IGridInterface;
-import openperipheral.api.IPeripheralAdapter;
+import dan200.computer.api.IComputerAccess;
 
 public class AdapterGridInterface implements IPeripheralAdapter {
 

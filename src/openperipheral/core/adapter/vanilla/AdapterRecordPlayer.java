@@ -1,4 +1,4 @@
-package openperipheral.core.adapter;
+package openperipheral.core.adapter.vanilla;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityRecordPlayer;

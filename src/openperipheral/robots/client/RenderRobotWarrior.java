@@ -10,7 +10,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class RenderRobotWarrior extends RenderLiving {
 
-	private static final ResourceLocation texture = new ResourceLocation("openperipheral", "textures/entity/robot.png");
+	private static final ResourceLocation texture = new ResourceLocation("openperipheral", "textures/models/robot.png");
 
 	public RenderRobotWarrior(ModelBase par1ModelBase, float par2) {
 		super(par1ModelBase, par2);

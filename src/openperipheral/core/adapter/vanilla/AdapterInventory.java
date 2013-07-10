@@ -1,4 +1,4 @@
-package openperipheral.core.adapter;
+package openperipheral.core.adapter.vanilla;
 
 import java.util.ArrayList;
 

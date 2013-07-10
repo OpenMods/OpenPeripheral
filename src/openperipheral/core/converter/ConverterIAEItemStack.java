@@ -6,10 +6,10 @@ import java.util.Map;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import appeng.api.IAEItemStack;
-import appeng.api.IAETagCompound;
 import openperipheral.api.ITypeConverter;
 import openperipheral.core.util.InventoryUtils;
+import appeng.api.IAEItemStack;
+import appeng.api.IAETagCompound;
 
 public class ConverterIAEItemStack implements ITypeConverter {
 

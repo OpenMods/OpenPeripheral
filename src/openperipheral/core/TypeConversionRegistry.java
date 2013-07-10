@@ -1,4 +1,4 @@
-package openperipheral.core.converter;
+package openperipheral.core;
 
 import java.util.ArrayList;
 import java.util.Map;

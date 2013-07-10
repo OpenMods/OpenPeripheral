@@ -7,6 +7,7 @@ import net.minecraft.world.IBlockAccess;
 import openperipheral.OpenPeripheral;
 import openperipheral.core.block.TileEntityPlayerInventory;
 import openperipheral.core.block.TileEntitySensor;
+import openperipheral.robots.block.TileEntityRobot;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -29,7 +30,7 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler {
 		}else if (block == OpenPeripheral.Blocks.sensor) {
 			TileEntityRenderer.instance.renderTileEntityAt(new TileEntitySensor(), 0.0D, 0.0D, 0.0D, 0.0F);	
 		}else if (block == OpenPeripheral.Blocks.robot) {
-			//TileEntityRenderer.instance.renderTileEntityAt(new TileEntityRobot(), 0.0D, 0.0D, 0.0D, 0.0F);	
+			TileEntityRenderer.instance.renderTileEntityAt(new TileEntityRobot(), 0.0D, 0.0D, 0.0D, 0.0F);	
 		}
 		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 	}

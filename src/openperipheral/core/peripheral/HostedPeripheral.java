@@ -10,7 +10,7 @@ import openperipheral.api.IMultiReturn;
 import openperipheral.core.AdapterManager;
 import openperipheral.core.MethodDeclaration;
 import openperipheral.core.TickHandler;
-import openperipheral.core.converter.TypeConversionRegistry;
+import openperipheral.core.TypeConversionRegistry;
 import openperipheral.core.interfaces.IAttachable;
 import openperipheral.core.util.MiscUtils;
 import dan200.computer.api.IComputerAccess;
