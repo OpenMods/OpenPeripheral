@@ -19,7 +19,7 @@ public class ConfigSettings {
 
 	public static final String NETWORK_CHANNEL = "OpenPeripheral";
 	public static int CACHE_REFRESH_INTERVAL = 7;
-	public static String RESOURCE_PATH = "/mods/openperipheral";
+	public static String RESOURCE_PATH = "/assets/openperipheral";
 	public static String LANGUAGE_PATH = String.format("%s/languages", RESOURCE_PATH);
 	public static String TEXTURES_PATH = String.format("%s/textures", RESOURCE_PATH);
 
@@ -122,6 +122,14 @@ public class ConfigSettings {
 		prop = configFile.get("blocks", "proxyBlockId", proxyBlockId);
 		prop.comment = "The id of the proxy block";
 		proxyBlockId = prop.getInt();
+
+		prop = configFile.get("blocks", "sensorBlockId", sensorBlockId);
+		prop.comment = "The id of the sensor block";
+		sensorBlockId = prop.getInt();
+		
+		prop = configFile.get("blocks", "robotBlockId", robotBlockId);
+		prop.comment = "The id of the robot block";
+		robotBlockId = prop.getInt();
 		
 		if (FRESH_INSTALL && analyticsEnabled) {
 			analytics(container);

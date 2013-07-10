@@ -24,13 +24,13 @@ public class TileEntityRobotRenderer extends TileEntitySpecialRenderer {
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float) x + 0.5F, (float) y + 1.0f, (float) z + 0.5F);
 		GL11.glRotatef(180.0F, 1.0F, 0.0F, 0.0F);
-		tileEntityRenderer.renderEngine.func_110577_a(frameTexture);
+		func_110628_a(frameTexture);
 		frame.render();
 		GL11.glPushMatrix();
 		GL11.glScalef(0.2f, 0.2f, 0.2f);
 		GL11.glTranslatef(0, 2f, 0);
 		GL11.glRotatef(robotTE.getRenderRot(), 0F, 1.0F, 0.0F);
-		tileEntityRenderer.renderEngine.func_110577_a(robotTexture);
+		func_110628_a(robotTexture);
 		model.render(robot, 0, 0, 0, 0, 0, 0.0625F);
 		GL11.glPopMatrix();
 		GL11.glPopMatrix();

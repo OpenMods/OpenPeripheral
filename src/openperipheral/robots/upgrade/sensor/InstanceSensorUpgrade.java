@@ -1,6 +1,8 @@
 package openperipheral.robots.upgrade.sensor;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -9,35 +11,28 @@ import net.minecraft.world.World;
 import openperipheral.api.IRobot;
 import openperipheral.api.IRobotUpgradeInstance;
 import openperipheral.api.LuaMethod;
+import openperipheral.core.adapter.AdapterSensor;
 import openperipheral.core.interfaces.ISensorEnvironment;
+import openperipheral.sensor.SensorPeripheral;
 
 public class InstanceSensorUpgrade implements IRobotUpgradeInstance, ISensorEnvironment {
 
-	//private SensorPeripheral sensorPeripheral;
+	private AdapterSensor adapter;
 	private IRobot robot;
 	private int tier;
 	
 	public InstanceSensorUpgrade(IRobot robot, int tier) {
-		//sensorPeripheral = new SensorPeripheral(this, robot.getEntity());
+		adapter = new AdapterSensor();
 		this.robot = robot;
 		this.tier = tier;
 	}
 	
-	/*
-	public SensorPeripheral getSensor() {
-		return sensorPeripheral;
-	}*/
-	
 	@Override
 	public void writeToNBT(NBTTagCompound nbt) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -47,7 +42,6 @@ public class InstanceSensorUpgrade implements IRobotUpgradeInstance, ISensorEnvi
 
 	@Override
 	public void update() {
-		//sensorPeripheral.update();
 	}
 
 	@Override
@@ -77,43 +71,43 @@ public class InstanceSensorUpgrade implements IRobotUpgradeInstance, ISensorEnvi
 	}
 	
 	@LuaMethod(onTick=false)
-	public String[] getPlayerNames() throws Exception {
+	public ArrayList<String> getPlayerNames() throws Exception {
 		if (tier < 2) {
 			throw new Exception("At least a tier 2 sensor upgrade required");
 		}
-		return null;//sensorPeripheral.getPlayerNames();
+		return adapter.getPlayerNames(null, this);
 	}
 	
 	@LuaMethod(onTick=false)
-	public HashMap getPlayerData(String playerName) throws Exception {
+	public Map getPlayerData(String playerName) throws Exception {
 		if (tier < 2) {
 			throw new Exception("At least a tier 2 sensor upgrade required");
 		}
-		return null;//sensorPeripheral.getPlayerData(playerName);
+		return adapter.getPlayerData(null, this, playerName);
 	}
 	
 	@LuaMethod(onTick=false)
-	public Integer[] getMobIds() {
-		return null;//sensorPeripheral.getMobIds();
+	public ArrayList<Integer> getMobIds() {
+		return adapter.getMobIds(null, this);
 	}
 	
 	@LuaMethod(onTick=false)
-	public HashMap getMobData(int mobId) {
-		return null;//sensorPeripheral.getMobData(mobId);
+	public Map getMobData(int mobId) {
+		return adapter.getMobData(null, this, mobId);
 	}
 	
 	@LuaMethod(onTick=false)
-	public Integer[] getMinecartIds() {
-		return null;//sensorPeripheral.getMinecartIds();
+	public ArrayList<Integer> getMinecartIds() {
+		return adapter.getMinecartIds(null, this);
 	}
 	
 	@LuaMethod(onTick=false)
-	public HashMap getMinecartData(int minecartId) {
-		return null;//sensorPeripheral.getMinecartData(minecartId);
+	public Map getMinecartData(int minecartId) {
+		return adapter.getMinecartData(null, this, minecartId);
 	}
 
 	@LuaMethod
-	public HashMap sonicScan() {
-		return null;//sensorPeripheral.sonicScan();
+	public Map sonicScan() {
+		return adapter.sonicScan(null, this);
 	}
 }
