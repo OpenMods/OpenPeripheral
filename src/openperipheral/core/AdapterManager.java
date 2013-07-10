@@ -6,6 +6,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import dan200.computer.api.IComputerAccess;
+
 import openperipheral.api.IPeripheralAdapter;
 import openperipheral.api.LuaMethod;
 
@@ -14,17 +16,28 @@ public class AdapterManager {
 	public static HashMap<Class, ArrayList<MethodDeclaration>> classList = new HashMap<Class, ArrayList<MethodDeclaration>>();
 	
 	public static void addPeripheralAdapter(IPeripheralAdapter peripheralAdapter) {
-		Class targetClass = peripheralAdapter.getTargetClass();
-		if (targetClass != null) {
-			for (Method method : peripheralAdapter.getClass().getMethods()) {
-				LuaMethod annotation = method.getAnnotation(LuaMethod.class);
-				if (annotation != null) {
-					if (!classList.containsKey(targetClass)) {
-						classList.put(targetClass, new ArrayList<MethodDeclaration>());
+		try {
+			Class targetClass = peripheralAdapter.getTargetClass();
+			if (targetClass != null) {
+				for (Method method : peripheralAdapter.getClass().getMethods()) {
+					LuaMethod annotation = method.getAnnotation(LuaMethod.class);
+					if (annotation != null) {
+						Class[] parameters = method.getParameterTypes();
+						if (!IComputerAccess.class.isAssignableFrom(parameters[0])) {
+							throw new Exception(String.format("Parameter 1 of %s must be IComputerAccess", method.getName()));
+						}
+						if (!parameters[1].isAssignableFrom(peripheralAdapter.getTargetClass())) {
+							throw new Exception(String.format("Parameter 2 of %s must be a %s", method.getName(), peripheralAdapter.getTargetClass().getSimpleName()));
+						}
+						if (!classList.containsKey(targetClass)) {
+							classList.put(targetClass, new ArrayList<MethodDeclaration>());
+						}
+						classList.get(targetClass).add(new MethodDeclaration(annotation, method, peripheralAdapter));
 					}
-					classList.get(targetClass).add(new MethodDeclaration(annotation, method, peripheralAdapter));
 				}
 			}
+		}catch(Exception e) {
+			e.printStackTrace();
 		}
 	}
 	

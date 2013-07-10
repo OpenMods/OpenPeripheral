@@ -10,7 +10,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import openperipheral.OpenPeripheral;
 import openperipheral.core.ConfigSettings;
-import openperipheral.core.block.TileEntitySensor;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public class BlockSensor extends BlockContainer {

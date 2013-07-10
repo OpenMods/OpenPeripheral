@@ -2,6 +2,7 @@ package openperipheral.robots.block;
 
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
@@ -30,6 +31,11 @@ public class BlockRobot extends BlockContainer {
 		}
 		player.openGui(OpenPeripheral.instance, OpenPeripheral.Gui.robot.ordinal(), world, x, y, z);
 		return true;
+	}
+
+	@Override
+	public void registerIcons(IconRegister registry) {
+		blockIcon = registry.registerIcon("openperipheral:robot");
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package openperipheral.core;
 
 public class Mods {
+	public static final String IC2 = "IC2";
 	public static final String BUILDCRAFT = "BuildCraft|Core";
 	public static final String APPLIED_ENERGISTICS = "AppliedEnergistics";
 	public static final String FORESTRY = "Forestry";
