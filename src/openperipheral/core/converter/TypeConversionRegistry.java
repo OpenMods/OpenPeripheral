@@ -10,7 +10,7 @@ public class TypeConversionRegistry {
 
 	private static ArrayList<ITypeConverter> converters = new ArrayList<ITypeConverter>();
 
-	public static void registryTypeConverter(ITypeConverter converter) {
+	public static void registerTypeConverter(ITypeConverter converter) {
 		converters.add(converter);
 	}
 

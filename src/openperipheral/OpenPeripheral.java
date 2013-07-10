@@ -7,8 +7,17 @@ import openperipheral.api.RobotUpgradeManager;
 import openperipheral.core.AdapterManager;
 import openperipheral.core.CommonProxy;
 import openperipheral.core.ConfigSettings;
+import openperipheral.core.Mods;
 import openperipheral.core.PeripheralHandler;
 import openperipheral.core.TickHandler;
+import openperipheral.core.adapter.AdapterBrewingStand;
+import openperipheral.core.adapter.AdapterComparator;
+import openperipheral.core.adapter.AdapterFluidHandler;
+import openperipheral.core.adapter.AdapterGlassesBridge;
+import openperipheral.core.adapter.AdapterInventory;
+import openperipheral.core.adapter.AdapterNoteBlock;
+import openperipheral.core.adapter.AdapterObject;
+import openperipheral.core.adapter.AdapterRecordPlayer;
 import openperipheral.core.block.BlockPlayerInventory;
 import openperipheral.core.block.BlockProxy;
 import openperipheral.core.block.BlockTicketMachine;
@@ -19,14 +28,8 @@ import openperipheral.core.converter.ConverterForgeDirection;
 import openperipheral.core.converter.ConverterILiquidTank;
 import openperipheral.core.converter.ConverterItemStack;
 import openperipheral.core.converter.TypeConversionRegistry;
-import openperipheral.core.integration.openperipheral.AdapterGlassesBridge;
-import openperipheral.core.integration.vanilla.AdapterBrewingStand;
-import openperipheral.core.integration.vanilla.AdapterComparator;
-import openperipheral.core.integration.vanilla.AdapterFluidHandler;
-import openperipheral.core.integration.vanilla.AdapterInventory;
-import openperipheral.core.integration.vanilla.AdapterNoteBlock;
-import openperipheral.core.integration.vanilla.AdapterObject;
-import openperipheral.core.integration.vanilla.AdapterRecordPlayer;
+import openperipheral.core.integration.ModuleAppEng;
+import openperipheral.core.integration.ModuleIC2;
 import openperipheral.core.item.ItemGeneric;
 import openperipheral.core.item.ItemGlasses;
 import openperipheral.core.item.ItemRemote;
@@ -41,6 +44,7 @@ import openperipheral.robots.upgrade.movement.ProviderMovementUpgrade;
 import openperipheral.robots.upgrade.sensor.ProviderSensorUpgrade;
 import openperipheral.robots.upgrade.targeting.ProviderTargetingUpgrade;
 import openperipheral.sensor.block.BlockSensor;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.SidedProxy;
@@ -107,11 +111,11 @@ public class OpenPeripheral {
 		proxy.init();
 		proxy.registerRenderInformation();
 
-		TypeConversionRegistry.registryTypeConverter(new ConverterArray());
-		TypeConversionRegistry.registryTypeConverter(new ConverterDouble());
-		TypeConversionRegistry.registryTypeConverter(new ConverterItemStack());
-		TypeConversionRegistry.registryTypeConverter(new ConverterILiquidTank());
-		TypeConversionRegistry.registryTypeConverter(new ConverterForgeDirection());
+		TypeConversionRegistry.registerTypeConverter(new ConverterArray());
+		TypeConversionRegistry.registerTypeConverter(new ConverterDouble());
+		TypeConversionRegistry.registerTypeConverter(new ConverterItemStack());
+		TypeConversionRegistry.registerTypeConverter(new ConverterILiquidTank());
+		TypeConversionRegistry.registerTypeConverter(new ConverterForgeDirection());
 		
 		AdapterManager.addPeripheralAdapter(new AdapterInventory());
 		AdapterManager.addPeripheralAdapter(new AdapterNoteBlock());
@@ -129,6 +133,14 @@ public class OpenPeripheral {
 			RobotUpgradeManager.registerUpgradeProvider(new ProviderFuelUpgrade());
 			RobotUpgradeManager.registerUpgradeProvider(new ProviderInventoryUpgrade());
 			RobotUpgradeManager.registerUpgradeProvider(new ProviderTargetingUpgrade());
+		}
+		
+		if (Loader.isModLoaded(Mods.APPLIED_ENERGISTICS)) {
+			ModuleAppEng.init();
+		}
+		
+		if (Loader.isModLoaded(Mods.IC2)) {
+			ModuleIC2.init();
 		}
 		
 		TickRegistry.registerTickHandler(new TickHandler(), Side.SERVER);
