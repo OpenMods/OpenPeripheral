@@ -47,8 +47,8 @@ public class CommonProxy implements IGuiHandler {
 		OpenPeripheral.Blocks.proxy = new BlockProxy();
 		OpenPeripheral.Blocks.playerInventory = new BlockPlayerInventory();
 		OpenPeripheral.Blocks.sensor = new BlockSensor();
+		OpenPeripheral.Blocks.robot = new BlockRobot();
 		if (ConfigSettings.robotsEnabled) {
-			OpenPeripheral.Blocks.robot = new BlockRobot();
 		}
 
 		if (Loader.isModLoaded(Mods.RAILCRAFT)) {

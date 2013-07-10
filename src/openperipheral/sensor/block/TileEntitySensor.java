@@ -1,4 +1,4 @@
-package openperipheral.core.block;
+package openperipheral.sensor.block;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;

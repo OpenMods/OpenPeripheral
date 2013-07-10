@@ -12,6 +12,7 @@ import openperipheral.core.TickHandler;
 import openperipheral.core.TypeConversionRegistry;
 import openperipheral.core.adapter.AdapterGlassesBridge;
 import openperipheral.core.adapter.AdapterObject;
+import openperipheral.core.adapter.AdapterSensor;
 import openperipheral.core.adapter.vanilla.AdapterBrewingStand;
 import openperipheral.core.adapter.vanilla.AdapterComparator;
 import openperipheral.core.adapter.vanilla.AdapterFluidHandler;
@@ -27,6 +28,7 @@ import openperipheral.core.converter.ConverterDouble;
 import openperipheral.core.converter.ConverterForgeDirection;
 import openperipheral.core.converter.ConverterILiquidTank;
 import openperipheral.core.converter.ConverterItemStack;
+import openperipheral.core.converter.ConverterList;
 import openperipheral.core.integration.ModuleAppEng;
 import openperipheral.core.integration.ModuleIC2;
 import openperipheral.core.item.ItemGeneric;
@@ -112,6 +114,7 @@ public class OpenPeripheral {
 		proxy.registerRenderInformation();
 
 		TypeConversionRegistry.registerTypeConverter(new ConverterArray());
+		TypeConversionRegistry.registerTypeConverter(new ConverterList());
 		TypeConversionRegistry.registerTypeConverter(new ConverterDouble());
 		TypeConversionRegistry.registerTypeConverter(new ConverterItemStack());
 		TypeConversionRegistry.registerTypeConverter(new ConverterILiquidTank());
@@ -125,6 +128,7 @@ public class OpenPeripheral {
 		AdapterManager.addPeripheralAdapter(new AdapterRecordPlayer());
 		AdapterManager.addPeripheralAdapter(new AdapterFluidHandler());
 		AdapterManager.addPeripheralAdapter(new AdapterGlassesBridge());
+		AdapterManager.addPeripheralAdapter(new AdapterSensor());
 	
 		if (ConfigSettings.robotsEnabled) {
 			RobotUpgradeManager.registerUpgradeProvider(new ProviderMovementUpgrade());

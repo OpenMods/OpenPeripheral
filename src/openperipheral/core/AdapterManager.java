@@ -21,14 +21,14 @@ public class AdapterManager {
 			if (targetClass != null) {
 				for (Method method : peripheralAdapter.getClass().getMethods()) {
 					LuaMethod annotation = method.getAnnotation(LuaMethod.class);
-					Class[] parameters = method.getParameterTypes();
-					if (!IComputerAccess.class.isAssignableFrom(parameters[0])) {
-						throw new Exception(String.format("Parameter 1 of %s must be IComputerAccess", method.getName()));
-					}
-					if (!peripheralAdapter.getTargetClass().isAssignableFrom(parameters[1])) {
-						throw new Exception(String.format("Parameter 2 of %s must be a %s", peripheralAdapter.getTargetClass().getSimpleName()));
-					}
 					if (annotation != null) {
+						Class[] parameters = method.getParameterTypes();
+						if (!IComputerAccess.class.isAssignableFrom(parameters[0])) {
+							throw new Exception(String.format("Parameter 1 of %s must be IComputerAccess", method.getName()));
+						}
+						if (!parameters[1].isAssignableFrom(peripheralAdapter.getTargetClass())) {
+							throw new Exception(String.format("Parameter 2 of %s must be a %s", method.getName(), peripheralAdapter.getTargetClass().getSimpleName()));
+						}
 						if (!classList.containsKey(targetClass)) {
 							classList.put(targetClass, new ArrayList<MethodDeclaration>());
 						}
