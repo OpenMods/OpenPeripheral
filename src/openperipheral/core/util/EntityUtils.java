@@ -6,7 +6,9 @@ import java.util.Map;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.EnumMovingObjectType;
 import net.minecraft.util.MovingObjectPosition;
@@ -32,6 +34,18 @@ public class EntityUtils {
 		}
 
 		map.put("type", entity.getEntityName());
+		
+		if (entity.riddenByEntity != null) {
+			map.put("riddenBy", entityToMap(entity.riddenByEntity, relativePos));
+		}
+
+		if (entity.ridingEntity != null) {
+			map.put("riding", entityToMap(entity.ridingEntity, relativePos));
+		}
+		
+		if (entity instanceof IInventory) {
+			map.put("inventory", InventoryUtils.invToMap((IInventory)entity));
+		}
 		
 		if (entity instanceof EntityLivingBase) {
 			

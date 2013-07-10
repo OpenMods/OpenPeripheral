@@ -25,10 +25,12 @@ public interface IRobot {
 	public float getYaw();
 	public void setMaxHealth(int maxHealth);
 	public int getMaxHealth();
-	public void fireEvent(String eventName, Object[] args);
+	public void fireEvent(String eventName, Object ... args);
 	public void fireEvent(String eventName);
 	public boolean isLinkedToController();
 	public IInventory getInventory();
 	public MovingObjectPosition getLookingAt();
 	public EnumRobotType getRobotType();
+	public int getRobotId();
+	public boolean isJumping();
 }

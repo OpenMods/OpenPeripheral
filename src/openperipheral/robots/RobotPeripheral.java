@@ -38,72 +38,74 @@ public class RobotPeripheral extends HostedPeripheral {
 
 	@Override
 	public void initialize() {
+		
 		methods = new ArrayList<MethodDeclaration>();
 		List<IRobotUpgradeProvider> providers = RobotUpgradeManager.getProviders();
+		
 		for (IRobotUpgradeProvider provider : providers) {
 			methods.addAll(getMethodsForProvider(provider));
 		}
+		
 		methodNames = new String[methods.size()];
 		for (int i = 0; i < methods.size(); i++) {
 			methodNames[i] = methods.get(i).getLuaName();
 		}
+		
 		type = "robot";
 	}
 
 	@Override
 	public Object[] callMethod(final IComputerAccess computer, ILuaContext context,
 			int index, Object[] arguments) throws Exception {
-		
+
 		final MethodDeclaration method = methods.get(index);
 		
+		// if this method is robot method, we dont want to bother sending in
+		// the computer and the robot target. these are already defined within
+		// the robot instance
 		if (method instanceof RobotMethodDeclaration) {
-			
+
+			// so we get the required parameters. Keep in mind that the robotId is automagically
+			// prepended to the list of required parameters
 			Class[] requiredParameters = method.getRequiredParameters();
 
+			// if we dont have the correct number of params, throw an exception
 			if (requiredParameters.length != arguments.length) {
 				throw new Exception(String.format("Invalid number of parameters. Expected %s", requiredParameters.length));
 			}
 			
+			// for each of the parameters, check it's the right type
 			for (int i = 0; i < arguments.length; i++) {
 				arguments[i] = TypeConversionRegistry.fromLua(arguments[i], requiredParameters[i]);
 			}
 			
+			// now we make a new array but excluding the robotId (the first argument)
 			Object[] formattedParametersTmp = new Object[arguments.length - 1];
 			System.arraycopy(arguments, 1, formattedParametersTmp, 0, formattedParametersTmp.length);
 			
+			// stick it in a new object marked as final
 			final Object[] formattedParameters = formattedParametersTmp;
-			
+
+			// grab the robot id from the previous array
 			int robotId = (Integer) arguments[0];
-			
+
+			// get the controller and its world object
 			TileEntityRobot controller = (TileEntityRobot) target;
 			
-			World worldObj = controller.worldObj;
+			worldObj = controller.worldObj;
 			
+			// get a reference to the robot using this ID
 			EntityRobot robot = controller.getRobotById(robotId);
-			
+
+			// find which upgrade instance is responsible for this lua method
 			final IRobotUpgradeInstance upgradeInstance = robot.getInstanceForLuaMethod(method.getLuaName());
-			
+
 			if (upgradeInstance == null) {
 				throw new Exception("Unable to find the relevant upgrade.");
 			}
-			
-			if (method.onTick()) {
-				Future callback = TickHandler.addTickCallback(worldObj, new Callable() {
-					@Override
-					public Object call() throws Exception {
-						Object[] response = formatResponse(method.getMethod().invoke(upgradeInstance, formattedParameters));
-						computer.queueEvent("openperipheral_response", response);
-						return null;
-					}
-				});
-				Object[] event = context.pullEvent("openperipheral_response");
-				Object[] response = new Object[event.length - 1];
-				System.arraycopy(event, 1, response, 0, response.length);
-				return response;
-			}else {
-				return formatResponse(method.getMethod().invoke(upgradeInstance, formattedParameters));
-			}
-			
+
+			// finally, we call the method!
+			return callOnTarget(computer, context, method, upgradeInstance, formattedParameters);
 			
 		} else {
 			return super.callMethod(computer, context, index, arguments);
