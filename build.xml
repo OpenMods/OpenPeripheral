@@ -16,8 +16,8 @@
 
 	<property name="mcpsrc.dir"          value="${mcp.dir}/src/minecraft"/>
 
-	<property name="mc.version"          value="1.5.2"/>
-	<property name="forge.version"       value="7.8.1.738"/>
+	<property name="mc.version"          value="1.6.2"/>
+	<property name="forge.version"       value="9.10.0.789"/>
 	<property name="mod.version"         value="0.2.0"/>
 	<property name="mod.name"	     value="OpenPeripheral"/>
 	
@@ -112,8 +112,8 @@
 		</copy>
 		
 		<!-- Copy resources -->
-		<copy todir="${classes.dir}/mods/openperipheral">
-			<fileset dir="mods/openperipheral" />
+		<copy todir="${classes.dir}/assets/openperipheral">
+			<fileset dir="assets/openperipheral" />
 		</copy>
 
 		<!-- Copy resources -->

@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import openperipheral.core.converter.TypeConversionRegistry;
+import openperipheral.core.TypeConversionRegistry;
 
 public class ReflectionHelper {
 

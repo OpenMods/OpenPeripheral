@@ -3,7 +3,7 @@ package openperipheral.sensor.client;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import openperipheral.core.block.TileEntitySensor;
+import openperipheral.sensor.block.TileEntitySensor;
 
 import org.lwjgl.opengl.GL11;
 

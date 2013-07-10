@@ -3,6 +3,7 @@ package openperipheral.core.converter;
 import java.util.HashMap;
 
 import openperipheral.api.ITypeConverter;
+import openperipheral.core.TypeConversionRegistry;
 
 public class ConverterArray implements ITypeConverter {
 

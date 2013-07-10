@@ -1,6 +1,7 @@
 package openperipheral.core.util;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.inventory.IInventory;
@@ -79,14 +80,10 @@ public class InventoryUtils {
 		}
 	}
 	
-	public static void invToMap(HashMap map, IInventory inventory) {
+	public static Map invToMap(IInventory inventory) {
+		HashMap map = new HashMap();
 		for (int i = 0; i < inventory.getSizeInventory(); i++) {
-			HashMap slotMap = (HashMap) map.get((i + 1));
-			if (slotMap == null) {
-				slotMap = new HashMap();
-				map.put((i + 1), slotMap);
-			}
-			itemstackToMap(slotMap, inventory.getStackInSlot(i));
+			map.put((i + 1), itemstackToMap(inventory.getStackInSlot(i)));
 		}
 		
 		if (inventory.getClass().getName() == FACTORIZATION_BARREL_CLASS) {
@@ -100,10 +97,13 @@ public class InventoryUtils {
 			} catch (Exception e) {
 			}
 		}
+		return map;
 	}
 	
-	public static void itemstackToMap(HashMap map, ItemStack itemstack) {
+	public static Map itemstackToMap(ItemStack itemstack) {
 
+		HashMap map = new HashMap();
+		
 		if (itemstack == null) {
 
 			map.put("id", 0);
@@ -122,6 +122,8 @@ public class InventoryUtils {
 			map.put("maxSize", itemstack.getMaxStackSize());
 
 		}
+		
+		return map;
 	}
 
 	protected static HashMap getBookEnchantments(ItemStack stack) {

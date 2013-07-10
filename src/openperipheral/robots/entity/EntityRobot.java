@@ -19,12 +19,12 @@ import openperipheral.OpenPeripheral;
 import openperipheral.api.IRobot;
 import openperipheral.api.IRobotUpgradeInstance;
 import openperipheral.api.IRobotUpgradeProvider;
-import openperipheral.api.RobotUpgradeManager;
 import openperipheral.core.OPInventory;
 import openperipheral.core.interfaces.IInventoryCallback;
 import openperipheral.core.util.BlockUtils;
 import openperipheral.robots.RobotMethodDeclaration;
 import openperipheral.robots.RobotPeripheral;
+import openperipheral.robots.RobotUpgradeManager;
 import openperipheral.robots.block.TileEntityRobot;
 
 public abstract class EntityRobot extends EntityCreature implements IRobot, IInventoryCallback {

@@ -1,5 +1,6 @@
 package openperipheral.core.peripheral;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
@@ -10,7 +11,7 @@ import openperipheral.api.IMultiReturn;
 import openperipheral.core.AdapterManager;
 import openperipheral.core.MethodDeclaration;
 import openperipheral.core.TickHandler;
-import openperipheral.core.converter.TypeConversionRegistry;
+import openperipheral.core.TypeConversionRegistry;
 import openperipheral.core.interfaces.IAttachable;
 import openperipheral.core.util.MiscUtils;
 import dan200.computer.api.IComputerAccess;
@@ -71,15 +72,33 @@ public class HostedPeripheral implements IHostedPeripheral {
 			Future callback = TickHandler.addTickCallback(getWorldObject(), new Callable() {
 				@Override
 				public Object call() throws Exception {
-					Object[] response = formatResponse(method.getMethod().invoke(method.getTarget(), formattedParameters));
-					computer.queueEvent("openperipheral_response", response);
+					try {
+						Object[] response = formatResponse(method.getMethod().invoke(method.getTarget(), formattedParameters));
+						Object[] prefixedResponse = new Object[response.length + 1];
+						System.arraycopy(response, 0, prefixedResponse, 1, response.length);
+						prefixedResponse[0] = 1; // success
+						computer.queueEvent("openperipheral_response", prefixedResponse);
+					}catch(Throwable e) {
+						if (e instanceof InvocationTargetException) {
+							e = ((InvocationTargetException) e).getCause();
+						}
+						computer.queueEvent("openperipheral_response", new Object[] { 0, e.getMessage() });
+					}
 					return null;
 				}
 			});
 			Object[] event = context.pullEvent("openperipheral_response");
-			Object[] response = new Object[event.length - 1];
-			System.arraycopy(event, 1, response, 0, response.length);
+			
+			// if the object returned is an exception/error, lets throw it.
+			if (((int)(double)(Double)event[1]) == 0) {
+				throw new Exception((String)(event[2]));
+			}
+			
+			// return the result
+			Object[] response = new Object[event.length - 2];
+			System.arraycopy(event, 2, response, 0, response.length);
 			return response;
+			
 		}else {
 			return formatResponse(method.getMethod().invoke(method.getTarget(), formattedParameters));
 		}
