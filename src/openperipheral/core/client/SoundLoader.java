@@ -29,32 +29,9 @@ public class SoundLoader {
 				"lazer1.ogg",
 				"robotready.ogg"
 		};
-
-		File resourcesDirectory = new File(mc.mcDataDir, "resources/openperipheral/");
-
-		if (!resourcesDirectory.exists()) {
-			resourcesDirectory.mkdir();
-		}
-
-		for (String fileName : soundFiles) {
-			try {
-				File soundFile = new File(resourcesDirectory, fileName);
-				if (!soundFile.exists()) {
-
-					InputStream streamIn = OpenPeripheral.class.getResourceAsStream(ConfigSettings.RESOURCE_PATH + "/sounds/" + fileName);
-					BufferedOutputStream streamOut = new BufferedOutputStream(new FileOutputStream(soundFile));
-					byte[] buffer = new byte[1024];
-					for (int len = 0; (len = streamIn.read(buffer)) >= 0;) {
-						streamOut.write(buffer, 0, len);
-					}
-					streamIn.close();
-					streamOut.close();
-				}
-
-				//event.manager.soundPoolSounds.addSound("openperipheral/" + fileName, soundFile);
-			} catch (Exception e) {
-				System.out.println("Couldnt load "+ fileName);
-			}
+		
+		for (String soundFile : soundFiles) {
+			event.manager.soundPoolSounds.addSound("openperipheral:" + soundFile);			
 		}
 	}
 }

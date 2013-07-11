@@ -14,6 +14,7 @@ import openperipheral.core.MethodDeclaration;
 import openperipheral.core.TickHandler;
 import openperipheral.core.TypeConversionRegistry;
 import openperipheral.core.peripheral.HostedPeripheral;
+import openperipheral.core.util.MiscUtils;
 import openperipheral.robots.block.TileEntityRobot;
 import openperipheral.robots.entity.EntityRobot;
 import dan200.computer.api.IComputerAccess;
@@ -46,9 +47,11 @@ public class RobotPeripheral extends HostedPeripheral {
 			methods.addAll(getMethodsForProvider(provider));
 		}
 		
-		methodNames = new String[methods.size()];
+		methodNames = new String[methods.size() + 1];
+		
+		methodNames[0] = "listMethods";
 		for (int i = 0; i < methods.size(); i++) {
-			methodNames[i] = methods.get(i).getLuaName();
+			methodNames[i + 1] = methods.get(i).getLuaName();
 		}
 		
 		type = "robot";
@@ -58,6 +61,12 @@ public class RobotPeripheral extends HostedPeripheral {
 	public Object[] callMethod(final IComputerAccess computer, ILuaContext context,
 			int index, Object[] arguments) throws Exception {
 
+		if (index == 0) {
+			return new Object[] { MiscUtils.documentMethods(methods) };
+		}
+
+		index--;
+		
 		final MethodDeclaration method = methods.get(index);
 		
 		// if this method is robot method, we dont want to bother sending in
