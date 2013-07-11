@@ -167,7 +167,7 @@ public class InstanceLazersUpgrade implements IRobotUpgradeInstance {
 		}
 		if (cellStack != null) {
 			EntityCreature entity = robot.getEntity();
-			entity.playSound("openperipheral.lazer", 1F, entity.worldObj.rand.nextFloat() + 0.4f);
+			entity.playSound("openperipheral:lazer", 1F, entity.worldObj.rand.nextFloat() + 0.4f);
 			EntityLazer lazer = new EntityLazer(entity.worldObj, entity);
 			lazer.setExplosive(isExplosive);
 			lazer.setDamageBlocks(canDamageBlocks);

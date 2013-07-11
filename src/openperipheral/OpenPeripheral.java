@@ -4,6 +4,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import openperipheral.core.AdapterManager;
+import openperipheral.core.BasicMount;
 import openperipheral.core.CommonProxy;
 import openperipheral.core.ConfigSettings;
 import openperipheral.core.Mods;
@@ -67,6 +68,8 @@ public class OpenPeripheral {
 	@SidedProxy(clientSide = "openperipheral.core.client.ClientProxy", serverSide = "openperipheral.core.CommonProxy")
 	public static CommonProxy proxy;
 
+	public static BasicMount mount = new BasicMount();
+	
 	public static CreativeTabs tabOpenPeripheral = new CreativeTabs("tabOpenPeripheral") {
 		public ItemStack getIconItemStack() {
 			return new ItemStack(OpenPeripheral.Items.glasses, 1, 0);

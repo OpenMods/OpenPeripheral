@@ -1,12 +1,20 @@
 package openperipheral.core.peripheral;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.ModContainer;
+
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import openperipheral.OpenPeripheral;
 import openperipheral.api.IMultiReturn;
 import openperipheral.core.AdapterManager;
 import openperipheral.core.MethodDeclaration;
@@ -17,6 +25,7 @@ import openperipheral.core.util.MiscUtils;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IHostedPeripheral;
 import dan200.computer.api.ILuaContext;
+import dan200.computer.api.IMount;
 
 public class HostedPeripheral implements IHostedPeripheral {
 
@@ -28,6 +37,8 @@ public class HostedPeripheral implements IHostedPeripheral {
 	protected String type;
 	protected Object target;
 	protected World worldObj;
+	
+	private static HashMap<Integer, Integer> mountMap = new HashMap<Integer, Integer>();
 	
 	public HostedPeripheral(Object target, World worldObj) {
 
@@ -171,6 +182,18 @@ public class HostedPeripheral implements IHostedPeripheral {
 
 	@Override
 	public void attach(IComputerAccess computer) {
+		int id = computer.getID();
+		
+		int mountCount = 0;
+		if (mountMap.containsKey(id)) {
+			mountCount = mountMap.get(id);
+		}
+		if (mountCount < 1) {
+			mountCount = 0;
+			computer.mount("openp", OpenPeripheral.mount);
+		}
+		mountMap.put(id, mountCount+1);
+		
 		if (target instanceof IAttachable) {
 			((IAttachable)target).addComputer(computer);
 		}
@@ -178,6 +201,22 @@ public class HostedPeripheral implements IHostedPeripheral {
 
 	@Override
 	public void detach(IComputerAccess computer) {
+		int id = computer.getID();
+		int mountCount = 0;
+		if (mountMap.containsKey(id)) {
+			mountCount = mountMap.get(id);
+		}
+		mountCount--;
+		if (mountCount < 1) {
+			mountCount = 0;
+			try {
+				computer.unmount("openp");
+			}catch(Exception e) {
+				
+			}
+		}
+		mountMap.put(id, mountCount);
+		
 		if (target instanceof IAttachable) {
 			((IAttachable)target).removeComputer(computer);
 		}
