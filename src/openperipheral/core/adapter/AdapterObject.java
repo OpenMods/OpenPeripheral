@@ -7,6 +7,7 @@ import openperipheral.api.IPeripheralAdapter;
 import openperipheral.api.LuaMethod;
 import openperipheral.core.AdapterManager;
 import openperipheral.core.MethodDeclaration;
+import openperipheral.core.util.MiscUtils;
 import dan200.computer.api.IComputerAccess;
 
 public class AdapterObject implements IPeripheralAdapter {
@@ -18,23 +19,7 @@ public class AdapterObject implements IPeripheralAdapter {
 
 	@LuaMethod
 	public String listMethods(IComputerAccess computer, Object object) {
-
-		StringBuilder builder = new StringBuilder();
-
-		ArrayList<MethodDeclaration> methods = AdapterManager.getMethodsForTarget(object);
-		Iterator<MethodDeclaration> methodsIterator = methods.iterator();
-		while (methodsIterator.hasNext()) {
-			MethodDeclaration method = methodsIterator.next();
-			builder.append(method.getLuaName());
-			builder.append("(");
-			builder.append(")");
-			if (!methodsIterator.hasNext()) {
-				break;
-			}
-			builder.append("\n");
-		}
-
-		return builder.toString();
+		return MiscUtils.documentMethods(AdapterManager.getMethodsForTarget(object));
 	}
 
 }

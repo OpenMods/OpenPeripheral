@@ -7,6 +7,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ChatMessageComponent;
 import net.minecraft.world.World;
 import openperipheral.OpenPeripheral;
 import openperipheral.codechicken.core.vec.Rotation;
@@ -57,14 +58,15 @@ public class ItemRobot extends Item {
 		    	if (robot.createFromItem(stack)) {
 			    	robot.setPositionAndRotation(pos.x, pos.y + 0.5, pos.z, 0, 0);
 			    	world.spawnEntityInWorld(robot);
-			    	robot.playSound("openperipheral.robotready", 1F, 1F);
+			    	robot.playSound("openperipheral:robotready", 1F, 1F);
 			    	stack.stackSize = 0;
 			    } else {
 		    		// make sure he's gone
 		    		robot.setDead();
 		    		// tell the player
 		    		//TODO: fix
-		    		//player.sendChatToPlayer("Unable to spawn robot. Are you sure he's linked up to an active controller?");
+		    		player.sendChatToPlayer(ChatMessageComponent.func_111077_e("Unable to spawn robot. Are you sure he's linked up to an active controller?"));
+		    		//player.sendChatToPlayer("");
 		    	}
 			}
 			

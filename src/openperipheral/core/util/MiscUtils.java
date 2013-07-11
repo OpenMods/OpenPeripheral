@@ -1,10 +1,14 @@
 package openperipheral.core.util;
 
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Iterator;
+import java.util.List;
 
 import net.minecraft.item.ItemStack;
 import openperipheral.OpenPeripheral;
+import openperipheral.core.MethodDeclaration;
 
 public class MiscUtils {
 	public static boolean canBeGlasses(ItemStack stack) {
@@ -37,5 +41,24 @@ public class MiscUtils {
 	
 	public static String getNameForTarget(Object target) {
 		return "test";
+	}
+	
+	public static String documentMethod(MethodDeclaration method) {
+		return String.format("%s()", method.getLuaName());
+	}
+	
+	public static String documentMethods(List<MethodDeclaration> methods) {
+		StringBuilder builder = new StringBuilder();
+		Iterator<MethodDeclaration> methodsIterator = methods.iterator();
+		while (methodsIterator.hasNext()) {
+			MethodDeclaration method = methodsIterator.next();
+			builder.append(MiscUtils.documentMethod(method));
+			if (!methodsIterator.hasNext()) {
+				break;
+			}
+			builder.append(" ");
+		}
+
+		return builder.toString();
 	}
 }

@@ -111,7 +111,7 @@ public class InstanceMovementUpgrade implements IRobotUpgradeInstance {
 		if (!robot.isJumping()) {
 			creature.getJumpHelper().setJumping();
 			ForgeHooks.onLivingJump(creature);
-			creature.playSound("openperipheral.robotjump", 1F, 1F);
+			creature.playSound("openperipheral:robotjump", 1F, 1F);
 		}
 	}
 	

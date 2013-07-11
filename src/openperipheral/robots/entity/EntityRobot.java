@@ -392,7 +392,7 @@ public abstract class EntityRobot extends EntityCreature implements IRobot, IInv
 
 	@Override
 	protected void playStepSound(int par1, int par2, int par3, int par4) {
-		this.playSound("openperipheral.robotstepping", 1F, 1F);
+		this.playSound("openperipheral:robotstepping", 1F, 1F);
 	}
 
 	@Override

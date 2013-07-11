@@ -99,7 +99,7 @@ public class AdapterSensor implements IPeripheralAdapter {
 	}
 
 	@LuaMethod
-	public Map sonicScan(Object object, ISensorEnvironment env) {
+	public Map sonicScan(IComputerAccess computer, ISensorEnvironment env) {
 		
 		int range = 1 + (int)(env.getSensorRange() / 6);
 		World world = env.getWorld();
