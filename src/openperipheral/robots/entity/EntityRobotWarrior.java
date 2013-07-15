@@ -1,6 +1,8 @@
 package openperipheral.robots.entity;
 
 import net.minecraft.entity.WatchableObject;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import openperipheral.api.EnumRobotType;
 import openperipheral.api.ILazerRobot;

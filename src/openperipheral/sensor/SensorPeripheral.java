@@ -1,34 +1,17 @@
 package openperipheral.sensor;
 
-import openperipheral.core.AdapterManager;
-import openperipheral.core.interfaces.ISensorEnvironment;
-import openperipheral.core.peripheral.HostedPeripheral;
-import openperipheral.core.util.MiscUtils;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-import dan200.computer.api.IComputerAccess;
-import dan200.computer.api.IHostedPeripheral;
-import dan200.computer.api.ILuaContext;
+import openperipheral.core.peripheral.HostedPeripheral;
 
-public class SensorPeripheral extends HostedPeripheral implements IHostedPeripheral {
+public class SensorPeripheral extends HostedPeripheral {
 
-	public SensorPeripheral(ISensorEnvironment target, World worldObj) {
-		super(target, worldObj);
+	public SensorPeripheral(Object targetObject) {
+		super(targetObject);
 	}
-	
+
 	@Override
-	public void initialize() {
-
-		methods = AdapterManager.getMethodsForTarget(this);
-		
-		methodNames = new String[methods.size()];
-		for (int i = 0; i < methods.size(); i++) {
-			methodNames[i] = methods.get(i).getLuaName();
-		}
-		
-		type = MiscUtils.getNameForTarget(target);
-
+	public World getWorldObject() {
+		return ((TurtleSensorEnvironment)targetObject).getWorld();
 	}
 	
-
 }

@@ -47,7 +47,7 @@ public class BlockSensor extends BlockContainer {
 
 	@Override
 	public void registerIcons(IconRegister iconRegister) {
-		turtleIcon = iconRegister.registerIcon("openperipheral:turtleSensor");
+		turtleIcon = iconRegister.registerIcon("openperipheral:sensorturtle");
 		icon = iconRegister.registerIcon("openperipheral:sensor");
 	}
 

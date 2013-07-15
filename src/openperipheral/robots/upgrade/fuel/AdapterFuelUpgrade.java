@@ -2,20 +2,24 @@ package openperipheral.robots.upgrade.fuel;
 
 import java.util.HashMap;
 
+import dan200.computer.api.IComputerAccess;
+
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import openperipheral.api.Arg;
 import openperipheral.api.IRobot;
-import openperipheral.api.IRobotUpgradeInstance;
+import openperipheral.api.IRobotUpgradeAdapter;
 import openperipheral.api.LuaMethod;
+import openperipheral.api.LuaType;
 import openperipheral.core.util.RobotUtils;
 
-public class InstanceFuelUpgrade implements IRobotUpgradeInstance {
+public class AdapterFuelUpgrade implements IRobotUpgradeAdapter {
 
 	private IRobot robot;
 	
-	public InstanceFuelUpgrade(IRobot robot) {
+	public AdapterFuelUpgrade(IRobot robot) {
 		this.robot = robot;
 	}
 	
@@ -47,13 +51,21 @@ public class InstanceFuelUpgrade implements IRobotUpgradeInstance {
 		
 	}
 	
-	@LuaMethod
-	public float getFuelLevel() {
+	@LuaMethod(
+		description=""
+	)
+	public float getFuelLevel(IComputerAccess computer, IRobot robot) {
 		return robot.getFuelLevel();
 	}
 	
-	@LuaMethod
-	public boolean refuel(int slot, int maxAmount) {
+	@LuaMethod(
+		description="Refuel the robot",
+		args = {
+			@Arg(type=LuaType.NUMBER, name="slot"),
+			@Arg(type=LuaType.NUMBER, name="maxAmount")
+		}
+	)
+	public boolean refuel(IComputerAccess computer, IRobot robot, int slot, int maxAmount) {
 		IInventory inventory = robot.getInventory();
 		if (slot < 0 || slot >= inventory.getSizeInventory()) {
 			return false;

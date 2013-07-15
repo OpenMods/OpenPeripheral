@@ -13,7 +13,7 @@ public interface IRobotUpgradeProvider {
 	 * another upgrade, create another upgradedefinition!
 	 * @return
 	 */
-	public IRobotUpgradeInstance provideUpgradeInstance(IRobot robot, int tier);
+	public IRobotUpgradeAdapter provideUpgradeInstance(IRobot robot, int tier);
 	
 	/**
 	 * A unique string ID

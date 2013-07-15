@@ -3,11 +3,19 @@ package openperipheral.core.util;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
+import net.minecraft.block.Block;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import openperipheral.OpenPeripheral;
+import openperipheral.api.Arg;
 import openperipheral.core.MethodDeclaration;
 
 public class MiscUtils {
@@ -40,14 +48,52 @@ public class MiscUtils {
 	}
 	
 	public static String getNameForTarget(Object target) {
-		return "test";
+		String name = "";
+		if (target instanceof IInventory) {
+			name = ((IInventory) target).getInvName();
+		} else if (target instanceof TileEntity) {
+			TileEntity te = (TileEntity) target;
+			try {
+				NBTTagCompound tag = new NBTTagCompound();
+				te.writeToNBT(tag);
+				name = tag.getString("id");
+			}catch(Exception e) {
+				
+			}
+			if (name == null || name.equals("")) {
+                int x = te.xCoord;
+                int y = te.yCoord;
+                int z = te.zCoord;
+				int blockId = te.worldObj.getBlockId(x, y, z);
+                Block block = Block.blocksList[blockId];
+                int dmg = block.getDamageValue(te.worldObj, x, y, z);
+                ItemStack is = new ItemStack(blockId, 1, dmg);
+                try {
+	                    name = is.getDisplayName();
+	            } catch (Exception e) {
+	                    try {
+	                            name = is.getItemName();
+	                    } catch (Exception e2) {
+	                    }
+	            }
+	            if (name == null || name.equals("")) {
+	                    name = te.getClass().getName();
+	            }
+			}
+		}
+		if (name == null || name.equals("")) {
+			name = "peripheral";
+		}
+		name = name.replaceAll("[^a-zA-Z0-9]", "_");
+		name = name.toLowerCase();
+		return name;
 	}
 	
 	public static String documentMethod(MethodDeclaration method) {
 		return String.format("%s()", method.getLuaName());
 	}
 	
-	public static String documentMethods(List<MethodDeclaration> methods) {
+	public static String listMethods(List<MethodDeclaration> methods) {
 		StringBuilder builder = new StringBuilder();
 		Iterator<MethodDeclaration> methodsIterator = methods.iterator();
 		while (methodsIterator.hasNext()) {
@@ -60,5 +106,28 @@ public class MiscUtils {
 		}
 
 		return builder.toString();
+	}
+
+	public static Map documentMethods(List<MethodDeclaration> methods) {
+		Map map = new HashMap();
+		int i = 1;
+		for (MethodDeclaration method : methods) {
+			HashMap methodMap = new HashMap();
+			HashMap args = new HashMap();
+			map.put(i++, methodMap);
+			methodMap.put("name", method.getLuaName());
+			methodMap.put("description", method.getDescription());
+			methodMap.put("returnType", method.getReturnType().toString());
+			methodMap.put("args", args);
+			int j = 1;
+			for (Arg arg : method.getRequiredParameters()) {
+				HashMap argMap = new HashMap();
+				argMap.put("type", arg.type().toString());
+				argMap.put("name", arg.name());
+				argMap.put("description", arg.description());
+				args.put(j++, argMap);
+			}
+		}
+		return map;
 	}
 }

@@ -61,3 +61,4 @@ item.openperipheral.robot.name=OpenMech: Warrior
 itemGroup.tabOpenPeripheral=OpenPeripheral 
 
 openperipheral.gui.ticketmachine=Ticket Machine
+openperipheral.turtle.sensor.adjective=Sensor

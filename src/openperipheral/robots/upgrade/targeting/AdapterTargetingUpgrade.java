@@ -2,22 +2,26 @@ package openperipheral.robots.upgrade.targeting;
 
 import java.util.HashMap;
 
+import dan200.computer.api.IComputerAccess;
+
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
+import openperipheral.api.Arg;
 import openperipheral.api.IRobot;
-import openperipheral.api.IRobotUpgradeInstance;
+import openperipheral.api.IRobotUpgradeAdapter;
 import openperipheral.api.LuaMethod;
+import openperipheral.api.LuaType;
 import openperipheral.codechicken.core.vec.Rotation;
 import openperipheral.codechicken.core.vec.Vector3;
 
-public class InstanceTargetingUpgrade implements IRobotUpgradeInstance {
+public class AdapterTargetingUpgrade implements IRobotUpgradeAdapter {
 
 	private IRobot robot;
 	private int tier;
 	
-	public InstanceTargetingUpgrade(IRobot robot, int tier) {
+	public AdapterTargetingUpgrade(IRobot robot, int tier) {
 		this.robot = robot;
 		this.tier = tier;
 	}
@@ -57,14 +61,26 @@ public class InstanceTargetingUpgrade implements IRobotUpgradeInstance {
 		pos.yCoord += robot.getEyeHeight();
 		return pos;
 	}
-	
-	@LuaMethod
-	public void lookAt(double x, double y, double z) {
+
+	@LuaMethod(
+		args = {
+			@Arg(type=LuaType.NUMBER, name="x"),
+			@Arg(type=LuaType.NUMBER, name="y"),
+			@Arg(type=LuaType.NUMBER, name="z")
+		}
+	)
+	public void lookAt(IComputerAccess computer, IRobot robot, double x, double y, double z) {
 		aimAtFromVec(getEyePosition(), x, y, z);
 	}
 	
-	@LuaMethod
-	public void aimAt(double x, double y, double z) throws Exception {
+	@LuaMethod(
+		args = {
+			@Arg(type=LuaType.NUMBER, name="x"),
+			@Arg(type=LuaType.NUMBER, name="y"),
+			@Arg(type=LuaType.NUMBER, name="z")
+		}
+	)
+	public void aimAt(IComputerAccess computer, IRobot robot, double x, double y, double z) throws Exception {
 		if (tier < 2) {
 			throw new Exception("A higher tier upgrade is required");
 		}

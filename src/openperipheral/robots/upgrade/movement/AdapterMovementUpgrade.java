@@ -2,18 +2,23 @@ package openperipheral.robots.upgrade.movement;
 
 import java.util.HashMap;
 
+import dan200.computer.api.IComputerAccess;
+
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.ForgeHooks;
+import openperipheral.api.Arg;
+import openperipheral.api.EnumRobotType;
 import openperipheral.api.IMultiReturn;
 import openperipheral.api.IRobot;
-import openperipheral.api.IRobotUpgradeInstance;
+import openperipheral.api.IRobotUpgradeAdapter;
 import openperipheral.api.LuaMethod;
+import openperipheral.api.LuaType;
 
-public class InstanceMovementUpgrade implements IRobotUpgradeInstance {
+public class AdapterMovementUpgrade implements IRobotUpgradeAdapter {
 
 	private double targetX;
 	private double targetY;
@@ -22,7 +27,7 @@ public class InstanceMovementUpgrade implements IRobotUpgradeInstance {
 	private IRobot robot;
 	private int tier;
 	
-	public InstanceMovementUpgrade(IRobot robot, int tier) {
+	public AdapterMovementUpgrade(IRobot robot, int tier) {
 		this.robot = robot;
 		this.tier = tier;
 	}
@@ -51,8 +56,15 @@ public class InstanceMovementUpgrade implements IRobotUpgradeInstance {
 		return targetZ;
 	}
 
-	@LuaMethod(name="goto")
-	public void setTargetLocation(double x, double y, double z) {
+	@LuaMethod(
+		name="goto",
+		args = {
+			@Arg(type=LuaType.NUMBER, name="x"),
+			@Arg(type=LuaType.NUMBER, name="y"),
+			@Arg(type=LuaType.NUMBER, name="z")
+		}
+	)
+	public void setTargetLocation(IComputerAccess computer, IRobot robot, double x, double y, double z) {
 		targetX = x;
 		targetY = y;
 		targetZ = z;
@@ -70,7 +82,9 @@ public class InstanceMovementUpgrade implements IRobotUpgradeInstance {
 	@Override
 	public HashMap<Integer, EntityAIBase> getAITasks() {
 		HashMap<Integer, EntityAIBase> tasks = new HashMap<Integer, EntityAIBase>();
-		tasks.put(0,  new EntityAIGotoLocation(this, robot));
+		if (robot.getRobotType() == EnumRobotType.Warrior) {
+			tasks.put(0,  new EntityAIGotoLocation(this, robot));
+		}
 		return tasks;
 	}
 
@@ -85,7 +99,7 @@ public class InstanceMovementUpgrade implements IRobotUpgradeInstance {
 	}
 	
 	@LuaMethod
-	public IMultiReturn getLocation() throws Exception {
+	public IMultiReturn getLocation(IComputerAccess computer, IRobot robot) throws Exception {
 		if (tier < 3) {
 			throw new Exception("At least a tier 3 movement upgrade required");
 		}
@@ -103,7 +117,7 @@ public class InstanceMovementUpgrade implements IRobotUpgradeInstance {
 	}
 	
 	@LuaMethod
-	public void jump() throws Exception {
+	public void jump(IComputerAccess computer, IRobot robot) throws Exception {
 		if (tier < 2) {
 			throw new Exception("At least a tier 2 movement upgrade required");
 		}
@@ -115,23 +129,33 @@ public class InstanceMovementUpgrade implements IRobotUpgradeInstance {
 		}
 	}
 	
-	@LuaMethod
-	public void setPitch(float pitch) {
+
+	@LuaMethod(
+		args = {
+			@Arg(type=LuaType.NUMBER, name="pitch")
+		}
+	)
+	public void setPitch(IComputerAccess computer, IRobot robot, float pitch) {
 		robot.setPitch(pitch);
 	}
 	
 	@LuaMethod
-	public float getPitch() {
+	public float getPitch(IComputerAccess computer, IRobot robot) {
 		return robot.getPitch();
 	}
 	
-	@LuaMethod
-	public void setYaw(float yaw) {
+
+	@LuaMethod(
+		args = {
+			@Arg(type=LuaType.NUMBER, name="yaw")
+		}
+	)
+	public void setYaw(IComputerAccess computer, IRobot robot, float yaw) {
 		robot.setYaw(yaw);
 	}
 	
 	@LuaMethod
-	public float getYaw() {
+	public float getYaw(IComputerAccess computer, IRobot robot) {
 		return robot.getYaw();
 	}
 }
