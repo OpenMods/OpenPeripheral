@@ -105,10 +105,20 @@ public class HostedPeripheral implements IHostedPeripheral {
 						computer.queueEvent(EVENT_SUCCESS, response);
 
 					}catch(Throwable e) {
+						
+						String msg = "Unknown error. Please contact Mikee on esper.net IRC #OpenPeripheral";
+						
 						if (e instanceof ReflectiveOperationException) {
 							e = ((ReflectiveOperationException) e).getCause();
 						}
-						computer.queueEvent(EVENT_ERROR, new Object[] { e.getMessage() });
+						
+						if (e.getMessage() != null && !e.getMessage().equals("")) {
+							msg = e.getMessage();
+						}else {
+							e.printStackTrace();
+						}
+						
+						computer.queueEvent(EVENT_ERROR, new Object[] { msg });
 					}
 					return null;
 				}
@@ -125,6 +135,7 @@ public class HostedPeripheral implements IHostedPeripheral {
 				
 				// if it's an error, throw an exception
 				if (eventName.equals(EVENT_ERROR)) {
+					
 					throw new Exception((String) event[1]);
 				
 				// if it's a success, trim the event name from it and return the response

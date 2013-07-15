@@ -27,7 +27,7 @@ public class AdapterManager {
 	public static void addPeripheralAdapter(IPeripheralAdapter adapter) {
 		
 		Class targetClass = adapter.getTargetClass();
-		
+		System.out.println("Enabling adapter " + adapter);
 		try {
 			if (targetClass != null) {
 				

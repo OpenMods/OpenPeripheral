@@ -25,8 +25,8 @@ public class ConfigSettings {
 
 	private static String externalBase = "https://raw.github.com/mikeemoo/OpenPeripheral/master/";
 
-	public static String EXTERNAL_LUA_LISTING = String.format("%s%s", externalBase, "mods/openperipheral/scripts.txt");
-	public static String EXTERNAL_LUA_FOLDER = String.format("%s%s", externalBase, "mods/openperipheral/lua/");
+	public static String EXTERNAL_LUA_LISTING = String.format("%s%s", externalBase, "assets/openperipheral/scripts.txt");
+	public static String EXTERNAL_LUA_FOLDER = String.format("%s%s", externalBase, "assets/openperipheral/lua/");
 	public static String LOCAL_LUA_LISTING;
 	public static String LOCAL_LUA_FOLDER;
 
