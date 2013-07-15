@@ -17,17 +17,19 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import openperipheral.OpenPeripheral;
 import openperipheral.api.IRobot;
-import openperipheral.api.IRobotUpgradeInstance;
+import openperipheral.api.IRobotUpgradeAdapter;
 import openperipheral.api.IRobotUpgradeProvider;
+import openperipheral.core.AdapterManager;
+import openperipheral.core.MethodDeclaration;
 import openperipheral.core.OPInventory;
 import openperipheral.core.interfaces.IInventoryCallback;
+import openperipheral.core.interfaces.ISensorEnvironment;
 import openperipheral.core.util.BlockUtils;
-import openperipheral.robots.RobotMethodDeclaration;
 import openperipheral.robots.RobotPeripheral;
 import openperipheral.robots.RobotUpgradeManager;
 import openperipheral.robots.block.TileEntityRobot;
 
-public abstract class EntityRobot extends EntityCreature implements IRobot, IInventoryCallback {
+public abstract class EntityRobot extends EntityCreature implements IInventory, ISensorEnvironment, IRobot, IInventoryCallback {
 
 	/**
 	 * the location and id of the controller
@@ -51,7 +53,7 @@ public abstract class EntityRobot extends EntityCreature implements IRobot, IInv
 	/**
 	 * A map of currently installed instanceIds to module instance objects
 	 */
-	private HashMap<String, IRobotUpgradeInstance> upgradeInstances;
+	private HashMap<String, IRobotUpgradeAdapter> upgradeInstances;
 
 	/**
 	 * A map of currently installed instanceIds to their tiers
@@ -62,21 +64,21 @@ public abstract class EntityRobot extends EntityCreature implements IRobot, IInv
 	 * map of method name to upgrade instance, so we know what object handles
 	 * the called method
 	 */
-	private HashMap<String, IRobotUpgradeInstance> upgradeMethodMap;
+	private HashMap<String, IRobotUpgradeAdapter> upgradeMethodMap;
 
 	/**
 	 * a map of upgrade instance id to upgrade AI objects. We need this to make
 	 * sure we can remove any when the upgrade is disabled
 	 */
-	private HashMap<EntityAIBase, IRobotUpgradeInstance> upgradeAIMap;
+	private HashMap<EntityAIBase, IRobotUpgradeAdapter> upgradeAIMap;
 
 	private NBTTagCompound upgradesNBT = new NBTTagCompound();
 
 	public EntityRobot(World par1World) {
 		super(par1World);
-		upgradeMethodMap = new HashMap<String, IRobotUpgradeInstance>();
-		upgradeInstances = new HashMap<String, IRobotUpgradeInstance>();
-		upgradeAIMap = new HashMap<EntityAIBase, IRobotUpgradeInstance>();
+		upgradeMethodMap = new HashMap<String, IRobotUpgradeAdapter>();
+		upgradeInstances = new HashMap<String, IRobotUpgradeAdapter>();
+		upgradeAIMap = new HashMap<EntityAIBase, IRobotUpgradeAdapter>();
 		upgradeTiers = new HashMap<String, Integer>();
 		this.setSize(1F, 3F);
 		this.getNavigator().setAvoidsWater(true);
@@ -244,7 +246,7 @@ public abstract class EntityRobot extends EntityCreature implements IRobot, IInv
 			if (!upgradeInstances.containsKey(providerId)) {
 
 				// create a new instance
-				IRobotUpgradeInstance instance = provider.provideUpgradeInstance(this, tier);
+				IRobotUpgradeAdapter instance = provider.provideUpgradeInstance(this, tier);
 
 				// check if there's any information stored in our upgrades nbt
 				if (upgradesNBT.hasKey(providerId)) {
@@ -254,7 +256,7 @@ public abstract class EntityRobot extends EntityCreature implements IRobot, IInv
 				}
 
 				// add all the methods to our method map
-				for (RobotMethodDeclaration method : RobotPeripheral.getMethodsForProvider(provider)) {
+				for (MethodDeclaration method : AdapterManager.getMethodsForClass(provider.getUpgradeClass())) {
 					upgradeMethodMap.put(method.getLuaName(), instance);
 				}
 
@@ -276,7 +278,7 @@ public abstract class EntityRobot extends EntityCreature implements IRobot, IInv
 				if (upgradeTiers.containsKey(providerId)) {
 					int currentTier = upgradeTiers.get(providerId);
 					if (currentTier != tier) {
-						IRobotUpgradeInstance instance = upgradeInstances.get(providerId);
+						IRobotUpgradeAdapter instance = upgradeInstances.get(providerId);
 						if (instance != null) {
 							instance.onTierChanged(tier);
 						}
@@ -288,28 +290,28 @@ public abstract class EntityRobot extends EntityCreature implements IRobot, IInv
 		upgradeTiers.clear();
 		upgradeTiers.putAll(tiers);
 
-		Iterator<Entry<String, IRobotUpgradeInstance>> upgradeIterator = upgradeInstances.entrySet().iterator();
+		Iterator<Entry<String, IRobotUpgradeAdapter>> upgradeIterator = upgradeInstances.entrySet().iterator();
 		while (upgradeIterator.hasNext()) {
-			Entry<String, IRobotUpgradeInstance> upgradeEntry = upgradeIterator.next();
+			Entry<String, IRobotUpgradeAdapter> upgradeEntry = upgradeIterator.next();
 			Set<String> validInstances = tiers.keySet();
 			String instanceKey = upgradeEntry.getKey();
 			if (!validInstances.contains(instanceKey)) {
 
-				IRobotUpgradeInstance instanceV = upgradeInstances.get(instanceKey);
+				IRobotUpgradeAdapter instanceV = upgradeInstances.get(instanceKey);
 
 				// remove any lingering methods
-				Iterator<Entry<String, IRobotUpgradeInstance>> iterator = upgradeMethodMap.entrySet().iterator();
+				Iterator<Entry<String, IRobotUpgradeAdapter>> iterator = upgradeMethodMap.entrySet().iterator();
 				while (iterator.hasNext()) {
-					Entry<String, IRobotUpgradeInstance> entry = iterator.next();
+					Entry<String, IRobotUpgradeAdapter> entry = iterator.next();
 					if (entry.getValue() == instanceV) {
 						iterator.remove();
 					}
 				}
 
 				// remove any lingering AI
-				Iterator<Entry<EntityAIBase, IRobotUpgradeInstance>> aiIterator = upgradeAIMap.entrySet().iterator();
+				Iterator<Entry<EntityAIBase, IRobotUpgradeAdapter>> aiIterator = upgradeAIMap.entrySet().iterator();
 				while (aiIterator.hasNext()) {
-					Entry<EntityAIBase, IRobotUpgradeInstance> entry = aiIterator.next();
+					Entry<EntityAIBase, IRobotUpgradeAdapter> entry = aiIterator.next();
 					if (entry.getValue() == instanceV) {
 						this.tasks.removeTask(entry.getKey());
 						aiIterator.remove();
@@ -365,7 +367,7 @@ public abstract class EntityRobot extends EntityCreature implements IRobot, IInv
 			linkedToController = controller != null;
 
 			// update all the modules
-			for (IRobotUpgradeInstance upgradeInstance : upgradeInstances.values()) {
+			for (IRobotUpgradeAdapter upgradeInstance : upgradeInstances.values()) {
 				upgradeInstance.update();
 			}
 
@@ -397,12 +399,12 @@ public abstract class EntityRobot extends EntityCreature implements IRobot, IInv
 
 	@Override
 	protected String getDeathSound() {
-		return "openperipheral.robotdead";
+		return "openperipheral:robotdead";
 	}
 
 	@Override
 	protected String getHurtSound() {
-		return "openperipheral.robothurt";
+		return "openperipheral:robothurt";
 	}
 
 	/**
@@ -491,7 +493,7 @@ public abstract class EntityRobot extends EntityCreature implements IRobot, IInv
 		return true;
 	}
 
-	public IRobotUpgradeInstance getInstanceForLuaMethod(String methodName) {
+	public IRobotUpgradeAdapter getInstanceForLuaMethod(String methodName) {
 		return upgradeMethodMap.get(methodName);
 	}
 
@@ -547,7 +549,7 @@ public abstract class EntityRobot extends EntityCreature implements IRobot, IInv
 		inventory.writeToNBT(tag);
 		NBTTagCompound upgrades = new NBTTagCompound();
 		tag.setCompoundTag("upgrades", upgrades);
-		for (Entry<String, IRobotUpgradeInstance> entry : upgradeInstances.entrySet()) {
+		for (Entry<String, IRobotUpgradeAdapter> entry : upgradeInstances.entrySet()) {
 			NBTTagCompound instanceTag = new NBTTagCompound();
 			entry.getValue().writeToNBT(instanceTag);
 			upgrades.setCompoundTag(entry.getKey(), instanceTag);
@@ -575,5 +577,80 @@ public abstract class EntityRobot extends EntityCreature implements IRobot, IInv
 		}
 
 		return false;
+	}
+	
+	@Override
+	public int getSizeInventory() {
+		return inventory.getSizeInventory();
+	}
+
+	@Override
+	public ItemStack getStackInSlot(int i) {
+		return inventory.getStackInSlot(i);
+	}
+
+	@Override
+	public ItemStack decrStackSize(int i, int j) {
+		return inventory.decrStackSize(i, j);
+	}
+
+	@Override
+	public ItemStack getStackInSlotOnClosing(int i) {
+		return inventory.getStackInSlotOnClosing(i);
+	}
+
+	@Override
+	public void setInventorySlotContents(int i, ItemStack itemstack) {
+		inventory.setInventorySlotContents(i, itemstack);
+	}
+
+	@Override
+	public String getInvName() {
+		return inventory.getInvName();
+	}
+
+	@Override
+	public boolean isInvNameLocalized() {
+		return inventory.isInvNameLocalized();
+	}
+
+	@Override
+	public int getInventoryStackLimit() {
+		return inventory.getInventoryStackLimit();
+	}
+
+	@Override
+	public void onInventoryChanged() {
+		
+	}
+
+	@Override
+	public boolean isUseableByPlayer(EntityPlayer entityplayer) {
+		return inventory.isUseableByPlayer(entityplayer);
+	}
+
+	@Override
+	public void openChest() {
+		inventory.openChest();
+	}
+
+	@Override
+	public void closeChest() {
+		inventory.closeChest();
+	}
+
+	@Override
+	public boolean isItemValidForSlot(int i, ItemStack itemstack) {
+		return inventory.isItemValidForSlot(i, itemstack);
+	}
+
+	@Override
+	public boolean isTurtle() {
+		return false;
+	}
+
+	@Override
+	public int getSensorRange() {
+		return 30;
 	}
 }

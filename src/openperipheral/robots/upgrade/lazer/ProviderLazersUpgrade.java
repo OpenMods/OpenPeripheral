@@ -4,8 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraft.item.ItemStack;
+import openperipheral.api.EnumRobotType;
 import openperipheral.api.IRobot;
-import openperipheral.api.IRobotUpgradeInstance;
+import openperipheral.api.IRobotUpgradeAdapter;
 import openperipheral.api.IRobotUpgradeProvider;
 import openperipheral.core.item.ItemGeneric.Metas;
 
@@ -21,8 +22,8 @@ public class ProviderLazersUpgrade implements IRobotUpgradeProvider {
 	}
 	
 	@Override
-	public IRobotUpgradeInstance provideUpgradeInstance(IRobot robot, int tier) {
-		return new InstanceLazersUpgrade(robot, tier);
+	public IRobotUpgradeAdapter provideUpgradeInstance(IRobot robot, int tier) {
+		return new AdapterLazersUpgrade(robot, tier);
 	}
 
 	@Override
@@ -42,12 +43,12 @@ public class ProviderLazersUpgrade implements IRobotUpgradeProvider {
 
 	@Override
 	public boolean isApplicableForRobot(IRobot robot) {
-		return true;
+		return robot.getRobotType() == EnumRobotType.Warrior;
 	}
 
 	@Override
 	public Class getUpgradeClass() {
-		return InstanceLazersUpgrade.class;
+		return AdapterLazersUpgrade.class;
 	}
 
 }

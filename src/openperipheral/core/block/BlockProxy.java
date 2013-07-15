@@ -52,7 +52,7 @@ public class BlockProxy extends BlockContainer {
 	public void onNeighborBlockChange(World world, int x, int y, int z, int l) {
 		refreshProxiedPeripheral(world, x, y, z);
 	}
-
+	
 	public void refreshProxiedPeripheral(World world, int x, int y, int z) {
 
 		TileEntity selfTe = world.getBlockTileEntity(x, y, z);

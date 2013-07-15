@@ -13,9 +13,12 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.ModContainer;
 
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import openperipheral.OpenPeripheral;
+import openperipheral.api.Arg;
 import openperipheral.api.IMultiReturn;
+import openperipheral.api.IRobotUpgradeAdapter;
 import openperipheral.core.AdapterManager;
 import openperipheral.core.MethodDeclaration;
 import openperipheral.core.TickHandler;
@@ -35,29 +38,31 @@ public class HostedPeripheral implements IHostedPeripheral {
 	protected ArrayList<MethodDeclaration> methods;
 	protected String[] methodNames;
 	protected String type;
-	protected Object target;
+	protected Object targetObject;
 	protected World worldObj;
 	
 	private static HashMap<Integer, Integer> mountMap = new HashMap<Integer, Integer>();
 	
-	public HostedPeripheral(Object target, World worldObj) {
-
-		this.target = target;
+	public HostedPeripheral(Object targetObject, World worldObj) {
+		this.targetObject = targetObject;
 		this.worldObj = worldObj;
-		
 		initialize();
-		
+	}
+	
+	public HostedPeripheral(Object targetObject) {
+		this(targetObject, null);
 	}
 	
 	public void initialize() {
-
-		methods = AdapterManager.getMethodsForTarget(target);
+		
+		methods = AdapterManager.getMethodsForTarget(targetObject);
 		
 		methodNames = new String[methods.size()];
 		for (int i = 0; i < methods.size(); i++) {
 			methodNames[i] = methods.get(i).getLuaName();
 		}
-		type = MiscUtils.getNameForTarget(target);
+		
+		type = MiscUtils.getNameForTarget(targetObject);
 	}
 	
 	@Override
@@ -82,28 +87,28 @@ public class HostedPeripheral implements IHostedPeripheral {
 		
 		final Object[] formattedParameters = formatParameters(computer, method, arguments);
 		
-		return callOnTarget(computer, context, method, method.getTarget(), formattedParameters);
+		return callOnTarget(computer, context, method, getWorldObject(), method.getTargetAdapter(), formattedParameters);
 	}
 	
-	protected Object[] callOnTarget(final IComputerAccess computer, ILuaContext context, final MethodDeclaration method, final Object target, final Object[] parameters) throws Exception {
+	protected Object[] callOnTarget(final IComputerAccess computer, ILuaContext context, final MethodDeclaration method, World worldObj, final Object target, final Object[] parameters) throws Exception {
 
 		// if it's on the tick, lets add a callback to execute on the tick
 		if (method.onTick()) {
 			
-			Future callback = TickHandler.addTickCallback(getWorldObject(), new Callable() {
+			Future callback = TickHandler.addTickCallback(worldObj, new Callable() {
 				@Override
 				public Object call() throws Exception {
-
 					// on the tick, we execute the method, format the response, then stick it into an event
 					try {
+						
 						Object[] response = formatResponse(method.getMethod().invoke(target, parameters));
 						computer.queueEvent(EVENT_SUCCESS, response);
 
 					}catch(Throwable e) {
-						if (e instanceof InvocationTargetException) {
-							e = ((InvocationTargetException) e).getCause();
+						if (e instanceof ReflectiveOperationException) {
+							e = ((ReflectiveOperationException) e).getCause();
 						}
-						computer.queueEvent(EVENT_ERROR, new Object[] { 0, e.getMessage() });
+						computer.queueEvent(EVENT_ERROR, new Object[] { e.getMessage() });
 					}
 					return null;
 				}
@@ -139,23 +144,31 @@ public class HostedPeripheral implements IHostedPeripheral {
 	}
 	
 	protected Object[] formatParameters(IComputerAccess computer, MethodDeclaration method, Object[] arguments) throws Exception {
+
+		Arg[] requiredParameters = method.getRequiredParameters();
 		
-		Class[] requiredParameters = method.getRequiredParameters();
-		
-		if (requiredParameters.length != arguments.length) {
-			throw new Exception(String.format("Invalid number of parameters. Expected %s", requiredParameters.length));
+		if (arguments.length != requiredParameters.length){
+			throw new Exception(String.format("Invalid number of parameters. You should be passing %s parameters", requiredParameters.length));
+		}
+
+		for (int i = 0; i < requiredParameters.length; i++) {
+			if (!requiredParameters[i].type().getJavaType().isAssignableFrom(arguments[i].getClass())) {
+				throw new Exception(String.format("Parameter number %s (%s) should be a %s", i+1, requiredParameters[i].name(), requiredParameters[i].type().getName()));
+			}
 		}
 		
+		Class[] requiredJavaParameters = method.getRequiredJavaParameters();
+
 		for (int i = 0; i < arguments.length; i++) {
-			arguments[i] = TypeConversionRegistry.fromLua(arguments[i], requiredParameters[i]);
+			arguments[i] = TypeConversionRegistry.fromLua(arguments[i], requiredJavaParameters[i]);
 		}
 		
 		Object[] newArgs = new Object[arguments.length + 2];
 		System.arraycopy(arguments, 0, newArgs, 2, arguments.length);
 		
 		newArgs[0] = computer;
-		newArgs[1] = target;
-		
+		newArgs[1] = targetObject;
+
 		return newArgs;
 	}
 	
@@ -194,8 +207,8 @@ public class HostedPeripheral implements IHostedPeripheral {
 		}
 		mountMap.put(id, mountCount+1);
 		
-		if (target instanceof IAttachable) {
-			((IAttachable)target).addComputer(computer);
+		if (targetObject instanceof IAttachable) {
+			((IAttachable)targetObject).addComputer(computer);
 		}
 	}
 
@@ -217,8 +230,8 @@ public class HostedPeripheral implements IHostedPeripheral {
 		}
 		mountMap.put(id, mountCount);
 		
-		if (target instanceof IAttachable) {
-			((IAttachable)target).removeComputer(computer);
+		if (targetObject instanceof IAttachable) {
+			((IAttachable)targetObject).removeComputer(computer);
 		}
 	}
 

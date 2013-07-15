@@ -14,8 +14,10 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import dan200.computer.api.IComputerAccess;
+import openperipheral.api.Arg;
 import openperipheral.api.IPeripheralAdapter;
 import openperipheral.api.LuaMethod;
+import openperipheral.api.LuaType;
 import openperipheral.core.interfaces.ISensorEnvironment;
 import openperipheral.core.util.EntityUtils;
 import openperipheral.sensor.block.TileEntitySensor;
@@ -37,7 +39,11 @@ public class AdapterSensor implements IPeripheralAdapter {
 				location.zCoord + 1).expand(range, range, range);
 	}
 	
-	@LuaMethod(onTick=false)
+	@LuaMethod(
+		returnType=LuaType.TABLE,
+		onTick=false,
+		description="Get the usernames of all the players in range"
+	)
 	public ArrayList<String> getPlayerNames(IComputerAccess computer, ISensorEnvironment env) {
 		List<EntityPlayer> players = env.getWorld().getEntitiesWithinAABB(EntityPlayer.class, getBoundingBox(env.getLocation(), env.getSensorRange()));
 		ArrayList<String> names = new ArrayList<String>();
@@ -46,8 +52,15 @@ public class AdapterSensor implements IPeripheralAdapter {
 		}
 		return names;
 	}
-	
-	@LuaMethod(onTick=false)
+
+	@LuaMethod(
+		returnType=LuaType.TABLE,
+		onTick=false,
+		description="Get full details of a particular player if they're in range",
+		args= {
+			@Arg(type=LuaType.STRING, name="username", description="The players username")
+		}
+	)
 	public Map getPlayerData(IComputerAccess computer, ISensorEnvironment env, String username) {
 		ArrayList<String> surroundingPlayers = getPlayerNames(computer, env);
 		if (surroundingPlayers.contains(username)) {
@@ -57,7 +70,11 @@ public class AdapterSensor implements IPeripheralAdapter {
 		return null;
 	}
 
-	@LuaMethod(onTick=false)
+	@LuaMethod(
+		returnType=LuaType.TABLE,
+		onTick=false,
+		description="Get the ids of all the mobs in range"
+	)
 	public ArrayList<Integer> getMobIds(IComputerAccess computer, ISensorEnvironment env) {
 		List<EntityLiving> mobs = env.getWorld().getEntitiesWithinAABB(EntityLiving.class, getBoundingBox(env.getLocation(), env.getSensorRange()));
 		ArrayList<Integer> ids = new ArrayList<Integer>();
@@ -67,7 +84,14 @@ public class AdapterSensor implements IPeripheralAdapter {
 		return ids;
 	}
 	
-	@LuaMethod(onTick=false)
+	@LuaMethod(
+		returnType=LuaType.TABLE,
+		onTick=false,
+		description="Get full details of a particular mob if it's in range",
+		args= {
+			@Arg(type=LuaType.NUMBER, name="mobId", description="The mob id retrieved from getMobIds()")
+		}
+	)
 	public Map getMobData(IComputerAccess computer, ISensorEnvironment sensor, int mobId) {
 		ArrayList<Integer> surroundingMobs = getMobIds(computer, sensor);
 		if (surroundingMobs.contains(mobId)) {
@@ -77,8 +101,11 @@ public class AdapterSensor implements IPeripheralAdapter {
 		return null;
 	}
 	
-
-	@LuaMethod(onTick=false)
+	@LuaMethod(
+		returnType=LuaType.TABLE,
+		onTick=false,
+		description="Get the ids of all the minecarts in range"
+	)
 	public ArrayList<Integer> getMinecartIds(IComputerAccess computer, ISensorEnvironment env) {
 		List<EntityMinecart> minecarts = env.getWorld().getEntitiesWithinAABB(EntityMinecart.class, getBoundingBox(env.getLocation(), env.getSensorRange()));
 		ArrayList<Integer> ids = new ArrayList<Integer>();
@@ -87,8 +114,15 @@ public class AdapterSensor implements IPeripheralAdapter {
 		}
 		return ids;
 	}
-	
-	@LuaMethod(onTick=false)
+
+	@LuaMethod(
+		returnType=LuaType.TABLE,
+		onTick=false,
+		description="Get full details of a particular minecart if it's in range",
+		args= {
+			@Arg(type=LuaType.NUMBER, name="minecartId", description="The minecart id retrieved from getMobIds()")
+		}
+	)
 	public Map getMinecartData(IComputerAccess computer, ISensorEnvironment env, int minecartId) {
 		ArrayList<Integer> surroundingCarts = getMobIds(computer, env);
 		if (surroundingCarts.contains(minecartId)) {
@@ -98,7 +132,11 @@ public class AdapterSensor implements IPeripheralAdapter {
 		return null;
 	}
 
-	@LuaMethod
+	@LuaMethod(
+		returnType=LuaType.TABLE,
+		onTick=false,
+		description="Get a table of information about the surrounding area. Includes whether each block is UNKNOWN, AIR, LIQUID or SOLID"
+	)
 	public Map sonicScan(IComputerAccess computer, ISensorEnvironment env) {
 		
 		int range = 1 + (int)(env.getSensorRange() / 6);
@@ -116,7 +154,7 @@ public class AdapterSensor implements IPeripheralAdapter {
 			for (int y = -range; y <= range; y++) {
 				for (int z = -range; z <= range; z++) {
 
-					int type = 0;
+					String type = "UNKNOWN";
 
 					if (!(x == 0 && y == 0 && z == 0) && world.blockExists(sx + x, sy + y, sz + z)) {
 
@@ -136,11 +174,11 @@ public class AdapterSensor implements IPeripheralAdapter {
 							);
 							if (sensorPos.distanceTo(targetPos) <= range) {
 								if (id == 0) {
-									type = 1;
+									type = "AIR";
 								}else if (block.blockMaterial.isLiquid()) {
-									type = 2;
+									type = "LIQUID";
 								}else if (block.blockMaterial.isSolid()) {
-									type = 3;
+									type = "SOLID";
 								}
 							}
 						}

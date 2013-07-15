@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import openperipheral.api.IRobotUpgradeAdapter;
 import openperipheral.api.IRobotUpgradeProvider;
+import openperipheral.core.AdapterManager;
 import net.minecraft.item.ItemStack;
 
 public class RobotUpgradeManager {
@@ -18,6 +20,7 @@ public class RobotUpgradeManager {
 	
 	public static void registerUpgradeProvider(IRobotUpgradeProvider upgrade) {
 		providers.add(upgrade);
+		AdapterManager.addRobotAdapter(upgrade.getUpgradeClass());
 	}
 	
 	public static IRobotUpgradeProvider getProviderById(String id) {

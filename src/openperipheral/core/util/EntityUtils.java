@@ -5,8 +5,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityMinecart;
+import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.entity.passive.EntityHorse;
+import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.potion.PotionEffect;
@@ -32,19 +36,45 @@ public class EntityUtils {
 			position.put("y", entity.posY);
 			position.put("z", entity.posZ);
 		}
-
+		
 		map.put("type", entity.getEntityName());
 		
 		if (entity.riddenByEntity != null) {
 			map.put("riddenBy", entityToMap(entity.riddenByEntity, relativePos));
 		}
-
+		
 		if (entity.ridingEntity != null) {
-			map.put("riding", entityToMap(entity.ridingEntity, relativePos));
+			map.put("ridingEntity", entity.ridingEntity.entityId);
 		}
 		
 		if (entity instanceof IInventory) {
 			map.put("inventory", InventoryUtils.invToMap((IInventory)entity));
+		}
+		
+		if (entity instanceof EntityHorse) {
+			EntityHorse horse = (EntityHorse) entity;
+			IInventory invent = (IInventory)ReflectionHelper.getProperty("", horse, "field_110296_bG");
+
+	        map.put("eatingHaystack", horse.func_110204_cc());
+	        map.put("chestedHorse", horse.func_110261_ca());
+	        map.put("hasReproduced", horse.func_110243_cf());
+	        map.put("bred", horse.func_110205_ce());
+	        map.put("horseType", horse.func_110265_bP());
+	        map.put("horseVariant", horse.func_110202_bQ());
+	        map.put("horseTemper", horse.func_110252_cg());
+	        map.put("horseTame", horse.func_110248_bS());
+	        map.put("ownerName", horse.func_142019_cb());
+			map.put("horseInventory", InventoryUtils.invToMap(invent));
+		}
+		
+		if (entity instanceof EntitySheep) {
+			EntitySheep sheep = (EntitySheep) entity;
+			map.put("sheepColor", sheep.getFleeceColor());
+		}
+		
+		if (entity instanceof EntityZombie) {
+			EntityZombie zombie = (EntityZombie) entity;
+			map.put("isVillagerZombie", zombie.isVillager());
 		}
 		
 		if (entity instanceof EntityLivingBase) {

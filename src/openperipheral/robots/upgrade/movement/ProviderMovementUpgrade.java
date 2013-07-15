@@ -5,7 +5,7 @@ import java.util.Map;
 
 import net.minecraft.item.ItemStack;
 import openperipheral.api.IRobot;
-import openperipheral.api.IRobotUpgradeInstance;
+import openperipheral.api.IRobotUpgradeAdapter;
 import openperipheral.api.IRobotUpgradeProvider;
 import openperipheral.core.item.ItemGeneric.Metas;
 
@@ -20,8 +20,8 @@ public class ProviderMovementUpgrade implements IRobotUpgradeProvider {
 	}
 	
 	@Override
-	public IRobotUpgradeInstance provideUpgradeInstance(IRobot robot, int tier) {
-		return new InstanceMovementUpgrade(robot, tier);
+	public IRobotUpgradeAdapter provideUpgradeInstance(IRobot robot, int tier) {
+		return new AdapterMovementUpgrade(robot, tier);
 	}
 
 	@Override
@@ -46,7 +46,7 @@ public class ProviderMovementUpgrade implements IRobotUpgradeProvider {
 
 	@Override
 	public Class getUpgradeClass() {
-		return InstanceMovementUpgrade.class;
+		return AdapterMovementUpgrade.class;
 	}
 
 }

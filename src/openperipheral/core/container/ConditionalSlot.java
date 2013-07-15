@@ -15,7 +15,7 @@ public class ConditionalSlot extends Slot {
 	@Override
 	public boolean isItemValid(ItemStack itemStack) {
 		if (this.inventory instanceof IConditionalSlots) {
-			return ((IConditionalSlots) inventory).isItemValidForSlot(slotNumber, itemStack);
+			return ((IConditionalSlots) inventory).isValidForSlot(slotNumber, itemStack);
 		}
 		return true;
 	}

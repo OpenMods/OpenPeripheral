@@ -25,11 +25,13 @@ import openperipheral.robots.block.BlockRobot;
 import openperipheral.robots.block.TileEntityRobot;
 import openperipheral.robots.entity.EntityLazer;
 import openperipheral.robots.entity.EntityRobotWarrior;
+import openperipheral.sensor.TurtleUpgradeSensor;
 import openperipheral.sensor.block.BlockSensor;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.network.IGuiHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.EntityRegistry;
+import dan200.turtle.api.TurtleAPI;
 
 public class CommonProxy implements IGuiHandler {
 
@@ -50,6 +52,8 @@ public class CommonProxy implements IGuiHandler {
 		if (ConfigSettings.robotsEnabled) {
 			OpenPeripheral.Blocks.robot = new BlockRobot();
 		}
+		
+		TurtleAPI.registerUpgrade(new TurtleUpgradeSensor());
 
 		if (Loader.isModLoaded(Mods.RAILCRAFT)) {
 			OpenPeripheral.Blocks.ticketMachine = new BlockTicketMachine();
@@ -64,6 +68,7 @@ public class CommonProxy implements IGuiHandler {
 		RecipeUtils.addProxyRecipe();
 		RecipeUtils.addPIMRecipe();
 		RecipeUtils.addRemoteRecipe();
+		RecipeUtils.addSensorRecipe();
 
 		MinecraftForge.EVENT_BUS.register(new ChatCommandInterceptor());
 		
