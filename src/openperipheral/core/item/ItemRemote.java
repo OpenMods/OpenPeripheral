@@ -2,12 +2,14 @@ package openperipheral.core.item;
 
 import java.util.List;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatMessageComponent;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 import openperipheral.OpenPeripheral;
@@ -69,12 +71,15 @@ public class ItemRemote extends Item {
     	return null;
 	}
 	
-    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer par3EntityPlayer)
+    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
     {
     	if (!world.isRemote) { 
     		TileEntity tile = getTileForStack(world, stack);
     		if (tile != null) {
-    			par3EntityPlayer.openGui(OpenPeripheral.instance, OpenPeripheral.Gui.remote.ordinal(), world, tile.xCoord, tile.yCoord, tile.zCoord);
+    			int blockId = world.getBlockId(tile.xCoord, tile.yCoord, tile.zCoord);
+    			Block block = Block.blocksList[blockId];
+    			block.onBlockActivated(world, tile.xCoord, tile.yCoord, tile.zCoord, player, 0, 0, 0, 0);
+    			player.openGui(OpenPeripheral.instance, OpenPeripheral.Gui.remote.ordinal(), world, tile.xCoord, tile.yCoord, tile.zCoord);
     		}
         }
         return stack;
@@ -92,12 +97,10 @@ public class ItemRemote extends Item {
 	    	ns.setByte("dmg", (byte)((world.getBlockMetadata(x, y, z) & 0x8) >> 3));
 	    	tag.setTag("openpRemote", ns);
 	    	if (!world.isRemote) {
-	    		//TODO: fix
-	    		//player.sendChatToPlayer("Linked remote terminal");
+	    		player.sendChatToPlayer(new ChatMessageComponent().func_111079_a("Linked remote to computer"));
 	    	}
 	    	stack.setTagCompound(tag);
-	    	return false;
 		}
-        return true;
+        return false;
     }
 }

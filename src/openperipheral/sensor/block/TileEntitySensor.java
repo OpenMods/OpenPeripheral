@@ -121,6 +121,11 @@ public class TileEntitySensor extends TileEntity implements IInventory, IInvento
 	}
 
 	@Override
+	public boolean isValidForSlot(int i, ItemStack itemstack) {
+		return isItemValidForSlot(i, itemstack);
+	}
+	
+	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack) {
 		return inventory.isItemValidForSlot(i, itemstack);
 	}

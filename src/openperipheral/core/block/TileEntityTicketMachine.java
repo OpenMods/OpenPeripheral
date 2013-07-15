@@ -94,6 +94,11 @@ public class TileEntityTicketMachine extends TileEntity implements IInventory, I
 	}
 
 	@Override
+	public boolean isValidForSlot(int i, ItemStack itemstack) {
+		return isItemValidForSlot(i, itemstack);
+	}
+	
+	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack) {
 		if (itemstack == null) {
 			return false;

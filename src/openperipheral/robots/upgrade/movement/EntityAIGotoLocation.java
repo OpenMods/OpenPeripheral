@@ -8,14 +8,14 @@ import openperipheral.api.IRobot;
 public class EntityAIGotoLocation extends EntityAIBase {
 
 	private IRobot robot;
-	private InstanceMovementUpgrade instance;
+	private AdapterMovementUpgrade instance;
 	private PathNavigate navigator;
 
 	public static final String NO_PATH_AVAILABLE = "no_path_available";
 	public static final String PATH_FINISHED = "path_finished";
 	public static final String NO_FUEL_AVAILABLE = "no_fuel";
 
-	public EntityAIGotoLocation(InstanceMovementUpgrade instance, IRobot robot) {
+	public EntityAIGotoLocation(AdapterMovementUpgrade instance, IRobot robot) {
 		this.robot = robot;
 		this.instance = instance;
 		this.navigator = robot.getEntity().getNavigator();

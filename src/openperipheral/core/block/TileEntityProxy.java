@@ -1,6 +1,8 @@
 package openperipheral.core.block;
 
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import openperipheral.OpenPeripheral;
 import openperipheral.core.interfaces.IPeripheralProvider;
 import openperipheral.core.peripheral.ProxyPeripheral;
@@ -11,6 +13,7 @@ public class TileEntityProxy extends TileEntity implements IPeripheralProvider {
 
 	private IHostedPeripheral proxy;
 	private TileEntity target;
+	private boolean requiresRefresh = true;
 
 	public void setTarget(TileEntity newTarget, int backSide) {
 		if (newTarget == target) {
@@ -32,13 +35,22 @@ public class TileEntityProxy extends TileEntity implements IPeripheralProvider {
 		target = newTarget;
 	}
 
+	@Override
+	public void updateEntity() {
+		if (worldObj != null && !worldObj.isRemote && requiresRefresh) {
+			requiresRefresh = false;
+			OpenPeripheral.Blocks.proxy.refreshProxiedPeripheral(worldObj, xCoord, yCoord, zCoord);
+		}
+	}
+	
 	public TileEntity getTarget() {
 		return target;
 	}
 
 	@Override
-	public IHostedPeripheral providePeripheral() {
+	public IHostedPeripheral providePeripheral(World worldObj) {
 		return proxy;
 	}
+	
 
 }

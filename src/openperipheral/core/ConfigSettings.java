@@ -25,8 +25,8 @@ public class ConfigSettings {
 
 	private static String externalBase = "https://raw.github.com/mikeemoo/OpenPeripheral/master/";
 
-	public static String EXTERNAL_LUA_LISTING = String.format("%s%s", externalBase, "mods/openperipheral/scripts.txt");
-	public static String EXTERNAL_LUA_FOLDER = String.format("%s%s", externalBase, "mods/openperipheral/lua/");
+	public static String EXTERNAL_LUA_LISTING = String.format("%s%s", externalBase, "assets/openperipheral/scripts.txt");
+	public static String EXTERNAL_LUA_FOLDER = String.format("%s%s", externalBase, "assets/openperipheral/lua/");
 	public static String LOCAL_LUA_LISTING;
 	public static String LOCAL_LUA_FOLDER;
 
@@ -107,6 +107,18 @@ public class ConfigSettings {
 		prop.comment = "The id of the glasses";
 		glassesId = prop.getInt();
 
+		prop = configFile.get("items", "genericItemId", genericItemId);
+		prop.comment = "The id of the generic item";
+		genericItemId = prop.getInt();
+		
+		prop = configFile.get("items", "remoteId", remoteId);
+		prop.comment = "The id of the computer remote";
+		remoteId = prop.getInt();
+		
+		prop = configFile.get("items", "robotItemId", robotItemId);
+		prop.comment = "The id of the robot";
+		robotItemId = prop.getInt();
+		
 		prop = configFile.get("blocks", "bridgeId", glassesBridgeId);
 		prop.comment = "The id of the glasses bridge";
 		glassesBridgeId = prop.getInt();

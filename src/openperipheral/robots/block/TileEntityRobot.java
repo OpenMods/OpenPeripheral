@@ -13,6 +13,7 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import openperipheral.core.OPInventory;
 import openperipheral.core.interfaces.IAttachable;
 import openperipheral.core.interfaces.IConditionalSlots;
@@ -29,7 +30,7 @@ import dan200.computer.api.IHostedPeripheral;
 public class TileEntityRobot extends TileEntity implements IPeripheralProvider, IHasSyncedGui, IAttachable, IConditionalSlots, ISidedInventory, IInventory,
 		IInventoryCallback {
 
-	private IHostedPeripheral peripheral = new RobotPeripheral(this, worldObj);
+	private IHostedPeripheral peripheral = null;
 
 	/**
 	 * A map of robot ids to minecraft entitiy ids of currently connected robots
@@ -249,6 +250,11 @@ public class TileEntityRobot extends TileEntity implements IPeripheralProvider, 
 	}
 
 	@Override
+	public boolean isValidForSlot(int i, ItemStack itemstack) {
+		return isItemValidForSlot(i, itemstack);
+	}
+	
+	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
 		return inventory.isItemValidForSlot(slot, stack);
 	}
@@ -302,7 +308,10 @@ public class TileEntityRobot extends TileEntity implements IPeripheralProvider, 
 	}
 
 	@Override
-	public IHostedPeripheral providePeripheral() {
+	public IHostedPeripheral providePeripheral(World worldObj) {
+		if (peripheral == null) {
+			peripheral = new RobotPeripheral(this, worldObj);
+		}
 		return peripheral;
 	}
 

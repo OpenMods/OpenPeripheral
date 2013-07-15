@@ -3,6 +3,7 @@ package openperipheral.core.item;
 import java.util.List;
 
 import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -26,6 +27,11 @@ public class ItemRobot extends Item {
 		setCreativeTab(OpenPeripheral.tabOpenPeripheral);
 		setUnlocalizedName("openperipheral.robot");
 	}
+	
+	@Override
+    public void getSubItems(int id, CreativeTabs creativeTab, List list) {
+        list.add(new ItemStack(id, 1, 0));
+    }
 	
 	@Override
 	public void registerIcons(IconRegister register) {
@@ -61,12 +67,8 @@ public class ItemRobot extends Item {
 			    	robot.playSound("openperipheral:robotready", 1F, 1F);
 			    	stack.stackSize = 0;
 			    } else {
-		    		// make sure he's gone
 		    		robot.setDead();
-		    		// tell the player
-		    		//TODO: fix
 		    		player.sendChatToPlayer(ChatMessageComponent.func_111077_e("Unable to spawn robot. Are you sure he's linked up to an active controller?"));
-		    		//player.sendChatToPlayer("");
 		    	}
 			}
 			

@@ -42,7 +42,7 @@ public class PeripheralHandler implements IPeripheralHandler {
 		}
 		
 		if (tile instanceof IPeripheralProvider) {
-			return ((IPeripheralProvider) tile).providePeripheral();
+			return ((IPeripheralProvider) tile).providePeripheral(tile.worldObj);
 		}
 
 		if (!peripherals.containsKey(tile)) {

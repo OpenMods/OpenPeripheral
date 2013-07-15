@@ -3,6 +3,7 @@ package openperipheral.core.adapter.ic2;
 import ic2.api.energy.tile.IEnergySource;
 import openperipheral.api.IPeripheralAdapter;
 import openperipheral.api.LuaMethod;
+import openperipheral.api.LuaType;
 import dan200.computer.api.IComputerAccess;
 
 public class AdapterEnergySource implements IPeripheralAdapter {
@@ -12,7 +13,11 @@ public class AdapterEnergySource implements IPeripheralAdapter {
 		return IEnergySource.class;
 	}
 
-	@LuaMethod
+	@LuaMethod(
+		onTick=false,
+		description="Get the EU output",
+		returnType=LuaType.NUMBER
+	)
 	public int getMaxEUOutput(IComputerAccess computer, IEnergySource source) {
 		return source.getMaxEnergyOutput();
 	}

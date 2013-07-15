@@ -12,6 +12,7 @@ import net.minecraft.nbt.NBTTagString;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import openperipheral.OpenPeripheral;
 import openperipheral.core.item.ItemGeneric;
+import openperipheral.core.item.ItemGeneric.Metas;
 
 public class RecipeUtils {
 
@@ -40,13 +41,20 @@ public class RecipeUtils {
 			.toString();
 
 	public static void addGlassesRecipe() {
-		Block peripheral = getCCBlock("peripheral");
-		Block cable = getCCBlock("cable");
 		CraftingManager
-				.getInstance()
-				.getRecipeList()
-				.add(new ShapedOreRecipe(new ItemStack(OpenPeripheral.Items.glasses), new Object[] { "mcm", Character.valueOf('m'), new ItemStack(peripheral, 1, 4),
-						Character.valueOf('c'), new ItemStack(cable), }));
+			.getInstance()
+			.getRecipeList()
+			.add(new ShapedOreRecipe(new ItemStack(OpenPeripheral.Items.glasses),
+				new Object[] {
+				"lpa",
+				"gdg",
+				"ppp",
+				'l', Metas.lcdScreen.newItemStack(),
+				'p', Metas.plasticCasing.newItemStack(),
+				'a', Metas.duckAntenna.newItemStack(),
+				'g', new ItemStack(Block.thinGlass),
+				'd', Metas.dataLink.newItemStack()
+				}));
 	}
 
 	public static void addBridgeRecipe() {
@@ -66,6 +74,19 @@ public class RecipeUtils {
 				.getRecipeList()
 				.add(new ShapedOreRecipe(new ItemStack(OpenPeripheral.Blocks.ticketMachine), new Object[] { "iii", "iii", "igi", Character.valueOf('i'),
 						new ItemStack(Item.ingotIron), Character.valueOf('g'), new ItemStack(Block.thinGlass), }));
+	}
+
+	public static void addSensorRecipe() {
+		CraftingManager
+			.getInstance()
+			.getRecipeList()
+			.add(new ShapedOreRecipe(
+					new ItemStack(OpenPeripheral.Blocks.sensor),
+					new Object[] { "ooo", " t ", "sss",
+					'o', new ItemStack(Block.obsidian),
+					't', Metas.scanningSensor.newItemStack(),
+					's', new ItemStack(Block.stoneSingleSlab)
+			}));
 	}
 
 	public static void addProxyRecipe() {
