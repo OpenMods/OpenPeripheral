@@ -66,9 +66,9 @@ public class ItemGeneric extends Item {
 		tier1sensor(),
 		tier2sensor(),
 		tier3sensor(),
-		tier1lazer(),
-		tier2lazer(),
-		tier3lazer(),
+		tier1laser(),
+		tier2laser(),
+		tier3laser(),
 		tier1movement(),
 		tier2movement(),
 		tier3movement(),
@@ -139,9 +139,9 @@ public class ItemGeneric extends Item {
 		metaitems.put(Metas.tier1sensor.ordinal(), new MetaGeneric("tier1sensor", 1, "ppp", "pop", "pmp", 'p', Metas.plasticCasing, 'o', Metas.scanningSensor, 'm', Metas.microcontroller));
 		metaitems.put(Metas.tier2sensor.ordinal(), new MetaGeneric("tier2sensor", 1, Metas.tier1sensor, Metas.targetAssessmentUnit));
 		metaitems.put(Metas.tier3sensor.ordinal(), new MetaGeneric("tier3sensor", 1, Metas.tier2sensor, Metas.infrasoundEmitter));
-		metaitems.put(Metas.tier1lazer.ordinal(), new MetaGeneric("tier1lazer", 1, "ppp", "pop", "pmp", 'p', Metas.plasticCasing, 'o', Metas.combatProcessor, 'm', Metas.microcontroller));
-		metaitems.put(Metas.tier2lazer.ordinal(), new MetaGeneric("tier2lazer", 1, Metas.tier1lazer, Metas.advancedCombatProcessor));
-		metaitems.put(Metas.tier3lazer.ordinal(), new MetaGeneric("tier3lazer", 1, Metas.tier2lazer, Metas.heatSinks));
+		metaitems.put(Metas.tier1laser.ordinal(), new MetaGeneric("tier1laser", 1, "ppp", "pop", "pmp", 'p', Metas.plasticCasing, 'o', Metas.combatProcessor, 'm', Metas.microcontroller));
+		metaitems.put(Metas.tier2laser.ordinal(), new MetaGeneric("tier2laser", 1, Metas.tier1laser, Metas.advancedCombatProcessor));
+		metaitems.put(Metas.tier3laser.ordinal(), new MetaGeneric("tier3laser", 1, Metas.tier2laser, Metas.heatSinks));
 		metaitems.put(Metas.tier1movement.ordinal(), new MetaGeneric("tier1movement", 1, "ppp", "pop", "pmp", 'p', Metas.plasticCasing, 'o', Metas.mechanoStabilizer, 'm', Metas.microcontroller));
 		metaitems.put(Metas.tier2movement.ordinal(), new MetaGeneric("tier2movement", 1, Metas.tier1movement, Metas.rationalizer));
 		metaitems.put(Metas.tier3movement.ordinal(), new MetaGeneric("tier3movement", 1, Metas.tier2movement, Metas.nanoGPS));

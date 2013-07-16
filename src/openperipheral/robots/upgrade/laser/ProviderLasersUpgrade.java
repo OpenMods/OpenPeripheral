@@ -1,4 +1,4 @@
-package openperipheral.robots.upgrade.lazer;
+package openperipheral.robots.upgrade.laser;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,20 +10,20 @@ import openperipheral.api.IRobotUpgradeAdapter;
 import openperipheral.api.IRobotUpgradeProvider;
 import openperipheral.core.item.ItemGeneric.Metas;
 
-public class ProviderLazersUpgrade implements IRobotUpgradeProvider {
+public class ProviderLasersUpgrade implements IRobotUpgradeProvider {
 
 	HashMap<Integer, ItemStack> upgradeItems;
 	
-	public ProviderLazersUpgrade() {
+	public ProviderLasersUpgrade() {
 		upgradeItems = new HashMap<Integer, ItemStack>();
-		upgradeItems.put(1, Metas.tier1lazer.newItemStack());
-		upgradeItems.put(2, Metas.tier2lazer.newItemStack());
-		upgradeItems.put(3, Metas.tier3lazer.newItemStack());
+		upgradeItems.put(1, Metas.tier1laser.newItemStack());
+		upgradeItems.put(2, Metas.tier2laser.newItemStack());
+		upgradeItems.put(3, Metas.tier3laser.newItemStack());
 	}
 	
 	@Override
 	public IRobotUpgradeAdapter provideUpgradeInstance(IRobot robot, int tier) {
-		return new AdapterLazersUpgrade(robot, tier);
+		return new AdapterLasersUpgrade(robot, tier);
 	}
 
 	@Override
@@ -48,7 +48,7 @@ public class ProviderLazersUpgrade implements IRobotUpgradeProvider {
 
 	@Override
 	public Class getUpgradeClass() {
-		return AdapterLazersUpgrade.class;
+		return AdapterLasersUpgrade.class;
 	}
 
 }
