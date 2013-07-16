@@ -21,7 +21,8 @@ import openperipheral.core.MethodDeclaration;
 public class MiscUtils {
 	public static boolean canBeGlasses(ItemStack stack) {
 		// || (Loader.isModLoaded(Mods.MPS) && MPSUtils.isValidHelmet(stack)))
-		return stack != null && (stack.getItem() == OpenPeripheral.Items.glasses);
+		return stack != null
+				&& (stack.getItem() == OpenPeripheral.Items.glasses);
 	}
 
 	public static int getHoliday() {
@@ -39,14 +40,14 @@ public class MiscUtils {
 		}
 		return 0;
 	}
-	
+
 	public static <T> T[] append(T[] arr, T element) {
-	    final int N = arr.length;
-	    arr = Arrays.copyOf(arr, N + 1);
-	    arr[N] = element;
-	    return arr;
+		final int N = arr.length;
+		arr = Arrays.copyOf(arr, N + 1);
+		arr[N] = element;
+		return arr;
 	}
-	
+
 	public static String getNameForTarget(Object target) {
 		String name = "";
 		if (target instanceof IInventory) {
@@ -57,28 +58,28 @@ public class MiscUtils {
 				NBTTagCompound tag = new NBTTagCompound();
 				te.writeToNBT(tag);
 				name = tag.getString("id");
-			}catch(Exception e) {
-				
+			} catch (Exception e) {
+
 			}
 			if (name == null || name.equals("")) {
-                int x = te.xCoord;
-                int y = te.yCoord;
-                int z = te.zCoord;
+				int x = te.xCoord;
+				int y = te.yCoord;
+				int z = te.zCoord;
 				int blockId = te.worldObj.getBlockId(x, y, z);
-                Block block = Block.blocksList[blockId];
-                int dmg = block.getDamageValue(te.worldObj, x, y, z);
-                ItemStack is = new ItemStack(blockId, 1, dmg);
-                try {
-	                    name = is.getDisplayName();
-	            } catch (Exception e) {
-	                    try {
-	                            name = is.getItemName();
-	                    } catch (Exception e2) {
-	                    }
-	            }
-	            if (name == null || name.equals("")) {
-	                    name = te.getClass().getName();
-	            }
+				Block block = Block.blocksList[blockId];
+				int dmg = block.getDamageValue(te.worldObj, x, y, z);
+				ItemStack is = new ItemStack(blockId, 1, dmg);
+				try {
+					name = is.getDisplayName();
+				} catch (Exception e) {
+					try {
+						name = is.getItemName();
+					} catch (Exception e2) {
+					}
+				}
+				if (name == null || name.equals("")) {
+					name = te.getClass().getSimpleName();
+				}
 			}
 		}
 		if (name == null || name.equals("")) {
@@ -88,11 +89,11 @@ public class MiscUtils {
 		name = name.toLowerCase();
 		return name;
 	}
-	
+
 	public static String documentMethod(MethodDeclaration method) {
 		return String.format("%s()", method.getLuaName());
 	}
-	
+
 	public static String listMethods(List<MethodDeclaration> methods) {
 		StringBuilder builder = new StringBuilder();
 		Iterator<MethodDeclaration> methodsIterator = methods.iterator();

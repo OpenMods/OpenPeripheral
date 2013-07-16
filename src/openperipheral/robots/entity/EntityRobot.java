@@ -448,6 +448,11 @@ public abstract class EntityRobot extends EntityCreature implements IInventory, 
 	}
 
 	@Override
+	public float getRobotEyeHeight() {
+		return getEyeHeight();
+	}
+	
+	@Override
 	public Vec3 getLocation() {
 		return worldObj.getWorldVec3Pool().getVecFromPool(posX, posY, posZ);
 	}

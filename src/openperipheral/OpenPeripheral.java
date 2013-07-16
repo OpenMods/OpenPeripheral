@@ -42,7 +42,7 @@ import openperipheral.robots.RobotUpgradeManager;
 import openperipheral.robots.block.BlockRobot;
 import openperipheral.robots.upgrade.fuel.ProviderFuelUpgrade;
 import openperipheral.robots.upgrade.inventory.ProviderInventoryUpgrade;
-import openperipheral.robots.upgrade.lazer.ProviderLazersUpgrade;
+import openperipheral.robots.upgrade.laser.ProviderLasersUpgrade;
 import openperipheral.robots.upgrade.movement.ProviderMovementUpgrade;
 import openperipheral.robots.upgrade.sensor.ProviderSensorUpgrade;
 import openperipheral.robots.upgrade.targeting.ProviderTargetingUpgrade;
@@ -135,7 +135,7 @@ public class OpenPeripheral {
 	
 		if (ConfigSettings.robotsEnabled) {
 			RobotUpgradeManager.registerUpgradeProvider(new ProviderMovementUpgrade());
-			RobotUpgradeManager.registerUpgradeProvider(new ProviderLazersUpgrade());
+			RobotUpgradeManager.registerUpgradeProvider(new ProviderLasersUpgrade());
 			RobotUpgradeManager.registerUpgradeProvider(new ProviderSensorUpgrade());
 			RobotUpgradeManager.registerUpgradeProvider(new ProviderFuelUpgrade());
 			RobotUpgradeManager.registerUpgradeProvider(new ProviderInventoryUpgrade());

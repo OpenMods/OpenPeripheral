@@ -14,7 +14,7 @@ public interface IRobot {
 	public TileEntity getController();
 	public Vec3 getLocation();
 	public World getWorld();
-	public float getEyeHeight();
+	public float getRobotEyeHeight();
 	public float getFuelLevel();
 	public boolean hasFuel();
 	public void setFuelLevel(float fuel);

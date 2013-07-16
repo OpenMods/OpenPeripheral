@@ -90,6 +90,8 @@ public class EntityUtils {
 			armor.put("leggings", InventoryUtils.itemstackToMap(living.getCurrentItemOrArmor(2)));
 			armor.put("chestplate", InventoryUtils.itemstackToMap(living.getCurrentItemOrArmor(3)));
 			armor.put("helmet", InventoryUtils.itemstackToMap(living.getCurrentItemOrArmor(4)));
+			map.put("health",  living.func_110143_aJ());
+			map.put("maxHealth",  living.func_110138_aP());
 			map.put("isAirborne", living.isAirBorne);
 			map.put("isBurning", living.isBurning());
 			map.put("isAlive", living.isEntityAlive());

@@ -58,7 +58,7 @@ public class AdapterTargetingUpgrade implements IRobotUpgradeAdapter {
 	
 	public Vec3 getEyePosition() {
 		Vec3 pos = robot.getLocation();
-		pos.yCoord += robot.getEyeHeight();
+		pos.yCoord += robot.getRobotEyeHeight();
 		return pos;
 	}
 
