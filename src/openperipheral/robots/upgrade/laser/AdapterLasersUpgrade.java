@@ -1,4 +1,4 @@
-package openperipheral.robots.upgrade.lazer;
+package openperipheral.robots.upgrade.laser;
 
 import java.util.HashMap;
 
@@ -10,7 +10,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import openperipheral.OpenPeripheral;
-import openperipheral.api.ILazerRobot;
+import openperipheral.api.ILaserRobot;
 import openperipheral.api.IRobot;
 import openperipheral.api.IRobotUpgradeAdapter;
 import openperipheral.api.LuaMethod;
@@ -18,12 +18,12 @@ import openperipheral.core.item.ItemGeneric;
 import openperipheral.core.item.ItemGeneric.Metas;
 import openperipheral.robots.entity.EntityLazer;
 
-public class AdapterLazersUpgrade implements IRobotUpgradeAdapter {
+public class AdapterLasersUpgrade implements IRobotUpgradeAdapter {
 
 	private static final String TAG_OVERHEATED = "o";
 	private static final String TAG_HEAT = "h";
 	
-	private ILazerRobot robot;
+	private ILaserRobot robot;
 	
 	/**
 	 * The current heat of the lazer
@@ -41,12 +41,12 @@ public class AdapterLazersUpgrade implements IRobotUpgradeAdapter {
 	private boolean isOverheated = false;
 	
 	
-	public AdapterLazersUpgrade(IRobot robot, int tier) {
-		this.robot = (ILazerRobot)robot;
+	public AdapterLasersUpgrade(IRobot robot, int tier) {
+		this.robot = (ILaserRobot)robot;
 		this.tier = tier;
 	}
 	
-	public ILazerRobot getRobot() {
+	public ILaserRobot getRobot() {
 		return robot;
 	}
 	

@@ -5,10 +5,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import openperipheral.api.EnumRobotType;
-import openperipheral.api.ILazerRobot;
+import openperipheral.api.ILaserRobot;
 import openperipheral.core.util.ReflectionHelper;
 
-public class EntityRobotWarrior extends EntityRobot implements ILazerRobot {
+public class EntityRobotWarrior extends EntityRobot implements ILaserRobot {
 	
 	/**
 	 * The weapon spin used for rendering clientside
