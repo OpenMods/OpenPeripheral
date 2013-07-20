@@ -1,4 +1,4 @@
-package openperipheral.sensor;
+package openperipheral.turtle;
 
 import dan200.turtle.api.ITurtleAccess;
 import net.minecraft.util.Vec3;

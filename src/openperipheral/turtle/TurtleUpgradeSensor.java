@@ -1,7 +1,8 @@
-package openperipheral.sensor;
+package openperipheral.turtle;
 
 import openperipheral.OpenPeripheral;
 import openperipheral.core.peripheral.HostedPeripheral;
+import openperipheral.sensor.SensorPeripheral;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
