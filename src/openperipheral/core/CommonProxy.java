@@ -25,8 +25,9 @@ import openperipheral.robots.block.BlockRobot;
 import openperipheral.robots.block.TileEntityRobot;
 import openperipheral.robots.entity.EntityLazer;
 import openperipheral.robots.entity.EntityRobotWarrior;
-import openperipheral.sensor.TurtleUpgradeSensor;
 import openperipheral.sensor.block.BlockSensor;
+import openperipheral.turtle.TurtleUpgradeNarcissistic;
+import openperipheral.turtle.TurtleUpgradeSensor;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.network.IGuiHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
@@ -54,6 +55,7 @@ public class CommonProxy implements IGuiHandler {
 		}
 		
 		TurtleAPI.registerUpgrade(new TurtleUpgradeSensor());
+		TurtleAPI.registerUpgrade(new TurtleUpgradeNarcissistic());
 
 		if (Loader.isModLoaded(Mods.RAILCRAFT)) {
 			OpenPeripheral.Blocks.ticketMachine = new BlockTicketMachine();

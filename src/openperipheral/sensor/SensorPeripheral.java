@@ -2,6 +2,7 @@ package openperipheral.sensor;
 
 import net.minecraft.world.World;
 import openperipheral.core.peripheral.HostedPeripheral;
+import openperipheral.turtle.TurtleSensorEnvironment;
 
 public class SensorPeripheral extends HostedPeripheral {
 

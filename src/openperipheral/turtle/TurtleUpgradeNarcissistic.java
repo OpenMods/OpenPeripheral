@@ -1,7 +1,7 @@
-package openperipheral.sensor;
+package openperipheral.turtle;
 
 import openperipheral.OpenPeripheral;
-import openperipheral.core.peripheral.HostedPeripheral;
+import openperipheral.core.item.ItemGeneric.Metas;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
@@ -12,17 +12,17 @@ import dan200.turtle.api.TurtleSide;
 import dan200.turtle.api.TurtleUpgradeType;
 import dan200.turtle.api.TurtleVerb;
 
-public class TurtleUpgradeSensor implements ITurtleUpgrade {
+public class TurtleUpgradeNarcissistic implements ITurtleUpgrade {
 
 	@Override
 	public int getUpgradeID() {
-		return 180;
+		return 181;
 	}
 
 	@Override
 	public String getAdjective() {
-		String translation = LanguageRegistry.instance().getStringLocalization("openperipheral.turtle.sensor.adjective");
-		return translation == "" ? LanguageRegistry.instance().getStringLocalization("openperipheral.turtle.sensor.adjective", "en_US") : translation;
+		String translation = LanguageRegistry.instance().getStringLocalization("openperipheral.turtle.narcissistic.adjective");
+		return translation == "" ? LanguageRegistry.instance().getStringLocalization("openperipheral.turtle.narcissistic.adjective", "en_US") : translation;
 	}
 
 	@Override
@@ -32,7 +32,7 @@ public class TurtleUpgradeSensor implements ITurtleUpgrade {
 
 	@Override
 	public ItemStack getCraftingItem() {
-		return new ItemStack(OpenPeripheral.Blocks.sensor);
+		return Metas.duckAntenna.newItemStack();
 	}
 
 	@Override
@@ -43,7 +43,7 @@ public class TurtleUpgradeSensor implements ITurtleUpgrade {
 	@Override
 	public IHostedPeripheral createPeripheral(ITurtleAccess turtle,
 			TurtleSide side) {
-		return new SensorPeripheral(new TurtleSensorEnvironment(turtle));
+		return new NarcissisticTurtlePeripheral(turtle);
 	}
 
 	@Override

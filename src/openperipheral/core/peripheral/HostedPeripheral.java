@@ -78,6 +78,10 @@ public class HostedPeripheral implements IHostedPeripheral {
 	public World getWorldObject() {
 		return worldObj;
 	}
+	
+	public Object getTargetObject() {
+		return targetObject;
+	}
 
 	@Override
 	public Object[] callMethod(final IComputerAccess computer, ILuaContext context,
@@ -178,7 +182,7 @@ public class HostedPeripheral implements IHostedPeripheral {
 		System.arraycopy(arguments, 0, newArgs, 2, arguments.length);
 		
 		newArgs[0] = computer;
-		newArgs[1] = targetObject;
+		newArgs[1] = getTargetObject();
 
 		return newArgs;
 	}
