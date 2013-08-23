@@ -19,6 +19,7 @@ import openperipheral.core.adapter.vanilla.AdapterComparator;
 import openperipheral.core.adapter.vanilla.AdapterFluidHandler;
 import openperipheral.core.adapter.vanilla.AdapterInventory;
 import openperipheral.core.adapter.vanilla.AdapterNoteBlock;
+import openperipheral.core.adapter.vanilla.AdapterFurnace;
 import openperipheral.core.adapter.vanilla.AdapterRecordPlayer;
 import openperipheral.core.block.BlockPlayerInventory;
 import openperipheral.core.block.BlockProxy;
@@ -127,6 +128,7 @@ public class OpenPeripheral {
 		AdapterManager.addPeripheralAdapter(new AdapterNoteBlock());
 		AdapterManager.addPeripheralAdapter(new AdapterComparator());
 		AdapterManager.addPeripheralAdapter(new AdapterBrewingStand());
+		AdapterManager.addPeripheralAdapter(new AdapterFurnace());
 		AdapterManager.addPeripheralAdapter(new AdapterObject());
 		AdapterManager.addPeripheralAdapter(new AdapterRecordPlayer());
 		AdapterManager.addPeripheralAdapter(new AdapterFluidHandler());
