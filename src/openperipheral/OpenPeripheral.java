@@ -28,7 +28,7 @@ import openperipheral.core.client.PacketHandler;
 import openperipheral.core.converter.ConverterArray;
 import openperipheral.core.converter.ConverterDouble;
 import openperipheral.core.converter.ConverterForgeDirection;
-import openperipheral.core.converter.ConverterILiquidTank;
+import openperipheral.core.converter.ConverterFluidTankInfo;
 import openperipheral.core.converter.ConverterItemStack;
 import openperipheral.core.converter.ConverterList;
 import openperipheral.core.integration.ModuleAppEng;
@@ -121,7 +121,7 @@ public class OpenPeripheral {
 		TypeConversionRegistry.registerTypeConverter(new ConverterList());
 		TypeConversionRegistry.registerTypeConverter(new ConverterDouble());
 		TypeConversionRegistry.registerTypeConverter(new ConverterItemStack());
-		TypeConversionRegistry.registerTypeConverter(new ConverterILiquidTank());
+		TypeConversionRegistry.registerTypeConverter(new ConverterFluidTankInfo());
 		TypeConversionRegistry.registerTypeConverter(new ConverterForgeDirection());
 		
 		AdapterManager.addPeripheralAdapter(new AdapterInventory());
