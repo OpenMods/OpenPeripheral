@@ -10,15 +10,15 @@ import openperipheral.api.IRobotUpgradeProvider;
 import openperipheral.core.item.ItemGeneric.Metas;
 
 public class ProviderMovementUpgrade implements IRobotUpgradeProvider {
-	
+
 	private HashMap<Integer, ItemStack> upgradeItems = new HashMap<Integer, ItemStack>();
-	
+
 	public ProviderMovementUpgrade() {
 		upgradeItems.put(1, Metas.tier1movement.newItemStack());
 		upgradeItems.put(2, Metas.tier2movement.newItemStack());
 		upgradeItems.put(3, Metas.tier3movement.newItemStack());
 	}
-	
+
 	@Override
 	public IRobotUpgradeAdapter provideUpgradeInstance(IRobot robot, int tier) {
 		return new AdapterMovementUpgrade(robot, tier);

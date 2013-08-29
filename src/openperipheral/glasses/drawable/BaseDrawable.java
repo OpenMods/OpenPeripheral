@@ -20,8 +20,7 @@ public abstract class BaseDrawable implements IDrawable {
 
 	private WeakReference<TileEntityGlassesBridge> bridge;
 
-	public BaseDrawable() {
-	}
+	public BaseDrawable() {}
 
 	public BaseDrawable(TileEntityGlassesBridge _bridge) {
 		bridge = new WeakReference<TileEntityGlassesBridge>(_bridge);
@@ -35,25 +34,19 @@ public abstract class BaseDrawable implements IDrawable {
 	@Override
 	public Object[] callMethod(ILuaContext context, int methodId, Object[] arguments) throws Exception {
 
-		if (deleted) {
-			return null;
-		}
+		if (deleted) { return null; }
 
 		Method method = ReflectionHelper.getMethod(this.getClass(), new String[] { methodNames[methodId] }, arguments.length);
 
 		ArrayList<Object> args = new ArrayList(Arrays.asList(arguments));
 
-		if (method == null) {
-			throw new Exception("Invalid number of arguments");
-		}
+		if (method == null) { throw new Exception("Invalid number of arguments"); }
 
 		Class[] requiredParameters = method.getParameterTypes();
 
 		for (int i = 0; i < requiredParameters.length; i++) {
 			Object converted = TypeConversionRegistry.fromLua(args.get(i), requiredParameters[i]);
-			if (converted == null) {
-				throw new Exception("Invalid parameter number " + (i + 1));
-			}
+			if (converted == null) { throw new Exception("Invalid parameter number " + (i + 1)); }
 			args.set(i, converted);
 		}
 
@@ -63,7 +56,7 @@ public abstract class BaseDrawable implements IDrawable {
 
 		if (methodNames[methodId].startsWith("set")) {
 			if (bridge.get() != null) {
-				bridge.get().markChanged(this, (Integer) v);
+				bridge.get().markChanged(this, (Integer)v);
 				return new Object[] {};
 			}
 		}

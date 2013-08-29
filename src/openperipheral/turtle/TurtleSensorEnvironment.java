@@ -1,18 +1,18 @@
 package openperipheral.turtle;
 
-import dan200.turtle.api.ITurtleAccess;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import openperipheral.core.interfaces.ISensorEnvironment;
+import dan200.turtle.api.ITurtleAccess;
 
 public class TurtleSensorEnvironment implements ISensorEnvironment {
 
 	private ITurtleAccess turtle;
-	
+
 	public TurtleSensorEnvironment(ITurtleAccess turtle) {
 		this.turtle = turtle;
 	}
-	
+
 	@Override
 	public boolean isTurtle() {
 		return true;

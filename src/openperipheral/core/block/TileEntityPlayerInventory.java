@@ -12,33 +12,25 @@ public class TileEntityPlayerInventory extends TileEntity implements IInventory 
 
 	@Override
 	public int getSizeInventory() {
-		if (player != null) {
-			return player.inventory.getSizeInventory();
-		}
+		if (player != null) { return player.inventory.getSizeInventory(); }
 		return 0;
 	}
 
 	@Override
 	public ItemStack getStackInSlot(int i) {
-		if (player != null) {
-			return player.inventory.getStackInSlot(i);
-		}
+		if (player != null) { return player.inventory.getStackInSlot(i); }
 		return null;
 	}
 
 	@Override
 	public ItemStack decrStackSize(int i, int j) {
-		if (player != null) {
-			return player.inventory.decrStackSize(i, j);
-		}
+		if (player != null) { return player.inventory.decrStackSize(i, j); }
 		return null;
 	}
 
 	@Override
 	public ItemStack getStackInSlotOnClosing(int i) {
-		if (player != null) {
-			return player.inventory.getStackInSlotOnClosing(i);
-		}
+		if (player != null) { return player.inventory.getStackInSlotOnClosing(i); }
 		return null;
 	}
 
@@ -51,9 +43,7 @@ public class TileEntityPlayerInventory extends TileEntity implements IInventory 
 
 	@Override
 	public String getInvName() {
-		if (player != null) {
-			return player.inventory.getInvName();
-		}
+		if (player != null) { return player.inventory.getInvName(); }
 		return "EmptyInventory";
 	}
 
@@ -64,9 +54,7 @@ public class TileEntityPlayerInventory extends TileEntity implements IInventory 
 
 	@Override
 	public int getInventoryStackLimit() {
-		if (player != null) {
-			return player.inventory.getInventoryStackLimit();
-		}
+		if (player != null) { return player.inventory.getInventoryStackLimit(); }
 		return 0;
 	}
 
@@ -89,9 +77,7 @@ public class TileEntityPlayerInventory extends TileEntity implements IInventory 
 
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack) {
-		if (player != null) {
-			return player.inventory.isItemValidForSlot(i, itemstack);
-		}
+		if (player != null) { return player.inventory.isItemValidForSlot(i, itemstack); }
 		return false;
 	}
 
@@ -100,15 +86,14 @@ public class TileEntityPlayerInventory extends TileEntity implements IInventory 
 	}
 
 	public boolean hasPlayer() {
-		if (worldObj == null)
-			return false;
+		if (worldObj == null) return false;
 		return worldObj.getBlockMetadata(xCoord, yCoord, zCoord) == 1;
 	}
 
 	public void setPlayer(EntityPlayer p) {
 		player = p;
-		worldObj.playSoundEffect((double) xCoord + 0.5D, (double) yCoord + 0.1D, (double) zCoord + 0.5D, "random.click", 0.3F, 0.6F);
-		worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, p == null ? 0 : 1, 3);
+		worldObj.playSoundEffect((double)xCoord + 0.5D, (double)yCoord + 0.1D, (double)zCoord + 0.5D, "random.click", 0.3F, 0.6F);
+		worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, p == null? 0 : 1, 3);
 	}
 
 	@Override

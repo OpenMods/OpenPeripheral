@@ -2,8 +2,6 @@ package openperipheral.robots.upgrade.laser;
 
 import java.util.HashMap;
 
-import dan200.computer.api.IComputerAccess;
-
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.inventory.IInventory;
@@ -17,72 +15,72 @@ import openperipheral.api.LuaMethod;
 import openperipheral.core.item.ItemGeneric;
 import openperipheral.core.item.ItemGeneric.Metas;
 import openperipheral.robots.entity.EntityLazer;
+import dan200.computer.api.IComputerAccess;
 
 public class AdapterLasersUpgrade implements IRobotUpgradeAdapter {
 
 	private static final String TAG_OVERHEATED = "o";
 	private static final String TAG_HEAT = "h";
-	
+
 	private ILaserRobot robot;
-	
+
 	/**
 	 * The current heat of the lazer
 	 */
 	private double heat = 0;
-	
+
 	/**
 	 * The highest upgrade tier in the inventory
 	 */
 	private int tier = 0;
-	
+
 	/**
 	 * Is the gun currently overheated
 	 */
 	private boolean isOverheated = false;
-	
-	
+
 	public AdapterLasersUpgrade(IRobot robot, int tier) {
 		this.robot = (ILaserRobot)robot;
 		this.tier = tier;
 	}
-	
+
 	public ILaserRobot getRobot() {
 		return robot;
 	}
-	
+
 	public int getTier() {
 		return tier;
 	}
-	
+
 	public EntityCreature getEntity() {
 		return getRobot().getEntity();
 	}
-	
+
 	@LuaMethod
 	public double getHeat(IComputerAccess computer, IRobot robot) {
 		return heat;
 	}
-	
+
 	public void modifyHeat(double mod) {
 		heat += mod;
 		heat = Math.max(0, heat);
 	}
-	
+
 	@LuaMethod
 	public boolean isCoolEnough(IComputerAccess computer, IRobot robot) {
 		return heat <= getMaxHeat(computer, robot);
 	}
-	
+
 	@LuaMethod
 	public double getMaxHeat(IComputerAccess computer, IRobot robot) {
 		return tier * 15;
 	}
-	
+
 	@LuaMethod
 	public double getCoolingPerTick(IComputerAccess computer, IRobot robot) {
 		return .1 + (tier * 0.02);
 	}
-	
+
 	@Override
 	public void writeToNBT(NBTTagCompound nbt) {
 		nbt.setDouble(TAG_HEAT, heat);
@@ -126,40 +124,34 @@ public class AdapterLasersUpgrade implements IRobotUpgradeAdapter {
 	public void setOverheated(boolean overheated) {
 		isOverheated = overheated;
 	}
-	
+
 	@LuaMethod
 	public boolean fireLight(IComputerAccess computer, IRobot robot) {
 		return fireLazer(ItemGeneric.Metas.lightEnergyCell, false, false, 2);
 	}
-	
+
 	@LuaMethod
 	public boolean fireMedium(IComputerAccess computer, IRobot robot) throws Exception {
-		if (tier < 2) {
-			throw new Exception("At least a tier 2 lazer upgrade required");
-		}
+		if (tier < 2) { throw new Exception("At least a tier 2 lazer upgrade required"); }
 		return fireLazer(ItemGeneric.Metas.mediumEnergyCell, true, false, 3);
 	}
 
 	@LuaMethod
 	public boolean fireHeavy(IComputerAccess computer, IRobot robot) throws Exception {
-		if (tier < 3) {
-			throw new Exception("At least a tier 3 lazer upgrade required");
-		}
+		if (tier < 3) { throw new Exception("At least a tier 3 lazer upgrade required"); }
 		return fireLazer(ItemGeneric.Metas.heavyEnergyCell, true, true, 4);
 	}
-	
+
 	public boolean fireLazer(Metas ammoItem, boolean canDamageBlocks, boolean isExplosive, double heatModifier) {
 		IInventory inventory = robot.getInventory();
 		ItemStack cellStack = null;
-		if (isOverheated(null, null)) {
-			return false;
-		}
+		if (isOverheated(null, null)) { return false; }
 		if (!isCoolEnough(null, null)) {
 			setOverheated(true);
 			return false;
 		}
 		int cellIndex = 0;
-		for (int i=0; i < inventory.getSizeInventory(); i++) {
+		for (int i = 0; i < inventory.getSizeInventory(); i++) {
 			ItemStack slot = inventory.getStackInSlot(i);
 			if (slot != null && slot.stackSize > 0 && OpenPeripheral.Items.generic.isA(slot, ammoItem)) {
 				cellStack = slot;

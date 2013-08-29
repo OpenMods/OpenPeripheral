@@ -1,6 +1,5 @@
 package openperipheral.api;
 
 public enum EnumRobotType {
-	Warrior,
-	Shadow;
+	Warrior, Shadow;
 }

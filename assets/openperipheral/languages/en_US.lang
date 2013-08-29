@@ -29,6 +29,7 @@ item.openperipheral.lightenergycell.name=Light Energy Cell
 item.openperipheral.mediumenergycell.name=Medium Energy Cell
 item.openperipheral.heavyenergycell.name=Heavy Energy Cell
 item.openperipheral.opticallense.name=Optical Lense
+item.openperipheral.lasersight.name=Laser Sight
 item.openperipheral.focuslense.name=Focus Lense
 item.openperipheral.scanningsensor.name=Scanning Sensor
 item.openperipheral.targetassessmentunit.name=Target Assessment Unit

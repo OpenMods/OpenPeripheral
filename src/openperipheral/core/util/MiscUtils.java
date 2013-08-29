@@ -1,6 +1,5 @@
 package openperipheral.core.util;
 
-import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -10,7 +9,6 @@ import java.util.Map;
 
 import net.minecraft.block.Block;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -21,23 +19,16 @@ import openperipheral.core.MethodDeclaration;
 public class MiscUtils {
 	public static boolean canBeGlasses(ItemStack stack) {
 		// || (Loader.isModLoaded(Mods.MPS) && MPSUtils.isValidHelmet(stack)))
-		return stack != null
-				&& (stack.getItem() == OpenPeripheral.Items.glasses);
+		return stack != null && (stack.getItem() == OpenPeripheral.Items.glasses);
 	}
 
 	public static int getHoliday() {
 		Calendar today = Calendar.getInstance();
 		int month = today.get(2);
 		int day = today.get(5);
-		if ((month == 1) && (day == 14)) {
-			return 1;
-		}
-		if ((month == 9) && (day == 31)) {
-			return 2;
-		}
-		if ((month == 11) && (day >= 24) && (day <= 30)) {
-			return 3;
-		}
+		if ((month == 1) && (day == 14)) { return 1; }
+		if ((month == 9) && (day == 31)) { return 2; }
+		if ((month == 11) && (day >= 24) && (day <= 30)) { return 3; }
 		return 0;
 	}
 
@@ -51,9 +42,9 @@ public class MiscUtils {
 	public static String getNameForTarget(Object target) {
 		String name = "";
 		if (target instanceof IInventory) {
-			name = ((IInventory) target).getInvName();
+			name = ((IInventory)target).getInvName();
 		} else if (target instanceof TileEntity) {
-			TileEntity te = (TileEntity) target;
+			TileEntity te = (TileEntity)target;
 			try {
 				NBTTagCompound tag = new NBTTagCompound();
 				te.writeToNBT(tag);
@@ -74,8 +65,7 @@ public class MiscUtils {
 				} catch (Exception e) {
 					try {
 						name = is.getItemName();
-					} catch (Exception e2) {
-					}
+					} catch (Exception e2) {}
 				}
 				if (name == null || name.equals("")) {
 					name = te.getClass().getSimpleName();

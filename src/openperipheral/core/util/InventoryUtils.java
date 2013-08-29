@@ -12,9 +12,9 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 
 public class InventoryUtils {
-	
+
 	public static final String FACTORIZATION_BARREL_CLASS = "factorization.common.TileEntityBarrel";
-	
+
 	public static String getNameForItemStack(ItemStack is) {
 		String name = "Unknown";
 		try {
@@ -22,8 +22,7 @@ public class InventoryUtils {
 		} catch (Exception e) {
 			try {
 				name = is.getItemName();
-			} catch (Exception e2) {
-			}
+			} catch (Exception e2) {}
 		}
 		return name;
 	}
@@ -34,8 +33,7 @@ public class InventoryUtils {
 
 		try {
 			rawName = is.getItemName().toLowerCase();
-		} catch (Exception e) {
-		}
+		} catch (Exception e) {}
 		try {
 			if (rawName.length() - rawName.replaceAll("\\.", "").length() == 0) {
 				String packageName = is.getItem().getClass().getName().toLowerCase();
@@ -79,31 +77,30 @@ public class InventoryUtils {
 			i++;
 		}
 	}
-	
+
 	public static Map invToMap(IInventory inventory) {
 		HashMap map = new HashMap();
 		for (int i = 0; i < inventory.getSizeInventory(); i++) {
 			map.put((i + 1), itemstackToMap(inventory.getStackInSlot(i)));
 		}
-		
+
 		if (inventory.getClass().getName() == FACTORIZATION_BARREL_CLASS) {
 			try {
-				TileEntity barrel = (TileEntity) inventory;
+				TileEntity barrel = (TileEntity)inventory;
 				NBTTagCompound compound = new NBTTagCompound();
 				barrel.writeToNBT(compound);
-				HashMap firstStack = (HashMap) map.get(1);
+				HashMap firstStack = (HashMap)map.get(1);
 				firstStack.put("size", compound.getInteger("item_count"));
-				firstStack.put("maxStack", compound.getInteger("upgrade") == 1 ? 65536 : 4096);
-			} catch (Exception e) {
-			}
+				firstStack.put("maxStack", compound.getInteger("upgrade") == 1? 65536 : 4096);
+			} catch (Exception e) {}
 		}
 		return map;
 	}
-	
+
 	public static Map itemstackToMap(ItemStack itemstack) {
 
 		HashMap map = new HashMap();
-		
+
 		if (itemstack == null) {
 
 			map.put("id", 0);
@@ -122,19 +119,19 @@ public class InventoryUtils {
 			map.put("maxSize", itemstack.getMaxStackSize());
 
 		}
-		
+
 		return map;
 	}
 
 	protected static HashMap getBookEnchantments(ItemStack stack) {
 		HashMap response = new HashMap();
-		ItemEnchantedBook book = (ItemEnchantedBook) stack.getItem();
+		ItemEnchantedBook book = (ItemEnchantedBook)stack.getItem();
 		NBTTagList nbttaglist = book.func_92110_g(stack);
 		int offset = 1;
 		if (nbttaglist != null) {
 			for (int i = 0; i < nbttaglist.tagCount(); ++i) {
-				short short1 = ((NBTTagCompound) nbttaglist.tagAt(i)).getShort("id");
-				short short2 = ((NBTTagCompound) nbttaglist.tagAt(i)).getShort("lvl");
+				short short1 = ((NBTTagCompound)nbttaglist.tagAt(i)).getShort("id");
+				short short2 = ((NBTTagCompound)nbttaglist.tagAt(i)).getShort("lvl");
 
 				if (Enchantment.enchantmentsList[short1] != null) {
 					response.put(offset, Enchantment.enchantmentsList[short1].getTranslatedName(short2));
@@ -144,13 +141,11 @@ public class InventoryUtils {
 		}
 		return response;
 	}
-	
+
 	public static int moveItemInto(IInventory fromInventory, int slot, IInventory targetInventory, int intoSlot, int maxAmount) {
 		int merged = 0;
 		ItemStack stack = fromInventory.getStackInSlot(slot);
-		if (stack == null) {
-			return merged;
-		}
+		if (stack == null) { return merged; }
 		ItemStack clonedStack = stack.copy();
 		clonedStack.stackSize = Math.min(clonedStack.stackSize, maxAmount);
 		int amountToMerge = clonedStack.stackSize;
@@ -159,13 +154,11 @@ public class InventoryUtils {
 		fromInventory.decrStackSize(slot, merged);
 		return merged;
 	}
-	
+
 	public static int moveItem(IInventory fromInventory, int slot, IInventory targetInventory, int maxAmount) {
 		int merged = 0;
 		ItemStack stack = fromInventory.getStackInSlot(slot);
-		if (stack == null) {
-			return 0;
-		}
+		if (stack == null) { return 0; }
 		ItemStack clonedStack = stack.copy();
 		clonedStack.stackSize = Math.min(clonedStack.stackSize, maxAmount);
 		int amountToMerge = clonedStack.stackSize;

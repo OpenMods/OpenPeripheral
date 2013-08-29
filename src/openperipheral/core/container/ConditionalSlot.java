@@ -14,16 +14,12 @@ public class ConditionalSlot extends Slot {
 
 	@Override
 	public boolean isItemValid(ItemStack itemStack) {
-		if (this.inventory instanceof IConditionalSlots) {
-			return ((IConditionalSlots) inventory).isValidForSlot(slotNumber, itemStack);
-		}
+		if (this.inventory instanceof IConditionalSlots) { return ((IConditionalSlots)inventory).isValidForSlot(slotNumber, itemStack); }
 		return true;
 	}
-	
+
 	public boolean canTakeStack(EntityPlayer player) {
-		if (this.inventory instanceof IConditionalSlots) {
-			return ((IConditionalSlots) inventory).canTakeStack(slotNumber, player);
-		}
+		if (this.inventory instanceof IConditionalSlots) { return ((IConditionalSlots)inventory).canTakeStack(slotNumber, player); }
 		return true;
 	}
 

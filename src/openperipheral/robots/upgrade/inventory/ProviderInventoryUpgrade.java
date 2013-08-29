@@ -10,11 +10,11 @@ import openperipheral.api.IRobotUpgradeProvider;
 import openperipheral.core.item.ItemGeneric.Metas;
 
 public class ProviderInventoryUpgrade implements IRobotUpgradeProvider {
-	
+
 	private HashMap<Integer, ItemStack> upgradeItems;
-	
+
 	public ProviderInventoryUpgrade() {
-		
+
 		upgradeItems = new HashMap<Integer, ItemStack>();
 		upgradeItems.put(1, Metas.tier1inventory.newItemStack());
 		upgradeItems.put(2, Metas.tier2inventory.newItemStack());

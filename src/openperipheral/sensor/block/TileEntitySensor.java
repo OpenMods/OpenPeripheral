@@ -14,23 +14,21 @@ import openperipheral.core.interfaces.ISensorEnvironment;
 public class TileEntitySensor extends TileEntity implements IInventory, IInventoryCallback, IConditionalSlots, ISensorEnvironment {
 
 	private final static float rotationSpeed = 3.0F;
-	
+
 	private float rotation;
-	
-	
+
 	private OPInventory inventory = new OPInventory("sensor", false, 1);
-	
-	public TileEntitySensor() {
-	}
-	
+
+	public TileEntitySensor() {}
+
 	public float getRotation() {
 		return rotation;
 	}
-	
+
 	@Override
 	public void updateEntity() {
 		rotation = (rotation + rotationSpeed) % 360;
-		//peripheral.update();
+		// peripheral.update();
 	}
 
 	@Override
@@ -49,11 +47,11 @@ public class TileEntitySensor extends TileEntity implements IInventory, IInvento
 	}
 
 	/*
-	@Override
-	public IHostedPeripheral providePeripheral() {
-		//return peripheral;
-	}
-	*/
+	 * @Override
+	 * public IHostedPeripheral providePeripheral() {
+	 * //return peripheral;
+	 * }
+	 */
 
 	@Override
 	public boolean canTakeStack(int slotNumber, EntityPlayer player) {
@@ -62,7 +60,7 @@ public class TileEntitySensor extends TileEntity implements IInventory, IInvento
 
 	@Override
 	public void onInventoryChanged(IInventory inventory, int slotNumber) {
-		
+
 	}
 
 	@Override
@@ -112,19 +110,19 @@ public class TileEntitySensor extends TileEntity implements IInventory, IInvento
 
 	@Override
 	public void openChest() {
-		
+
 	}
 
 	@Override
 	public void closeChest() {
-		
+
 	}
 
 	@Override
 	public boolean isValidForSlot(int i, ItemStack itemstack) {
 		return isItemValidForSlot(i, itemstack);
 	}
-	
+
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack) {
 		return inventory.isItemValidForSlot(i, itemstack);

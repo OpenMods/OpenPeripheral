@@ -97,22 +97,14 @@ public class TileEntityTicketMachine extends TileEntity implements IInventory, I
 	public boolean isValidForSlot(int i, ItemStack itemstack) {
 		return isItemValidForSlot(i, itemstack);
 	}
-	
+
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack) {
-		if (itemstack == null) {
-			return false;
-		}
-		if (i == 2) {
-			return false;
-		}
+		if (itemstack == null) { return false; }
+		if (i == 2) { return false; }
 		Item item = itemstack.getItem();
-		if (i == 0 && item == Item.paper) {
-			return true;
-		}
-		if (i == 1 && item == Item.dyePowder) {
-			return true;
-		}
+		if (i == 0 && item == Item.paper) { return true; }
+		if (i == 1 && item == Item.dyePowder) { return true; }
 		return false;
 	}
 
@@ -131,19 +123,18 @@ public class TileEntityTicketMachine extends TileEntity implements IInventory, I
 				decrStackSize(1, 1);
 				setInventorySlotContents(2, output);
 				worldObj.playSoundEffect((double)xCoord + 0.5D, (double)yCoord + 0.5D, (double)zCoord + 0.5D, "openperipheral.ticketmachine", 0.3F, 0.6F);
-				
+
 				return true;
 
 			}
-		} catch (Exception e) {
-		}
+		} catch (Exception e) {}
 		return false;
 	}
-	
+
 	public boolean hasTicket() {
 		return hasTicket;
 	}
-	
+
 	@Override
 	public Packet getDescriptionPacket() {
 		Packet132TileEntityData packet = new Packet132TileEntityData();
@@ -156,7 +147,6 @@ public class TileEntityTicketMachine extends TileEntity implements IInventory, I
 		packet.customParam1 = nbt;
 		return packet;
 	}
-	
 
 	@Override
 	public void onDataPacket(INetworkManager net, Packet132TileEntityData pkt) {

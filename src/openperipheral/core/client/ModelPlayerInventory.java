@@ -29,7 +29,7 @@ public class ModelPlayerInventory extends ModelBase {
 	}
 
 	public void render(boolean pressed) {
-		pressure.rotationPointY = pressed ? 10.5f : 10f;
+		pressure.rotationPointY = pressed? 10.5f : 10f;
 		pressure.render(f5);
 		chest.render(f5);
 	}

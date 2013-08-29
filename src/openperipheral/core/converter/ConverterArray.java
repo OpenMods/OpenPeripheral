@@ -18,7 +18,7 @@ public class ConverterArray implements ITypeConverter {
 		if (o.getClass().isArray()) {
 			HashMap ret = new HashMap();
 			int index = 1;
-			Object[] objArray = (Object[]) o;
+			Object[] objArray = (Object[])o;
 			for (int i = 0; i < objArray.length; i++) {
 				ret.put(index++, TypeConversionRegistry.toLua(objArray[i]));
 			}

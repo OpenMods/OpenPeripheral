@@ -40,29 +40,28 @@ public class DrawableBox extends BaseDrawable implements IDrawable {
 
 	public DrawableBox(TileEntityGlassesBridge parent, int x, int y, int width, int height, int color, double alpha, int color2, double alpha2, byte gradient) {
 		super(parent);
-		this.x = (short) x;
-		this.y = (short) y;
-		this.width = (short) width;
-		this.height = (short) height;
+		this.x = (short)x;
+		this.y = (short)y;
+		this.width = (short)width;
+		this.height = (short)height;
 		this.color = color;
 		this.opacity = alpha;
 		this.color2 = color2;
 		this.opacity2 = alpha2;
 		this.gradient = gradient;
-		this.methodNames = new String[] { "getX", "setX", "getY", "setY", "getWidth", "setWidth", "getHeight", "setHeight", "getColor", "setColor", "getOpacity",
-				"setOpacity", "getColor2", "setColor2", "getOpacity2", "setOpacity2", "setZIndex", "getZIndex", "setGradient", "getGradient", "delete" };
+		this.methodNames = new String[] { "getX", "setX", "getY", "setY", "getWidth", "setWidth", "getHeight", "setHeight", "getColor", "setColor", "getOpacity", "setOpacity", "getColor2", "setColor2", "getOpacity2", "setOpacity2", "setZIndex", "getZIndex", "setGradient", "getGradient", "delete" };
 	}
 
 	@Override
 	public void draw(float partialTicks) {
 
-		float r = (float) ((color >> 16) & 0xFF) / 255;
-		float g = (float) ((color >> 8) & 0xFF) / 255;
-		float b = (float) (color & 0xFF) / 255;
+		float r = (float)((color >> 16) & 0xFF) / 255;
+		float g = (float)((color >> 8) & 0xFF) / 255;
+		float b = (float)(color & 0xFF) / 255;
 
-		float r2 = (float) ((color2 >> 16) & 0xFF) / 255;
-		float g2 = (float) ((color2 >> 8) & 0xFF) / 255;
-		float b2 = (float) (color2 & 0xFF) / 255;
+		float r2 = (float)((color2 >> 16) & 0xFF) / 255;
+		float g2 = (float)((color2 >> 8) & 0xFF) / 255;
+		float b2 = (float)(color2 & 0xFF) / 255;
 
 		if (gradient == 0) {
 			r2 = r;
@@ -78,22 +77,22 @@ public class DrawableBox extends BaseDrawable implements IDrawable {
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glShadeModel(GL11.GL_SMOOTH);
 		tessellator.startDrawingQuads();
-		tessellator.setColorRGBA_F(r, g, b, (float) opacity);
+		tessellator.setColorRGBA_F(r, g, b, (float)opacity);
 		if (gradient == 1) {
-			tessellator.addVertex((double) x, (double) y + height, 0.0D);
-			tessellator.addVertex((double) x + width, (double) y + height, 0.0D);
+			tessellator.addVertex((double)x, (double)y + height, 0.0D);
+			tessellator.addVertex((double)x + width, (double)y + height, 0.0D);
 		} else {
-			tessellator.addVertex((double) x + width, (double) y + height, 0.0D);
-			tessellator.addVertex((double) x + width, y, 0.0D);
+			tessellator.addVertex((double)x + width, (double)y + height, 0.0D);
+			tessellator.addVertex((double)x + width, y, 0.0D);
 
 		}
-		tessellator.setColorRGBA_F(r2, g2, b2, (float) opacity2);
+		tessellator.setColorRGBA_F(r2, g2, b2, (float)opacity2);
 		if (gradient == 1) {
-			tessellator.addVertex((double) x + width, y, 0.0D);
-			tessellator.addVertex((double) x, (double) y, 0.0D);
+			tessellator.addVertex((double)x + width, y, 0.0D);
+			tessellator.addVertex((double)x, (double)y, 0.0D);
 		} else {
-			tessellator.addVertex((double) x, (double) y, 0.0D);
-			tessellator.addVertex((double) x, (double) y + height, 0.0D);
+			tessellator.addVertex((double)x, (double)y, 0.0D);
+			tessellator.addVertex((double)x, (double)y + height, 0.0D);
 		}
 		tessellator.draw();
 		GL11.glShadeModel(GL11.GL_FLAT);
@@ -148,35 +147,25 @@ public class DrawableBox extends BaseDrawable implements IDrawable {
 	public void readFrom(DataInputStream stream, Short changeMask) {
 		try {
 
-			if (ByteUtils.get(changeMask, X_CHANGED))
-				x = stream.readShort();
+			if (ByteUtils.get(changeMask, X_CHANGED)) x = stream.readShort();
 
-			if (ByteUtils.get(changeMask, Y_CHANGED))
-				y = stream.readShort();
+			if (ByteUtils.get(changeMask, Y_CHANGED)) y = stream.readShort();
 
-			if (ByteUtils.get(changeMask, WIDTH_CHANGED))
-				width = stream.readShort();
+			if (ByteUtils.get(changeMask, WIDTH_CHANGED)) width = stream.readShort();
 
-			if (ByteUtils.get(changeMask, HEIGHT_CHANGED))
-				height = stream.readShort();
+			if (ByteUtils.get(changeMask, HEIGHT_CHANGED)) height = stream.readShort();
 
-			if (ByteUtils.get(changeMask, COLOR_CHANGED))
-				color = stream.readInt();
+			if (ByteUtils.get(changeMask, COLOR_CHANGED)) color = stream.readInt();
 
-			if (ByteUtils.get(changeMask, OPACITY_CHANGED))
-				opacity = (double) stream.readFloat();
+			if (ByteUtils.get(changeMask, OPACITY_CHANGED)) opacity = (double)stream.readFloat();
 
-			if (ByteUtils.get(changeMask, COLOR2_CHANGED))
-				color2 = stream.readInt();
+			if (ByteUtils.get(changeMask, COLOR2_CHANGED)) color2 = stream.readInt();
 
-			if (ByteUtils.get(changeMask, OPACITY2_CHANGED))
-				opacity2 = (double) stream.readFloat();
+			if (ByteUtils.get(changeMask, OPACITY2_CHANGED)) opacity2 = (double)stream.readFloat();
 
-			if (ByteUtils.get(changeMask, Z_CHANGED))
-				zIndex = stream.readByte();
+			if (ByteUtils.get(changeMask, Z_CHANGED)) zIndex = stream.readByte();
 
-			if (ByteUtils.get(changeMask, GRADIENT_CHANGED))
-				gradient = stream.readByte();
+			if (ByteUtils.get(changeMask, GRADIENT_CHANGED)) gradient = stream.readByte();
 
 		} catch (IOException e) {
 
@@ -184,81 +173,61 @@ public class DrawableBox extends BaseDrawable implements IDrawable {
 	}
 
 	public int setOpacity(double a) {
-		if (a == opacity) {
-			return -1;
-		}
+		if (a == opacity) { return -1; }
 		opacity = a;
 		return OPACITY_CHANGED;
 	}
 
 	public int setOpacity2(double a2) {
-		if (opacity2 == a2) {
-			return -1;
-		}
+		if (opacity2 == a2) { return -1; }
 		opacity2 = a2;
 		return OPACITY2_CHANGED;
 	}
 
 	public int setColor(int c) {
-		if (color == c) {
-			return -1;
-		}
+		if (color == c) { return -1; }
 		color = c;
 		return COLOR_CHANGED;
 	}
 
 	public int setColor2(int c2) {
-		if (c2 == color2) {
-			return -1;
-		}
+		if (c2 == color2) { return -1; }
 		color2 = c2;
 		return COLOR2_CHANGED;
 	}
 
 	public int setHeight(short h) {
-		if (height == h) {
-			return -1;
-		}
+		if (height == h) { return -1; }
 		height = h;
 		return HEIGHT_CHANGED;
 	}
 
 	public int setWidth(short w) {
-		if (width == w) {
-			return -1;
-		}
+		if (width == w) { return -1; }
 		width = w;
 		return WIDTH_CHANGED;
 	}
 
 	public int setGradient(byte g) {
-		if (gradient == g) {
-			return -1;
-		}
+		if (gradient == g) { return -1; }
 		gradient = g;
 		return GRADIENT_CHANGED;
 	}
 
 	public int setX(short x2) {
-		if (x == x2) {
-			return -1;
-		}
+		if (x == x2) { return -1; }
 		x = x2;
 		return X_CHANGED;
 	}
 
 	public int setY(short y2) {
-		if (y == y2) {
-			return -1;
-		}
+		if (y == y2) { return -1; }
 		y = y2;
 		return Y_CHANGED;
 	}
 
 	public int setZIndex(byte z) {
-		if (z == zIndex) {
-			return -1;
-		}
+		if (z == zIndex) { return -1; }
 		zIndex = z;
 		return Z_CHANGED;
 	}
@@ -267,35 +236,25 @@ public class DrawableBox extends BaseDrawable implements IDrawable {
 	public void writeTo(DataOutputStream stream, Short changeMask) {
 		try {
 
-			if (ByteUtils.get(changeMask, X_CHANGED))
-				stream.writeShort((short) x);
+			if (ByteUtils.get(changeMask, X_CHANGED)) stream.writeShort((short)x);
 
-			if (ByteUtils.get(changeMask, Y_CHANGED))
-				stream.writeShort((short) y);
+			if (ByteUtils.get(changeMask, Y_CHANGED)) stream.writeShort((short)y);
 
-			if (ByteUtils.get(changeMask, WIDTH_CHANGED))
-				stream.writeShort((short) width);
+			if (ByteUtils.get(changeMask, WIDTH_CHANGED)) stream.writeShort((short)width);
 
-			if (ByteUtils.get(changeMask, HEIGHT_CHANGED))
-				stream.writeShort((short) height);
+			if (ByteUtils.get(changeMask, HEIGHT_CHANGED)) stream.writeShort((short)height);
 
-			if (ByteUtils.get(changeMask, COLOR_CHANGED))
-				stream.writeInt(color);
+			if (ByteUtils.get(changeMask, COLOR_CHANGED)) stream.writeInt(color);
 
-			if (ByteUtils.get(changeMask, OPACITY_CHANGED))
-				stream.writeFloat((float) opacity);
+			if (ByteUtils.get(changeMask, OPACITY_CHANGED)) stream.writeFloat((float)opacity);
 
-			if (ByteUtils.get(changeMask, COLOR2_CHANGED))
-				stream.writeInt(color2);
+			if (ByteUtils.get(changeMask, COLOR2_CHANGED)) stream.writeInt(color2);
 
-			if (ByteUtils.get(changeMask, OPACITY2_CHANGED))
-				stream.writeFloat((float) opacity2);
+			if (ByteUtils.get(changeMask, OPACITY2_CHANGED)) stream.writeFloat((float)opacity2);
 
-			if (ByteUtils.get(changeMask, Z_CHANGED))
-				stream.writeByte(zIndex);
+			if (ByteUtils.get(changeMask, Z_CHANGED)) stream.writeByte(zIndex);
 
-			if (ByteUtils.get(changeMask, GRADIENT_CHANGED))
-				stream.writeByte(gradient);
+			if (ByteUtils.get(changeMask, GRADIENT_CHANGED)) stream.writeByte(gradient);
 
 		} catch (IOException e) {
 			e.printStackTrace();

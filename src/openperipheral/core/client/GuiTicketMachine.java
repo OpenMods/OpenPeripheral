@@ -13,7 +13,7 @@ public class GuiTicketMachine extends GuiContainer {
 	private TileEntityTicketMachine ticketMachine;
 
 	private static final ResourceLocation background = new ResourceLocation("openperipheral", "textures/gui/ticketmachine.png");
-	
+
 	public GuiTicketMachine(ContainerGeneric container, TileEntityTicketMachine tileentity) {
 		super(container);
 		ticketMachine = tileentity;

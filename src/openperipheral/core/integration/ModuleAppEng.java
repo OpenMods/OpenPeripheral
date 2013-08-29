@@ -13,5 +13,5 @@ public class ModuleAppEng {
 		AdapterManager.addPeripheralAdapter(new AdapterGridInterface());
 		TypeConversionRegistry.registerTypeConverter(new ConverterIItemList());
 	}
-	
+
 }

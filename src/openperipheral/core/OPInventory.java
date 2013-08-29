@@ -44,8 +44,7 @@ public class OPInventory implements IInventory, ISidedInventory {
 	}
 
 	@Override
-	public void closeChest() {
-	}
+	public void closeChest() {}
 
 	@Override
 	public ItemStack decrStackSize(int stackIndex, int byAmount) {
@@ -134,14 +133,13 @@ public class OPInventory implements IInventory, ISidedInventory {
 	}
 
 	@Override
-	public void openChest() {
-	}
+	public void openChest() {}
 
 	public void readFromNBT(NBTTagCompound tag) {
 		NBTTagList nbttaglist = tag.getTagList("Items");
 		inventoryContents = new ItemStack[getSizeInventory()];
 		for (int i = 0; i < nbttaglist.tagCount(); i++) {
-			NBTTagCompound stacktag = (NBTTagCompound) nbttaglist.tagAt(i);
+			NBTTagCompound stacktag = (NBTTagCompound)nbttaglist.tagAt(i);
 			int j = stacktag.getByte("Slot") & 0xff;
 			if (j >= 0 && j < inventoryContents.length) {
 				inventoryContents[j] = ItemStack.loadItemStackFromNBT(stacktag);
@@ -166,7 +164,7 @@ public class OPInventory implements IInventory, ISidedInventory {
 		for (int i = 0; i < inventoryContents.length; i++) {
 			if (inventoryContents[i] != null) {
 				NBTTagCompound stacktag = new NBTTagCompound();
-				stacktag.setByte("Slot", (byte) i);
+				stacktag.setByte("Slot", (byte)i);
 				inventoryContents[i].writeToNBT(stacktag);
 				nbttaglist.appendTag(stacktag);
 			}
@@ -176,10 +174,9 @@ public class OPInventory implements IInventory, ISidedInventory {
 	}
 
 	/**
-	 *  This bastard never even gets called, so ignore it
+	 * This bastard never even gets called, so ignore it
 	 */
 	@Override
-	public void onInventoryChanged() {
-	}
+	public void onInventoryChanged() {}
 
 }

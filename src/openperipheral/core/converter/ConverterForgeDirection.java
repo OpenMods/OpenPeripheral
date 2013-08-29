@@ -14,9 +14,7 @@ public class ConverterForgeDirection implements ITypeConverter {
 	public Object fromLua(Object o, Class required) {
 		if (required == ForgeDirection.class && o instanceof String) {
 			for (int i = 0; i < directions.size(); i++) {
-				if (directions.get(i).equals(o)) {
-					return ForgeDirection.getOrientation(i);
-				}
+				if (directions.get(i).equals(o)) { return ForgeDirection.getOrientation(i); }
 			}
 			return ForgeDirection.UNKNOWN;
 		}
@@ -25,9 +23,7 @@ public class ConverterForgeDirection implements ITypeConverter {
 
 	@Override
 	public Object toLua(Object o) {
-		if (o instanceof ForgeDirection) {
-			return directions.get(((ForgeDirection) o).ordinal());
-		}
+		if (o instanceof ForgeDirection) { return directions.get(((ForgeDirection)o).ordinal()); }
 		return null;
 	}
 

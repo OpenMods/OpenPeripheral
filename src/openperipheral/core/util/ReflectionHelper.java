@@ -11,7 +11,7 @@ import openperipheral.core.TypeConversionRegistry;
 public class ReflectionHelper {
 
 	public static void setProperty(Class klazz, Object instance, Object value, String... fields) {
-		Field field = getField(klazz == null ? instance.getClass() : klazz, fields);
+		Field field = getField(klazz == null? instance.getClass() : klazz, fields);
 		if (field != null) {
 			try {
 				field.set(instance, TypeConversionRegistry.fromLua(value, field.getType()));
@@ -26,12 +26,11 @@ public class ReflectionHelper {
 	}
 
 	public static Object getProperty(Class klazz, Object instance, String... fields) {
-		Field field = getField(klazz == null ? instance.getClass() : klazz, fields);
+		Field field = getField(klazz == null? instance.getClass() : klazz, fields);
 		if (field != null) {
 			try {
 				return field.get(instance);
-			} catch (Exception e) {
-			}
+			} catch (Exception e) {}
 		}
 		return null;
 	}
@@ -49,7 +48,7 @@ public class ReflectionHelper {
 	}
 
 	public static Object callMethod(boolean replace, Class klazz, Object instance, String[] methodNames, Object... args) throws Exception {
-		Method m = getMethod(klazz == null ? instance.getClass() : klazz, methodNames, args.length);
+		Method m = getMethod(klazz == null? instance.getClass() : klazz, methodNames, args.length);
 		if (m != null) {
 			Class[] types = m.getParameterTypes();
 			List<Object> argumentList = Arrays.asList(args);
@@ -70,9 +69,7 @@ public class ReflectionHelper {
 	}
 
 	public static Method getMethod(Class klazz, String[] methodNames, int argCount) {
-		if (klazz == null) {
-			return null;
-		}
+		if (klazz == null) { return null; }
 		for (String method : methodNames) {
 			try {
 				for (Method m : getAllMethods(klazz)) {
@@ -81,8 +78,7 @@ public class ReflectionHelper {
 						return m;
 					}
 				}
-			} catch (Exception e) {
-			}
+			} catch (Exception e) {}
 		}
 		return null;
 	}
@@ -107,8 +103,7 @@ public class ReflectionHelper {
 					Field f = current.getDeclaredField(field);
 					f.setAccessible(true);
 					return f;
-				} catch (Exception e) {
-				}
+				} catch (Exception e) {}
 				current = current.getSuperclass();
 			}
 		}
@@ -116,13 +111,10 @@ public class ReflectionHelper {
 	}
 
 	public static Class getClass(String className) {
-		if (className == null || className.isEmpty()) {
-			return null;
-		}
+		if (className == null || className.isEmpty()) { return null; }
 		try {
 			return Class.forName(className);
-		} catch (Exception e) {
-		}
+		} catch (Exception e) {}
 		return null;
 	}
 

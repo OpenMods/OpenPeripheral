@@ -156,7 +156,7 @@ public class ModelRobotWarrior extends ModelBase {
 		gun.render(f5);
 		shortarm.render(f5);
 		melee.render(f5);
-		
+
 		pelvis.render(f5);
 		bodybolt.render(f5);
 		body.render(f5);
@@ -179,10 +179,10 @@ public class ModelRobotWarrior extends ModelBase {
 
 	public void setRotationAngles(float par1, float par2, float par3, float par4, float par5, float par6, Entity entity) {
 
-		EntityRobotWarrior robot = (EntityRobotWarrior) entity;
-		
-		head.rotateAngleY = par4 / (180F / (float) Math.PI);
-        head.rotateAngleX = par5 / (180F / (float)Math.PI);
+		EntityRobotWarrior robot = (EntityRobotWarrior)entity;
+
+		head.rotateAngleY = par4 / (180F / (float)Math.PI);
+		head.rotateAngleX = par5 / (180F / (float)Math.PI);
 		shoulderleft.rotateAngleY = head.rotateAngleY;
 		shoulderright.rotateAngleY = head.rotateAngleY;
 		longarm.rotateAngleY = head.rotateAngleY;
@@ -195,12 +195,12 @@ public class ModelRobotWarrior extends ModelBase {
 		melee.rotateAngleX = head.rotateAngleX;
 		shortarm.rotateAngleX = head.rotateAngleX;
 
-		float z = (float) (head.rotationPointZ + 10.0F * Math.sin(head.rotateAngleY));
-		float x = (float) (head.rotationPointX - 10.0F * Math.cos(head.rotateAngleY));
-		
+		float z = (float)(head.rotationPointZ + 10.0F * Math.sin(head.rotateAngleY));
+		float x = (float)(head.rotationPointX - 10.0F * Math.cos(head.rotateAngleY));
+
 		gun.rotationPointX = x;
 		gun.rotationPointZ = z;
-		//gun.rotateAngleX = 0;
+		// gun.rotateAngleX = 0;
 		gun.rotateAngleY = head.rotateAngleY;
 		gun.rotateAngleX = head.rotateAngleX;
 		gun.rotateAngleZ = robot.getWeaponSpin();
@@ -209,27 +209,26 @@ public class ModelRobotWarrior extends ModelBase {
 
 		leg1.rotateAngleX = MathHelper.cos(par1 * 0.6662F) * 1.4F * par2;
 		rotateLeg(par1, par2, leg1, legpart1, legpart2, foot1);
-		leg2.rotateAngleX = MathHelper.cos(par1 * 0.6662F + (float) Math.PI) * 1.4F * par2;
+		leg2.rotateAngleX = MathHelper.cos(par1 * 0.6662F + (float)Math.PI) * 1.4F * par2;
 		rotateLeg(par1, par2, leg2, legpart3, legpart4, foot2);
-
 
 	}
 
 	private void rotateLeg(float f, float i, ModelRenderer upper, ModelRenderer lower1, ModelRenderer lower2, ModelRenderer foot) {
-		float z = (float) (upper.rotationPointZ - 6.0F * Math.cos(upper.rotateAngleX + (Math.PI / 2)));
-		float y = (float) (upper.rotationPointY + 6.0F * Math.sin(upper.rotateAngleX + (Math.PI / 2)));
+		float z = (float)(upper.rotationPointZ - 6.0F * Math.cos(upper.rotateAngleX + (Math.PI / 2)));
+		float y = (float)(upper.rotationPointY + 6.0F * Math.sin(upper.rotateAngleX + (Math.PI / 2)));
 		lower1.rotationPointY = y;
 		lower1.rotationPointZ = z;
 		lower2.rotationPointY = lower1.rotationPointY;
 		lower2.rotationPointZ = lower1.rotationPointZ;
 		if (upper.rotateAngleX > 0) {
-			lower1.rotateAngleX = (float) (upper.rotateAngleX * 1.5);
-		}else {
+			lower1.rotateAngleX = (float)(upper.rotateAngleX * 1.5);
+		} else {
 			lower1.rotateAngleX = 0;
 		}
 		lower2.rotateAngleX = lower1.rotateAngleX;
-		z = (float) (lower1.rotationPointZ - 6.0F * Math.cos(lower1.rotateAngleX + (Math.PI / 2)));
-		y = (float) (lower1.rotationPointY + 6.0F * Math.sin(lower1.rotateAngleX + (Math.PI / 2)));
+		z = (float)(lower1.rotationPointZ - 6.0F * Math.cos(lower1.rotateAngleX + (Math.PI / 2)));
+		y = (float)(lower1.rotationPointY + 6.0F * Math.sin(lower1.rotateAngleX + (Math.PI / 2)));
 		foot.rotationPointY = y;
 		foot.rotationPointZ = z;
 	}

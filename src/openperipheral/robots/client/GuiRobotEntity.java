@@ -9,7 +9,7 @@ import org.lwjgl.opengl.GL11;
 public class GuiRobotEntity extends GuiContainer {
 
 	private static final ResourceLocation background = new ResourceLocation("openperipheral", "textures/gui/robotentitygui.png");
-	
+
 	public GuiRobotEntity(ContainerGeneric container) {
 		super(container);
 		this.ySize = 168;

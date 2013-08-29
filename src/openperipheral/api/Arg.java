@@ -8,7 +8,9 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Arg {
-    String name() default "[none set]";
-    String description() default "";
-    LuaType type();
+	String name() default "[none set]";
+
+	String description() default "";
+
+	LuaType type();
 }

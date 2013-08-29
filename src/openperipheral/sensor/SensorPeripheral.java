@@ -14,5 +14,5 @@ public class SensorPeripheral extends HostedPeripheral {
 	public World getWorldObject() {
 		return ((TurtleSensorEnvironment)targetObject).getWorld();
 	}
-	
+
 }

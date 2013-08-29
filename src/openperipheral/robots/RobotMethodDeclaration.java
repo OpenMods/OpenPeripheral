@@ -2,7 +2,6 @@ package openperipheral.robots;
 
 import java.lang.reflect.Method;
 
-import openperipheral.api.IAdapterBase;
 import openperipheral.api.LuaMethod;
 import openperipheral.core.MethodDeclaration;
 

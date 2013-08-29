@@ -9,9 +9,8 @@ import openperipheral.api.IRobotUpgradeProvider;
 
 public class ProviderFuelUpgrade implements IRobotUpgradeProvider {
 
-	public ProviderFuelUpgrade() {
-	}
-	
+	public ProviderFuelUpgrade() {}
+
 	@Override
 	public IRobotUpgradeAdapter provideUpgradeInstance(IRobot robot, int tier) {
 		return new AdapterFuelUpgrade(robot);

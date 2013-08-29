@@ -19,9 +19,9 @@ import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
 
 public class TickHandler implements ITickHandler {
-	
+
 	private static Map<Integer, LinkedBlockingQueue<FutureTask>> callbacks = Collections.synchronizedMap(new HashMap<Integer, LinkedBlockingQueue<FutureTask>>());
-	
+
 	public static Future addTickCallback(World world, Callable callback) throws InterruptedException {
 		int worldId = world.provider.dimensionId;
 		if (!callbacks.containsKey(Integer.valueOf(worldId))) {
@@ -42,7 +42,7 @@ public class TickHandler implements ITickHandler {
 
 		if (type.contains(TickType.WORLD)) {
 
-			World world = (World) tickObjects[0];
+			World world = (World)tickObjects[0];
 			if (!world.isRemote) {
 				int worldId = world.provider.dimensionId;
 				if (callbacks.containsKey(worldId)) {
@@ -66,10 +66,10 @@ public class TickHandler implements ITickHandler {
 	public void tickStart(EnumSet<TickType> type, Object... tickObjects) {
 
 		if (type.contains(TickType.WORLD)) {
-			
-			World world = (World) tickObjects[0];
+
+			World world = (World)tickObjects[0];
 			if (!world.isRemote) {
-				for (EntityPlayer player : (List<EntityPlayer>) world.playerEntities) {
+				for (EntityPlayer player : (List<EntityPlayer>)world.playerEntities) {
 					ItemStack helmet = player.inventory.armorItemInSlot(3);
 					if (MiscUtils.canBeGlasses(helmet)) {
 						TileEntityGlassesBridge bridge = TileEntityGlassesBridge.getGlassesBridgeFromStack(player.worldObj, helmet);

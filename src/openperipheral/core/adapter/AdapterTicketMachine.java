@@ -15,41 +15,34 @@ public class AdapterTicketMachine implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(
-		returnType=LuaType.VOID,
-		description="Lock the ink and paper slot"
-	)
-	public void lock(IComputerAccess computer,
-			TileEntityTicketMachine ticketMachine) {
+			returnType = LuaType.VOID,
+			description = "Lock the ink and paper slot")
+	public void lock(IComputerAccess computer, TileEntityTicketMachine ticketMachine) {
 		ticketMachine.lock();
 	}
 
 	@LuaMethod(
-		returnType=LuaType.VOID,
-		description="Unlock the ink and paper slot"
-	)
-	public void unlock(IComputerAccess computer,
-			TileEntityTicketMachine ticketMachine) {
+			returnType = LuaType.VOID,
+			description = "Unlock the ink and paper slot")
+	public void unlock(IComputerAccess computer, TileEntityTicketMachine ticketMachine) {
 		ticketMachine.unlock();
 	}
 
 	@LuaMethod(
-		returnType=LuaType.BOOLEAN,
-		description="Create a new ticket to the specified destination",
-		args = {
-			@Arg(name="destination", description="The destination for the ticket", type=LuaType.STRING)	
-		}
-	)
-	public boolean createTicket(IComputerAccess computer,
-			TileEntityTicketMachine ticketMachine, String destination) {
+			returnType = LuaType.BOOLEAN,
+			description = "Create a new ticket to the specified destination",
+			args = { @Arg(
+					name = "destination",
+					description = "The destination for the ticket",
+					type = LuaType.STRING) })
+	public boolean createTicket(IComputerAccess computer, TileEntityTicketMachine ticketMachine, String destination) {
 		return ticketMachine.createTicket(destination);
 	}
 
 	@LuaMethod(
-		returnType=LuaType.BOOLEAN,
-		description="Returns type of this machine is locked"
-	)
-	public boolean isLocked(IComputerAccess computer,
-			TileEntityTicketMachine ticketMachine) {
+			returnType = LuaType.BOOLEAN,
+			description = "Returns type of this machine is locked")
+	public boolean isLocked(IComputerAccess computer, TileEntityTicketMachine ticketMachine) {
 		return ticketMachine.isLocked();
 	}
 }

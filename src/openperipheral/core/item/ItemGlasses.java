@@ -49,14 +49,14 @@ public class ItemGlasses extends ItemArmor {
 	@Override
 	public String getArmorTexture(ItemStack stack, Entity entity, int slot, int layer) {
 		switch (MiscUtils.getHoliday()) {
-		case 1:
-			return "openperipheral:textures/models/glasses_valentines.png";
-		case 2:
-			return "openperipheral:textures/models/glasses_halloween.png";
-		case 3:
-			return "openperipheral:textures/models/glasses_christmas.png";
-		default:
-			return "openperipheral:textures/models/glasses.png";
+			case 1:
+				return "openperipheral:textures/models/glasses_valentines.png";
+			case 2:
+				return "openperipheral:textures/models/glasses_halloween.png";
+			case 3:
+				return "openperipheral:textures/models/glasses_christmas.png";
+			default:
+				return "openperipheral:textures/models/glasses.png";
 		}
 	}
 

@@ -14,7 +14,7 @@ public class FontSizeChecker {
 	private static FontSizeChecker instance = null;
 
 	private int[] charWidth = new int[256];
-	
+
 	public static FontSizeChecker getInstance() {
 		if (instance == null) {
 			instance = new FontSizeChecker(ConfigSettings.RESOURCE_PATH + "/textures/fonts/main.png");
@@ -81,9 +81,7 @@ public class FontSizeChecker {
 			return 4;
 		} else {
 			int i = ChatAllowedCharacters.allowedCharacters.indexOf(par1);
-			if (i != -1) {
-				return this.charWidth[i + 32];
-			}
+			if (i != -1) { return this.charWidth[i + 32]; }
 		}
 		return 8;
 	}
@@ -97,7 +95,7 @@ public class FontSizeChecker {
 
 			for (int j = 0; j < par1Str.length(); ++j) {
 				char c0 = par1Str.charAt(j);
-				
+
 				int k = this.getCharWidth(c0);
 
 				if (k < 0 && j < par1Str.length() - 1) {

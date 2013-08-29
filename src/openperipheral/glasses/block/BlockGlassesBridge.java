@@ -37,14 +37,12 @@ public class BlockGlassesBridge extends BlockContainer {
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
 
 		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
-		if (player.isSneaking() || tileEntity == null) {
-			return false;
-		}
+		if (player.isSneaking() || tileEntity == null) { return false; }
 
 		if (!world.isRemote && tileEntity instanceof TileEntityGlassesBridge) {
 			ItemStack glassesStack = player.getHeldItem();
 			if (MiscUtils.canBeGlasses(glassesStack)) {
-				((TileEntityGlassesBridge) tileEntity).writeDataToGlasses(glassesStack);
+				((TileEntityGlassesBridge)tileEntity).writeDataToGlasses(glassesStack);
 			}
 		}
 

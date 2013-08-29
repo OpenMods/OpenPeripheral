@@ -2,7 +2,6 @@ package openperipheral.core.adapter.vanilla;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityRecordPlayer;
-import openperipheral.api.Arg;
 import openperipheral.api.IPeripheralAdapter;
 import openperipheral.api.LuaMethod;
 import openperipheral.api.LuaType;
@@ -16,9 +15,8 @@ public class AdapterRecordPlayer implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(
-		returnType=LuaType.TABLE,
-		description="Get the record currently being played"
-	)
+			returnType = LuaType.TABLE,
+			description = "Get the record currently being played")
 	public ItemStack getRecord(IComputerAccess computer, TileEntityRecordPlayer recordPlayer) {
 		return recordPlayer.func_96097_a();
 	}

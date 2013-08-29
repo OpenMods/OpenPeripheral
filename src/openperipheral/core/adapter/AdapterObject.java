@@ -1,10 +1,8 @@
 package openperipheral.core.adapter;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Map;
 
-import openperipheral.api.Arg;
 import openperipheral.api.IPeripheralAdapter;
 import openperipheral.api.IRobotUpgradeProvider;
 import openperipheral.api.LuaMethod;
@@ -24,21 +22,19 @@ public class AdapterObject implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(
-		returnType=LuaType.STRING,
-		description="List all the methods available"
-	)
+			returnType = LuaType.STRING,
+			description = "List all the methods available")
 	public String listMethods(IComputerAccess computer, Object object) {
 		return MiscUtils.listMethods(getUniqueMethods(object));
 	}
 
 	@LuaMethod(
-		returnType=LuaType.TABLE,
-		description="Get a complete table of information about all available methods"
-	)
+			returnType = LuaType.TABLE,
+			description = "Get a complete table of information about all available methods")
 	public Map getAdvancedMethodsData(IComputerAccess computer, Object object) {
 		return MiscUtils.documentMethods(getUniqueMethods(object));
 	}
-	
+
 	private ArrayList<MethodDeclaration> getUniqueMethods(Object object) {
 		ArrayList<MethodDeclaration> methods = AdapterManager.getMethodsForTarget(object);
 		if (object instanceof TileEntityRobot) {

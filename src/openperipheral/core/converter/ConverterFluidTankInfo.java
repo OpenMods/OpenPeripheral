@@ -16,22 +16,22 @@ public class ConverterFluidTankInfo implements ITypeConverter {
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-  @Override
+	@Override
 	public Object toLua(Object o) {
 		if (o instanceof FluidTankInfo) {
-		  FluidTankInfo fti = (FluidTankInfo) o;
+			FluidTankInfo fti = (FluidTankInfo)o;
 			Map map = new HashMap();
 			map.put("capacity", fti.capacity);
 			FluidStack fluidStack = fti.fluid;
-			if (fluidStack != null){
-			  map.put("amount", fluidStack.amount);
-			  map.put("id", fluidStack.fluidID);
-			  
-			  Fluid fluid = fluidStack.getFluid();
-			  if (fluid != null){
-			    map.put("name", fluid.getName());
-			    map.put("rawName", fluid.getLocalizedName());
-			  }
+			if (fluidStack != null) {
+				map.put("amount", fluidStack.amount);
+				map.put("id", fluidStack.fluidID);
+
+				Fluid fluid = fluidStack.getFluid();
+				if (fluid != null) {
+					map.put("name", fluid.getName());
+					map.put("rawName", fluid.getLocalizedName());
+				}
 			}
 			return map;
 		}

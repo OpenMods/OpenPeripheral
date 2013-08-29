@@ -16,93 +16,39 @@ import openperipheral.core.item.ItemGeneric.Metas;
 
 public class RecipeUtils {
 
-	public static String page1 = new StringBuilder().append("Thank you for choosing OpenPeripheral.\n\n")
-			.append("OpenPeripheral turns the majority of blocks, from a variety of mods, into ComputerCraft peripherals.\n\n").toString();
-	public static String page2 = new StringBuilder().append("To get started, try placing a computer to the right to a noteblock.\n\n")
-			.append("Next, in the computer enter \"lua\" to access the lua console.\n\n")
-			.append("The lua console allows you to type code that will be instantly executed.\n\n").toString();
-	public static String page3 = new StringBuilder().append("Now that you're inside Lua, type:\n\n").append("nb = peripheral.wrap(\"left\")\n\n")
-			.append("This will allow you to call functions on the noteblock.\n\n").toString();
-	public static String page4 = new StringBuilder().append("To see what functions are available, type:\n\n").append("nb.listMethods()\n\n")
-			.append("As you can see, there's the method you just called, but also 'changePitch' and 'triggerNote'.\n\n").toString();
-	public static String page5 = new StringBuilder().append("Try calling:\n\n").append("nb.triggerNote()\n\n").append("Did you hear it play a note? Cool huh?\n\n")
-			.toString();
-	public static String page6 = new StringBuilder().append(
-			"Now try some other blocks. It's not just vanilla blocks that work, a whole range of blocks from a wide variety of mods are supported!").toString();
-	public static String page7 = new StringBuilder()
-			.append("Peripheral Glasses\n")
-			.append("-----------------\n\n")
-			.append("Peripheral Glasses are a powerful new feature that let you publish information to the players HUD, and send commands via chat back to your computer. See the ComputerCraft forums for more information.")
-			.toString();
-	public static String page8 = new StringBuilder()
-			.append("Peripheral Proxy\n")
-			.append("-----------------\n\n")
-			.append("You can't connect wired modems to non-solid blocks, so stick down a Peripheral Proxy next to you're block and attach your wired modem to that instead!")
-			.toString();
+	public static String page1 = new StringBuilder().append("Thank you for choosing OpenPeripheral.\n\n").append("OpenPeripheral turns the majority of blocks, from a variety of mods, into ComputerCraft peripherals.\n\n").toString();
+	public static String page2 = new StringBuilder().append("To get started, try placing a computer to the right to a noteblock.\n\n").append("Next, in the computer enter \"lua\" to access the lua console.\n\n").append("The lua console allows you to type code that will be instantly executed.\n\n").toString();
+	public static String page3 = new StringBuilder().append("Now that you're inside Lua, type:\n\n").append("nb = peripheral.wrap(\"left\")\n\n").append("This will allow you to call functions on the noteblock.\n\n").toString();
+	public static String page4 = new StringBuilder().append("To see what functions are available, type:\n\n").append("nb.listMethods()\n\n").append("As you can see, there's the method you just called, but also 'changePitch' and 'triggerNote'.\n\n").toString();
+	public static String page5 = new StringBuilder().append("Try calling:\n\n").append("nb.triggerNote()\n\n").append("Did you hear it play a note? Cool huh?\n\n").toString();
+	public static String page6 = new StringBuilder().append("Now try some other blocks. It's not just vanilla blocks that work, a whole range of blocks from a wide variety of mods are supported!").toString();
+	public static String page7 = new StringBuilder().append("Peripheral Glasses\n").append("-----------------\n\n").append("Peripheral Glasses are a powerful new feature that let you publish information to the players HUD, and send commands via chat back to your computer. See the ComputerCraft forums for more information.").toString();
+	public static String page8 = new StringBuilder().append("Peripheral Proxy\n").append("-----------------\n\n").append("You can't connect wired modems to non-solid blocks, so stick down a Peripheral Proxy next to you're block and attach your wired modem to that instead!").toString();
 
 	public static void addGlassesRecipe() {
-		CraftingManager
-			.getInstance()
-			.getRecipeList()
-			.add(new ShapedOreRecipe(new ItemStack(OpenPeripheral.Items.glasses),
-				new Object[] {
-				"lpa",
-				"gdg",
-				"ppp",
-				'l', Metas.lcdScreen.newItemStack(),
-				'p', Metas.plasticCasing.newItemStack(),
-				'a', Metas.duckAntenna.newItemStack(),
-				'g', new ItemStack(Block.thinGlass),
-				'd', Metas.dataLink.newItemStack()
-				}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(OpenPeripheral.Items.glasses), new Object[] { "lpa", "gdg", "ppp", 'l', Metas.lcdScreen.newItemStack(), 'p', Metas.plasticCasing.newItemStack(), 'a', Metas.duckAntenna.newItemStack(), 'g', new ItemStack(Block.thinGlass), 'd', Metas.dataLink.newItemStack() }));
 	}
 
 	public static void addBridgeRecipe() {
 		Block peripheral = getCCBlock("peripheral");
 		Block cable = getCCBlock("cable");
-		CraftingManager
-				.getInstance()
-				.getRecipeList()
-				.add(new ShapedOreRecipe(new ItemStack(OpenPeripheral.Blocks.glassesBridge),
-						new Object[] { "lwl", "wrw", "lwl", Character.valueOf('w'), new ItemStack(cable, 1, 1), Character.valueOf('r'),
-								new ItemStack(Block.blockRedstone), Character.valueOf('l'), new ItemStack(peripheral, 1, 1), }));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(OpenPeripheral.Blocks.glassesBridge), new Object[] { "lwl", "wrw", "lwl", Character.valueOf('w'), new ItemStack(cable, 1, 1), Character.valueOf('r'), new ItemStack(Block.blockRedstone), Character.valueOf('l'), new ItemStack(peripheral, 1, 1), }));
 	}
 
 	public static void addTicketMachineRecipe() {
-		CraftingManager
-				.getInstance()
-				.getRecipeList()
-				.add(new ShapedOreRecipe(new ItemStack(OpenPeripheral.Blocks.ticketMachine), new Object[] { "iii", "iii", "igi", Character.valueOf('i'),
-						new ItemStack(Item.ingotIron), Character.valueOf('g'), new ItemStack(Block.thinGlass), }));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(OpenPeripheral.Blocks.ticketMachine), new Object[] { "iii", "iii", "igi", Character.valueOf('i'), new ItemStack(Item.ingotIron), Character.valueOf('g'), new ItemStack(Block.thinGlass), }));
 	}
 
 	public static void addSensorRecipe() {
-		CraftingManager
-			.getInstance()
-			.getRecipeList()
-			.add(new ShapedOreRecipe(
-					new ItemStack(OpenPeripheral.Blocks.sensor),
-					new Object[] { "ooo", " t ", "sss",
-					'o', new ItemStack(Block.obsidian),
-					't', Metas.scanningSensor.newItemStack(),
-					's', new ItemStack(Block.stoneSingleSlab)
-			}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(OpenPeripheral.Blocks.sensor), new Object[] { "ooo", " t ", "sss", 'o', new ItemStack(Block.obsidian), 't', Metas.scanningSensor.newItemStack(), 's', new ItemStack(Block.stoneSingleSlab) }));
 	}
 
 	public static void addProxyRecipe() {
-		CraftingManager
-				.getInstance()
-				.getRecipeList()
-				.add(new ShapedOreRecipe(new ItemStack(OpenPeripheral.Blocks.proxy), new Object[] { "iri", "rrr", "iri", Character.valueOf('i'),
-						new ItemStack(Item.ingotIron), Character.valueOf('r'), new ItemStack(Item.redstone), }));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(OpenPeripheral.Blocks.proxy), new Object[] { "iri", "rrr", "iri", Character.valueOf('i'), new ItemStack(Item.ingotIron), Character.valueOf('r'), new ItemStack(Item.redstone), }));
 	}
 
 	public static void addPIMRecipe() {
-		CraftingManager
-				.getInstance()
-				.getRecipeList()
-				.add(new ShapedOreRecipe(new ItemStack(OpenPeripheral.Blocks.playerInventory), new Object[] { "ooo", "rcr", Character.valueOf('o'),
-						new ItemStack(Block.obsidian), Character.valueOf('r'), new ItemStack(Item.redstone), Character.valueOf('c'), new ItemStack(Block.chest), }));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(OpenPeripheral.Blocks.playerInventory), new Object[] { "ooo", "rcr", Character.valueOf('o'), new ItemStack(Block.obsidian), Character.valueOf('r'), new ItemStack(Item.redstone), Character.valueOf('c'), new ItemStack(Block.chest), }));
 	}
 
 	public static Block getCCBlock(String fieldName) {
@@ -112,7 +58,7 @@ public class RecipeUtils {
 			if (cc != null) {
 				Field peripheralField = cc.getDeclaredField(fieldName);
 				if (peripheralField != null) {
-					block = (Block) peripheralField.get(cc);
+					block = (Block)peripheralField.get(cc);
 				}
 			}
 		} catch (Exception e) {
@@ -142,25 +88,10 @@ public class RecipeUtils {
 
 	public static void addBookRecipe() {
 		Block cable = getCCBlock("cable");
-		CraftingManager
-				.getInstance()
-				.getRecipeList()
-				.add(new ShapedOreRecipe(getGuideItemStack(), new Object[] { "r", "c", "b", Character.valueOf('r'), new ItemStack(Item.redstone), Character.valueOf('c'),
-						new ItemStack(cable), Character.valueOf('b'), new ItemStack(Item.book) }));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(getGuideItemStack(), new Object[] { "r", "c", "b", Character.valueOf('r'), new ItemStack(Item.redstone), Character.valueOf('c'), new ItemStack(cable), Character.valueOf('b'), new ItemStack(Item.book) }));
 	}
-	
+
 	public static void addRemoteRecipe() {
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(
-				new ItemStack(OpenPeripheral.Items.remote),
-				new Object[] {
-					"apa",
-					"plp",
-					" r ",
-					Character.valueOf('l'), ItemGeneric.Metas.lcdScreen.newItemStack(),
-					Character.valueOf('a'), ItemGeneric.Metas.duckAntenna.newItemStack(),
-					Character.valueOf('p'), ItemGeneric.Metas.plasticCasing.newItemStack(),
-					Character.valueOf('r'), ItemGeneric.Metas.ribbonCable.newItemStack(),
-				}
-		));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(OpenPeripheral.Items.remote), new Object[] { "apa", "plp", " r ", Character.valueOf('l'), ItemGeneric.Metas.lcdScreen.newItemStack(), Character.valueOf('a'), ItemGeneric.Metas.duckAntenna.newItemStack(), Character.valueOf('p'), ItemGeneric.Metas.plasticCasing.newItemStack(), Character.valueOf('r'), ItemGeneric.Metas.ribbonCable.newItemStack(), }));
 	}
 }

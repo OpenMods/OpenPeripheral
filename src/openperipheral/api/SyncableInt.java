@@ -49,7 +49,7 @@ public class SyncableInt {
 	public void toggle(int mask) {
 		if (is(mask)) {
 			value &= ~mask;
-		}else {
+		} else {
 			value |= mask;
 		}
 	}

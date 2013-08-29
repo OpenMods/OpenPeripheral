@@ -25,7 +25,6 @@ import openperipheral.core.OPInventory;
 import openperipheral.core.interfaces.IInventoryCallback;
 import openperipheral.core.interfaces.ISensorEnvironment;
 import openperipheral.core.util.BlockUtils;
-import openperipheral.robots.RobotPeripheral;
 import openperipheral.robots.RobotUpgradeManager;
 import openperipheral.robots.block.TileEntityRobot;
 
@@ -43,7 +42,6 @@ public abstract class EntityRobot extends EntityCreature implements IInventory, 
 	private float moveSpeed = 0.3f;
 
 	private float fuelLevel = 0;
-
 
 	/**
 	 * The main inventory
@@ -100,7 +98,7 @@ public abstract class EntityRobot extends EntityCreature implements IInventory, 
 	public void setMoveSpeed(float speed) {
 		moveSpeed = speed;
 	}
-	
+
 	@Override
 	public int getRobotId() {
 		return robotId;
@@ -125,13 +123,13 @@ public abstract class EntityRobot extends EntityCreature implements IInventory, 
 	public void setFuelLevel(float fuel) {
 		fuelLevel = fuel;
 	}
-	
+
 	/**
 	 * Check to see if the robot has any fuel available
 	 */
 	public boolean hasFuel() {
 		return true;
-		//return fuelLevel > 0;
+		// return fuelLevel > 0;
 	}
 
 	/**
@@ -184,20 +182,17 @@ public abstract class EntityRobot extends EntityCreature implements IInventory, 
 	}
 
 	@Override
-    public boolean isJumping()
-    {
-        return isJumping;
-    }
-	
+	public boolean isJumping() {
+		return isJumping;
+	}
+
 	/**
 	 * This is called whenever the inventory is changed
 	 */
 	@Override
 	public void onInventoryChanged(IInventory inventory, int slotNumber) {
 
-		if (worldObj.isRemote) {
-			return;
-		}
+		if (worldObj.isRemote) { return; }
 
 		HashMap<String, Integer> tiers = new HashMap<String, Integer>();
 
@@ -234,13 +229,14 @@ public abstract class EntityRobot extends EntityCreature implements IInventory, 
 		}
 
 		// for each of the upgrade providers, if we havent already for that
-		// upgrade installed, we create a new instance of it and let it read it's
+		// upgrade installed, we create a new instance of it and let it read
+		// it's
 		// data from the nbt
 		for (Entry<String, Integer> tierEntry : tiers.entrySet()) {
 
 			String providerId = tierEntry.getKey();
 			int tier = tierEntry.getValue();
-			
+
 			IRobotUpgradeProvider provider = RobotUpgradeManager.getProviderById(providerId);
 
 			if (!upgradeInstances.containsKey(providerId)) {
@@ -324,7 +320,8 @@ public abstract class EntityRobot extends EntityCreature implements IInventory, 
 	}
 
 	/**
-	 * Get what the entity is looking at. Currently works for blocks, but we need
+	 * Get what the entity is looking at. Currently works for blocks, but we
+	 * need
 	 * to add logic for checking for entities too
 	 */
 	@Override
@@ -341,10 +338,12 @@ public abstract class EntityRobot extends EntityCreature implements IInventory, 
 	/**
 	 * Path finding range
 	 */
-	/*@Override
-	protected int func_96121_ay() {
-		return 32;
-	}*/
+	/*
+	 * @Override
+	 * protected int func_96121_ay() {
+	 * return 32;
+	 * }
+	 */
 
 	/**
 	 * doesn't appear to work
@@ -359,7 +358,7 @@ public abstract class EntityRobot extends EntityCreature implements IInventory, 
 		if (!worldObj.isRemote) {
 
 			// check we can still find the controller
-			TileEntityRobot controller = (TileEntityRobot) getController();
+			TileEntityRobot controller = (TileEntityRobot)getController();
 
 			if (controller != null) {
 				controller.registerRobot(robotId, this);
@@ -413,7 +412,7 @@ public abstract class EntityRobot extends EntityCreature implements IInventory, 
 	@Override
 	public int getMaxHealth() {
 		return 20;
-		//return maxHealth;
+		// return maxHealth;
 	}
 
 	/**
@@ -421,7 +420,7 @@ public abstract class EntityRobot extends EntityCreature implements IInventory, 
 	 */
 	@Override
 	public void setMaxHealth(int health) {
-		//maxHealth = health;
+		// maxHealth = health;
 	}
 
 	@Override
@@ -434,9 +433,7 @@ public abstract class EntityRobot extends EntityCreature implements IInventory, 
 		if (worldObj.blockExists(controllerX, controllerY, controllerZ)) {
 			TileEntity tile = worldObj.getBlockTileEntity(controllerX, controllerY, controllerZ);
 			if (tile != null && tile instanceof TileEntityRobot) {
-				if (((TileEntityRobot) tile).getUuid().equals(controllerUuid)) {
-					return tile;
-				}
+				if (((TileEntityRobot)tile).getUuid().equals(controllerUuid)) { return tile; }
 			}
 		}
 		return null;
@@ -451,7 +448,7 @@ public abstract class EntityRobot extends EntityCreature implements IInventory, 
 	public float getRobotEyeHeight() {
 		return getEyeHeight();
 	}
-	
+
 	@Override
 	public Vec3 getLocation() {
 		return worldObj.getWorldVec3Pool().getVecFromPool(posX, posY, posZ);
@@ -464,6 +461,7 @@ public abstract class EntityRobot extends EntityCreature implements IInventory, 
 
 	/**
 	 * Create a robot from a robot item. it copies the nbt across
+	 * 
 	 * @param stack
 	 * @return if it was made or not
 	 */
@@ -473,7 +471,7 @@ public abstract class EntityRobot extends EntityCreature implements IInventory, 
 		 * to apply
 		 */
 		if (stack.hasTagCompound()) {
-			NBTTagCompound tag = (NBTTagCompound) stack.getTagCompound().copy();
+			NBTTagCompound tag = (NBTTagCompound)stack.getTagCompound().copy();
 			inventory.readFromNBT(tag);
 			controllerX = tag.getInteger("controllerX");
 			controllerY = tag.getInteger("controllerY");
@@ -481,13 +479,9 @@ public abstract class EntityRobot extends EntityCreature implements IInventory, 
 
 			controllerUuid = tag.getString("controllerUuid");
 			robotId = tag.getInteger("robotId");
-			TileEntityRobot controller = (TileEntityRobot) getController();
-			if (controller == null) {
-				return false;
-			}
-			if (!controller.registerRobot(robotId, this)) {
-				return false;
-			}
+			TileEntityRobot controller = (TileEntityRobot)getController();
+			if (controller == null) { return false; }
+			if (!controller.registerRobot(robotId, this)) { return false; }
 			if (tag.hasKey("upgrades")) {
 				upgradesNBT = tag.getCompoundTag("upgrades");
 			}
@@ -513,7 +507,7 @@ public abstract class EntityRobot extends EntityCreature implements IInventory, 
 	}
 
 	@Override
-	public void fireEvent(String eventName, Object ... args) {
+	public void fireEvent(String eventName, Object... args) {
 		TileEntity te = getController();
 		if (te instanceof TileEntityRobot) {
 			((TileEntityRobot)te).fireEvent(eventName, args);
@@ -521,8 +515,8 @@ public abstract class EntityRobot extends EntityCreature implements IInventory, 
 	}
 
 	public void setDead() {
-		if (!worldObj.isRemote) { 
-			TileEntityRobot controller = (TileEntityRobot) getController();
+		if (!worldObj.isRemote) {
+			TileEntityRobot controller = (TileEntityRobot)getController();
 			if (controller != null) {
 				controller.unregisterRobot(robotId);
 			}
@@ -583,7 +577,7 @@ public abstract class EntityRobot extends EntityCreature implements IInventory, 
 
 		return false;
 	}
-	
+
 	@Override
 	public int getSizeInventory() {
 		return inventory.getSizeInventory();
@@ -626,7 +620,7 @@ public abstract class EntityRobot extends EntityCreature implements IInventory, 
 
 	@Override
 	public void onInventoryChanged() {
-		
+
 	}
 
 	@Override

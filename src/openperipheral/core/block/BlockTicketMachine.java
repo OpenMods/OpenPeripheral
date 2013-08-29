@@ -57,29 +57,26 @@ public class BlockTicketMachine extends BlockContainer {
 		orientations.put(ForgeDirection.SOUTH, new Icon[] { Icons.bottom, Icons.top, Icons.back, Icons.front, Icons.side_right, Icons.side_left });
 
 	}
-	
+
 	@Override
-    public Icon getBlockTexture(IBlockAccess blockAccess, int x, int y, int z, int side)
-    {
-        Icon ret = getIcon(side, blockAccess.getBlockMetadata(x, y, z));
-        if (ret == Icons.front){
-        	TileEntity te = blockAccess.getBlockTileEntity(x, y, z);
-        	if (te instanceof TileEntityTicketMachine) {
-        		if (((TileEntityTicketMachine)te).hasTicket()) {
-        			ret = Icons.front_ticket;
-        		}
-        	}
-        }
-        
-        return ret;
-    }
+	public Icon getBlockTexture(IBlockAccess blockAccess, int x, int y, int z, int side) {
+		Icon ret = getIcon(side, blockAccess.getBlockMetadata(x, y, z));
+		if (ret == Icons.front) {
+			TileEntity te = blockAccess.getBlockTileEntity(x, y, z);
+			if (te instanceof TileEntityTicketMachine) {
+				if (((TileEntityTicketMachine)te).hasTicket()) {
+					ret = Icons.front_ticket;
+				}
+			}
+		}
+
+		return ret;
+	}
 
 	@Override
 	public Icon getIcon(int side, int metadata) {
 		ForgeDirection orientation = ForgeDirection.getOrientation(metadata);
-		if (orientations.containsKey(orientation)) {
-			return orientations.get(orientation)[side];
-		}
+		if (orientations.containsKey(orientation)) { return orientations.get(orientation)[side]; }
 		return orientations.get(ForgeDirection.WEST)[side];
 	}
 
@@ -91,9 +88,7 @@ public class BlockTicketMachine extends BlockContainer {
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
 		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
-		if (player.isSneaking() || tileEntity == null) {
-			return false;
-		}
+		if (player.isSneaking() || tileEntity == null) { return false; }
 		player.openGui(OpenPeripheral.instance, OpenPeripheral.Gui.ticketMachine.ordinal(), world, x, y, z);
 		return true;
 	}
@@ -114,14 +109,14 @@ public class BlockTicketMachine extends BlockContainer {
 		BlockUtils.dropInventoryItems(world.getBlockTileEntity(x, y, z));
 		super.breakBlock(world, x, y, z, par5, par6);
 	}
-	
-    public boolean onBlockEventReceived(World world, int x, int y, int z, int eventId, int eventParam) {
-        TileEntity te = world.getBlockTileEntity(x, y, z);
-        if (te instanceof TileEntityTicketMachine) {
-        	((TileEntityTicketMachine)te).onBlockEventReceived(eventId, eventParam);
-        }
-    	return true;
-    }
+
+	public boolean onBlockEventReceived(World world, int x, int y, int z, int eventId, int eventParam) {
+		TileEntity te = world.getBlockTileEntity(x, y, z);
+		if (te instanceof TileEntityTicketMachine) {
+			((TileEntityTicketMachine)te).onBlockEventReceived(eventId, eventParam);
+		}
+		return true;
+	}
 
 	@Override
 	public boolean canBeReplacedByLeaves(World world, int x, int y, int z) {

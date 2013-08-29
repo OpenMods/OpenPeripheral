@@ -13,4 +13,5 @@ public class Mods {
 	public static final String THERMALEXPANSION = "ThermalExpansion";
 	public static final String RAILCRAFT = "Railcraft";
 	public static final String COMPUTERCRAFT = "ComputerCraft";
+	public static final String ENDER_STORAGE = "EnderStorage";
 }

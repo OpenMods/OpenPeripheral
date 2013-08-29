@@ -44,18 +44,18 @@ public class ConfigSettings {
 	public static int remoteId = 1056;
 	public static int genericItemId = 1057;
 	public static int robotItemId = 1058;
-	
+
 	public static int glassesBridgeId = 580;
 	public static int proxyBlockId = 581;
 	public static int playerInventoryId = 582;
 	public static int ticketMachineId = 583;
 	public static int sensorBlockId = 584;
 	public static int robotBlockId = 585;
-	
+
 	public static boolean enabledExtendedInventory = true;
-	
+
 	public static boolean robotsEnabled = true;
-	
+
 	public static int cellsPerRedstone = 3;
 
 	public static void loadAndSaveConfig(File suggestedConfigFile) {
@@ -68,7 +68,7 @@ public class ConfigSettings {
 		Property prop = configFile.get("general", "cellsPerRedstone", cellsPerRedstone);
 		prop.comment = "How many cells are crafted per redstone? Use this to balance";
 		cellsPerRedstone = prop.getInt();
-		
+
 		prop = configFile.get("general", "enableAnalytics", true);
 		prop.comment = "Do you want analytics enabled?";
 		analyticsEnabled = prop.getBoolean(true);
@@ -94,11 +94,11 @@ public class ConfigSettings {
 		prop = configFile.get("general", "cacheInterval", CACHE_REFRESH_INTERVAL);
 		prop.comment = "How often the cache file gets updated (in days)";
 		CACHE_REFRESH_INTERVAL = prop.getInt();
-		
+
 		prop = configFile.get("general", "enabledExtendedInventory", enabledExtendedInventory);
 		prop.comment = "Do you wish to enable the extended inventory methods? (pull, push, swap)";
 		enabledExtendedInventory = prop.getBoolean(enabledExtendedInventory);
-		
+
 		prop = configFile.get("general", "robotsEnabled", robotsEnabled);
 		prop.comment = "Are robots enabled?";
 		robotsEnabled = prop.getBoolean(robotsEnabled);
@@ -110,15 +110,15 @@ public class ConfigSettings {
 		prop = configFile.get("items", "genericItemId", genericItemId);
 		prop.comment = "The id of the generic item";
 		genericItemId = prop.getInt();
-		
+
 		prop = configFile.get("items", "remoteId", remoteId);
 		prop.comment = "The id of the computer remote";
 		remoteId = prop.getInt();
-		
+
 		prop = configFile.get("items", "robotItemId", robotItemId);
 		prop.comment = "The id of the robot";
 		robotItemId = prop.getInt();
-		
+
 		prop = configFile.get("blocks", "bridgeId", glassesBridgeId);
 		prop.comment = "The id of the glasses bridge";
 		glassesBridgeId = prop.getInt();
@@ -138,11 +138,11 @@ public class ConfigSettings {
 		prop = configFile.get("blocks", "sensorBlockId", sensorBlockId);
 		prop.comment = "The id of the sensor block";
 		sensorBlockId = prop.getInt();
-		
+
 		prop = configFile.get("blocks", "robotBlockId", robotBlockId);
 		prop.comment = "The id of the robot block";
 		robotBlockId = prop.getInt();
-		
+
 		if (FRESH_INSTALL && analyticsEnabled) {
 			analytics(container);
 		}
@@ -171,13 +171,11 @@ public class ConfigSettings {
 		String charset = "UTF-8";
 		String url;
 		try {
-			url = String.format("http://www.openccsensors.info/op_analytics?version=%s&side=%s&forge=%s", URLEncoder.encode(container.getVersion(), charset),
-					URLEncoder.encode(FMLLaunchHandler.side().name(), charset), URLEncoder.encode(ForgeVersion.getVersion(), charset));
+			url = String.format("http://www.openccsensors.info/op_analytics?version=%s&side=%s&forge=%s", URLEncoder.encode(container.getVersion(), charset), URLEncoder.encode(FMLLaunchHandler.side().name(), charset), URLEncoder.encode(ForgeVersion.getVersion(), charset));
 			URLConnection connection = new URL(url).openConnection();
 			connection.setConnectTimeout(4000);
 			connection.setRequestProperty("Accept-Charset", charset);
 			InputStream response = connection.getInputStream();
-		} catch (Exception e) {
-		}
+		} catch (Exception e) {}
 	}
 }

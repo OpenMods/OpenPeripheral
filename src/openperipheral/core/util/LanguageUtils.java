@@ -16,9 +16,7 @@ public class LanguageUtils {
 		try {
 			InputStream input = CommonProxy.class.getResourceAsStream(String.format("%s/languages.txt", ConfigSettings.LANGUAGE_PATH));
 
-			if (input == null) {
-				return;
-			}
+			if (input == null) { return; }
 
 			BufferedReader reader = new BufferedReader(new InputStreamReader(input, "UTF-8"));
 
@@ -26,9 +24,7 @@ public class LanguageUtils {
 				@Override
 				public void Read(String line) {
 					URL url = CommonProxy.class.getResource(String.format("%s/%s.lang", ConfigSettings.LANGUAGE_PATH, line));
-					if (url == null) {
-						return;
-					}
+					if (url == null) { return; }
 					LanguageRegistry.instance().loadLocalization(url, line, false);
 				}
 			});

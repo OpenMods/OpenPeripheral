@@ -17,19 +17,16 @@ public class GuiUtils {
 	public static GuiContainer getGuiContainerForMod(String mod, EntityPlayer player, World world, int x, int y, int z) {
 		ModContainer mc = null;
 		for (ModContainer container : Loader.instance().getModList()) {
-    		if (container.getModId().equals(mod)) {
-    			mc = container;
-    			break;
-    		}
-    	}
+			if (container.getModId().equals(mod)) {
+				mc = container;
+				break;
+			}
+		}
 		if (mc != null) {
 			Object remoteHandler = ReflectionHelper.getProperty("", NetworkRegistry.instance(), "serverGuiHandlers");
 			IGuiHandler handler = (IGuiHandler)((Map)remoteHandler).get(mc);
-	        NetworkModHandler nmh = FMLNetworkHandler.instance().findNetworkModHandler(mc);
-	        if (handler != null && nmh != null)
-	        {
-	        	return (GuiContainer)handler.getClientGuiElement(101, player, world, x, y, z);
-	        }
+			NetworkModHandler nmh = FMLNetworkHandler.instance().findNetworkModHandler(mc);
+			if (handler != null && nmh != null) { return (GuiContainer)handler.getClientGuiElement(101, player, world, x, y, z); }
 		}
 		return null;
 	}

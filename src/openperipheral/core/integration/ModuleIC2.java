@@ -10,7 +10,7 @@ import openperipheral.core.adapter.ic2.AdapterReactor;
 import openperipheral.core.adapter.ic2.AdapterReactorChamber;
 
 public class ModuleIC2 {
-	
+
 	public static void init() {
 		AdapterManager.addPeripheralAdapter(new AdapterReactor());
 		AdapterManager.addPeripheralAdapter(new AdapterReactorChamber());

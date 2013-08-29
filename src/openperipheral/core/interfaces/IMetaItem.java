@@ -20,8 +20,8 @@ public interface IMetaItem {
 	public ItemStack onItemRightClick(ItemStack itemStack, EntityPlayer player, World world);
 
 	public boolean displayInCreative();
-	
+
 	public void registerIcons(IconRegister register);
-	
+
 	public void addRecipe();
 }

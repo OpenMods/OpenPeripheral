@@ -27,8 +27,7 @@ import openperipheral.robots.entity.EntityRobot;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IHostedPeripheral;
 
-public class TileEntityRobot extends TileEntity implements IPeripheralProvider, IHasSyncedGui, IAttachable, IConditionalSlots, ISidedInventory, IInventory,
-		IInventoryCallback {
+public class TileEntityRobot extends TileEntity implements IPeripheralProvider, IHasSyncedGui, IAttachable, IConditionalSlots, ISidedInventory, IInventory, IInventoryCallback {
 
 	private IHostedPeripheral peripheral = null;
 
@@ -99,16 +98,14 @@ public class TileEntityRobot extends TileEntity implements IPeripheralProvider, 
 	}
 
 	public EntityRobot getRobotById(int id) throws Exception {
-		if (!robots.containsKey(id)) {
-			throw new Exception("Unable to find a robot using ID " + id);
-		}
+		if (!robots.containsKey(id)) { throw new Exception("Unable to find a robot using ID " + id); }
 		int entityId = robots.get(id);
 		Entity entity = worldObj.getEntityByID(entityId);
 		if (entity == null || !(entity instanceof EntityRobot)) {
 			robots.remove(id);
 			throw new Exception("Unable to find a robot using ID " + id);
 		}
-		return (EntityRobot) entity;
+		return (EntityRobot)entity;
 	}
 
 	public Integer[] getRobotIds() {
@@ -157,9 +154,7 @@ public class TileEntityRobot extends TileEntity implements IPeripheralProvider, 
 	 */
 	@Override
 	public void onInventoryChanged(IInventory inventory, int slotNumber) {
-		if (worldObj.isRemote){
-			return;
-		}
+		if (worldObj.isRemote) { return; }
 
 		// if there's a robot in the slot, re-link it to this controller
 		ItemStack robotStack = inventory.getStackInSlot(ROBOT_ITEM_SLOT);
@@ -169,7 +164,7 @@ public class TileEntityRobot extends TileEntity implements IPeripheralProvider, 
 				tag = new NBTTagCompound();
 				robotStack.setTagCompound(tag);
 			}
-			String currentUuid = tag.hasKey("controllerUuid") ? tag.getString("controllerUuid") : null;
+			String currentUuid = tag.hasKey("controllerUuid")? tag.getString("controllerUuid") : null;
 			if (!uuid.equals(currentUuid)) {
 				tag.setString("controllerUuid", uuid);
 				tag.setInteger("robotId", robotIdCounter++);
@@ -227,12 +222,10 @@ public class TileEntityRobot extends TileEntity implements IPeripheralProvider, 
 	}
 
 	@Override
-	public void openChest() {
-	}
+	public void openChest() {}
 
 	@Override
-	public void closeChest() {
-	}
+	public void closeChest() {}
 
 	@Override
 	public int[] getAccessibleSlotsFromSide(int var1) {
@@ -253,7 +246,7 @@ public class TileEntityRobot extends TileEntity implements IPeripheralProvider, 
 	public boolean isValidForSlot(int i, ItemStack itemstack) {
 		return isItemValidForSlot(i, itemstack);
 	}
-	
+
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
 		return inventory.isItemValidForSlot(slot, stack);
@@ -318,7 +311,7 @@ public class TileEntityRobot extends TileEntity implements IPeripheralProvider, 
 	public boolean registerRobot(int robotId, EntityRobot entityRobot) {
 		if (robots.containsKey(robotId)) {
 			int currentRobotId = robots.get(robotId);
-			Entity currentRobot = worldObj.getEntityByID(currentRobotId); 
+			Entity currentRobot = worldObj.getEntityByID(currentRobotId);
 			if (currentRobot != null && currentRobot != entityRobot && !currentRobot.isDead) {
 				entityRobot.setDead();
 			}

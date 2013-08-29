@@ -14,8 +14,7 @@ public class PacketHandler implements IPacketHandler {
 		if (packet.channel.equals(ConfigSettings.NETWORK_CHANNEL)) {
 			try {
 				ClientProxy.terminalManager.handlePacket(packet);
-			} catch (Exception e) {
-			}
+			} catch (Exception e) {}
 		}
 	}
 

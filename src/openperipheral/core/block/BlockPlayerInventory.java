@@ -57,11 +57,11 @@ public class BlockPlayerInventory extends BlockContainer {
 		if (!world.isRemote) {
 			TileEntity tile = world.getBlockTileEntity(x, y, z);
 			if (entity instanceof EntityPlayer && tile != null && tile instanceof TileEntityPlayerInventory) {
-				TileEntityPlayerInventory pi = (TileEntityPlayerInventory) tile;
+				TileEntityPlayerInventory pi = (TileEntityPlayerInventory)tile;
 				if (pi.getPlayer() == null) {
-					ChunkCoordinates coordinates = ((EntityPlayer) entity).getPlayerCoordinates();
+					ChunkCoordinates coordinates = ((EntityPlayer)entity).getPlayerCoordinates();
 					if (coordinates.posX == x && coordinates.posY == y && coordinates.posZ == z) {
-						pi.setPlayer((EntityPlayer) entity);
+						pi.setPlayer((EntityPlayer)entity);
 					}
 				}
 			}
@@ -70,9 +70,9 @@ public class BlockPlayerInventory extends BlockContainer {
 
 	@Override
 	public boolean isBlockSolidOnSide(World world, int x, int y, int z, ForgeDirection side) {
-        return side == ForgeDirection.DOWN;
-    }
-	
+		return side == ForgeDirection.DOWN;
+	}
+
 	@Override
 	public boolean canBeReplacedByLeaves(World world, int x, int y, int z) {
 		return false;

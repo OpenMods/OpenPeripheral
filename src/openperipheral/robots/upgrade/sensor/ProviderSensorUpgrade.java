@@ -12,14 +12,14 @@ import openperipheral.core.item.ItemGeneric.Metas;
 public class ProviderSensorUpgrade implements IRobotUpgradeProvider {
 
 	private HashMap<Integer, ItemStack> upgradeItems;
-	
+
 	public ProviderSensorUpgrade() {
 		upgradeItems = new HashMap<Integer, ItemStack>();
 		upgradeItems.put(1, Metas.tier1sensor.newItemStack());
 		upgradeItems.put(2, Metas.tier2sensor.newItemStack());
 		upgradeItems.put(3, Metas.tier3sensor.newItemStack());
 	}
-	
+
 	@Override
 	public IRobotUpgradeAdapter provideUpgradeInstance(IRobot robot, int tier) {
 		return new AdapterSensorUpgrade(robot, tier);

@@ -23,71 +23,22 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ItemGeneric extends Item {
 
 	private HashMap<Integer, IMetaItem> metaitems = new HashMap<Integer, IMetaItem>();
-	
+
 	public enum Metas {
-		thinWire(),
-		ribbonCable(),
-		coiledWire(),
-		electrode(),
-		resistor(),
-		silislime(),
-		duckAntenna(),
-		transistor(),
-		lcdScreen(),
-		pcb(),
-		plasticCasing(),
-		preparedPCB(),
-		led(),
-		capacitor(),
-		optoisolator(),
-		microcontroller(),
-		carbon(),
-		solarCell(),
-		lightEnergyCell(),
-		mediumEnergyCell(),
-		heavyEnergyCell(),
-		opticalLense(),
-		focusLense(),
-		lazerSight(),
-		scanningSensor(),
-		targetAssessmentUnit(),
-		infrasoundEmitter(),
-		combatProcessor(),
-		advancedCombatProcessor(),
-		heatSinks(),
-		mechanoStabilizer(),
-		rationalizer(),
-		nanoGPS(),
-		matrixComponent(),
-		dataLink(),
-		tier1targeting(),
-		tier2targeting(),
-		tier3targeting(),
-		tier1sensor(),
-		tier2sensor(),
-		tier3sensor(),
-		tier1laser(),
-		tier2laser(),
-		tier3laser(),
-		tier1movement(),
-		tier2movement(),
-		tier3movement(),
-		tier1inventory(),
-		tier2inventory(),
-		tier3inventory();
-		
+		thinWire(), ribbonCable(), coiledWire(), electrode(), resistor(), silislime(), duckAntenna(), transistor(), lcdScreen(), pcb(), plasticCasing(), preparedPCB(), led(), capacitor(), optoisolator(), microcontroller(), carbon(), solarCell(), lightEnergyCell(), mediumEnergyCell(), heavyEnergyCell(), opticalLense(), focusLense(), laserSight(), scanningSensor(), targetAssessmentUnit(), infrasoundEmitter(), combatProcessor(), advancedCombatProcessor(), heatSinks(), mechanoStabilizer(), rationalizer(), nanoGPS(), matrixComponent(), dataLink(), tier1targeting(), tier2targeting(), tier3targeting(), tier1sensor(), tier2sensor(), tier3sensor(), tier1laser(), tier2laser(), tier3laser(), tier1movement(), tier2movement(), tier3movement(), tier1inventory(), tier2inventory(), tier3inventory();
+
 		Metas() {
-			
+
 		}
-		
+
 		public ItemStack newItemStack(int amount) {
 			return OpenPeripheral.Items.generic.newItemStack(this, amount);
 		}
-		
+
 		public ItemStack newItemStack() {
 			return OpenPeripheral.Items.generic.newItemStack(this);
 		}
-		
+
 	};
 
 	public ItemGeneric() {
@@ -98,7 +49,7 @@ public class ItemGeneric extends Item {
 		setCreativeTab(OpenPeripheral.tabOpenPeripheral);
 		Block cable = RecipeUtils.getCCBlock("cable");
 		Block peripheral = RecipeUtils.getCCBlock("peripheral");
-		metaitems.put(Metas.thinWire.ordinal(), new MetaGeneric("thinwire", new Object[] { 9, Metas.ribbonCable }, new Object[] { 1, Metas.coiledWire }, new Object[] { 4, "i","r", "i", 'i', new ItemStack(Item.ingotIron), 'r', new ItemStack(Item.redstone) }));
+		metaitems.put(Metas.thinWire.ordinal(), new MetaGeneric("thinwire", new Object[] { 9, Metas.ribbonCable }, new Object[] { 1, Metas.coiledWire }, new Object[] { 4, "i", "r", "i", 'i', new ItemStack(Item.ingotIron), 'r', new ItemStack(Item.redstone) }));
 		metaitems.put(Metas.ribbonCable.ordinal(), new MetaGeneric("ribboncable", 1, "www", "www", "www", 'w', Metas.thinWire));
 		metaitems.put(Metas.coiledWire.ordinal(), new MetaGeneric("coiledwire", 1, Metas.thinWire));
 		metaitems.put(Metas.electrode.ordinal(), new MetaGeneric("electrode", 1, "t", "i", "i", 't', new ItemStack(Block.torchRedstoneActive), 'i', new ItemStack(Item.ingotIron)));
@@ -119,9 +70,9 @@ public class ItemGeneric extends Item {
 		metaitems.put(Metas.lightEnergyCell.ordinal(), new MetaGeneric("lightenergycell", ConfigSettings.cellsPerRedstone, Metas.plasticCasing, new ItemStack(Item.redstone)));
 		metaitems.put(Metas.mediumEnergyCell.ordinal(), new MetaGeneric("mediumenergycell", 1, Metas.plasticCasing, Metas.lightEnergyCell, new ItemStack(Item.glowstone)));
 		metaitems.put(Metas.heavyEnergyCell.ordinal(), new MetaGeneric("heavyenergycell", 1, Metas.plasticCasing, Metas.mediumEnergyCell, new ItemStack(Item.gunpowder)));
-		metaitems.put(Metas.opticalLense.ordinal(), new MetaGeneric("opticallense", 1, "ppp", "pgp", "ppp", 'p', Metas.plasticCasing,  'g', new ItemStack(Block.thinGlass)));
+		metaitems.put(Metas.opticalLense.ordinal(), new MetaGeneric("opticallense", 1, "ppp", "pgp", "ppp", 'p', Metas.plasticCasing, 'g', new ItemStack(Block.thinGlass)));
 		metaitems.put(Metas.focusLense.ordinal(), new MetaGeneric("focuslense", 1, "pmp", "o o", "pcp", 'p', Metas.plasticCasing, 'o', Metas.opticalLense, 'm', Metas.microcontroller, 'c', Metas.preparedPCB));
-		metaitems.put(Metas.lazerSight.ordinal(), new MetaGeneric("lazersight", 1, "spp", "lrc", "ppp", 's', Metas.solarCell, 'p', Metas.plasticCasing, 'l', Metas.led, 'r', Metas.ribbonCable, 'c', Metas.preparedPCB));
+		metaitems.put(Metas.laserSight.ordinal(), new MetaGeneric("lasersight", 1, "spp", "lrc", "ppp", 's', Metas.solarCell, 'p', Metas.plasticCasing, 'l', Metas.led, 'r', Metas.ribbonCable, 'c', Metas.preparedPCB));
 		metaitems.put(Metas.scanningSensor.ordinal(), new MetaGeneric("scanningsensor", 1, "plp", "pcp", "pbp", 'p', Metas.plasticCasing, 'l', Metas.opticalLense, 'c', Metas.solarCell, 'b', Metas.preparedPCB));
 		metaitems.put(Metas.targetAssessmentUnit.ordinal(), new MetaGeneric("targetassessmentunit", 1, "mmm", "pbp", " r ", 'm', Metas.microcontroller, 'b', Metas.pcb, 'p', Metas.plasticCasing, 'r', Metas.ribbonCable));
 		metaitems.put(Metas.infrasoundEmitter.ordinal(), new MetaGeneric("infrasoundemitter", 1, "pwp", "cnc", "pwp", 'p', Metas.plasticCasing, 'w', Metas.thinWire, 'c', Metas.coiledWire, 'n', new ItemStack(Block.music)));
@@ -135,7 +86,7 @@ public class ItemGeneric extends Item {
 		metaitems.put(Metas.dataLink.ordinal(), new MetaGeneric("datalink", 1, "pmp", "pcp", "pmp", 'p', Metas.plasticCasing, 'm', new ItemStack(cable, 1, 1), 'c', new ItemStack(cable)));
 		metaitems.put(Metas.tier1targeting.ordinal(), new MetaGeneric("tier1targeting", 1, "ppp", "pop", "pmp", 'p', Metas.plasticCasing, 'o', Metas.opticalLense, 'm', Metas.microcontroller));
 		metaitems.put(Metas.tier2targeting.ordinal(), new MetaGeneric("tier2targeting", 1, Metas.tier1targeting, Metas.focusLense));
-		metaitems.put(Metas.tier3targeting.ordinal(), new MetaGeneric("tier3targeting", 1, Metas.tier2targeting, Metas.lazerSight));
+		metaitems.put(Metas.tier3targeting.ordinal(), new MetaGeneric("tier3targeting", 1, Metas.tier2targeting, Metas.laserSight));
 		metaitems.put(Metas.tier1sensor.ordinal(), new MetaGeneric("tier1sensor", 1, "ppp", "pop", "pmp", 'p', Metas.plasticCasing, 'o', Metas.scanningSensor, 'm', Metas.microcontroller));
 		metaitems.put(Metas.tier2sensor.ordinal(), new MetaGeneric("tier2sensor", 1, Metas.tier1sensor, Metas.targetAssessmentUnit));
 		metaitems.put(Metas.tier3sensor.ordinal(), new MetaGeneric("tier3sensor", 1, Metas.tier2sensor, Metas.infrasoundEmitter));
@@ -147,10 +98,11 @@ public class ItemGeneric extends Item {
 		metaitems.put(Metas.tier3movement.ordinal(), new MetaGeneric("tier3movement", 1, Metas.tier2movement, Metas.nanoGPS));
 		metaitems.put(Metas.tier1inventory.ordinal(), new MetaGeneric("tier1inventory", 1, "ppp", "pop", "pmp", 'p', Metas.plasticCasing, 'o', Metas.matrixComponent, 'm', Metas.microcontroller));
 		metaitems.put(Metas.tier2inventory.ordinal(), new MetaGeneric("tier2inventory", 1, Metas.tier1inventory, Metas.dataLink));
-		//metaitems.put(Metas.tier3inventory.ordinal(), new MetaGeneric("tier3inventory"));
-		
+		// metaitems.put(Metas.tier3inventory.ordinal(), new
+		// MetaGeneric("tier3inventory"));
+
 	}
-	
+
 	public void initRecipes() {
 		for (IMetaItem item : metaitems.values()) {
 			item.addRecipe();
@@ -160,35 +112,27 @@ public class ItemGeneric extends Item {
 	@Override
 	public Icon getIconFromDamage(int i) {
 		IMetaItem meta = getMeta(i);
-		if (meta != null) {
-			return meta.getIcon();
-		}
+		if (meta != null) { return meta.getIcon(); }
 		return null;
 	}
 
 	@Override
 	public String getUnlocalizedName(ItemStack stack) {
 		IMetaItem meta = getMeta(stack.getItemDamage());
-		if (meta != null) {
-			return "item."+meta.getUnlocalizedName(stack);
-		}
+		if (meta != null) { return "item." + meta.getUnlocalizedName(stack); }
 		return "";
 	}
 
 	@Override
 	public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int side, float par8, float par9, float par10) {
 		IMetaItem meta = getMeta(itemStack.getItemDamage());
-		if (meta != null) {
-			return meta.onItemUse(itemStack, player, world, x, y, z, side, par8, par9, par10);
-		}
+		if (meta != null) { return meta.onItemUse(itemStack, player, world, x, y, z, side, par8, par9, par10); }
 		return true;
 	}
 
 	public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
 		IMetaItem meta = getMeta(itemStack.getItemDamage());
-		if (meta != null) {
-			return meta.onItemRightClick(itemStack, player, world);
-		}
+		if (meta != null) { return meta.onItemRightClick(itemStack, player, world); }
 		return itemStack;
 	}
 
@@ -202,9 +146,7 @@ public class ItemGeneric extends Item {
 	@Override
 	public boolean hitEntity(ItemStack itemStack, EntityLivingBase target, EntityLivingBase player) {
 		IMetaItem meta = getMeta(itemStack.getItemDamage());
-		if (meta != null) {
-			return meta.hitEntity(itemStack, target, player);
-		}
+		if (meta != null) { return meta.hitEntity(itemStack, target, player); }
 		return true;
 	}
 
@@ -235,18 +177,16 @@ public class ItemGeneric extends Item {
 	}
 
 	public ItemStack newItemStack(IMetaItem meta, int size) {
-	    for (Entry<Integer, IMetaItem> o: metaitems.entrySet()) {
-	    	if (o.getValue().equals(meta)) {
-	    		return newItemStack(o.getKey(), size);
-	    	}
-	    }
-	    return null;
+		for (Entry<Integer, IMetaItem> o : metaitems.entrySet()) {
+			if (o.getValue().equals(meta)) { return newItemStack(o.getKey(), size); }
+		}
+		return null;
 	}
-	
+
 	public ItemStack newItemStack(Metas metaenum, int number) {
 		return new ItemStack(this, number, metaenum.ordinal());
 	}
-	
+
 	public ItemStack newItemStack(Metas metaenum) {
 		return new ItemStack(this, 1, metaenum.ordinal());
 	}
@@ -254,5 +194,5 @@ public class ItemGeneric extends Item {
 	public boolean isA(ItemStack stack, Metas meta) {
 		return getMeta(stack) == metaitems.get(meta.ordinal());
 	}
-	
+
 }

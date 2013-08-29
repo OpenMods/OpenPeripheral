@@ -13,14 +13,14 @@ import openperipheral.core.item.ItemGeneric.Metas;
 public class ProviderLasersUpgrade implements IRobotUpgradeProvider {
 
 	HashMap<Integer, ItemStack> upgradeItems;
-	
+
 	public ProviderLasersUpgrade() {
 		upgradeItems = new HashMap<Integer, ItemStack>();
 		upgradeItems.put(1, Metas.tier1laser.newItemStack());
 		upgradeItems.put(2, Metas.tier2laser.newItemStack());
 		upgradeItems.put(3, Metas.tier3laser.newItemStack());
 	}
-	
+
 	@Override
 	public IRobotUpgradeAdapter provideUpgradeInstance(IRobot robot, int tier) {
 		return new AdapterLasersUpgrade(robot, tier);

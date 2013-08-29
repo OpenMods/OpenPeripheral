@@ -1,11 +1,10 @@
 package openperipheral.turtle;
 
-import openperipheral.OpenPeripheral;
-import openperipheral.core.peripheral.HostedPeripheral;
-import openperipheral.sensor.SensorPeripheral;
-import cpw.mods.fml.common.registry.LanguageRegistry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
+import openperipheral.OpenPeripheral;
+import openperipheral.sensor.SensorPeripheral;
+import cpw.mods.fml.common.registry.LanguageRegistry;
 import dan200.computer.api.IHostedPeripheral;
 import dan200.turtle.api.ITurtleAccess;
 import dan200.turtle.api.ITurtleUpgrade;
@@ -23,7 +22,7 @@ public class TurtleUpgradeSensor implements ITurtleUpgrade {
 	@Override
 	public String getAdjective() {
 		String translation = LanguageRegistry.instance().getStringLocalization("openperipheral.turtle.sensor.adjective");
-		return translation == "" ? LanguageRegistry.instance().getStringLocalization("openperipheral.turtle.sensor.adjective", "en_US") : translation;
+		return translation == ""? LanguageRegistry.instance().getStringLocalization("openperipheral.turtle.sensor.adjective", "en_US") : translation;
 	}
 
 	@Override
@@ -42,14 +41,12 @@ public class TurtleUpgradeSensor implements ITurtleUpgrade {
 	}
 
 	@Override
-	public IHostedPeripheral createPeripheral(ITurtleAccess turtle,
-			TurtleSide side) {
+	public IHostedPeripheral createPeripheral(ITurtleAccess turtle, TurtleSide side) {
 		return new SensorPeripheral(new TurtleSensorEnvironment(turtle));
 	}
 
 	@Override
-	public boolean useTool(ITurtleAccess turtle, TurtleSide side,
-			TurtleVerb verb, int direction) {
+	public boolean useTool(ITurtleAccess turtle, TurtleSide side, TurtleVerb verb, int direction) {
 		return false;
 	}
 

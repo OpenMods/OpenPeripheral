@@ -29,7 +29,7 @@ public class PacketChunker {
 
 		int start = 0;
 		short maxChunkSize = Short.MAX_VALUE - 100;
-		byte numChunks = (byte) Math.ceil(data.length / (double) maxChunkSize);
+		byte numChunks = (byte)Math.ceil(data.length / (double)maxChunkSize);
 		Packet[] packets = new Packet[numChunks];
 		final byte META_LENGTH = 3;
 

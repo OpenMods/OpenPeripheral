@@ -44,8 +44,7 @@ public class TerminalManager implements IConnectionHandler {
 		}
 	};
 
-	public TerminalManager() {
-	}
+	public TerminalManager() {}
 
 	public Collection<IDrawable> getDrawables() {
 		return drawableList;
@@ -63,9 +62,7 @@ public class TerminalManager implements IConnectionHandler {
 			// get the bytes for the packet. Used for multi-chunk packets
 			byte[] bytes = PacketChunker.instance.getBytes(packet);
 
-			if (bytes == null) {
-				return;
-			}
+			if (bytes == null) { return; }
 
 			DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream(bytes));
 
@@ -99,11 +96,11 @@ public class TerminalManager implements IConnectionHandler {
 						drawable = drawables.get(drawableId);
 					} else {
 						switch (drawableType) {
-						case 0:
-							drawable = new DrawableText();
-							break;
-						default:
-							drawable = new DrawableBox();
+							case 0:
+								drawable = new DrawableText();
+								break;
+							default:
+								drawable = new DrawableBox();
 						}
 					}
 					if (drawable != null) {
@@ -117,8 +114,7 @@ public class TerminalManager implements IConnectionHandler {
 			drawableList.addAll(drawables.values());
 			Collections.sort(drawableList, zIndexComparator);
 
-		} catch (Exception e) {
-		}
+		} catch (Exception e) {}
 
 	}
 

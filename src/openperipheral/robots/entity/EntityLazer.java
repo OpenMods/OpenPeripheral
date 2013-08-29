@@ -54,14 +54,10 @@ public class EntityLazer extends Entity implements IThrowableEntity, IEntityAddi
 
 		double radPitch = Math.toRadians(robot.rotationPitch);
 		double radYaw = -Math.toRadians(robot.rotationYawHead);
-		
-		Vector3 velocity = new Vector3(0, 0, 1).
-							apply(new Rotation(radPitch, 1, 0, 0)
-								.with(new Rotation(radYaw, 0, 1, 0)));
 
-		Vector3 pos = new Vector3(-20/16D, robot.getEyeHeight(), 0)
-						.apply(new Rotation(radYaw, 0, 1, 0))
-						.add(Vector3.fromEntity(robot));
+		Vector3 velocity = new Vector3(0, 0, 1).apply(new Rotation(radPitch, 1, 0, 0).with(new Rotation(radYaw, 0, 1, 0)));
+
+		Vector3 pos = new Vector3(-20 / 16D, robot.getEyeHeight(), 0).apply(new Rotation(radYaw, 0, 1, 0)).add(Vector3.fromEntity(robot));
 
 		this.setLocationAndAngles(pos.x, pos.y, pos.z, -robot.rotationYawHead, robot.rotationPitch);
 		this.setPosition(this.posX, this.posY, this.posZ);
@@ -76,7 +72,7 @@ public class EntityLazer extends Entity implements IThrowableEntity, IEntityAddi
 	public void setExplosive(boolean explosive) {
 		isExplosive = explosive;
 	}
-	
+
 	@Override
 	public Entity getThrower() {
 		return thrower;
@@ -88,8 +84,7 @@ public class EntityLazer extends Entity implements IThrowableEntity, IEntityAddi
 	}
 
 	@Override
-	protected void entityInit() {
-	}
+	protected void entityInit() {}
 
 	/**
 	 * temp
@@ -101,7 +96,7 @@ public class EntityLazer extends Entity implements IThrowableEntity, IEntityAddi
 
 	public void onUpdate() {
 		super.onUpdate();
-		
+
 		if (++this.ticksAlive > 100) {
 			this.setDead();
 		}
@@ -113,21 +108,19 @@ public class EntityLazer extends Entity implements IThrowableEntity, IEntityAddi
 		vec31 = this.worldObj.getWorldVec3Pool().getVecFromPool(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
 
 		if (movingobjectposition != null) {
-			vec31 = this.worldObj.getWorldVec3Pool().getVecFromPool(movingobjectposition.hitVec.xCoord, movingobjectposition.hitVec.yCoord,
-					movingobjectposition.hitVec.zCoord);
+			vec31 = this.worldObj.getWorldVec3Pool().getVecFromPool(movingobjectposition.hitVec.xCoord, movingobjectposition.hitVec.yCoord, movingobjectposition.hitVec.zCoord);
 		}
 
 		Entity entity = null;
-		List list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this,
-				this.boundingBox.addCoord(this.motionX, this.motionY, this.motionZ).expand(1.0D, 1.0D, 1.0D));
+		List list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.boundingBox.addCoord(this.motionX, this.motionY, this.motionZ).expand(1.0D, 1.0D, 1.0D));
 		double d0 = 0.0D;
 
 		for (int j = 0; j < list.size(); ++j) {
-			Entity entity1 = (Entity) list.get(j);
+			Entity entity1 = (Entity)list.get(j);
 
 			if (entity1.canBeCollidedWith() && (!entity1.isEntityEqual(this.shootingEntity) || this.ticksAlive >= 25)) {
 				float f = 0.3F;
-				AxisAlignedBB axisalignedbb = entity1.boundingBox.expand((double) f, (double) f, (double) f);
+				AxisAlignedBB axisalignedbb = entity1.boundingBox.expand((double)f, (double)f, (double)f);
 				MovingObjectPosition movingobjectposition1 = axisalignedbb.calculateIntercept(vec3, vec31);
 
 				if (movingobjectposition1 != null) {
@@ -154,14 +147,14 @@ public class EntityLazer extends Entity implements IThrowableEntity, IEntityAddi
 		this.posZ += this.motionZ;
 		float f1 = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
 		float f2 = this.getMotionFactor();
-		
+
 		this.motionX = directionX;
 		this.motionY = directionY;
 		this.motionZ = directionZ;
-		
-		this.motionX *= (double) f2;
-		this.motionY *= (double) f2;
-		this.motionZ *= (double) f2;
+
+		this.motionX *= (double)f2;
+		this.motionY *= (double)f2;
+		this.motionZ *= (double)f2;
 		this.setPosition(this.posX, this.posY, this.posZ);
 	}
 
@@ -177,12 +170,10 @@ public class EntityLazer extends Entity implements IThrowableEntity, IEntityAddi
 	 * Called when this EntityFireball hits a block or entity.
 	 */
 	protected void onImpact(MovingObjectPosition mop) {
-		if (mop == null) {
-			return;
-		}
+		if (mop == null) { return; }
 		if (canDamageBlocks && mop.typeOfHit == EnumMovingObjectType.TILE) {
 			onBlockHit(mop);
-		}else if (mop.typeOfHit == EnumMovingObjectType.ENTITY) {
+		} else if (mop.typeOfHit == EnumMovingObjectType.ENTITY) {
 			onEntityHit(mop);
 		}
 		if (this.isExplosive) {
@@ -194,7 +185,7 @@ public class EntityLazer extends Entity implements IThrowableEntity, IEntityAddi
 	}
 
 	private void onEntityHit(MovingObjectPosition mop) {
-		if (!worldObj.isRemote){ 
+		if (!worldObj.isRemote) {
 			mop.entityHit.attackEntityFrom((new EntityDamageSourceIndirect("lazer", this, getThrower())).setProjectile(), 6);
 		}
 	}
@@ -204,18 +195,15 @@ public class EntityLazer extends Entity implements IThrowableEntity, IEntityAddi
 		int y = mop.blockY;
 		int z = mop.blockZ;
 		int bid = worldObj.getBlockId(x, y, z);
-	    Block block = Block.blocksList[bid];
-	    if ((bid == 0) || (bid == Block.bedrock.blockID) || (block.getBlockHardness(worldObj, x, y, z) <= -1.0F))
-	    {
-	    	return;
-	    }
-	    int metadata = worldObj.getBlockMetadata(x, y, z);
-	    ArrayList<ItemStack> stacks = block.getBlockDropped(worldObj, x, y, z, metadata, 0);
-	    for (ItemStack stack : stacks) {
-	    	BlockUtils.dropItemStackInWorld(worldObj, x, y, z, stack);
-	    }
-	    worldObj.setBlockToAir(x, y, z);
-	    worldObj.playAuxSFX(2001, x, y, z, bid + metadata * 4096);
+		Block block = Block.blocksList[bid];
+		if ((bid == 0) || (bid == Block.bedrock.blockID) || (block.getBlockHardness(worldObj, x, y, z) <= -1.0F)) { return; }
+		int metadata = worldObj.getBlockMetadata(x, y, z);
+		ArrayList<ItemStack> stacks = block.getBlockDropped(worldObj, x, y, z, metadata, 0);
+		for (ItemStack stack : stacks) {
+			BlockUtils.dropItemStackInWorld(worldObj, x, y, z, stack);
+		}
+		worldObj.setBlockToAir(x, y, z);
+		worldObj.playAuxSFX(2001, x, y, z, bid + metadata * 4096);
 	}
 
 	/**
@@ -231,9 +219,9 @@ public class EntityLazer extends Entity implements IThrowableEntity, IEntityAddi
 	public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {
 		if (par1NBTTagCompound.hasKey("direction")) {
 			NBTTagList nbttaglist = par1NBTTagCompound.getTagList("direction");
-			this.motionX = ((NBTTagDouble) nbttaglist.tagAt(0)).data;
-			this.motionY = ((NBTTagDouble) nbttaglist.tagAt(1)).data;
-			this.motionZ = ((NBTTagDouble) nbttaglist.tagAt(2)).data;
+			this.motionX = ((NBTTagDouble)nbttaglist.tagAt(0)).data;
+			this.motionY = ((NBTTagDouble)nbttaglist.tagAt(1)).data;
+			this.motionZ = ((NBTTagDouble)nbttaglist.tagAt(2)).data;
 		} else {
 			this.setDead();
 		}
@@ -279,10 +267,9 @@ public class EntityLazer extends Entity implements IThrowableEntity, IEntityAddi
 	public void writeSpawnData(ByteArrayDataOutput data) {
 		try {
 			writeStreamData(data);
-		} catch (IOException e) {
-		}
+		} catch (IOException e) {}
 	}
-	
+
 	private void writeStreamData(DataOutput data) throws IOException {
 		data.writeBoolean(isExplosive);
 	}

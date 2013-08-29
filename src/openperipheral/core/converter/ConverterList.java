@@ -19,7 +19,7 @@ public class ConverterList implements ITypeConverter {
 		if (obj instanceof List) {
 			HashMap ret = new HashMap();
 			int index = 1;
-			List objList = (List) obj;
+			List objList = (List)obj;
 			for (int i = 0; i < objList.size(); i++) {
 				ret.put(index++, TypeConversionRegistry.toLua(objList.get(i)));
 			}

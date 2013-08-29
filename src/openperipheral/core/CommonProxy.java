@@ -53,7 +53,7 @@ public class CommonProxy implements IGuiHandler {
 		if (ConfigSettings.robotsEnabled) {
 			OpenPeripheral.Blocks.robot = new BlockRobot();
 		}
-		
+
 		TurtleAPI.registerUpgrade(new TurtleUpgradeSensor());
 		TurtleAPI.registerUpgrade(new TurtleUpgradeNarcissistic());
 
@@ -73,18 +73,17 @@ public class CommonProxy implements IGuiHandler {
 		RecipeUtils.addSensorRecipe();
 
 		MinecraftForge.EVENT_BUS.register(new ChatCommandInterceptor());
-		
+
 		if (ConfigSettings.robotsEnabled) {
 			EntityRegistry.registerModEntity(EntityRobotWarrior.class, "RobotWarrior", 600, OpenPeripheral.instance, 64, 1, true);
 			EntityRegistry.registerModEntity(EntityLazer.class, "Lazer", 701, OpenPeripheral.instance, 64, 1, true);
 		}
-		
+
 		NetworkRegistry.instance().registerGuiHandler(OpenPeripheral.instance, this);
 
 	}
 
-	public void registerRenderInformation() {
-	}
+	public void registerRenderInformation() {}
 
 	private void setupLanguages() {
 		LanguageUtils.setupLanguages();
@@ -92,17 +91,13 @@ public class CommonProxy implements IGuiHandler {
 
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-		if (ID == OpenPeripheral.Gui.robotEntity.ordinal()) {
-			return new ContainerRobot(player.inventory, (IRobot)player.worldObj.getEntityByID(x));
-		}
+		if (ID == OpenPeripheral.Gui.robotEntity.ordinal()) { return new ContainerRobot(player.inventory, (IRobot)player.worldObj.getEntityByID(x)); }
 		TileEntity tile = world.getBlockTileEntity(x, y, z);
 		if (ID == OpenPeripheral.Gui.ticketMachine.ordinal()) {
 			return new ContainerGeneric(player.inventory, (IInventory)tile, TileEntityTicketMachine.SLOTS);
 		} else if (ID == OpenPeripheral.Gui.remote.ordinal()) {
 			return new ContainerComputer();
-		} else if (ID == OpenPeripheral.Gui.robot.ordinal()) {
-			return new ContainerGeneric(player.inventory, (IInventory)tile, TileEntityRobot.SLOTS);
-		} 
+		} else if (ID == OpenPeripheral.Gui.robot.ordinal()) { return new ContainerGeneric(player.inventory, (IInventory)tile, TileEntityRobot.SLOTS); }
 		return null;
 	}
 

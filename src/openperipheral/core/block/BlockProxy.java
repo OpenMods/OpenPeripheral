@@ -52,19 +52,19 @@ public class BlockProxy extends BlockContainer {
 	public void onNeighborBlockChange(World world, int x, int y, int z, int l) {
 		refreshProxiedPeripheral(world, x, y, z);
 	}
-	
+
 	public void refreshProxiedPeripheral(World world, int x, int y, int z) {
 
 		TileEntity selfTe = world.getBlockTileEntity(x, y, z);
 		int metaData = world.getBlockMetadata(x, y, z);
 		ForgeDirection orientation = ForgeDirection.getOrientation(metaData);
 		ForgeDirection behind = orientation.getOpposite();
-		
+
 		if (selfTe != null && selfTe instanceof TileEntityProxy) {
 			TileEntity targetTe = world.getBlockTileEntity(x + behind.offsetX, y + behind.offsetY, z + behind.offsetZ);
 			OpenPeripheral.peripheralHandler.invalidate(targetTe);
 			OpenPeripheral.peripheralHandler.invalidate(selfTe);
-			((TileEntityProxy) selfTe).setTarget(targetTe, orientation.ordinal());
+			((TileEntityProxy)selfTe).setTarget(targetTe, orientation.ordinal());
 			int cableX = x + orientation.offsetX;
 			int cableY = y + orientation.offsetY;
 			int cableZ = z + orientation.offsetZ;
@@ -73,12 +73,14 @@ public class BlockProxy extends BlockContainer {
 			Block cableBlock = Block.blocksList[cableBlockId];
 			TileEntity cableTe = world.getBlockTileEntity(cableX, cableY, cableZ);
 			try {
-				// if you see this dan200, please be aware that it wasn't me that added this line
-				// it may look like me, and I'm sure the git blame list says it was me
-				// but... it's wrong. Wasn't me. Hey, look over there! Something shiny!
-				ReflectionHelper.callMethod("", cableTe, new String[] { "networkChanged"});
-			} catch (Exception e) {
-			}
+				// if you see this dan200, please be aware that it wasn't me
+				// that added this line
+				// it may look like me, and I'm sure the git blame list says it
+				// was me
+				// but... it's wrong. Wasn't me. Hey, look over there! Something
+				// shiny!
+				ReflectionHelper.callMethod("", cableTe, new String[] { "networkChanged" });
+			} catch (Exception e) {}
 		}
 	}
 
@@ -106,9 +108,7 @@ public class BlockProxy extends BlockContainer {
 	@Override
 	public Icon getIcon(int side, int metadata) {
 		ForgeDirection orientation = ForgeDirection.getOrientation(metadata);
-		if (orientations.containsKey(orientation)) {
-			return orientations.get(orientation)[side];
-		}
+		if (orientations.containsKey(orientation)) { return orientations.get(orientation)[side]; }
 		return Icons.side_left;
 	}
 

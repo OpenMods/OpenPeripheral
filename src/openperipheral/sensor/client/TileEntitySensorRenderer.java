@@ -11,14 +11,14 @@ public class TileEntitySensorRenderer extends TileEntitySpecialRenderer {
 
 	private ModelSensor modelSensor = new ModelSensor();
 	private static final ResourceLocation texture = new ResourceLocation("openperipheral", "textures/models/sensor.png");
-	
+
 	@Override
 	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick) {
 
-		TileEntitySensor sensor = (TileEntitySensor) tileEntity;
+		TileEntitySensor sensor = (TileEntitySensor)tileEntity;
 		GL11.glPushMatrix();
-		GL11.glTranslatef((float) x + 0.5F, (float) y + 0.5F, (float) z + 0.5F);
-		int rotation = (int) sensor.getRotation();
+		GL11.glTranslatef((float)x + 0.5F, (float)y + 0.5F, (float)z + 0.5F);
+		int rotation = (int)sensor.getRotation();
 		GL11.glPushMatrix();
 		func_110628_a(texture);
 		this.modelSensor.renderSensor(rotation);

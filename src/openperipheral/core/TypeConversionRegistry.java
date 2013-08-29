@@ -17,9 +17,7 @@ public class TypeConversionRegistry {
 	public static Object fromLua(Object obj, Class type) {
 		for (ITypeConverter converter : converters) {
 			Object response = converter.fromLua(obj, type);
-			if (response != null) {
-				return response;
-			}
+			if (response != null) { return response; }
 		}
 		return obj;
 	}
@@ -27,18 +25,12 @@ public class TypeConversionRegistry {
 	public static Object toLua(Object obj) {
 		if (obj == null) {
 			return null;
-		} else if (obj instanceof ILuaObject) {
-			return obj;
-		}
+		} else if (obj instanceof ILuaObject) { return obj; }
 		for (ITypeConverter converter : converters) {
 			Object response = converter.toLua(obj);
-			if (response != null) {
-				return response;
-			}
+			if (response != null) { return response; }
 		}
-		if (obj instanceof Map) {
-			return obj;
-		}
+		if (obj instanceof Map) { return obj; }
 		return obj.toString();
 	}
 

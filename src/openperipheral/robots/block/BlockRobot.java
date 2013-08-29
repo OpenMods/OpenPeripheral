@@ -26,9 +26,7 @@ public class BlockRobot extends BlockContainer {
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
 		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
-		if (player.isSneaking() || tileEntity == null) {
-			return false;
-		}
+		if (player.isSneaking() || tileEntity == null) { return false; }
 		player.openGui(OpenPeripheral.instance, OpenPeripheral.Gui.robot.ordinal(), world, x, y, z);
 		return true;
 	}

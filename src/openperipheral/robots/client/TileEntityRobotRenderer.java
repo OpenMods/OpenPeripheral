@@ -17,12 +17,12 @@ public class TileEntityRobotRenderer extends TileEntitySpecialRenderer {
 	private EntityRobot robot = new EntityRobotWarrior(null);
 	private static final ResourceLocation frameTexture = new ResourceLocation("openperipheral", "textures/models/blockframe.png");
 	private static final ResourceLocation robotTexture = new ResourceLocation("openperipheral", "textures/models/robot.png");
-	
+
 	@Override
 	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTicks) {
-		TileEntityRobot robotTE = (TileEntityRobot) tileEntity;
+		TileEntityRobot robotTE = (TileEntityRobot)tileEntity;
 		GL11.glPushMatrix();
-		GL11.glTranslatef((float) x + 0.5F, (float) y + 1.0f, (float) z + 0.5F);
+		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.0f, (float)z + 0.5F);
 		GL11.glRotatef(180.0F, 1.0F, 0.0F, 0.0F);
 		func_110628_a(frameTexture);
 		frame.render();

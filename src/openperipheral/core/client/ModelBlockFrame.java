@@ -12,8 +12,7 @@ public class ModelBlockFrame extends ModelBase {
 	ModelRenderer[] longSides = new ModelRenderer[4];
 	float f5 = 0.0625F;
 
-	float halfPI = (float)Math.PI/2;
-
+	float halfPI = (float)Math.PI / 2;
 
 	public ModelBlockFrame() {
 		textureWidth = 64;
@@ -43,8 +42,8 @@ public class ModelBlockFrame extends ModelBase {
 		}
 		setRotation(longSides[0], halfPI, 0f, 0f);
 		setRotation(longSides[1], -halfPI, 0f, 0f);
-		setRotation(longSides[2], halfPI, halfPI*2, 0f);
-		setRotation(longSides[3], -halfPI, halfPI*2, 0f);
+		setRotation(longSides[2], halfPI, halfPI * 2, 0f);
+		setRotation(longSides[3], -halfPI, halfPI * 2, 0f);
 
 	}
 
@@ -56,7 +55,6 @@ public class ModelBlockFrame extends ModelBase {
 			longSides[i].render(f5);
 		}
 	}
-
 
 	private void setRotation(ModelRenderer model, float x, float y, float z) {
 		model.rotateAngleX = x;

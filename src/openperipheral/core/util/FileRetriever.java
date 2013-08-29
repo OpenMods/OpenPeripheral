@@ -29,15 +29,11 @@ public class FileRetriever {
 				while ((count = in.read(data, 0, 1024)) != -1) {
 					fout.write(data, 0, count);
 				}
-			} catch (Exception e) {
-			}
+			} catch (Exception e) {}
 			try {
-				if (in != null)
-					in.close();
-				if (fout != null)
-					fout.close();
-			} catch (IOException e) {
-			}
+				if (in != null) in.close();
+				if (fout != null) fout.close();
+			} catch (IOException e) {}
 		}
 
 	}

@@ -5,7 +5,7 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 
 public class ModelLazer extends ModelBase {
-	
+
 	ModelRenderer laser;
 
 	public ModelLazer() {
@@ -32,6 +32,6 @@ public class ModelLazer extends ModelBase {
 	}
 
 	public void setRotationAngles(Entity par7Entity) {
-		laser.rotateAngleX = (float) Math.toRadians(par7Entity.rotationPitch);
+		laser.rotateAngleX = (float)Math.toRadians(par7Entity.rotationPitch);
 	}
 }

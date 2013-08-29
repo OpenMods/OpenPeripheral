@@ -17,9 +17,9 @@ import openperipheral.core.adapter.AdapterSensor;
 import openperipheral.core.adapter.vanilla.AdapterBrewingStand;
 import openperipheral.core.adapter.vanilla.AdapterComparator;
 import openperipheral.core.adapter.vanilla.AdapterFluidHandler;
+import openperipheral.core.adapter.vanilla.AdapterFurnace;
 import openperipheral.core.adapter.vanilla.AdapterInventory;
 import openperipheral.core.adapter.vanilla.AdapterNoteBlock;
-import openperipheral.core.adapter.vanilla.AdapterFurnace;
 import openperipheral.core.adapter.vanilla.AdapterRecordPlayer;
 import openperipheral.core.block.BlockPlayerInventory;
 import openperipheral.core.block.BlockProxy;
@@ -29,10 +29,11 @@ import openperipheral.core.converter.ConverterArray;
 import openperipheral.core.converter.ConverterDouble;
 import openperipheral.core.converter.ConverterFluidTankInfo;
 import openperipheral.core.converter.ConverterForgeDirection;
-import openperipheral.core.converter.ConverterFluidTankInfo;
 import openperipheral.core.converter.ConverterItemStack;
 import openperipheral.core.converter.ConverterList;
 import openperipheral.core.integration.ModuleAppEng;
+import openperipheral.core.integration.ModuleBuildCraft;
+import openperipheral.core.integration.ModuleEnderStorage;
 import openperipheral.core.integration.ModuleIC2;
 import openperipheral.core.item.ItemGeneric;
 import openperipheral.core.item.ItemGlasses;
@@ -60,18 +61,29 @@ import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 import dan200.computer.api.ComputerCraftAPI;
 
-@Mod(modid = "OpenPeripheral", name = "OpenPeripheral", version = "@VERSION@", dependencies = "required-after:ComputerCraft;after:mmmPowersuits;after:BuildCraft|Core;after:AppliedEnergistics;after:Forestry;after:IC2;after:ThermalExpansion;after:Thaumcraft;after:MineFactoryReloaded;after:Railcraft;after:MiscPeripherals")
-@NetworkMod(serverSideRequired = true, clientSideRequired = false, channels = { ConfigSettings.NETWORK_CHANNEL }, packetHandler = PacketHandler.class)
+@Mod(
+		modid = "OpenPeripheral",
+		name = "OpenPeripheral",
+		version = "@VERSION@",
+		dependencies = "required-after:ComputerCraft;after:mmmPowersuits;after:BuildCraft|Core;after:AppliedEnergistics;after:Forestry;after:IC2;after:ThermalExpansion;after:Thaumcraft;after:MineFactoryReloaded;after:Railcraft;after:MiscPeripherals")
+@NetworkMod(
+		serverSideRequired = true,
+		clientSideRequired = false,
+		channels = { ConfigSettings.NETWORK_CHANNEL },
+		packetHandler = PacketHandler.class)
 public class OpenPeripheral {
 
-	@Instance(value = "OpenPeripheral")
+	@Instance(
+			value = "OpenPeripheral")
 	public static OpenPeripheral instance;
 
-	@SidedProxy(clientSide = "openperipheral.core.client.ClientProxy", serverSide = "openperipheral.core.CommonProxy")
+	@SidedProxy(
+			clientSide = "openperipheral.core.client.ClientProxy",
+			serverSide = "openperipheral.core.CommonProxy")
 	public static CommonProxy proxy;
 
 	public static BasicMount mount = new BasicMount();
-	
+
 	public static CreativeTabs tabOpenPeripheral = new CreativeTabs("tabOpenPeripheral") {
 		public ItemStack getIconItemStack() {
 			return new ItemStack(OpenPeripheral.Items.glasses, 1, 0);
@@ -95,10 +107,7 @@ public class OpenPeripheral {
 	}
 
 	public enum Gui {
-		ticketMachine,
-		remote,
-		robot,
-		robotEntity
+		ticketMachine, remote, robot, robotEntity
 	};
 
 	public static int renderId;
@@ -125,7 +134,7 @@ public class OpenPeripheral {
 		TypeConversionRegistry.registerTypeConverter(new ConverterFluidTankInfo());
 		TypeConversionRegistry.registerTypeConverter(new ConverterForgeDirection());
 		TypeConversionRegistry.registerTypeConverter(new ConverterFluidTankInfo());
-		
+
 		AdapterManager.addPeripheralAdapter(new AdapterInventory());
 		AdapterManager.addPeripheralAdapter(new AdapterNoteBlock());
 		AdapterManager.addPeripheralAdapter(new AdapterComparator());
@@ -136,7 +145,7 @@ public class OpenPeripheral {
 		AdapterManager.addPeripheralAdapter(new AdapterFluidHandler());
 		AdapterManager.addPeripheralAdapter(new AdapterGlassesBridge());
 		AdapterManager.addPeripheralAdapter(new AdapterSensor());
-	
+
 		if (ConfigSettings.robotsEnabled) {
 			RobotUpgradeManager.registerUpgradeProvider(new ProviderMovementUpgrade());
 			RobotUpgradeManager.registerUpgradeProvider(new ProviderLasersUpgrade());
@@ -145,15 +154,23 @@ public class OpenPeripheral {
 			RobotUpgradeManager.registerUpgradeProvider(new ProviderInventoryUpgrade());
 			RobotUpgradeManager.registerUpgradeProvider(new ProviderTargetingUpgrade());
 		}
-		
+
 		if (Loader.isModLoaded(Mods.APPLIED_ENERGISTICS)) {
 			ModuleAppEng.init();
 		}
-		
+
 		if (Loader.isModLoaded(Mods.IC2)) {
 			ModuleIC2.init();
 		}
-		
+
+		if (Loader.isModLoaded(Mods.ENDER_STORAGE)) {
+			ModuleEnderStorage.init();
+		}
+
+		if (Loader.isModLoaded(Mods.BUILDCRAFT)) {
+			ModuleBuildCraft.init();
+		}
+
 		TickRegistry.registerTickHandler(new TickHandler(), Side.SERVER);
 		ComputerCraftAPI.registerExternalPeripheral(TileEntity.class, peripheralHandler);
 

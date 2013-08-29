@@ -1,11 +1,8 @@
 package openperipheral.core.converter;
 
-import java.util.HashMap;
-
-import appeng.api.IItemList;
-
 import openperipheral.api.ITypeConverter;
 import openperipheral.core.TypeConversionRegistry;
+import appeng.api.IItemList;
 
 public class ConverterIItemList implements ITypeConverter {
 
@@ -17,10 +14,8 @@ public class ConverterIItemList implements ITypeConverter {
 
 	@Override
 	public Object toLua(Object obj) {
-		if (obj instanceof IItemList) {
-			return TypeConversionRegistry.toLua(((IItemList)obj).getItems());
-		}
-		
+		if (obj instanceof IItemList) { return TypeConversionRegistry.toLua(((IItemList)obj).getItems()); }
+
 		return null;
 	}
 

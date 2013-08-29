@@ -34,12 +34,11 @@ public class DrawableText extends BaseDrawable implements IDrawable {
 
 	public DrawableText(TileEntityGlassesBridge parent, int x, int y, String text, int color) {
 		super(parent);
-		this.x = (short) x;
-		this.y = (short) y;
+		this.x = (short)x;
+		this.y = (short)y;
 		this.text = text;
 		this.color = color;
-		this.methodNames = new String[] { "setX", "getX", "setY", "getY", "setColor", "getColor", "setText", "getText", "setZIndex", "getZIndex", "setScale", "getScale",
-				"getWidth", "delete" };
+		this.methodNames = new String[] { "setX", "getX", "setY", "getY", "setColor", "getColor", "setText", "getText", "setZIndex", "getZIndex", "setScale", "getScale", "getWidth", "delete" };
 	}
 
 	@Override
@@ -88,23 +87,17 @@ public class DrawableText extends BaseDrawable implements IDrawable {
 	public void readFrom(DataInputStream stream, Short changeMask) {
 		try {
 
-			if (ByteUtils.get(changeMask, X_CHANGED))
-				x = stream.readShort();
+			if (ByteUtils.get(changeMask, X_CHANGED)) x = stream.readShort();
 
-			if (ByteUtils.get(changeMask, Y_CHANGED))
-				y = stream.readShort();
+			if (ByteUtils.get(changeMask, Y_CHANGED)) y = stream.readShort();
 
-			if (ByteUtils.get(changeMask, TEXT_CHANGED))
-				text = stream.readUTF();
+			if (ByteUtils.get(changeMask, TEXT_CHANGED)) text = stream.readUTF();
 
-			if (ByteUtils.get(changeMask, COLOR_CHANGED))
-				color = stream.readInt();
+			if (ByteUtils.get(changeMask, COLOR_CHANGED)) color = stream.readInt();
 
-			if (ByteUtils.get(changeMask, Z_CHANGED))
-				zIndex = stream.readByte();
+			if (ByteUtils.get(changeMask, Z_CHANGED)) zIndex = stream.readByte();
 
-			if (ByteUtils.get(changeMask, SCALE_CHANGED))
-				scale = stream.readFloat();
+			if (ByteUtils.get(changeMask, SCALE_CHANGED)) scale = stream.readFloat();
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -112,49 +105,37 @@ public class DrawableText extends BaseDrawable implements IDrawable {
 	}
 
 	public int setColor(int c) {
-		if (color == c) {
-			return -1;
-		}
+		if (color == c) { return -1; }
 		color = c;
 		return COLOR_CHANGED;
 	}
 
 	public int setScale(float s) {
-		if (scale == s) {
-			return -1;
-		}
+		if (scale == s) { return -1; }
 		scale = s;
 		return SCALE_CHANGED;
 	}
 
 	public int setText(String t) {
-		if (t.equals(text)) {
-			return -1;
-		}
+		if (t.equals(text)) { return -1; }
 		text = t;
 		return TEXT_CHANGED;
 	}
 
 	public int setX(short _x) {
-		if (x == _x) {
-			return -1;
-		}
+		if (x == _x) { return -1; }
 		x = _x;
 		return X_CHANGED;
 	}
 
 	public int setY(short _y) {
-		if (y == _y) {
-			return -1;
-		}
+		if (y == _y) { return -1; }
 		y = _y;
 		return Y_CHANGED;
 	}
 
 	public int setZIndex(byte z) {
-		if (zIndex == z) {
-			return -1;
-		}
+		if (zIndex == z) { return -1; }
 		zIndex = z;
 		return Z_CHANGED;
 	}
@@ -162,23 +143,17 @@ public class DrawableText extends BaseDrawable implements IDrawable {
 	@Override
 	public void writeTo(DataOutputStream stream, Short changeMask) {
 		try {
-			if (ByteUtils.get(changeMask, X_CHANGED))
-				stream.writeShort((short) x);
+			if (ByteUtils.get(changeMask, X_CHANGED)) stream.writeShort((short)x);
 
-			if (ByteUtils.get(changeMask, Y_CHANGED))
-				stream.writeShort((short) y);
+			if (ByteUtils.get(changeMask, Y_CHANGED)) stream.writeShort((short)y);
 
-			if (ByteUtils.get(changeMask, TEXT_CHANGED))
-				stream.writeUTF(text);
+			if (ByteUtils.get(changeMask, TEXT_CHANGED)) stream.writeUTF(text);
 
-			if (ByteUtils.get(changeMask, COLOR_CHANGED))
-				stream.writeInt(color);
+			if (ByteUtils.get(changeMask, COLOR_CHANGED)) stream.writeInt(color);
 
-			if (ByteUtils.get(changeMask, Z_CHANGED))
-				stream.writeByte(zIndex);
+			if (ByteUtils.get(changeMask, Z_CHANGED)) stream.writeByte(zIndex);
 
-			if (ByteUtils.get(changeMask, SCALE_CHANGED))
-				stream.writeFloat(scale);
+			if (ByteUtils.get(changeMask, SCALE_CHANGED)) stream.writeFloat(scale);
 
 		} catch (IOException e) {
 			e.printStackTrace();

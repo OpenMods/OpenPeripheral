@@ -12,17 +12,17 @@ import openperipheral.core.item.ItemGeneric.Metas;
 public class ProviderTargetingUpgrade implements IRobotUpgradeProvider {
 
 	private HashMap<Integer, ItemStack> upgradeItems;
-	
+
 	public ProviderTargetingUpgrade() {
-		
+
 		upgradeItems = new HashMap<Integer, ItemStack>();
-		
+
 		upgradeItems.put(1, Metas.tier1targeting.newItemStack());
 		upgradeItems.put(2, Metas.tier2targeting.newItemStack());
 		upgradeItems.put(3, Metas.tier3targeting.newItemStack());
-		
+
 	}
-	
+
 	@Override
 	public IRobotUpgradeAdapter provideUpgradeInstance(IRobot robot, int tier) {
 		return new AdapterTargetingUpgrade(robot, tier);

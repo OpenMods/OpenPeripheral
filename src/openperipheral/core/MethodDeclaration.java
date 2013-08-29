@@ -43,11 +43,11 @@ public class MethodDeclaration {
 	public Method getMethod() {
 		return method;
 	}
-	
+
 	public Class[] getRequiredJavaParameters() {
 		return requiredJavaParameters;
 	}
-	
+
 	public Arg[] getRequiredParameters() {
 		return luaMethod.args();
 	}
@@ -59,7 +59,7 @@ public class MethodDeclaration {
 	public LuaType getReturnType() {
 		return luaMethod.returnType();
 	}
-	
+
 	public String getLuaName() {
 		return luaName;
 	}

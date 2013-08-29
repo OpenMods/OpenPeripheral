@@ -60,11 +60,11 @@ public class BlockSensor extends BlockContainer {
 	public boolean renderAsNormalBlock() {
 		return false;
 	}
-	
+
 	@Override
 	public boolean isBlockSolidOnSide(World world, int x, int y, int z, ForgeDirection side) {
-        return side == ForgeDirection.DOWN;
-    }
+		return side == ForgeDirection.DOWN;
+	}
 
 	@Override
 	public boolean isOpaqueCube() {
