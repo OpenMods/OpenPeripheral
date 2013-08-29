@@ -19,6 +19,7 @@ import openperipheral.core.adapter.vanilla.AdapterComparator;
 import openperipheral.core.adapter.vanilla.AdapterFluidHandler;
 import openperipheral.core.adapter.vanilla.AdapterInventory;
 import openperipheral.core.adapter.vanilla.AdapterNoteBlock;
+import openperipheral.core.adapter.vanilla.AdapterFurnace;
 import openperipheral.core.adapter.vanilla.AdapterRecordPlayer;
 import openperipheral.core.block.BlockPlayerInventory;
 import openperipheral.core.block.BlockProxy;
@@ -28,7 +29,7 @@ import openperipheral.core.converter.ConverterArray;
 import openperipheral.core.converter.ConverterDouble;
 import openperipheral.core.converter.ConverterFluidTankInfo;
 import openperipheral.core.converter.ConverterForgeDirection;
-import openperipheral.core.converter.ConverterILiquidTank;
+import openperipheral.core.converter.ConverterFluidTankInfo;
 import openperipheral.core.converter.ConverterItemStack;
 import openperipheral.core.converter.ConverterList;
 import openperipheral.core.integration.ModuleAppEng;
@@ -121,7 +122,7 @@ public class OpenPeripheral {
 		TypeConversionRegistry.registerTypeConverter(new ConverterList());
 		TypeConversionRegistry.registerTypeConverter(new ConverterDouble());
 		TypeConversionRegistry.registerTypeConverter(new ConverterItemStack());
-		TypeConversionRegistry.registerTypeConverter(new ConverterILiquidTank());
+		TypeConversionRegistry.registerTypeConverter(new ConverterFluidTankInfo());
 		TypeConversionRegistry.registerTypeConverter(new ConverterForgeDirection());
 		TypeConversionRegistry.registerTypeConverter(new ConverterFluidTankInfo());
 		
@@ -129,6 +130,7 @@ public class OpenPeripheral {
 		AdapterManager.addPeripheralAdapter(new AdapterNoteBlock());
 		AdapterManager.addPeripheralAdapter(new AdapterComparator());
 		AdapterManager.addPeripheralAdapter(new AdapterBrewingStand());
+		AdapterManager.addPeripheralAdapter(new AdapterFurnace());
 		AdapterManager.addPeripheralAdapter(new AdapterObject());
 		AdapterManager.addPeripheralAdapter(new AdapterRecordPlayer());
 		AdapterManager.addPeripheralAdapter(new AdapterFluidHandler());

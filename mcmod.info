@@ -4,7 +4,7 @@
   "name" : "OpenPeripheral",
   "version" : "@VERSION@",
   "url" : "http://www.openperipheral.info",
-  "credits" : "Everyone in #ComputerCraft and #OpenCCSensors, also ChickenBones",
+  "credits" : "Everyone in #ComputerCraft, #OpenMods and #OpenCCSensors, also ChickenBones",
   "authors": [
     "Mikeemoo",
     "cybcaoyibo",

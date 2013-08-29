@@ -6,29 +6,32 @@ import java.util.Map;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidTank;
 import openperipheral.api.ITypeConverter;
 
 public class ConverterFluidTankInfo implements ITypeConverter {
 
 	@Override
-	public Object fromLua(Object obj, Class expected) {
-		// TODO Auto-generated method stub
+	public Object fromLua(Object o, Class required) {
 		return null;
 	}
 
-	@Override
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+  @Override
 	public Object toLua(Object o) {
 		if (o instanceof FluidTankInfo) {
-			FluidTankInfo t = (FluidTankInfo) o;
+		  FluidTankInfo fti = (FluidTankInfo) o;
 			Map map = new HashMap();
-			map.put("capacity", t.capacity);
-			FluidStack lyqyd = t.fluid;
-			if (lyqyd != null) {
-				map.put("id", lyqyd.fluidID);
-				Fluid fluid = lyqyd.getFluid();
-				map.put("name", fluid.getName());
-				map.put("rawName", fluid.getLocalizedName());
+			map.put("capacity", fti.capacity);
+			FluidStack fluidStack = fti.fluid;
+			if (fluidStack != null){
+			  map.put("amount", fluidStack.amount);
+			  map.put("id", fluidStack.fluidID);
+			  
+			  Fluid fluid = fluidStack.getFluid();
+			  if (fluid != null){
+			    map.put("name", fluid.getName());
+			    map.put("rawName", fluid.getLocalizedName());
+			  }
 			}
 			return map;
 		}
