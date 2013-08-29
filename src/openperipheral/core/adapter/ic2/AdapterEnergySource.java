@@ -18,8 +18,8 @@ public class AdapterEnergySource implements IPeripheralAdapter {
 		description="Get the EU output",
 		returnType=LuaType.NUMBER
 	)
-	public int getMaxEUOutput(IComputerAccess computer, IEnergySource source) {
-		return source.getMaxEnergyOutput();
+	public double getOfferedEnergy(IComputerAccess computer, IEnergySource source) {
+		return source.getOfferedEnergy();
 	}
 
 }

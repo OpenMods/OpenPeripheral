@@ -45,12 +45,12 @@ public class AdapterReactorChamber implements IPeripheralAdapter {
 		description="Get the EU output of this reactor",
 		returnType=LuaType.NUMBER
 	)
-	public int getEUOutput(IComputerAccess computer, IReactorChamber chamber) {
+	public float getEUOutput(IComputerAccess computer, IReactorChamber chamber) {
 		IReactor reactor = chamber.getReactor();
 		if (reactor == null) {
 			return 0;
 		}
-		return reactor.getOutput();
+		return reactor.getReactorEnergyOutput();
 	}
 
 	@LuaMethod(

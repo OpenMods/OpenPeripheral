@@ -98,7 +98,7 @@ public class ItemGeneric extends Item {
 		setCreativeTab(OpenPeripheral.tabOpenPeripheral);
 		Block cable = RecipeUtils.getCCBlock("cable");
 		Block peripheral = RecipeUtils.getCCBlock("peripheral");
-		metaitems.put(Metas.thinWire.ordinal(), new MetaGeneric("thinwire", new Object[] { 9, Metas.ribbonCable }, new Object[] { 1, Metas.coiledWire }));
+		metaitems.put(Metas.thinWire.ordinal(), new MetaGeneric("thinwire", new Object[] { 9, Metas.ribbonCable }, new Object[] { 1, Metas.coiledWire }, new Object[] { 4, "i","r", "i", 'i', new ItemStack(Item.ingotIron), 'r', new ItemStack(Item.redstone) }));
 		metaitems.put(Metas.ribbonCable.ordinal(), new MetaGeneric("ribboncable", 1, "www", "www", "www", 'w', Metas.thinWire));
 		metaitems.put(Metas.coiledWire.ordinal(), new MetaGeneric("coiledwire", 1, Metas.thinWire));
 		metaitems.put(Metas.electrode.ordinal(), new MetaGeneric("electrode", 1, "t", "i", "i", 't', new ItemStack(Block.torchRedstoneActive), 'i', new ItemStack(Item.ingotIron)));

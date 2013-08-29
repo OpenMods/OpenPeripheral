@@ -36,8 +36,8 @@ public class AdapterReactor implements IPeripheralAdapter {
 		description="Get the EU output of this reactor",
 		returnType=LuaType.NUMBER
 	)
-	public int getEUOutput(IComputerAccess computer, IReactor reactor) {
-		return reactor.getOutput();
+	public float getEUOutput(IComputerAccess computer, IReactor reactor) {
+		return reactor.getReactorEnergyOutput();
 	}
 
 	@LuaMethod(

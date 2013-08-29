@@ -73,7 +73,7 @@ public final class PowerHandler {
 			return current;
 		}
 	}
-	public static final PerditionCalculator DEFUALT_PERDITION = new PerditionCalculator();
+	public static final PerditionCalculator DEFAULT_PERDITION = new PerditionCalculator();
 	private float minEnergyReceived;
 	private float maxEnergyReceived;
 	private float maxEnergyStored;
@@ -92,6 +92,7 @@ public final class PowerHandler {
 		this.receptor = receptor;
 		this.type = type;
 		this.receiver = new PowerReceiver();
+		this.perdition = DEFAULT_PERDITION;
 	}
 
 	public PowerReceiver getPowerReceiver() {
@@ -158,18 +159,20 @@ public final class PowerHandler {
 	 * Allows you to define a new PerditionCalculator class to handler perdition
 	 * calculations.
 	 *
-	 * For example if you want exponentially increasing loss bases on amount
+	 * For example if you want exponentially increasing loss based on amount
 	 * stored.
 	 *
 	 * @param perdition
 	 */
 	public void setPerdition(PerditionCalculator perdition) {
+		if (perdition == null)
+			perdition = DEFAULT_PERDITION;
 		this.perdition = perdition;
 	}
 
 	public PerditionCalculator getPerdition() {
 		if (perdition == null)
-			return DEFUALT_PERDITION;
+			return DEFAULT_PERDITION;
 		return perdition;
 	}
 
@@ -191,11 +194,10 @@ public final class PowerHandler {
 	private void applyPerdition() {
 		if (perditionTracker.markTimeIfDelay(receptor.getWorld(), 1) && energyStored > 0) {
 			float newEnergy = getPerdition().applyPerdition(this, energyStored, perditionTracker.durationOfLastDelay());
-			if (newEnergy == 0 || newEnergy < energyStored) {
+			if (newEnergy == 0 || newEnergy < energyStored)
 				energyStored = newEnergy;
-			} else {
-				energyStored = DEFUALT_PERDITION.applyPerdition(this, energyStored, perditionTracker.durationOfLastDelay());
-			}
+			else
+				energyStored = DEFAULT_PERDITION.applyPerdition(this, energyStored, perditionTracker.durationOfLastDelay());
 			validateEnergy();
 		}
 	}
@@ -313,6 +315,7 @@ public final class PowerHandler {
 		 * @return
 		 */
 		public float powerRequest() {
+			update();
 			return Math.min(maxEnergyReceived, maxEnergyStored - energyStored);
 		}
 
