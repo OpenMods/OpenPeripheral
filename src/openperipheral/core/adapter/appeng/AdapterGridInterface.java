@@ -17,13 +17,9 @@ public class AdapterGridInterface implements IPeripheralAdapter {
 		return IGridInterface.class;
 	}
 
-	@LuaMethod(
-			description = "Request crafting of a specific item",
-			returnType = LuaType.VOID,
-			args = { @Arg(
-					type = LuaType.TABLE,
-					name = "stack",
-					description = "A table representing the item stack") })
+	@LuaMethod(description = "Request crafting of a specific item", returnType = LuaType.VOID,
+		args = {
+			@Arg(type = LuaType.TABLE, name = "stack", description = "A table representing the item stack") })
 	public void requestCrafting(IComputerAccess computer, IGridInterface grid, ItemStack stack) throws AppEngTileMissingException {
 		ICraftRequest request = grid.craftingRequest(stack);
 	}

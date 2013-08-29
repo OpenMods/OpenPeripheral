@@ -13,34 +13,22 @@ public class AdapterEnergyConductor implements IPeripheralAdapter {
 		return IEnergyConductor.class;
 	}
 
-	@LuaMethod(
-			onTick = false,
-			description = "Get the EU conduction loss",
-			returnType = LuaType.NUMBER)
+	@LuaMethod(onTick = false, description = "Get the EU conduction loss", returnType = LuaType.NUMBER)
 	public double getEUConductionLoss(IComputerAccess computer, IEnergyConductor conductor) {
 		return conductor.getConductionLoss();
 	}
 
-	@LuaMethod(
-			onTick = false,
-			description = "Get the EU conductor breakdown energy",
-			returnType = LuaType.NUMBER)
+	@LuaMethod(onTick = false, description = "Get the EU conductor breakdown energy", returnType = LuaType.NUMBER)
 	public double getEUConductorBreakdownEnergy(IComputerAccess computer, IEnergyConductor conductor) {
 		return conductor.getConductorBreakdownEnergy();
 	}
 
-	@LuaMethod(
-			onTick = false,
-			description = "Get the EU insulation breakdown energy",
-			returnType = LuaType.NUMBER)
+	@LuaMethod(onTick = false, description = "Get the EU insulation breakdown energy", returnType = LuaType.NUMBER)
 	public double getEUInsulationBreakdownEnergy(IComputerAccess computer, IEnergyConductor conductor) {
 		return conductor.getInsulationBreakdownEnergy();
 	}
 
-	@LuaMethod(
-			onTick = false,
-			description = "Get the EU insulation energy absorption",
-			returnType = LuaType.NUMBER)
+	@LuaMethod(onTick = false, description = "Get the EU insulation energy absorption", returnType = LuaType.NUMBER)
 	public double getEUInsulationEnergyAbsorption(IComputerAccess computer, IEnergyConductor conductor) {
 		return conductor.getInsulationEnergyAbsorption();
 	}

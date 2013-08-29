@@ -13,10 +13,7 @@ public class AdapterEnergySink implements IPeripheralAdapter {
 		return IEnergySink.class;
 	}
 
-	@LuaMethod(
-			onTick = false,
-			description = "Get the maximum safe EU input",
-			returnType = LuaType.NUMBER)
+	@LuaMethod(onTick = false, description = "Get the maximum safe EU input", returnType = LuaType.NUMBER)
 	public int getMaxSafeEUInput(IComputerAccess computer, IEnergySink sink) {
 		return sink.getMaxSafeInput();
 	}

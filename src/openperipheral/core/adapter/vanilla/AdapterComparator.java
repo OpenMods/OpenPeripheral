@@ -13,9 +13,7 @@ public class AdapterComparator implements IPeripheralAdapter {
 		return TileEntityComparator.class;
 	}
 
-	@LuaMethod(
-			returnType = LuaType.NUMBER,
-			description = "Get the strength of the output signal")
+	@LuaMethod(returnType = LuaType.NUMBER, description = "Get the strength of the output signal")
 	public int getOutputSignal(IComputerAccess computer, TileEntityComparator comparator) {
 		return comparator.getOutputSignal();
 	}

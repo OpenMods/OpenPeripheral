@@ -61,26 +61,12 @@ public class AdapterTargetingUpgrade implements IRobotUpgradeAdapter {
 		return pos;
 	}
 
-	@LuaMethod(
-			args = { @Arg(
-					type = LuaType.NUMBER,
-					name = "x"), @Arg(
-					type = LuaType.NUMBER,
-					name = "y"), @Arg(
-					type = LuaType.NUMBER,
-					name = "z") })
+	@LuaMethod(args = { @Arg(type = LuaType.NUMBER, name = "x"), @Arg(type = LuaType.NUMBER, name = "y"), @Arg(type = LuaType.NUMBER, name = "z") })
 	public void lookAt(IComputerAccess computer, IRobot robot, double x, double y, double z) {
 		aimAtFromVec(getEyePosition(), x, y, z);
 	}
 
-	@LuaMethod(
-			args = { @Arg(
-					type = LuaType.NUMBER,
-					name = "x"), @Arg(
-					type = LuaType.NUMBER,
-					name = "y"), @Arg(
-					type = LuaType.NUMBER,
-					name = "z") })
+	@LuaMethod(args = { @Arg(type = LuaType.NUMBER, name = "x"), @Arg(type = LuaType.NUMBER, name = "y"), @Arg(type = LuaType.NUMBER, name = "z") })
 	public void aimAt(IComputerAccess computer, IRobot robot, double x, double y, double z) throws Exception {
 		if (tier < 2) { throw new Exception("A higher tier upgrade is required"); }
 		double radYaw = -Math.toRadians(robot.getYaw());

@@ -21,16 +21,12 @@ public class AdapterObject implements IPeripheralAdapter {
 		return Object.class;
 	}
 
-	@LuaMethod(
-			returnType = LuaType.STRING,
-			description = "List all the methods available")
+	@LuaMethod(returnType = LuaType.STRING, description = "List all the methods available")
 	public String listMethods(IComputerAccess computer, Object object) {
 		return MiscUtils.listMethods(getUniqueMethods(object));
 	}
 
-	@LuaMethod(
-			returnType = LuaType.TABLE,
-			description = "Get a complete table of information about all available methods")
+	@LuaMethod(returnType = LuaType.TABLE, description = "Get a complete table of information about all available methods")
 	public Map getAdvancedMethodsData(IComputerAccess computer, Object object) {
 		return MiscUtils.documentMethods(getUniqueMethods(object));
 	}

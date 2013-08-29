@@ -34,6 +34,7 @@ import openperipheral.core.converter.ConverterList;
 import openperipheral.core.integration.ModuleAppEng;
 import openperipheral.core.integration.ModuleBuildCraft;
 import openperipheral.core.integration.ModuleEnderStorage;
+import openperipheral.core.integration.ModuleForestry;
 import openperipheral.core.integration.ModuleIC2;
 import openperipheral.core.item.ItemGeneric;
 import openperipheral.core.item.ItemGlasses;
@@ -62,24 +63,17 @@ import cpw.mods.fml.relauncher.Side;
 import dan200.computer.api.ComputerCraftAPI;
 
 @Mod(
-		modid = "OpenPeripheral",
-		name = "OpenPeripheral",
-		version = "@VERSION@",
-		dependencies = "required-after:ComputerCraft;after:mmmPowersuits;after:BuildCraft|Core;after:AppliedEnergistics;after:Forestry;after:IC2;after:ThermalExpansion;after:Thaumcraft;after:MineFactoryReloaded;after:Railcraft;after:MiscPeripherals")
-@NetworkMod(
-		serverSideRequired = true,
-		clientSideRequired = false,
-		channels = { ConfigSettings.NETWORK_CHANNEL },
-		packetHandler = PacketHandler.class)
+	modid = "OpenPeripheral",
+	name = "OpenPeripheral",
+	version = "@VERSION@",
+	dependencies = "required-after:ComputerCraft;after:mmmPowersuits;after:BuildCraft|Core;after:AppliedEnergistics;after:Forestry;after:IC2;after:ThermalExpansion;after:Thaumcraft;after:MineFactoryReloaded;after:Railcraft;after:MiscPeripherals")
+@NetworkMod(serverSideRequired = true, clientSideRequired = false, channels = { ConfigSettings.NETWORK_CHANNEL }, packetHandler = PacketHandler.class)
 public class OpenPeripheral {
 
-	@Instance(
-			value = "OpenPeripheral")
+	@Instance(value = "OpenPeripheral")
 	public static OpenPeripheral instance;
 
-	@SidedProxy(
-			clientSide = "openperipheral.core.client.ClientProxy",
-			serverSide = "openperipheral.core.CommonProxy")
+	@SidedProxy(clientSide = "openperipheral.core.client.ClientProxy", serverSide = "openperipheral.core.CommonProxy")
 	public static CommonProxy proxy;
 
 	public static BasicMount mount = new BasicMount();
@@ -169,6 +163,10 @@ public class OpenPeripheral {
 
 		if (Loader.isModLoaded(Mods.BUILDCRAFT)) {
 			ModuleBuildCraft.init();
+		}
+		
+		if (Loader.isModLoaded(Mods.FORESTRY)) {
+			ModuleForestry.init();
 		}
 
 		TickRegistry.registerTickHandler(new TickHandler(), Side.SERVER);

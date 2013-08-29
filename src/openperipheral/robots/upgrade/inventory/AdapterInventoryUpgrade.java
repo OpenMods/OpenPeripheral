@@ -88,13 +88,7 @@ public class AdapterInventoryUpgrade extends AdapterInventory implements IRobotU
 		return true;
 	}
 
-	@LuaMethod(
-			description = "Drop items on the floor",
-			args = { @Arg(
-					type = LuaType.NUMBER,
-					name = "slot"), @Arg(
-					type = LuaType.NUMBER,
-					name = "maxAmount") })
+	@LuaMethod(description = "Drop items on the floor", args = { @Arg(type = LuaType.NUMBER, name = "slot"), @Arg(type = LuaType.NUMBER, name = "maxAmount") })
 	public boolean drop(IComputerAccess computer, IRobot robot, int slot, int maxAmount) throws Exception {
 		IInventory inventory = robot.getInventory();
 		Vec3 location = robot.getLocation();

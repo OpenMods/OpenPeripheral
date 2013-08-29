@@ -49,19 +49,12 @@ public class AdapterFuelUpgrade implements IRobotUpgradeAdapter {
 
 	}
 
-	@LuaMethod(
-			description = "")
+	@LuaMethod(description = "")
 	public float getFuelLevel(IComputerAccess computer, IRobot robot) {
 		return robot.getFuelLevel();
 	}
 
-	@LuaMethod(
-			description = "Refuel the robot",
-			args = { @Arg(
-					type = LuaType.NUMBER,
-					name = "slot"), @Arg(
-					type = LuaType.NUMBER,
-					name = "maxAmount") })
+	@LuaMethod(description = "Refuel the robot", args = { @Arg(type = LuaType.NUMBER, name = "slot"), @Arg(type = LuaType.NUMBER, name = "maxAmount") })
 	public boolean refuel(IComputerAccess computer, IRobot robot, int slot, int maxAmount) {
 		IInventory inventory = robot.getInventory();
 		if (slot < 0 || slot >= inventory.getSizeInventory()) { return false; }

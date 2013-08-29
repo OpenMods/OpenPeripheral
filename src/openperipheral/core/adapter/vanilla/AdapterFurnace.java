@@ -13,30 +13,22 @@ public class AdapterFurnace implements IPeripheralAdapter {
 		return TileEntityFurnace.class;
 	}
 
-	@LuaMethod(
-			returnType = LuaType.NUMBER,
-			description = "Number of ticks the current item will cook for")
+	@LuaMethod(returnType = LuaType.NUMBER, description = "Number of ticks the current item will cook for")
 	public int getBurnTime(IComputerAccess computer, TileEntityFurnace furnace) {
 		return furnace.furnaceBurnTime;
 	}
 
-	@LuaMethod(
-			returnType = LuaType.NUMBER,
-			description = "Number of ticks the current item has been cooking")
+	@LuaMethod(returnType = LuaType.NUMBER, description = "Number of ticks the current item has been cooking")
 	public int getCookTime(IComputerAccess computer, TileEntityFurnace furnace) {
 		return furnace.furnaceCookTime;
 	}
 
-	@LuaMethod(
-			returnType = LuaType.NUMBER,
-			description = "Number of ticks the current item would take to cook")
+	@LuaMethod(returnType = LuaType.NUMBER, description = "Number of ticks the current item would take to cook")
 	public int getCurrentItemBurnTime(IComputerAccess computer, TileEntityFurnace furnace) {
 		return furnace.currentItemBurnTime;
 	}
 
-	@LuaMethod(
-			returnType = LuaType.BOOLEAN,
-			description = "Is the furnace currently burning?")
+	@LuaMethod(returnType = LuaType.BOOLEAN, description = "Is the furnace currently burning?")
 	public boolean isBurning(IComputerAccess computer, TileEntityFurnace furnace) {
 		return furnace.isBurning();
 	}

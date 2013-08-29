@@ -14,9 +14,7 @@ public class AdapterRecordPlayer implements IPeripheralAdapter {
 		return TileEntityRecordPlayer.class;
 	}
 
-	@LuaMethod(
-			returnType = LuaType.TABLE,
-			description = "Get the record currently being played")
+	@LuaMethod(returnType = LuaType.TABLE, description = "Get the record currently being played")
 	public ItemStack getRecord(IComputerAccess computer, TileEntityRecordPlayer recordPlayer) {
 		return recordPlayer.func_96097_a();
 	}

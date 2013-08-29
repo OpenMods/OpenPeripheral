@@ -13,10 +13,7 @@ public class AdapterEnergySource implements IPeripheralAdapter {
 		return IEnergySource.class;
 	}
 
-	@LuaMethod(
-			onTick = false,
-			description = "Get the EU output",
-			returnType = LuaType.NUMBER)
+	@LuaMethod(onTick = false, description = "Get the EU output", returnType = LuaType.NUMBER)
 	public double getOfferedEnergy(IComputerAccess computer, IEnergySource source) {
 		return source.getOfferedEnergy();
 	}

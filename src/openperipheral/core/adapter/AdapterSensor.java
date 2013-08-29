@@ -32,10 +32,7 @@ public class AdapterSensor implements IPeripheralAdapter {
 		return AxisAlignedBB.getAABBPool().getAABB(location.xCoord, location.yCoord, location.zCoord, location.xCoord + 1, location.yCoord + 1, location.zCoord + 1).expand(range, range, range);
 	}
 
-	@LuaMethod(
-			returnType = LuaType.TABLE,
-			onTick = false,
-			description = "Get the usernames of all the players in range")
+	@LuaMethod(returnType = LuaType.TABLE, onTick = false, description = "Get the usernames of all the players in range")
 	public ArrayList<String> getPlayerNames(IComputerAccess computer, ISensorEnvironment env) {
 		List<EntityPlayer> players = env.getWorld().getEntitiesWithinAABB(EntityPlayer.class, getBoundingBox(env.getLocation(), env.getSensorRange()));
 		ArrayList<String> names = new ArrayList<String>();
@@ -46,13 +43,9 @@ public class AdapterSensor implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(
-			returnType = LuaType.TABLE,
-			onTick = false,
-			description = "Get full details of a particular player if they're in range",
-			args = { @Arg(
-					type = LuaType.STRING,
-					name = "username",
-					description = "The players username") })
+		returnType = LuaType.TABLE, onTick = false, description = "Get full details of a particular player if they're in range",
+		args = {
+			@Arg(type = LuaType.STRING, name = "username", description = "The players username") })
 	public Map getPlayerData(IComputerAccess computer, ISensorEnvironment env, String username) {
 		ArrayList<String> surroundingPlayers = getPlayerNames(computer, env);
 		if (surroundingPlayers.contains(username)) {
@@ -62,10 +55,7 @@ public class AdapterSensor implements IPeripheralAdapter {
 		return null;
 	}
 
-	@LuaMethod(
-			returnType = LuaType.TABLE,
-			onTick = false,
-			description = "Get the ids of all the mobs in range")
+	@LuaMethod(returnType = LuaType.TABLE, onTick = false, description = "Get the ids of all the mobs in range")
 	public ArrayList<Integer> getMobIds(IComputerAccess computer, ISensorEnvironment env) {
 		List<EntityLiving> mobs = env.getWorld().getEntitiesWithinAABB(EntityLiving.class, getBoundingBox(env.getLocation(), env.getSensorRange()));
 		ArrayList<Integer> ids = new ArrayList<Integer>();
@@ -76,13 +66,9 @@ public class AdapterSensor implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(
-			returnType = LuaType.TABLE,
-			onTick = false,
-			description = "Get full details of a particular mob if it's in range",
-			args = { @Arg(
-					type = LuaType.NUMBER,
-					name = "mobId",
-					description = "The mob id retrieved from getMobIds()") })
+		returnType = LuaType.TABLE, onTick = false, description = "Get full details of a particular mob if it's in range",
+		args = {
+			@Arg(type = LuaType.NUMBER, name = "mobId", description = "The mob id retrieved from getMobIds()") })
 	public Map getMobData(IComputerAccess computer, ISensorEnvironment sensor, int mobId) {
 		ArrayList<Integer> surroundingMobs = getMobIds(computer, sensor);
 		if (surroundingMobs.contains(mobId)) {
@@ -92,10 +78,7 @@ public class AdapterSensor implements IPeripheralAdapter {
 		return null;
 	}
 
-	@LuaMethod(
-			returnType = LuaType.TABLE,
-			onTick = false,
-			description = "Get the ids of all the minecarts in range")
+	@LuaMethod(returnType = LuaType.TABLE, onTick = false, description = "Get the ids of all the minecarts in range")
 	public ArrayList<Integer> getMinecartIds(IComputerAccess computer, ISensorEnvironment env) {
 		List<EntityMinecart> minecarts = env.getWorld().getEntitiesWithinAABB(EntityMinecart.class, getBoundingBox(env.getLocation(), env.getSensorRange()));
 		ArrayList<Integer> ids = new ArrayList<Integer>();
@@ -105,14 +88,9 @@ public class AdapterSensor implements IPeripheralAdapter {
 		return ids;
 	}
 
-	@LuaMethod(
-			returnType = LuaType.TABLE,
-			onTick = false,
-			description = "Get full details of a particular minecart if it's in range",
-			args = { @Arg(
-					type = LuaType.NUMBER,
-					name = "minecartId",
-					description = "The minecart id retrieved from getMobIds()") })
+	@LuaMethod(returnType = LuaType.TABLE, onTick = false, description = "Get full details of a particular minecart if it's in range",
+		args = {
+			@Arg(type = LuaType.NUMBER, name = "minecartId", description = "The minecart id retrieved from getMobIds()") })
 	public Map getMinecartData(IComputerAccess computer, ISensorEnvironment env, int minecartId) {
 		ArrayList<Integer> surroundingCarts = getMobIds(computer, env);
 		if (surroundingCarts.contains(minecartId)) {
@@ -122,10 +100,7 @@ public class AdapterSensor implements IPeripheralAdapter {
 		return null;
 	}
 
-	@LuaMethod(
-			returnType = LuaType.TABLE,
-			onTick = false,
-			description = "Get a table of information about the surrounding area. Includes whether each block is UNKNOWN, AIR, LIQUID or SOLID")
+	@LuaMethod(returnType = LuaType.TABLE, onTick = false, description = "Get a table of information about the surrounding area. Includes whether each block is UNKNOWN, AIR, LIQUID or SOLID")
 	public Map sonicScan(IComputerAccess computer, ISensorEnvironment env) {
 
 		int range = 1 + (int)(env.getSensorRange() / 6);

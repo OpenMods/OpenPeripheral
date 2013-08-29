@@ -19,10 +19,7 @@ public class AdapterMassFab implements IPeripheralAdapter {
 		return klazz;
 	}
 
-	@LuaMethod(
-			onTick = false,
-			description = "Get the current progress as a percentage",
-			returnType = LuaType.NUMBER)
+	@LuaMethod(onTick = false, description = "Get the current progress as a percentage", returnType = LuaType.NUMBER)
 	public double getProgress(IComputerAccess computer, Object massfab) {
 		int energy = (Integer)ReflectionHelper.getProperty("", massfab, "energy");
 		double p = (double)energy / 10000;

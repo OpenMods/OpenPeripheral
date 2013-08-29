@@ -54,15 +54,7 @@ public class AdapterMovementUpgrade implements IRobotUpgradeAdapter {
 		return targetZ;
 	}
 
-	@LuaMethod(
-			name = "goto",
-			args = { @Arg(
-					type = LuaType.NUMBER,
-					name = "x"), @Arg(
-					type = LuaType.NUMBER,
-					name = "y"), @Arg(
-					type = LuaType.NUMBER,
-					name = "z") })
+	@LuaMethod(name = "goto", args = { @Arg(type = LuaType.NUMBER, name = "x"), @Arg(type = LuaType.NUMBER, name = "y"), @Arg(type = LuaType.NUMBER, name = "z") })
 	public void setTargetLocation(IComputerAccess computer, IRobot robot, double x, double y, double z) {
 		targetX = x;
 		targetY = y;
@@ -118,10 +110,7 @@ public class AdapterMovementUpgrade implements IRobotUpgradeAdapter {
 		}
 	}
 
-	@LuaMethod(
-			args = { @Arg(
-					type = LuaType.NUMBER,
-					name = "pitch") })
+	@LuaMethod(args = { @Arg(type = LuaType.NUMBER, name = "pitch") })
 	public void setPitch(IComputerAccess computer, IRobot robot, float pitch) {
 		robot.setPitch(pitch);
 	}
@@ -131,10 +120,7 @@ public class AdapterMovementUpgrade implements IRobotUpgradeAdapter {
 		return robot.getPitch();
 	}
 
-	@LuaMethod(
-			args = { @Arg(
-					type = LuaType.NUMBER,
-					name = "yaw") })
+	@LuaMethod(args = { @Arg(type = LuaType.NUMBER, name = "yaw") })
 	public void setYaw(IComputerAccess computer, IRobot robot, float yaw) {
 		robot.setYaw(yaw);
 	}
