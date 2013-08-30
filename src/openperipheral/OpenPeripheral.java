@@ -2,6 +2,7 @@ package openperipheral;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
+import net.minecraft.src.ModLoader;
 import net.minecraft.tileentity.TileEntity;
 import openperipheral.core.AdapterManager;
 import openperipheral.core.BasicMount;
@@ -14,6 +15,7 @@ import openperipheral.core.TypeConversionRegistry;
 import openperipheral.core.adapter.AdapterGlassesBridge;
 import openperipheral.core.adapter.AdapterObject;
 import openperipheral.core.adapter.AdapterSensor;
+import openperipheral.core.adapter.AdapterTicketMachine;
 import openperipheral.core.adapter.vanilla.AdapterBrewingStand;
 import openperipheral.core.adapter.vanilla.AdapterComparator;
 import openperipheral.core.adapter.vanilla.AdapterFluidHandler;
@@ -139,6 +141,10 @@ public class OpenPeripheral {
 		AdapterManager.addPeripheralAdapter(new AdapterFluidHandler());
 		AdapterManager.addPeripheralAdapter(new AdapterGlassesBridge());
 		AdapterManager.addPeripheralAdapter(new AdapterSensor());
+		
+		if (ModLoader.isModLoaded(Mods.RAILCRAFT)) {
+			AdapterManager.addPeripheralAdapter(new AdapterTicketMachine());
+		}
 
 		if (ConfigSettings.robotsEnabled) {
 			RobotUpgradeManager.registerUpgradeProvider(new ProviderMovementUpgrade());
