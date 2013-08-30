@@ -1,9 +1,11 @@
 package openperipheral.core.converter;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 import forestry.api.apiculture.EnumBeeChromosome;
 import forestry.api.apiculture.IBee;
+import forestry.api.genetics.IAlleleArea;
 import forestry.api.genetics.IAlleleBoolean;
 import forestry.api.genetics.IAlleleFlowers;
 import forestry.api.genetics.IAlleleInteger;
@@ -12,6 +14,7 @@ import forestry.api.genetics.IAlleleTolerance;
 import forestry.api.genetics.IGenome;
 import forestry.api.genetics.IIndividual;
 import openperipheral.api.ITypeConverter;
+import openperipheral.core.TypeConversionRegistry;
 
 public class ConverterIIndividual implements ITypeConverter {
 
@@ -24,13 +27,13 @@ public class ConverterIIndividual implements ITypeConverter {
 	public Object toLua(Object obj) {
 		if (obj instanceof IIndividual) {
 			HashMap map = new HashMap();
-			IIndividual individual = (IIndividual) obj;
+			IIndividual individual = (IIndividual)obj;
 			map.put("displayName", individual.getDisplayName());
 			map.put("ident", individual.getIdent());
 			map.put("isAnalyzed", individual.isAnalyzed());
 			map.put("isSecret", individual.isSecret());
 			if (individual instanceof IBee) {
-				IBee bee = (IBee) individual;
+				IBee bee = (IBee)individual;
 				map.put("canSpawn", bee.canSpawn());
 				map.put("generation", bee.getGeneration());
 				map.put("health", bee.getHealth());
@@ -49,10 +52,10 @@ public class ConverterIIndividual implements ITypeConverter {
 
 					active.put("caveDwelling", ((IAlleleBoolean)genome.getActiveAllele(EnumBeeChromosome.CAVE_DWELLING.ordinal())).getValue());
 					inactive.put("caveDwelling", ((IAlleleBoolean)genome.getInactiveAllele(EnumBeeChromosome.CAVE_DWELLING.ordinal())).getValue());
-					
+
 					active.put("effect", genome.getActiveAllele(EnumBeeChromosome.EFFECT.ordinal()).getName());
 					inactive.put("effect", genome.getInactiveAllele(EnumBeeChromosome.EFFECT.ordinal()).getName());
-					
+
 					active.put("fertility", ((IAlleleInteger)genome.getActiveAllele(EnumBeeChromosome.FERTILITY.ordinal())).getValue());
 					inactive.put("fertility", ((IAlleleInteger)genome.getInactiveAllele(EnumBeeChromosome.FERTILITY.ordinal())).getValue());
 
@@ -62,8 +65,8 @@ public class ConverterIIndividual implements ITypeConverter {
 					active.put("flowering", genome.getActiveAllele(EnumBeeChromosome.FLOWERING.ordinal()).getName());
 					inactive.put("flowering", genome.getInactiveAllele(EnumBeeChromosome.FLOWERING.ordinal()).getName());
 
-					active.put("humidityTolerance", ((IAlleleTolerance)genome.getActiveAllele(EnumBeeChromosome.HUMIDITY_TOLERANCE.ordinal())).getValue());
-					inactive.put("humidityTolerance", ((IAlleleTolerance)genome.getInactiveAllele(EnumBeeChromosome.HUMIDITY_TOLERANCE.ordinal())).getValue());
+					active.put("humidityTolerance", ((IAlleleTolerance)genome.getActiveAllele(EnumBeeChromosome.HUMIDITY_TOLERANCE.ordinal())).getValue().toString());
+					inactive.put("humidityTolerance", ((IAlleleTolerance)genome.getInactiveAllele(EnumBeeChromosome.HUMIDITY_TOLERANCE.ordinal())).getValue().toString());
 
 					active.put("lifespan", genome.getActiveAllele(EnumBeeChromosome.LIFESPAN.ordinal()).getName());
 					inactive.put("lifespan", genome.getInactiveAllele(EnumBeeChromosome.LIFESPAN.ordinal()).getName());
@@ -71,11 +74,25 @@ public class ConverterIIndividual implements ITypeConverter {
 					active.put("nocturnal", ((IAlleleBoolean)genome.getActiveAllele(EnumBeeChromosome.NOCTURNAL.ordinal())).getValue());
 					inactive.put("nocturnal", ((IAlleleBoolean)genome.getInactiveAllele(EnumBeeChromosome.NOCTURNAL.ordinal())).getValue());
 
-				    IAlleleSpecies primary = individual.getGenome().getPrimary();
-				    IAlleleSpecies secondary = individual.getGenome().getSecondary();
-				    active.put("species", primary.getName());
-				    inactive.put("species", secondary.getName());
-				    
+					active.put("speed", genome.getActiveAllele(EnumBeeChromosome.SPEED.ordinal()).getName());
+					inactive.put("speed", genome.getInactiveAllele(EnumBeeChromosome.SPEED.ordinal()).getName());
+
+					active.put("temperatureTolerance", ((IAlleleTolerance)genome.getActiveAllele(EnumBeeChromosome.TEMPERATURE_TOLERANCE.ordinal())).getValue().toString());
+					inactive.put("temperatureTolerance", ((IAlleleTolerance)genome.getInactiveAllele(EnumBeeChromosome.TEMPERATURE_TOLERANCE.ordinal())).getValue().toString());
+
+					int[] area = ((IAlleleArea)genome.getActiveAllele(EnumBeeChromosome.TERRITORY.ordinal())).getValue();
+					active.put("territory", area[0] + ","+area[1]+","+area[2]);
+					area = ((IAlleleArea)genome.getInactiveAllele(EnumBeeChromosome.TERRITORY.ordinal())).getValue();
+					inactive.put("territory", area[0] + ","+area[1]+","+area[2]);
+					
+					active.put("tolerantFlyer", genome.getActiveAllele(EnumBeeChromosome.TOLERANT_FLYER.ordinal()).isDominant());
+					inactive.put("tolerantFlyer", genome.getInactiveAllele(EnumBeeChromosome.TOLERANT_FLYER.ordinal()).isDominant());
+
+					IAlleleSpecies primary = individual.getGenome().getPrimary();
+					IAlleleSpecies secondary = individual.getGenome().getSecondary();
+					active.put("species", primary.getName());
+					inactive.put("species", secondary.getName());
+
 					map.put("active", active);
 					map.put("inactive", inactive);
 				}
