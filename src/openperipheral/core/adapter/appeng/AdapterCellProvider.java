@@ -11,6 +11,7 @@ import openperipheral.api.LuaType;
 import appeng.api.IAEItemStack;
 import appeng.api.IItemList;
 import appeng.api.me.tiles.ICellProvider;
+import appeng.api.me.util.IMEInventoryHandler;
 import dan200.computer.api.IComputerAccess;
 
 public class AdapterCellProvider implements IPeripheralAdapter {
@@ -22,27 +23,47 @@ public class AdapterCellProvider implements IPeripheralAdapter {
 
 	@LuaMethod(description = "Get the total total item types stored", returnType = LuaType.NUMBER)
 	public long getTotalItemTypes(IComputerAccess computer, ICellProvider provider) {
-		return provider.provideCell().getTotalItemTypes();
+		IMEInventoryHandler cell = provider.provideCell();
+		if (cell != null) {
+			return cell.getTotalItemTypes();
+		}
+		return 0;
 	}
 
 	@LuaMethod(description = "Get the priority of this machine", returnType = LuaType.NUMBER)
 	public int getPriority(IComputerAccess computer, ICellProvider provider) {
-		return provider.provideCell().getPriority();
+		IMEInventoryHandler cell = provider.provideCell();
+		if (cell != null) {
+			return cell.getPriority();
+		}
+		return 0;
 	}
 
 	@LuaMethod(description = "Can this machine hold any new items?", returnType = LuaType.NUMBER)
 	public boolean canHoldNewItem(IComputerAccess computer, ICellProvider provider) {
-		return provider.provideCell().canHoldNewItem();
+		IMEInventoryHandler cell = provider.provideCell();
+		if (cell != null) {
+			return cell.canHoldNewItem();
+		}
+		return false;
 	}
 
 	@LuaMethod(description = "Get the amount of free bytes", returnType = LuaType.NUMBER)
 	public long getFreeBytes(IComputerAccess computer, ICellProvider provider) {
-		return provider.provideCell().freeBytes();
+		IMEInventoryHandler cell = provider.provideCell();
+		if (cell != null) {
+			return cell.freeBytes();
+		}
+		return 0;
 	}
 
 	@LuaMethod(description = "Get a list of the available items", returnType = LuaType.TABLE)
 	public IItemList getAvailableItems(IComputerAccess computer, ICellProvider provider) {
-		return provider.provideCell().getAvailableItems();
+		IMEInventoryHandler cell = provider.provideCell();
+		if (cell != null) {
+			return cell.getAvailableItems();
+		}
+		return null;
 	}
 
 	@LuaMethod(
@@ -60,7 +81,11 @@ public class AdapterCellProvider implements IPeripheralAdapter {
 		name = "dmgValue",
 		description = "The item dmg value") })
 	public long countOfItemType(IComputerAccess computer, ICellProvider provider, int itemId, int dmgValue) {
-		Iterator<IAEItemStack> iterator = provider.provideCell().getAvailableItems().iterator();
+		IMEInventoryHandler cell = provider.provideCell();
+		if (cell == null) {
+			return 0;
+		}
+		Iterator<IAEItemStack> iterator = cell.getAvailableItems().iterator();
 		long c = 0;
 		while (iterator.hasNext()) {
 			IAEItemStack next = iterator.next();
@@ -73,56 +98,101 @@ public class AdapterCellProvider implements IPeripheralAdapter {
 
 	@LuaMethod(description = "Get the name of this cell", returnType = LuaType.STRING)
 	public String getName(IComputerAccess computer, ICellProvider provider) {
-		return provider.provideCell().getName();
+		IMEInventoryHandler cell = provider.provideCell();
+		if (cell != null) {
+			return cell.getName();
+		}
+		return "";
 	}
 
 	@LuaMethod(description = "Get a list of the preformatted items", returnType = LuaType.TABLE)
 	public List<ItemStack> getPreformattedItems(IComputerAccess computer, ICellProvider provider) {
-		return provider.provideCell().getPreformattedItems();
+		IMEInventoryHandler cell = provider.provideCell();
+		if (cell != null) {
+			return cell.getPreformattedItems();
+		}
+		return null;
 	}
 
 	@LuaMethod(description = "Is fuzzy preformatted", returnType = LuaType.BOOLEAN)
 	public boolean isFuzzyPreformatted(IComputerAccess computer, ICellProvider provider) {
-		return provider.provideCell().isFuzzyPreformatted();
+		IMEInventoryHandler cell = provider.provideCell();
+		if (cell != null) {
+			return cell.isFuzzyPreformatted();
+		}
+		return false;
 	}
 
 	@LuaMethod(description = "Is preformatted", returnType = LuaType.BOOLEAN)
 	public boolean isPreformatted(IComputerAccess computer, ICellProvider provider) {
-		return provider.provideCell().isPreformatted();
+		IMEInventoryHandler cell = provider.provideCell();
+		if (cell != null) {
+			return cell.isPreformatted();
+		}
+		return false;
 	}
 
 	@LuaMethod(description = "Get the remaining item count", returnType = LuaType.NUMBER)
 	public long getRemainingItemCount(IComputerAccess computer, ICellProvider provider) {
-		return provider.provideCell().remainingItemCount();
+		IMEInventoryHandler cell = provider.provideCell();
+		if (cell != null) {
+			return cell.remainingItemCount();
+		}
+		return 0;
 	}
 
 	@LuaMethod(description = "Get the remaining item type count", returnType = LuaType.NUMBER)
 	public long getRemainingItemTypes(IComputerAccess computer, ICellProvider provider) {
-		return provider.provideCell().remainingItemTypes();
+		IMEInventoryHandler cell = provider.provideCell();
+		if (cell != null) {
+			return cell.remainingItemTypes();
+		}
+		return 0;
 	}
 
 	@LuaMethod(description = "Get the amount of stored items", returnType = LuaType.NUMBER)
 	public long getStoredItemCount(IComputerAccess computer, ICellProvider provider) {
-		return provider.provideCell().storedItemCount();
+		IMEInventoryHandler cell = provider.provideCell();
+		if (cell != null) {
+			return cell.storedItemCount();
+		}
+		return 0;
 	}
 
 	@LuaMethod(description = "Get the amount of stored item types", returnType = LuaType.NUMBER)
 	public long getStoredItemTypes(IComputerAccess computer, ICellProvider provider) {
-		return provider.provideCell().storedItemTypes();
+		IMEInventoryHandler cell = provider.provideCell();
+		if (cell != null) {
+			return cell.storedItemTypes();
+		}
+		return 0;
 	}
 
 	@LuaMethod(description = "Get the total bytes", returnType = LuaType.NUMBER)
 	public long getTotalBytes(IComputerAccess computer, ICellProvider provider) {
-		return provider.provideCell().totalBytes();
+		IMEInventoryHandler cell = provider.provideCell();
+		if (cell != null) {
+			return cell.totalBytes();
+		}
+		return 0;
 	}
 
 	@LuaMethod(description = "Get the unused item count", returnType = LuaType.NUMBER)
 	public long getUnusedItemCount(IComputerAccess computer, ICellProvider provider) {
-		return provider.provideCell().unusedItemCount();
+		IMEInventoryHandler cell = provider.provideCell();
+		if (cell != null) {
+			return cell.unusedItemCount();
+		}
+		return 0;
 	}
 
 	@LuaMethod(description = "Get the unused bytes", returnType = LuaType.NUMBER)
 	public long getUnusedBytes(IComputerAccess computer, ICellProvider provider) {
-		return provider.provideCell().usedBytes();
+		IMEInventoryHandler cell = provider.provideCell();
+		if (cell != null) {
+			return cell.usedBytes();
+		}
+		return 0;
 	}
+	
 }
