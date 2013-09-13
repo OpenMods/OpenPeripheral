@@ -3,13 +3,18 @@ package openperipheral.core.util;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockChest;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryLargeChest;
 import net.minecraft.item.ItemEnchantedBook;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeDirection;
 
 public class InventoryUtils {
 
@@ -166,5 +171,33 @@ public class InventoryUtils {
 		merged = (amountToMerge - clonedStack.stackSize);
 		fromInventory.decrStackSize(slot, merged);
 		return merged;
+	}
+
+	public static IInventory getInventory(World world, int x, int y, int z, ForgeDirection direction) {
+		if (direction != null && direction != ForgeDirection.UNKNOWN) {
+			x += direction.offsetX;
+			y += direction.offsetY;
+			z += direction.offsetZ;
+			TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+			if ((tileEntity != null) && ((tileEntity instanceof IInventory)))
+			{
+				int blockID = world.getBlockId(x, y, z);
+				Block block = Block.blocksList[blockID];
+				if ((block instanceof BlockChest))
+				{
+					if (world.getBlockId(x - 1, y, z) == blockID) { return new InventoryLargeChest("Large chest", (IInventory)world.getBlockTileEntity(x - 1, y, z), (IInventory)tileEntity); }
+					if (world.getBlockId(x + 1, y, z) == blockID) { return new InventoryLargeChest("Large chest", (IInventory)tileEntity, (IInventory)world.getBlockTileEntity(x + 1, y, z)); }
+					if (world.getBlockId(x, y, z - 1) == blockID) { return new InventoryLargeChest("Large chest", (IInventory)world.getBlockTileEntity(x, y, z - 1), (IInventory)tileEntity); }
+					if (world.getBlockId(x, y, z + 1) == blockID) { return new InventoryLargeChest("Large chest", (IInventory)tileEntity, (IInventory)world.getBlockTileEntity(x, y, z + 1)); }
+				}
+				return (IInventory)tileEntity;
+			}
+		}else {
+			TileEntity te = world.getBlockTileEntity(x, y, z);
+			if (te instanceof IInventory) {
+				return (IInventory) te;
+			}
+		}
+		return null;
 	}
 }

@@ -1,17 +1,13 @@
 package openperipheral.core.adapter.forestry;
 
-import java.util.HashMap;
-
 import net.minecraft.item.ItemStack;
-
+import openperipheral.api.IPeripheralAdapter;
+import openperipheral.api.LuaMethod;
+import openperipheral.api.LuaType;
 import dan200.computer.api.IComputerAccess;
 import forestry.api.apiculture.IBeeHousing;
 import forestry.api.genetics.AlleleManager;
 import forestry.api.genetics.IIndividual;
-import openperipheral.api.Arg;
-import openperipheral.api.IPeripheralAdapter;
-import openperipheral.api.LuaMethod;
-import openperipheral.api.LuaType;
 
 public class AdapterBeeHousing implements IPeripheralAdapter {
 

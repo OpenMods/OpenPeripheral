@@ -1,8 +1,8 @@
 package openperipheral.core.converter;
 
-import java.util.Arrays;
 import java.util.HashMap;
 
+import openperipheral.api.ITypeConverter;
 import forestry.api.apiculture.EnumBeeChromosome;
 import forestry.api.apiculture.IBee;
 import forestry.api.genetics.IAlleleArea;
@@ -13,8 +13,6 @@ import forestry.api.genetics.IAlleleSpecies;
 import forestry.api.genetics.IAlleleTolerance;
 import forestry.api.genetics.IGenome;
 import forestry.api.genetics.IIndividual;
-import openperipheral.api.ITypeConverter;
-import openperipheral.core.TypeConversionRegistry;
 
 public class ConverterIIndividual implements ITypeConverter {
 

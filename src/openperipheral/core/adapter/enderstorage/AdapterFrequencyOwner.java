@@ -4,11 +4,9 @@ import java.util.HashMap;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import openperipheral.api.Arg;
 import openperipheral.api.IPeripheralAdapter;
 import openperipheral.api.LuaMethod;
 import openperipheral.api.LuaType;
-import openperipheral.core.util.CallWrapper;
 import openperipheral.core.util.ReflectionHelper;
 import dan200.computer.api.IComputerAccess;
 
