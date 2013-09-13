@@ -6,6 +6,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import openperipheral.OpenPeripheral;
 import openperipheral.api.Arg;
@@ -75,7 +76,13 @@ public class HostedPeripheral implements IHostedPeripheral {
 
 	@Override
 	public Object[] callMethod(final IComputerAccess computer, ILuaContext context, int index, Object[] arguments) throws Exception {
-
+		
+		// refresh the TE
+		if (getTargetObject() instanceof TileEntity) {
+			TileEntity tile = (TileEntity)getTargetObject();
+			targetObject = tile.worldObj.getBlockTileEntity(tile.xCoord, tile.yCoord, tile.zCoord);
+		}
+		
 		final MethodDeclaration method = methods.get(index);
 
 		final Object[] formattedParameters = formatParameters(computer, method, arguments);

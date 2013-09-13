@@ -41,8 +41,8 @@ public class PeripheralHandler implements IPeripheralHandler {
 		if (tile == null) { return null; }
 
 		if (tile instanceof IPeripheralProvider) { return ((IPeripheralProvider)tile).providePeripheral(tile.worldObj); }
-
-		if (!peripherals.containsKey(tile)) {
+		
+		if (!peripherals.containsKey(tile) || tile.isInvalid()) {
 			peripherals.put(tile, new HostedPeripheral(tile, tile.worldObj));
 		}
 
