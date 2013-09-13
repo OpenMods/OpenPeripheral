@@ -1,14 +1,24 @@
 package openperipheral.core.block;
 
+import java.util.Collections;
+import java.util.Set;
+import java.util.WeakHashMap;
+
+import dan200.computer.api.IComputerAccess;
+import openperipheral.core.interfaces.IAttachable;
+import openperipheral.core.util.MiscUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 
-public class TileEntityPlayerInventory extends TileEntity implements IInventory {
+public class TileEntityPlayerInventory extends TileEntity implements IInventory, IAttachable {
 
 	private EntityPlayer player;
+	
+	private Set<IComputerAccess> computers = Collections.newSetFromMap(
+	        new WeakHashMap<IComputerAccess, Boolean>());
 
 	@Override
 	public int getSizeInventory() {
@@ -94,6 +104,17 @@ public class TileEntityPlayerInventory extends TileEntity implements IInventory 
 		player = p;
 		worldObj.playSoundEffect((double)xCoord + 0.5D, (double)yCoord + 0.1D, (double)zCoord + 0.5D, "random.click", 0.3F, 0.6F);
 		worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, p == null? 0 : 1, 3);
+		fireEvent(p == null ? "player_off" : "player_on");
+	}
+
+	public void fireEvent(String eventName, Object... args) {
+		if (args == null) {
+			args = new Object[0];
+		}
+		for (IComputerAccess computer : computers) {
+			args = MiscUtils.append(args, computer.getAttachmentName());
+			computer.queueEvent(eventName, args);
+		}
 	}
 
 	@Override
@@ -107,6 +128,16 @@ public class TileEntityPlayerInventory extends TileEntity implements IInventory 
 				}
 			}
 		}
+	}
+
+	@Override
+	public void addComputer(IComputerAccess computer) {
+		computers.add(computer);
+	}
+
+	@Override
+	public void removeComputer(IComputerAccess computer) {
+		computers.remove(computer);
 	}
 
 }
