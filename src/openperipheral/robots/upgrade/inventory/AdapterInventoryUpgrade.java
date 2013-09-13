@@ -11,6 +11,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeDirection;
 import openperipheral.api.Arg;
 import openperipheral.api.IRobot;
 import openperipheral.api.IRobotUpgradeAdapter;
@@ -79,7 +80,7 @@ public class AdapterInventoryUpgrade extends AdapterInventory implements IRobotU
 
 			if (stack != null) {
 
-				InventoryUtils.insertItemIntoInventory(inventory, stack);
+				InventoryUtils.insertItemIntoInventory(inventory, stack, ForgeDirection.UNKNOWN);
 				if (stack.stackSize == 0) {
 					entity.setDead();
 				}

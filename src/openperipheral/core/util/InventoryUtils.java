@@ -7,6 +7,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockChest;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.InventoryLargeChest;
 import net.minecraft.item.ItemEnchantedBook;
 import net.minecraft.item.ItemStack;
@@ -75,9 +76,15 @@ public class InventoryUtils {
 		}
 	}
 
-	public static void insertItemIntoInventory(IInventory inventory, ItemStack stack) {
+	public static void insertItemIntoInventory(IInventory inventory, ItemStack stack, ForgeDirection side) {
 		int i = 0;
 		while (stack.stackSize > 0 && i < inventory.getSizeInventory()) {
+			if (side != ForgeDirection.UNKNOWN && inventory instanceof ISidedInventory) {
+				if (!((ISidedInventory)inventory).canInsertItem(i, stack, side.ordinal())) {
+					i++;
+					continue;
+				}
+			}
 			tryMergeStacks(inventory, i, stack);
 			i++;
 		}
@@ -147,7 +154,10 @@ public class InventoryUtils {
 		return response;
 	}
 
-	public static int moveItemInto(IInventory fromInventory, int slot, IInventory targetInventory, int intoSlot, int maxAmount) {
+	public static int moveItemInto(IInventory fromInventory, int slot, IInventory targetInventory, int intoSlot, int maxAmount, ForgeDirection direction) {
+		if (!InventoryUtils.canMoveItem(fromInventory, targetInventory, slot, intoSlot, direction)) {
+			return 0;
+		}
 		int merged = 0;
 		ItemStack stack = fromInventory.getStackInSlot(slot);
 		if (stack == null) { return merged; }
@@ -160,14 +170,19 @@ public class InventoryUtils {
 		return merged;
 	}
 
-	public static int moveItem(IInventory fromInventory, int slot, IInventory targetInventory, int maxAmount) {
+	public static int moveItem(IInventory fromInventory, int slot, IInventory targetInventory, int maxAmount, ForgeDirection side) {
 		int merged = 0;
 		ItemStack stack = fromInventory.getStackInSlot(slot);
 		if (stack == null) { return 0; }
+		if (fromInventory instanceof ISidedInventory) {
+			if (((ISidedInventory)fromInventory).canExtractItem(slot, stack, side.ordinal())) {
+				return 0;
+			}
+		}
 		ItemStack clonedStack = stack.copy();
 		clonedStack.stackSize = Math.min(clonedStack.stackSize, maxAmount);
 		int amountToMerge = clonedStack.stackSize;
-		InventoryUtils.insertItemIntoInventory(targetInventory, clonedStack);
+		InventoryUtils.insertItemIntoInventory(targetInventory, clonedStack, side.getOpposite());
 		merged = (amountToMerge - clonedStack.stackSize);
 		fromInventory.decrStackSize(slot, merged);
 		return merged;
@@ -199,5 +214,20 @@ public class InventoryUtils {
 			}
 		}
 		return null;
+	}
+
+	public static boolean canMoveItem(Object fromTile, Object toTile, int fromSlot, int intoSlot, ForgeDirection direction) {
+		ItemStack stack = ((ISidedInventory)fromTile).getStackInSlot(fromSlot);
+		if (stack != null && fromTile instanceof ISidedInventory) {
+			if (!((ISidedInventory)fromTile).canExtractItem(fromSlot, stack, direction.ordinal())) {
+				return false;
+			}
+		}
+		if (stack != null && toTile instanceof ISidedInventory) {
+			if (!((ISidedInventory)toTile).canInsertItem(intoSlot, stack, direction.getOpposite().ordinal())) {
+				return false;
+			}
+		}
+		return true;
 	}
 }

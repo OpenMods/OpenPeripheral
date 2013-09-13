@@ -3,6 +3,7 @@ package openperipheral.core.adapter.vanilla;
 import java.util.ArrayList;
 
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
@@ -47,7 +48,7 @@ public class AdapterInventory implements IPeripheralAdapter {
 			if (direction == ForgeDirection.UNKNOWN) { return 0; }
 			TileEntity targetTile = BlockUtils.getTileInDirection(tile, direction);
 			if (targetTile == null || !(targetTile instanceof IInventory)) { throw new Exception("Target direction is not a valid inventory"); }
-			merged = InventoryUtils.moveItemInto((IInventory)targetTile, slot - 1, (IInventory)tile, intoSlot - 1, maxAmount);
+			merged = InventoryUtils.moveItemInto((IInventory)targetTile, slot - 1, (IInventory)tile, intoSlot - 1, maxAmount, direction.getOpposite());
 		}
 		return merged;
 	}
@@ -69,7 +70,7 @@ public class AdapterInventory implements IPeripheralAdapter {
 			if (direction == ForgeDirection.UNKNOWN) { return 0; }
 			TileEntity targetTile = BlockUtils.getTileInDirection(tile, direction);
 			if (targetTile == null || !(targetTile instanceof IInventory)) { throw new Exception("Target direction is not a valid inventory"); }
-			merged = InventoryUtils.moveItemInto((IInventory)tile, slot - 1, (IInventory)targetTile, intoSlot - 1, maxAmount);
+			merged = InventoryUtils.moveItemInto((IInventory)tile, slot - 1, (IInventory)targetTile, intoSlot - 1, maxAmount, direction.getOpposite());
 
 		}
 		return merged;
@@ -88,7 +89,7 @@ public class AdapterInventory implements IPeripheralAdapter {
 			if (direction == ForgeDirection.UNKNOWN) { return 0; }
 			TileEntity targetTile = BlockUtils.getTileInDirection(tile, direction);
 			if (targetTile == null || !(targetTile instanceof IInventory)) { throw new Exception("Target direction is not a valid inventory"); }
-			merged = InventoryUtils.moveItem((IInventory)tile, slot - 1, (IInventory)targetTile, maxAmount);
+			merged = InventoryUtils.moveItem((IInventory)tile, slot - 1, (IInventory)targetTile, maxAmount, direction.getOpposite());
 		}
 		return merged;
 	}
@@ -106,7 +107,7 @@ public class AdapterInventory implements IPeripheralAdapter {
 			if (direction == ForgeDirection.UNKNOWN) { return 0; }
 			TileEntity targetTile = BlockUtils.getTileInDirection(tile, direction);
 			if (targetTile == null || !(targetTile instanceof IInventory)) { throw new Exception("Target direction is not a valid inventory"); }
-			merged = InventoryUtils.moveItem((IInventory)targetTile, slot - 1, (IInventory)tile, maxAmount);
+			merged = InventoryUtils.moveItem((IInventory)targetTile, slot - 1, (IInventory)tile, maxAmount, direction.getOpposite());
 		}
 		return merged;
 	}
@@ -123,7 +124,7 @@ public class AdapterInventory implements IPeripheralAdapter {
 			invent.setInventorySlotContents(i, null);
 		}
 		for (ItemStack stack : stacks) {
-			InventoryUtils.insertItemIntoInventory(invent, stack);
+			InventoryUtils.insertItemIntoInventory(invent, stack, ForgeDirection.UNKNOWN);
 		}
 	}
 

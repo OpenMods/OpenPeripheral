@@ -72,7 +72,7 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
         	giveBack = returned.copy();
         }else {
             ItemStack returnedStack = returned.getItemStack();
-            InventoryUtils.insertItemIntoInventory(inventory, returnedStack);
+            InventoryUtils.insertItemIntoInventory(inventory, returnedStack, direction.getOpposite());
             giveBack = Util.createItemStack(returnedStack.copy());
         }
         if (giveBack != null) {
