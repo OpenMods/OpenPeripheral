@@ -22,4 +22,8 @@ public class StringUtils {
 			sb.append(r[i] + d);
 		return sb.toString() + r[i];
 	}
+	
+	public static boolean isEmpty(String str){
+	  return str == null || "".equals(str);
+	}
 }
