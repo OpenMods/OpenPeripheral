@@ -165,4 +165,13 @@ public class AdapterInventory implements IPeripheralAdapter {
 		if (slot < 0 || slot >= invent.getSizeInventory()) { throw new Exception("Invalid slot number"); }
 		return invent.getStackInSlot(slot);
 	}
+	
+	@LuaMethod(returnType = LuaType.TABLE, description = "Get a table with all the items of the chest")
+	public ItemStack[] getAllStacks(IComputerAccess computer, IInventory target) {
+		ItemStack[] allStacks = new ItemStack[target.getSizeInventory()];
+		for (int i = 0; i < target.getSizeInventory(); i++) {
+			allStacks[i] = target.getStackInSlot(i);
+		}
+		return allStacks;
+	}
 }
