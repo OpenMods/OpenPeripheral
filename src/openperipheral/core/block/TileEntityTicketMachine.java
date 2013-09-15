@@ -144,13 +144,13 @@ public class TileEntityTicketMachine extends TileEntity implements IInventory, I
 		packet.zPosition = zCoord;
 		NBTTagCompound nbt = new NBTTagCompound();
 		writeToNetwork(nbt);
-		packet.customParam1 = nbt;
+		packet.data = nbt;
 		return packet;
 	}
 
 	@Override
 	public void onDataPacket(INetworkManager net, Packet132TileEntityData pkt) {
-		readFromNetwork(pkt.customParam1);
+		readFromNetwork(pkt.data);
 		worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
 	}
 

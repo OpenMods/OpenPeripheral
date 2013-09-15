@@ -79,6 +79,7 @@ public abstract class EntityRobot extends EntityCreature implements IInventory, 
 		upgradeAIMap = new HashMap<EntityAIBase, IRobotUpgradeAdapter>();
 		upgradeTiers = new HashMap<String, Integer>();
 		this.setSize(1F, 3F);
+		this.setMaxHealth(20);
 		this.getNavigator().setAvoidsWater(true);
 		inventory.addCallback(this);
 	}
@@ -404,15 +405,6 @@ public abstract class EntityRobot extends EntityCreature implements IInventory, 
 	@Override
 	protected String getHurtSound() {
 		return "openperipheral:robothurt";
-	}
-
-	/**
-	 * Get the maximum health of the entity
-	 */
-	@Override
-	public int getMaxHealth() {
-		return 20;
-		// return maxHealth;
 	}
 
 	/**

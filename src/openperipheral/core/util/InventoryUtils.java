@@ -32,7 +32,7 @@ public class InventoryUtils {
 			name = is.getDisplayName();
 		} catch (Exception e) {
 			try {
-				name = is.getItemName();
+				name = is.getUnlocalizedName();
 			} catch (Exception e2) {}
 		}
 		return name;
@@ -43,7 +43,7 @@ public class InventoryUtils {
 		String rawName = "unknown";
 
 		try {
-			rawName = is.getItemName().toLowerCase();
+			rawName = is.getUnlocalizedName().toLowerCase();
 		} catch (Exception e) {}
 		try {
 			if (rawName.length() - rawName.replaceAll("\\.", "").length() == 0) {

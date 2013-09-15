@@ -64,7 +64,7 @@ public class ItemRobot extends Item {
 					stack.stackSize = 0;
 				} else {
 					robot.setDead();
-					player.sendChatToPlayer(ChatMessageComponent.func_111077_e("Unable to spawn robot. Are you sure he's linked up to an active controller?"));
+					player.sendChatToPlayer(ChatMessageComponent.createFromText("Unable to spawn robot. Are you sure he's linked up to an active controller?"));
 				}
 			}
 
