@@ -184,7 +184,7 @@ public class InventoryUtils {
 		ItemStack stack = fromInventory.getStackInSlot(slot);
 		if (stack == null) { return 0; }
 		if (fromInventory instanceof ISidedInventory) {
-			if (((ISidedInventory)fromInventory).canExtractItem(slot, stack, side.ordinal())) {
+			if (!((ISidedInventory)fromInventory).canExtractItem(slot, stack, side.ordinal())) {
 				return 0;
 			}
 		}
