@@ -217,7 +217,7 @@ public class InventoryUtils {
 	}
 
 	public static boolean canMoveItem(Object fromTile, Object toTile, int fromSlot, int intoSlot, ForgeDirection direction) {
-		ItemStack stack = ((ISidedInventory)fromTile).getStackInSlot(fromSlot);
+		ItemStack stack = ((IInventory)fromTile).getStackInSlot(fromSlot);
 		if (stack != null && fromTile instanceof ISidedInventory) {
 			if (!((ISidedInventory)fromTile).canExtractItem(fromSlot, stack, direction.ordinal())) {
 				return false;
