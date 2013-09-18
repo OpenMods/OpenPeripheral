@@ -38,6 +38,7 @@ import openperipheral.core.integration.ModuleBuildCraft;
 import openperipheral.core.integration.ModuleEnderStorage;
 import openperipheral.core.integration.ModuleForestry;
 import openperipheral.core.integration.ModuleIC2;
+import openperipheral.core.integration.ModuleMystcraft;
 import openperipheral.core.item.ItemGeneric;
 import openperipheral.core.item.ItemGlasses;
 import openperipheral.core.item.ItemRemote;
@@ -68,7 +69,7 @@ import dan200.computer.api.ComputerCraftAPI;
 	modid = "OpenPeripheral",
 	name = "OpenPeripheral",
 	version = "@VERSION@",
-	dependencies = "required-after:ComputerCraft;after:mmmPowersuits;after:BuildCraft|Core;after:AppliedEnergistics;after:Forestry;after:IC2;after:ThermalExpansion;after:Thaumcraft;after:MineFactoryReloaded;after:Railcraft;after:MiscPeripherals")
+	dependencies = "required-after:ComputerCraft;after:mmmPowersuits;after:BuildCraft|Core;after:AppliedEnergistics;after:Forestry;after:IC2;after:ThermalExpansion;after:Thaumcraft;after:MineFactoryReloaded;after:Railcraft;after:MiscPeripherals;after:Mystcraft")
 @NetworkMod(serverSideRequired = true, clientSideRequired = false, channels = { ConfigSettings.NETWORK_CHANNEL }, packetHandler = PacketHandler.class)
 public class OpenPeripheral {
 
@@ -175,6 +176,10 @@ public class OpenPeripheral {
 			ModuleForestry.init();
 		}
 
+		if (Loader.isModLoaded(Mods.MYSTCRAFT)) { 
+		  ModuleMystcraft.init();
+		}
+		
 		TickRegistry.registerTickHandler(new TickHandler(), Side.SERVER);
 		ComputerCraftAPI.registerExternalPeripheral(TileEntity.class, peripheralHandler);
 
