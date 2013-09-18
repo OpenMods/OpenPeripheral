@@ -3,6 +3,11 @@ package openperipheral.core.util;
 import java.util.HashMap;
 import java.util.Map;
 
+import cpw.mods.fml.common.Loader;
+
+import openperipheral.core.Mods;
+import openperipheral.core.integration.ModuleMystcraft;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockChest;
 import net.minecraft.enchantment.Enchantment;
@@ -130,6 +135,10 @@ public class InventoryUtils {
 			map.put("dmg", itemstack.getItemDamage());
 			map.put("maxSize", itemstack.getMaxStackSize());
 
+			if (Loader.isModLoaded(Mods.MYSTCRAFT)) {
+				ModuleMystcraft.appendBookInfo(map, itemstack);
+			}
+
 		}
 
 		return map;
@@ -175,7 +184,7 @@ public class InventoryUtils {
 		ItemStack stack = fromInventory.getStackInSlot(slot);
 		if (stack == null) { return 0; }
 		if (fromInventory instanceof ISidedInventory) {
-			if (((ISidedInventory)fromInventory).canExtractItem(slot, stack, side.ordinal())) {
+			if (!((ISidedInventory)fromInventory).canExtractItem(slot, stack, side.ordinal())) {
 				return 0;
 			}
 		}
