@@ -136,7 +136,7 @@ public class InventoryUtils {
 			map.put("maxSize", itemstack.getMaxStackSize());
 
 			if (Loader.isModLoaded(Mods.MYSTCRAFT)) {
-				ModuleMystcraft.appendBookInfo(map, itemstack);
+				ModuleMystcraft.appendMystcraftInfo(map, itemstack);
 			}
 
 		}

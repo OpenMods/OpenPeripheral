@@ -15,7 +15,7 @@ public class ModuleMystcraft {
     AdapterManager.addPeripheralAdapter(new AdapterWritingDesk());
 
   }
-	public static void appendBookInfo(Map map, ItemStack stack) {
+	public static void appendMystcraftInfo(Map map, ItemStack stack) {
 		if (stack != null && stack.getItem() instanceof IItemRenameable) {
 			if (stack.hasTagCompound()) {
 				NBTTagCompound tag = stack.getTagCompound();
