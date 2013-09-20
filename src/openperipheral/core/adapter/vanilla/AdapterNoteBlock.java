@@ -37,4 +37,14 @@ public class AdapterNoteBlock implements IPeripheralAdapter {
 	public byte getNote(IComputerAccess computer, TileEntityNote noteblock) {
 		return noteblock.note;
 	}
+
+	@LuaMethod(returnType = LuaType.VOID, description = "Plays a minecraft sound",
+		args = {
+			@Arg(type = LuaType.STRING, name = "sound", description = "The identifier for the sound"),
+			@Arg(type = LuaType.NUMBER, name = "pitch", description = "The pitch from 0 to 1"),
+			@Arg(type = LuaType.NUMBER, name = "volume", description = "The volume from 0 to 1")
+	})
+	public void playSound(IComputerAccess computer, TileEntityNote noteblock, String name, float pitch, float volume) {
+		noteblock.worldObj.playSoundEffect((double)noteblock.xCoord + 0.5, (double)noteblock.yCoord + 0.5, (double)noteblock.zCoord + 0.5, name, volume, pitch);
+	}
 }
