@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
+import cpw.mods.fml.common.FMLLog;
+
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -16,7 +18,9 @@ import openperipheral.core.MethodDeclaration;
 import openperipheral.core.TickHandler;
 import openperipheral.core.TypeConversionRegistry;
 import openperipheral.core.interfaces.IAttachable;
+import openperipheral.core.util.CallWrapper;
 import openperipheral.core.util.MiscUtils;
+import openperipheral.core.util.StringUtils;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IHostedPeripheral;
 import dan200.computer.api.ILuaContext;
@@ -107,20 +111,7 @@ public class HostedPeripheral implements IHostedPeripheral {
 						computer.queueEvent(EVENT_SUCCESS, response);
 
 					} catch (Throwable e) {
-
-						String msg = "Unknown error. Please contact Mikee on esper.net IRC #OpenPeripheral";
-
-						if (e instanceof ReflectiveOperationException) {
-							e = ((ReflectiveOperationException)e).getCause();
-						}
-
-						if (e.getMessage() != null && !e.getMessage().equals("")) {
-							msg = e.getMessage();
-						} else {
-							e.printStackTrace();
-						}
-
-						computer.queueEvent(EVENT_ERROR, new Object[] { msg });
+						computer.queueEvent(EVENT_ERROR, new Object[] { getMessageForThrowable(e) });
 					}
 					return null;
 				}
@@ -157,7 +148,27 @@ public class HostedPeripheral implements IHostedPeripheral {
 		}
 	}
 
-	protected Object[] formatParameters(IComputerAccess computer, MethodDeclaration method, Object[] arguments) throws Exception {
+  protected static String getMessageForThrowable(Throwable e) {
+    Throwable cause = e.getCause();
+    
+    String firstMessage = e.getMessage();
+    String secondMessage = (cause != null) ? cause.getMessage() : null;
+    
+    if (StringUtils.isEmpty(firstMessage) && StringUtils.isEmpty(secondMessage)) {
+      e.printStackTrace();
+      return "Unknown error. Please contact Mikee on esper.net IRC #OpenMods";
+    }else if (!StringUtils.isEmpty(firstMessage) && !StringUtils.isEmpty(secondMessage)) {
+      return String.format("%s, caused by %s", firstMessage, secondMessage);
+    }else{
+      if(StringUtils.isEmpty(firstMessage)){
+        return secondMessage;
+      }else{ // We already checked the empty/empty cause so firstMessage has to be valid. 
+        return firstMessage; 
+      }
+    }
+  }
+
+  protected Object[] formatParameters(IComputerAccess computer, MethodDeclaration method, Object[] arguments) throws Exception {
 
 		Arg[] requiredParameters = method.getRequiredParameters();
 
