@@ -64,7 +64,7 @@ public class MiscUtils {
 					name = is.getDisplayName();
 				} catch (Exception e) {
 					try {
-						name = is.getItemName();
+						name = is.getUnlocalizedName();
 					} catch (Exception e2) {}
 				}
 				if (name == null || name.equals("")) {

@@ -91,7 +91,7 @@ public class ItemRemote extends Item {
 			ns.setByte("dmg", (byte)((world.getBlockMetadata(x, y, z) & 0x8) >> 3));
 			tag.setTag("openpRemote", ns);
 			if (!world.isRemote) {
-				player.sendChatToPlayer(new ChatMessageComponent().func_111079_a("Linked remote to computer"));
+				player.sendChatToPlayer(new ChatMessageComponent().createFromText("Linked remote to computer"));
 			}
 			stack.setTagCompound(tag);
 		}
