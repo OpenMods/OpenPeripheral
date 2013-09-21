@@ -15,7 +15,7 @@ public class SoundLoader {
 		String[] soundFiles = { "ticketmachine.ogg", "robotstepping.ogg", "robotjump.ogg", "robothurt.ogg", "robotdead1.ogg", "robotdead2.ogg", "lazer1.ogg", "robotready.ogg" };
 
 		for (String soundFile : soundFiles) {
-			event.manager.soundPoolSounds.addSound("openperipheral:" + soundFile);
+			event.manager.addSound("openperipheral:" + soundFile);
 		}
 	}
 }

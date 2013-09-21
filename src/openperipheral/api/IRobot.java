@@ -38,9 +38,9 @@ public interface IRobot {
 
 	public float getYaw();
 
-	public void setMaxHealth(int maxHealth);
+	public void setMaxRobotHealth(int maxHealth);
 
-	public float getMaxHealth();
+	public int getMaxRobotHealth();
 
 	public void fireEvent(String eventName, Object... args);
 

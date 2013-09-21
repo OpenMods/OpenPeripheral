@@ -25,12 +25,11 @@ public class MetaGeneric implements IMetaItem {
 
 	public MetaGeneric(String name, Object... recipe) {
 		this.name = name;
-		this.recipes = new Object[][] { recipe };
-	}
-
-	public MetaGeneric(String name, Object[]... recipes) {
-		this.name = name;
-		this.recipes = recipes;
+		if (recipe instanceof Object[][]) {
+			this.recipes = (Object[][]) recipe;
+		}else {
+			this.recipes = new Object[][] { recipe };
+		}
 	}
 
 	@Override

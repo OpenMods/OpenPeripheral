@@ -67,4 +67,9 @@ public class EntityRobotWarrior extends EntityRobot implements ILaserRobot {
 		return EnumRobotType.Warrior;
 	}
 
+	@Override
+	public int getMaxRobotHealth() {
+		return (int) this.getMaxHealth();
+	}
+
 }
