@@ -136,7 +136,7 @@
 
 		<delete dir="${jar.dir}"/>
 		<mkdir dir="${jar.dir}"/>
-		<jar destfile="${jar.dir}/${mod.name}-${mod.version}-snapshot-${env.BUILD_NUMBER}.jar" basedir="${classes.dir}"/>
+		<jar destfile="${jar.dir}/${mod.name}-${mod.version}-forge${forge.version}-snapshot-${env.BUILD_NUMBER}.jar" basedir="${classes.dir}"/>
 
 	</target>
 
