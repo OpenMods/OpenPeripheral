@@ -20,7 +20,7 @@ public class TileEntitySensorRenderer extends TileEntitySpecialRenderer {
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 0.5F, (float)z + 0.5F);
 		int rotation = (int)sensor.getRotation();
 		GL11.glPushMatrix();
-		func_110628_a(texture);
+		bindTexture(texture);
 		this.modelSensor.renderSensor(rotation);
 		GL11.glPopMatrix();
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);

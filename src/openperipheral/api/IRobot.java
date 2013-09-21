@@ -40,7 +40,7 @@ public interface IRobot {
 
 	public void setMaxHealth(int maxHealth);
 
-	public int getMaxHealth();
+	public float getMaxHealth();
 
 	public void fireEvent(String eventName, Object... args);
 

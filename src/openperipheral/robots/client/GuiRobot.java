@@ -20,7 +20,7 @@ public class GuiRobot extends GuiContainer {
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		int left = (this.width - this.xSize) / 2;
 		int top = (this.height - this.ySize) / 2;
-		this.mc.renderEngine.func_110577_a(background);
+		this.mc.renderEngine.bindTexture(background);
 		this.drawTexturedModalRect(left, top, 0, 0, this.xSize, this.ySize);
 	}
 

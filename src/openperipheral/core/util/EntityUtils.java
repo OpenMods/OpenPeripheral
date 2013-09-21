@@ -53,15 +53,15 @@ public class EntityUtils {
 			EntityHorse horse = (EntityHorse)entity;
 			IInventory invent = (IInventory)ReflectionHelper.getProperty("", horse, "field_110296_bG");
 
-			map.put("eatingHaystack", horse.func_110204_cc());
-			map.put("chestedHorse", horse.func_110261_ca());
-			map.put("hasReproduced", horse.func_110243_cf());
+			map.put("eatingHaystack", horse.isEatingHaystack());
+			map.put("chestedHorse", horse.isChested());
+			map.put("hasReproduced", horse.getHasReproduced());
 			map.put("bred", horse.func_110205_ce());
-			map.put("horseType", horse.func_110265_bP());
-			map.put("horseVariant", horse.func_110202_bQ());
-			map.put("horseTemper", horse.func_110252_cg());
-			map.put("horseTame", horse.func_110248_bS());
-			map.put("ownerName", horse.func_142019_cb());
+			map.put("horseType", horse.getHorseType());
+			map.put("horseVariant", horse.getHorseVariant());
+			map.put("horseTemper", horse.getTemper());
+			map.put("horseTame", horse.isTame());
+			map.put("ownerName", horse.getOwnerName());
 			map.put("horseInventory", InventoryUtils.invToMap(invent));
 		}
 
@@ -88,8 +88,8 @@ public class EntityUtils {
 			armor.put("leggings", InventoryUtils.itemstackToMap(living.getCurrentItemOrArmor(2)));
 			armor.put("chestplate", InventoryUtils.itemstackToMap(living.getCurrentItemOrArmor(3)));
 			armor.put("helmet", InventoryUtils.itemstackToMap(living.getCurrentItemOrArmor(4)));
-			map.put("health", living.func_110143_aJ());
-			map.put("maxHealth", living.func_110138_aP());
+			map.put("health", living.getHealth());
+			map.put("maxHealth", living.getMaxHealth());
 			map.put("isAirborne", living.isAirBorne);
 			map.put("isBurning", living.isBurning());
 			map.put("isAlive", living.isEntityAlive());
