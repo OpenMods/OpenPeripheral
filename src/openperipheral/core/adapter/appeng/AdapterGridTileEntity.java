@@ -44,6 +44,15 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 	public void requestCrafting(IComputerAccess computer, Object te, ItemStack stack) throws AppEngTileMissingException {
 		ICraftRequest request = getGrid(te).craftingRequest(stack);
 	}
+
+	@LuaMethod(description = "Get a list of the available items", returnType = LuaType.TABLE)
+	public IItemList getAvailableItems(IComputerAccess computer, ICellProvider provider) {
+		IMEInventoryHandler cell = provider.provideCell();
+		if (cell != null) {
+			return cell.getAvailableItems();
+		}
+		return null;
+	}
 	
 	@LuaMethod(description = "Extract an item", returnType = LuaType.NUMBER,
 			args = {
