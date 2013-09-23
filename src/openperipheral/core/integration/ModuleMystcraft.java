@@ -28,7 +28,7 @@ public class ModuleMystcraft {
 	      if (stack.hasTagCompound()) {
   	      if ("item.myst.page".equals(item.getUnlocalizedName())){
   	        addStringFromNBT(map, stack, "symbol", "symbol");
-  	      }else if ("item.myst.linkbook".equals(item.getUnlocalizedName())){
+  	      }else if ("item.myst.linkbook".equals(item.getUnlocalizedName()) || "item.myst.agebook".equals(item.getUnlocalizedName())){
   	        addStringFromNBT(map, stack, "destination", "agename");
   	        addLinkingBookFlags(map, stack);
   	        addCoordinates(map, stack);
