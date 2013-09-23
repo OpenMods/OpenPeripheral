@@ -28,6 +28,12 @@ public class RecipeUtils {
 	public static void addGlassesRecipe() {
 		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(OpenPeripheral.Items.glasses), new Object[] { "lpa", "gdg", "ppp", 'l', Metas.lcdScreen.newItemStack(), 'p', Metas.plasticCasing.newItemStack(), 'a', Metas.duckAntenna.newItemStack(), 'g', new ItemStack(Block.thinGlass), 'd', Metas.dataLink.newItemStack() }));
 	}
+	
+	//TODO: remove this placeholder rubbish
+	public static void addRobotRecipe() {
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(OpenPeripheral.Items.glasses), new Object[] { "rrr", "rrr", "rrr", 'r', Metas.plasticCasing.newItemStack() }));
+		
+	}
 
 	public static void addBridgeRecipe() {
 		Block peripheral = getCCBlock("peripheral");
