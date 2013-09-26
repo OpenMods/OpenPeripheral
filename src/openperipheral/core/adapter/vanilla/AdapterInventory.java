@@ -160,10 +160,7 @@ public class AdapterInventory implements IPeripheralAdapter {
 			@Arg( type = LuaType.NUMBER, name = "slotNumber", description = "The slot number, from 1 to the max amount of slots")
 		})
 	public ItemStack getStackInSlot(IComputerAccess computer, IInventory target, int slot) throws Exception {
-		IInventory invent = (IInventory)target;
-		slot--;
-		if (slot < 0 || slot >= invent.getSizeInventory()) { throw new Exception("Invalid slot number"); }
-		return invent.getStackInSlot(slot);
+		return target.getStackInSlot(slot);
 	}
 	
 	@LuaMethod(returnType = LuaType.TABLE, description = "Get a table with all the items of the chest")
