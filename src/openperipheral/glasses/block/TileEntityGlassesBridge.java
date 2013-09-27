@@ -334,6 +334,11 @@ public class TileEntityGlassesBridge extends TileEntity implements IAttachable,
     public ILuaObject addText(int x, int y, String text, int color) {
         return globalSurface.addText(x, y, text, color);
     }
+    
+    @Override
+    public ILuaObject addIcon(int x, int y, int id, int meta) {
+        return globalSurface.addIcon(x, y, id, meta);
+    }
 
     @Override
     public Short[] getAllIds() {

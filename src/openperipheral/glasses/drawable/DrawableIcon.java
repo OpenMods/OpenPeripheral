@@ -1,0 +1,241 @@
+package openperipheral.glasses.drawable;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+
+import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.client.FMLClientHandler;
+
+import net.minecraft.block.Block;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.Icon;
+
+import openperipheral.core.interfaces.ISurface;
+import openperipheral.core.util.ByteUtils;
+
+public class DrawableIcon extends BaseDrawable {
+
+    private short x, y;
+    private double scale, alpha;
+    private int id, meta;
+    private boolean updateItem = true;
+
+    /* Item stack used client side */
+    private ItemStack clientStack;
+    
+    public static final int X_CHANGED = 1;
+    public static final int Y_CHANGED = 2;
+    public static final int SCALE_CHANGED = 3;
+    public static final int Z_CHANGED = 4;
+    public static final int ALPHA_CHANGED = 5;
+    public static final int ID_CHANGED = 6;
+    public static final int META_CHANGED = 7;
+
+    public DrawableIcon() {
+        super();
+    }
+    
+    public DrawableIcon(ISurface parent, int x, int y, int id, int meta, double scale,
+            double alpha) {
+        super(parent);
+        this.x = (short) x;
+        this.y = (short) y;
+        this.scale = scale;
+        if(this.scale == 0) this.scale = 1;
+        if(this.scale < 0.5) this.scale = 0.5;
+        this.alpha = alpha;
+        this.id = id;
+        this.meta = meta;
+        methodNames = new String[] { "getX", "setX", "getY", "setY",
+                "getScale", "setScale", "getOpacity", "setOpacity",
+                "setZIndex", "getZIndex", "setItem", "getItem", "setMeta", "getMeta", "delete" };
+    }
+    
+    public int setItem(int item) {
+        if(item == this.id) return -1;
+        this.id = item;
+        return ID_CHANGED;
+    }
+    
+    public int setMeta(int meta) {
+        if(meta == this.meta) return -1;
+        this.meta = meta;
+        return META_CHANGED;
+    }
+
+    @Override
+    public int getX() {
+        return x;
+    }
+
+    @Override
+    public int getY() {
+        return y;
+    }
+
+    @Override
+    public int getZIndex() {
+        return zIndex;
+    }
+
+    @Override
+    public int setZIndex(byte z) {
+        if (z == zIndex)
+            return -1;
+        zIndex = z;
+        return Z_CHANGED;
+    }
+
+    public int setX(short x) {
+        if (x == this.x)
+            return -1;
+        this.x = x;
+        return X_CHANGED;
+    }
+
+    public int setY(short y) {
+        if (x == this.y)
+            return -1;
+        this.y = y;
+        return Y_CHANGED;
+    }
+
+    public double getOpacity() {
+        return alpha;
+    }
+
+    public int setOpacity(double alpha) {
+        if (alpha == this.alpha)
+            return -1;
+        this.alpha = alpha;
+        return ALPHA_CHANGED;
+    }
+
+    public double getScale() {
+        return scale;
+    }
+
+    public int setScale(double scale) {
+        if(this.scale == 0) this.scale = 1;
+        if(this.scale < 0.5) this.scale = 0.5;
+        if(scale == this.scale)
+            return -1; 
+        this.scale = scale;
+        return SCALE_CHANGED;
+    }
+
+    @Override
+    public void writeTo(DataOutputStream stream, Short changeMask) {
+        try {
+            if (ByteUtils.get(changeMask, X_CHANGED)) {
+                stream.writeShort(x);
+            }
+            if (ByteUtils.get(changeMask, Y_CHANGED)) {
+                stream.writeShort(y);
+            }
+            if (ByteUtils.get(changeMask, Z_CHANGED)) {
+                stream.writeByte(zIndex);
+            }
+            if (ByteUtils.get(changeMask, ALPHA_CHANGED)) {
+                stream.writeDouble(alpha);
+            }
+            if (ByteUtils.get(changeMask, SCALE_CHANGED)) {
+                stream.writeDouble(scale);
+            }
+            if (ByteUtils.get(changeMask, ID_CHANGED)) {
+                stream.writeInt(id);
+            }
+            if (ByteUtils.get(changeMask, META_CHANGED)) {
+                stream.writeInt(meta);
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public void readFrom(DataInputStream stream, Short changeMask) {
+        try {
+            if (ByteUtils.get(changeMask, X_CHANGED)) {
+                x = stream.readShort();
+            }
+            if (ByteUtils.get(changeMask, Y_CHANGED)) {
+                y = stream.readShort();
+            }
+            if (ByteUtils.get(changeMask, Z_CHANGED)) {
+                zIndex = stream.readByte();
+            }
+            if (ByteUtils.get(changeMask, ALPHA_CHANGED)) {
+                alpha = stream.readDouble();
+            }
+            if (ByteUtils.get(changeMask, SCALE_CHANGED)) {
+                scale = stream.readDouble();
+            }
+            if (ByteUtils.get(changeMask, ID_CHANGED)) {
+                id = stream.readInt();
+                updateItem = true;
+            }
+            if (ByteUtils.get(changeMask, META_CHANGED)) {
+                meta = stream.readInt();
+                updateItem = true;
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+    
+    
+    private void updateID() {
+        clientStack = new ItemStack(this.id, 1, this.meta);
+        updateItem = false;
+    }
+
+    @Override
+    public void draw(float partialTicks) {
+        if(updateItem) {
+            updateID();
+        }
+        
+        try{
+            if(id >= 0 && ( id < Item.itemsList.length && Item.itemsList[id] != null || id < Block.blocksList.length && Block.blocksList[id] != null)) {
+                renderItemIntoGUI(FMLClientHandler.instance().getClient().fontRenderer, clientStack, x, y, (float)alpha, (float)scale);
+            }
+        }catch(Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+    
+    /* Thanks Pahi- for your helpers :) -NC */
+    public static void renderItemIntoGUI(FontRenderer fontRenderer, ItemStack itemStack, int x, int y, float opacity, float scale) {
+        Icon icon = itemStack.getIconIndex();
+        GL11.glDisable(GL11.GL_LIGHTING);
+        FMLClientHandler.instance().getClient().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
+        int overlayColour = itemStack.getItem().getColorFromItemStack(itemStack, 0);
+        float red = (overlayColour >> 16 & 255) / 255.0F;
+        float green = (overlayColour >> 8 & 255) / 255.0F;
+        float blue = (overlayColour & 255) / 255.0F;
+        GL11.glColor4f(red, green, blue, opacity);
+        drawTexturedQuad(x, y, icon, 16 * scale, 16 * scale, -90);
+        GL11.glEnable(GL11.GL_LIGHTING);
+
+    }
+
+    public static void drawTexturedQuad(int x, int y, Icon icon, float width, float height, double zLevel) {
+
+        Tessellator tessellator = Tessellator.instance;
+        tessellator.startDrawingQuads();
+        tessellator.addVertexWithUV(x + 0, y + height, zLevel, icon.getMinU(), icon.getMaxV());
+        tessellator.addVertexWithUV(x + width, y + height, zLevel, icon.getMaxU(), icon.getMaxV());
+        tessellator.addVertexWithUV(x + width, y + 0, zLevel, icon.getMaxU(), icon.getMinV());
+        tessellator.addVertexWithUV(x + 0, y + 0, zLevel, icon.getMinU(), icon.getMinV());
+        tessellator.draw();
+    }
+
+}

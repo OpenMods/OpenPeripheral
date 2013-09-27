@@ -4,6 +4,8 @@ import dan200.computer.api.ILuaObject;
 
 public interface ISurface {
 
+    public abstract ILuaObject addIcon(int x, int y, int id, int meta);
+    
     public abstract Short getKeyForDrawable(IDrawable d);
 
     public abstract void setDeleted(IDrawable d);

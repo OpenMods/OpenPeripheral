@@ -59,6 +59,18 @@ public class AdapterGlassesBridge implements IPeripheralAdapter {
 			throws InterruptedException {
 		return bridge.addGradientBox(x, y, width, height, color, alpha, color2, alpha2, gradient);
 	}
+	
+	@LuaMethod(
+	        returnType = LuaType.OBJECT, onTick = false, description = "Add an icon of an item to the screen",
+	        args = {
+	                @Arg(name = "x", description = "The x position from the top left", type = LuaType.NUMBER),
+	                @Arg(name = "y", description = "The y position from the top left", type = LuaType.NUMBER),
+	                @Arg(name = "id", description = "The id of the item to draw", type = LuaType.NUMBER),
+	                @Arg(name = "meta", description = "The meta of the item to draw", type = LuaType.NUMBER)
+	        })
+	public ILuaObject addIcon(IComputerAccess computer, TileEntityGlassesBridge bridge, int x, int y, int id, int meta) {
+	    return bridge.addIcon(x, y, id, meta);
+	}
 
 	@LuaMethod(
 		returnType = LuaType.TABLE, onTick = false, description = "Get the Ids of all the objects on the screen")

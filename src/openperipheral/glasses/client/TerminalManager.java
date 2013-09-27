@@ -21,6 +21,7 @@ import openperipheral.core.interfaces.IDrawable;
 import openperipheral.core.util.ByteUtils;
 import openperipheral.core.util.PacketChunker;
 import openperipheral.glasses.drawable.DrawableBox;
+import openperipheral.glasses.drawable.DrawableIcon;
 import openperipheral.glasses.drawable.DrawableText;
 import cpw.mods.fml.common.network.IConnectionHandler;
 import cpw.mods.fml.common.network.Player;
@@ -123,6 +124,9 @@ public class TerminalManager implements IConnectionHandler {
                             switch (drawableType) {
                                 case 0:
                                     drawable = new DrawableText();
+                                    break;
+                                case 2:
+                                    drawable = new DrawableIcon();
                                     break;
                                 default:
                                     drawable = new DrawableBox();

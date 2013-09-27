@@ -217,7 +217,7 @@ public class Surface implements ISurface, ILuaObject {
     public ILuaObject addBox(int x, int y, int width, int height, int color, double alpha) throws InterruptedException {
         return addGradientBox(x, y, width, height, color, alpha, color, alpha, (byte)0);
     }
-
+    
     /* (non-Javadoc)
      * @see openperipheral.glasses.drawable.ISurface#addGradientBox(int, int, int, int, int, double, int, double, byte)
      */
@@ -238,6 +238,26 @@ public class Surface implements ISurface, ILuaObject {
             }
         } catch (Exception ex) {
             ex.printStackTrace();
+        }
+        return (ILuaObject)obj;
+    }
+    
+    @Override
+    public ILuaObject addIcon(int x, int y, int id, int meta) {
+        ILuaObject obj = null;
+        try{
+            lock.lock();
+            try{
+                drawables.put(count, new DrawableIcon(this, x, y, id, meta, 1, 1));
+                changes.put(count, Short.MAX_VALUE);
+                obj = drawables.get(count++);
+            }catch(Exception ex) {
+                ex.printStackTrace();
+            }finally {
+                lock.unlock();
+            }
+        }catch(Exception ex2) {
+            ex2.printStackTrace();
         }
         return (ILuaObject)obj;
     }
@@ -295,8 +315,10 @@ public class Surface implements ISurface, ILuaObject {
 
             if (drawable instanceof DrawableText) {
                 outputStream.writeByte((byte)0);
-            } else {
+            } else if(drawable instanceof DrawableBox) {
                 outputStream.writeByte((byte)1);
+            } else if(drawable instanceof DrawableIcon) {
+                outputStream.writeByte((byte)2);
             }
 
             // write the rest of the drawable object
