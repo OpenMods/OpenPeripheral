@@ -1,13 +1,21 @@
 package openperipheral.core.adapter.forestry;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.minecraft.item.ItemStack;
 import openperipheral.api.IPeripheralAdapter;
 import openperipheral.api.LuaMethod;
+import openperipheral.api.Arg;
 import openperipheral.api.LuaType;
+import openperipheral.core.TypeConversionRegistry;
 import dan200.computer.api.IComputerAccess;
 import forestry.api.apiculture.IBeeHousing;
 import forestry.api.genetics.AlleleManager;
+import forestry.api.genetics.IAllele;
 import forestry.api.genetics.IIndividual;
+import forestry.api.genetics.IMutation;
+import forestry.api.genetics.ISpeciesRoot;
 
 public class AdapterBeeHousing implements IPeripheralAdapter {
 
@@ -34,5 +42,75 @@ public class AdapterBeeHousing implements IPeripheralAdapter {
 		if (queen != null) { return AlleleManager.alleleRegistry.getIndividual(queen); }
 		return null;
 	}
+	
+	/**
+	 * Experimental method. Adding it aganist beehousing for now as we need some kind of block to run it against
+	 * Trying to get the full breeding tree for all bees
+	 * @param computer
+	 * @param housing
+	 * @return
+	 */
+	@LuaMethod(returnType = LuaType.TABLE, description="Get the full breeding list thingy. Experimental!")
+	public Map getBeeBreedingData(IComputerAccess computer, IBeeHousing housing) {
+		ISpeciesRoot beeRoot = AlleleManager.alleleRegistry.getSpeciesRoot("rootBees");
+		if (beeRoot == null) {
+			return null;
+		}
+		HashMap result = new HashMap();
+		int j = 1;
+		for (IMutation mutation : beeRoot.getMutations(false)) {
+			HashMap mutationMap = new HashMap();
+			IAllele allele1 = mutation.getAllele0();
+			if (allele1 != null) {
+				mutationMap.put("allele1", allele1.getName());
+			}
+			IAllele allele2 = mutation.getAllele1();
+			if (allele2 != null) {
+				mutationMap.put("allele2", allele2.getName());
+			}
+			mutationMap.put("chance", mutation.getBaseChance());
+			mutationMap.put("specialConditions", TypeConversionRegistry.toLua(mutation.getSpecialConditions().toArray()));
+			IAllele[] template = mutation.getTemplate();
+			if (template != null && template.length > 0) {
+				mutationMap.put("result", template[0].getName());
+			}
+			result.put(j++, mutationMap);
+		}
+		return result;
+	}
+	
+	@LuaMethod(
+			returnType = LuaType.TABLE,
+			description="Get the parents for a particular mutation",
+			args = {
+				@Arg( name="childType", description="The type of bee you want the parents for", type=LuaType.STRING)
+			})
+	public Map getBeeParents(IComputerAccess computer, IBeeHousing housing, String childType) {
+		ISpeciesRoot beeRoot = AlleleManager.alleleRegistry.getSpeciesRoot("rootBees");
+		if (beeRoot == null) {
+			return null;
+		}
+		for (IMutation mutation : beeRoot.getMutations(false)) {
+			IAllele[] template = mutation.getTemplate();
+			if (template == null || template.length < 1) {
+				return null;
+			}
+			if (template[0].getName().toLowerCase().equals(childType.toLowerCase())) {
 
+				HashMap result = new HashMap();
+				IAllele allele1 = mutation.getAllele0();
+				if (allele1 != null) {
+					result.put("allele1", allele1.getName());
+				}
+				IAllele allele2 = mutation.getAllele1();
+				if (allele2 != null) {
+					result.put("allele2", allele2.getName());
+				}
+				result.put("chance", mutation.getBaseChance());
+				result.put("specialConditions", TypeConversionRegistry.toLua(mutation.getSpecialConditions().toArray()));
+				return result;
+			}
+		}
+		return null;
+	}
 }
