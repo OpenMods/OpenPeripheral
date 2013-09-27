@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import net.minecraft.client.renderer.Tessellator;
 import openperipheral.core.interfaces.IDrawable;
+import openperipheral.core.interfaces.ISurface;
 import openperipheral.core.util.ByteUtils;
 import openperipheral.glasses.block.TileEntityGlassesBridge;
 
@@ -38,7 +39,7 @@ public class DrawableBox extends BaseDrawable implements IDrawable {
 		super();
 	}
 
-	public DrawableBox(TileEntityGlassesBridge parent, int x, int y, int width, int height, int color, double alpha, int color2, double alpha2, byte gradient) {
+	public DrawableBox(ISurface parent, int x, int y, int width, int height, int color, double alpha, int color2, double alpha2, byte gradient) {
 		super(parent);
 		this.x = (short)x;
 		this.y = (short)y;
