@@ -45,14 +45,6 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 		ICraftRequest request = getGrid(te).craftingRequest(stack);
 	}
 
-	@LuaMethod(description = "Get a list of the available items", returnType = LuaType.TABLE)
-	public IItemList getAvailableItems(IComputerAccess computer, ICellProvider provider) {
-		IMEInventoryHandler cell = provider.provideCell();
-		if (cell != null) {
-			return cell.getAvailableItems();
-		}
-		return null;
-	}
 	
 	@LuaMethod(description = "Extract an item", returnType = LuaType.NUMBER,
 			args = {
@@ -62,11 +54,15 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 		if (stack == null) {
 			return 0;
 		}
+		IGridInterface grid = getGrid(te);
+		if (grid == null) {
+			return 0;
+		}
 		IAEItemStack request = Util.createItemStack(stack);
 		if (request == null) {
 			return 0;
 		}
-        IAEItemStack returned = getGrid(te).getCellArray().extractItems(request);
+        IAEItemStack returned = grid.getCellArray().extractItems(request);
         if (returned == null) {
         	return 0;
         }
@@ -85,7 +81,7 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
             giveBack = Util.createItemStack(returnedStack.copy());
         }
         if (giveBack != null) {
-            getGrid(te).getCellArray().addItems(giveBack);
+        	grid.getCellArray().addItems(giveBack);
         }
         if (giveBack != null) {
         	return requestAmount - (int)giveBack.getStackSize();
@@ -100,6 +96,10 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 				@Arg(type = LuaType.STRING, name = "direction", description = "The direction of the chest relative to the wrapped peripheral")})
 	public int insertItem(IComputerAccess computer, Object te, int slot, int amount, ForgeDirection direction) throws Exception {
 		TileEntity tile = (TileEntity) te;
+		IGridInterface grid = getGrid(te);
+		if (grid == null) {
+			return 0;
+		}
 		IInventory inventory = InventoryUtils.getInventory(tile.worldObj, tile.xCoord, tile.yCoord, tile.zCoord, direction);
 		if (inventory == null) {
 			return 0;
@@ -114,7 +114,7 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 		ItemStack sendStack = stack.copy();
 		sendStack.stackSize = amount;
 		IAEItemStack request = Util.createItemStack(sendStack);
-		IAEItemStack remaining = getGrid(te).getCellArray().addItems(request);
+		IAEItemStack remaining = grid.getCellArray().addItems(request);
 		
 		if (remaining == null) {
 			stack.stackSize -= amount;
@@ -138,45 +138,60 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 
 	@LuaMethod(description = "Get the total total item types stored", returnType = LuaType.NUMBER)
 	public long getTotalItemTypes(IComputerAccess computer, Object te) {
-		IMEInventoryHandler cell = getGrid(te).getCellArray();
-		if (cell != null) {
-			return cell.getTotalItemTypes();
+		IGridInterface grid = getGrid(te);
+		if (grid != null) {
+			IMEInventoryHandler cell = grid.getCellArray();
+			if (cell != null) {
+				return cell.getTotalItemTypes();
+			}
 		}
 		return 0;
 	}
 
 	@LuaMethod(description = "Get the priority of this machine", returnType = LuaType.NUMBER)
 	public int getPriority(IComputerAccess computer, Object te) {
-		IMEInventoryHandler cell = getGrid(te).getCellArray();
-		if (cell != null) {
-			return cell.getPriority();
+		IGridInterface grid = getGrid(te);
+		if (grid != null) {
+			IMEInventoryHandler cell = grid.getCellArray();
+			if (cell != null) {
+				return cell.getPriority();
+			}
 		}
 		return 0;
 	}
 
 	@LuaMethod(description = "Can this machine hold any new items?", returnType = LuaType.NUMBER)
 	public boolean canHoldNewItem(IComputerAccess computer, Object te) {
-		IMEInventoryHandler cell = getGrid(te).getCellArray();
-		if (cell != null) {
-			return cell.canHoldNewItem();
+		IGridInterface grid = getGrid(te);
+		if (grid != null) {
+			IMEInventoryHandler cell = grid.getCellArray();
+			if (cell != null) {
+				return cell.canHoldNewItem();
+			}
 		}
 		return false;
 	}
 
 	@LuaMethod(description = "Get the amount of free bytes", returnType = LuaType.NUMBER)
 	public long getFreeBytes(IComputerAccess computer, Object te) {
-		IMEInventoryHandler cell = getGrid(te).getCellArray();
-		if (cell != null) {
-			return cell.freeBytes();
+		IGridInterface grid = getGrid(te);
+		if (grid != null) {
+			IMEInventoryHandler cell = grid.getCellArray();
+			if (cell != null) {
+				return cell.freeBytes();
+			}
 		}
 		return 0;
 	}
 
 	@LuaMethod(description = "Get a list of the available items", returnType = LuaType.TABLE)
 	public IItemList getAvailableItems(IComputerAccess computer, Object te) {
-		IMEInventoryHandler cell = getGrid(te).getCellArray();
-		if (cell != null) {
-			return cell.getAvailableItems();
+		IGridInterface grid = getGrid(te);
+		if (grid != null) {
+			IMEInventoryHandler cell = grid.getCellArray();
+			if (cell != null) {
+				return cell.getAvailableItems();
+			}
 		}
 		return null;
 	}
@@ -191,12 +206,16 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 		return countOfItemType(computer, te, itemId, dmgValue) > 0;
 	}
 
-	@LuaMethod(description = "Count the amount of a certain item type", returnType = LuaType.NUMBER, args = { @Arg(type = LuaType.NUMBER, name = "itemId", description = "The item id"), @Arg(
-		type = LuaType.NUMBER,
-		name = "dmgValue",
-		description = "The item dmg value") })
+	@LuaMethod(description = "Count the amount of a certain item type", returnType = LuaType.NUMBER,
+		args = {
+			@Arg(type = LuaType.NUMBER, name = "itemId", description = "The item id"),
+			@Arg(type = LuaType.NUMBER, name = "dmgValue", description = "The item dmg value") })
 	public long countOfItemType(IComputerAccess computer, Object te, int itemId, int dmgValue) {
-		IMEInventoryHandler cell = getGrid(te).getCellArray();
+		IGridInterface grid = getGrid(te);
+		if (grid == null) {
+			return 0;
+		}
+		IMEInventoryHandler cell = grid.getCellArray();
 		if (cell == null) {
 			return 0;
 		}
@@ -213,90 +232,120 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 
 	@LuaMethod(description = "Get a list of the preformatted items", returnType = LuaType.TABLE)
 	public List<ItemStack> getPreformattedItems(IComputerAccess computer, Object te) {
-		IMEInventoryHandler cell = getGrid(te).getCellArray();
-		if (cell != null) {
-			return cell.getPreformattedItems();
+		IGridInterface grid = getGrid(te);
+		if (grid != null) {
+			IMEInventoryHandler cell = grid.getCellArray();
+			if (cell != null) {
+				return cell.getPreformattedItems();
+			}
 		}
 		return null;
 	}
 
 	@LuaMethod(description = "Is fuzzy preformatted", returnType = LuaType.BOOLEAN)
 	public boolean isFuzzyPreformatted(IComputerAccess computer, Object te) {
-		IMEInventoryHandler cell = getGrid(te).getCellArray();
-		if (cell != null) {
-			return cell.isFuzzyPreformatted();
+		IGridInterface grid = getGrid(te);
+		if (grid != null) {
+			IMEInventoryHandler cell = grid.getCellArray();
+			if (cell != null) {
+				return cell.isFuzzyPreformatted();
+			}
 		}
 		return false;
 	}
 
 	@LuaMethod(description = "Is preformatted", returnType = LuaType.BOOLEAN)
 	public boolean isPreformatted(IComputerAccess computer, Object te) {
-		IMEInventoryHandler cell = getGrid(te).getCellArray();
-		if (cell != null) {
-			return cell.isPreformatted();
+		IGridInterface grid = getGrid(te);
+		if (grid != null) {
+			IMEInventoryHandler cell = grid.getCellArray();
+			if (cell != null) {
+				return cell.isPreformatted();
+			}
 		}
 		return false;
 	}
 
 	@LuaMethod(description = "Get the remaining item count", returnType = LuaType.NUMBER)
 	public long getRemainingItemCount(IComputerAccess computer, Object te) {
-		IMEInventoryHandler cell = getGrid(te).getCellArray();
-		if (cell != null) {
-			return cell.remainingItemCount();
+		IGridInterface grid = getGrid(te);
+		if (grid != null) {
+			IMEInventoryHandler cell = grid.getCellArray();
+			if (cell != null) {
+				return cell.remainingItemCount();
+			}
 		}
 		return 0;
 	}
 
 	@LuaMethod(description = "Get the remaining item type count", returnType = LuaType.NUMBER)
 	public long getRemainingItemTypes(IComputerAccess computer, Object te) {
-		IMEInventoryHandler cell = getGrid(te).getCellArray();
-		if (cell != null) {
-			return cell.remainingItemTypes();
+		IGridInterface grid = getGrid(te);
+		if (grid != null) {
+			IMEInventoryHandler cell = grid.getCellArray();
+			if (cell != null) {
+				return cell.remainingItemTypes();
+			}
 		}
 		return 0;
 	}
 
 	@LuaMethod(description = "Get the amount of stored items", returnType = LuaType.NUMBER)
 	public long getStoredItemCount(IComputerAccess computer, Object te) {
-		IMEInventoryHandler cell = getGrid(te).getCellArray();
-		if (cell != null) {
-			return cell.storedItemCount();
+		IGridInterface grid = getGrid(te);
+		if (grid != null) {
+			IMEInventoryHandler cell = grid.getCellArray();
+			if (cell != null) {
+				return cell.storedItemCount();
+			}
 		}
 		return 0;
 	}
 
 	@LuaMethod(description = "Get the amount of stored item types", returnType = LuaType.NUMBER)
 	public long getStoredItemTypes(IComputerAccess computer, Object te) {
-		IMEInventoryHandler cell = getGrid(te).getCellArray();
-		if (cell != null) {
-			return cell.storedItemTypes();
+		IGridInterface grid = getGrid(te);
+		if (grid != null) {
+			IMEInventoryHandler cell = grid.getCellArray();
+			if (cell != null) {
+				return cell.storedItemTypes();
+			}
 		}
 		return 0;
 	}
 
 	@LuaMethod(description = "Get the total bytes", returnType = LuaType.NUMBER)
 	public long getTotalBytes(IComputerAccess computer, Object te) {
-		IMEInventoryHandler cell = getGrid(te).getCellArray();
-		if (cell != null) {
-			return cell.totalBytes();
+		IGridInterface grid = getGrid(te);
+		if (grid != null) {
+			IMEInventoryHandler cell = grid.getCellArray();
+			if (cell != null) {
+				return cell.totalBytes();
+			}
 		}
 		return 0;
 	}
 
 	@LuaMethod(description = "Get the unused item count", returnType = LuaType.NUMBER)
-	public long getUnusedItemCount(IComputerAccess computer, ICellProvider provider) {
-		IMEInventoryHandler cell = provider.provideCell();
-		if (cell != null) {
-			return cell.unusedItemCount();
+	public long getUnusedItemCount(IComputerAccess computer, Object te) {
+		IGridInterface grid = getGrid(te);
+		if (grid != null) {
+			IMEInventoryHandler cell = grid.getCellArray();
+			if (cell != null) {
+				return cell.unusedItemCount();
+			}
 		}
 		return 0;
 	}
 
 	@LuaMethod(description = "Get the unused bytes", returnType = LuaType.NUMBER)
 	public long getUnusedBytes(IComputerAccess computer, Object te) {
-		IMEInventoryHandler cell = getGrid(te).getCellArray();
-		if (cell != null) {
-			return cell.usedBytes();
+		IGridInterface grid = getGrid(te);
+		if (grid != null) {
+			IMEInventoryHandler cell = grid.getCellArray();
+			if (cell != null) {
+				return cell.usedBytes();
+			}
 		}
 		return 0;
 	}

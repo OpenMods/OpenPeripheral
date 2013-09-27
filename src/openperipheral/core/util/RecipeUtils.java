@@ -31,7 +31,7 @@ public class RecipeUtils {
 	
 	//TODO: remove this placeholder rubbish
 	public static void addRobotRecipe() {
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(OpenPeripheral.Items.glasses), new Object[] { "rrr", "rrr", "rrr", 'r', Metas.plasticCasing.newItemStack() }));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(OpenPeripheral.Items.robot), new Object[] { "rrr", "rrr", "rrr", 'r', Metas.plasticCasing.newItemStack() }));
 		
 	}
 

@@ -9,6 +9,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.passive.EntitySheep;
+import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.potion.PotionEffect;
@@ -63,6 +64,11 @@ public class EntityUtils {
 			map.put("horseTame", horse.isTame());
 			map.put("ownerName", horse.getOwnerName());
 			map.put("horseInventory", InventoryUtils.invToMap(invent));
+		}
+		
+		if (entity instanceof EntityVillager) {
+			EntityVillager villager = (EntityVillager) entity;
+			map.put("profession", villager.getProfession());
 		}
 
 		if (entity instanceof EntitySheep) {
