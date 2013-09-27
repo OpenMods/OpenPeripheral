@@ -350,6 +350,10 @@ public class Surface implements ISurface, ILuaObject {
             ex.printStackTrace();
         }
     }
+    
+    public String getPlayerName() {
+        return playerName;
+    }
 
     private static String[] methodNames = new String[] { "getPlayerName", "clear", "getAllIds", "getById", "addBox", "addText", "addGradientBox" };
     
