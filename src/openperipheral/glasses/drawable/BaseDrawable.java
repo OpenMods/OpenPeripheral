@@ -7,6 +7,7 @@ import java.util.Arrays;
 
 import openperipheral.core.TypeConversionRegistry;
 import openperipheral.core.interfaces.IDrawable;
+import openperipheral.core.interfaces.ISurface;
 import openperipheral.core.util.ReflectionHelper;
 import openperipheral.glasses.block.TileEntityGlassesBridge;
 import dan200.computer.api.ILuaContext;
@@ -18,12 +19,12 @@ public abstract class BaseDrawable implements IDrawable {
 	private boolean deleted = false;
 	protected byte zIndex = 0;
 
-	private WeakReference<TileEntityGlassesBridge> bridge;
+	private WeakReference<ISurface> surface;
 
 	public BaseDrawable() {}
 
-	public BaseDrawable(TileEntityGlassesBridge _bridge) {
-		bridge = new WeakReference<TileEntityGlassesBridge>(_bridge);
+	public BaseDrawable(ISurface _bridge) {
+	    surface = new WeakReference<ISurface>(_bridge);
 	}
 
 	@Override
@@ -55,8 +56,8 @@ public abstract class BaseDrawable implements IDrawable {
 		Object v = method.invoke(this, argsToUse);
 
 		if (methodNames[methodId].startsWith("set")) {
-			if (bridge.get() != null) {
-				bridge.get().markChanged(this, (Integer)v);
+			if (surface.get() != null) {
+			    surface.get().markChanged(this, (Integer)v);
 				return new Object[] {};
 			}
 		}
@@ -66,9 +67,9 @@ public abstract class BaseDrawable implements IDrawable {
 
 	public void delete() {
 		deleted = true;
-		if (bridge.get() != null) {
-			bridge.get().setDeleted(this);
-			bridge.clear();
+		if (surface.get() != null) {
+		    surface.get().setDeleted(this);
+		    surface.clear();
 		}
 	}
 

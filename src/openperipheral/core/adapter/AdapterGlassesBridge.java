@@ -88,5 +88,14 @@ public class AdapterGlassesBridge implements IPeripheralAdapter {
 	public int getStringWidth(IComputerAccess computer, TileEntityGlassesBridge bridge, String text) {
 		return bridge.getStringWidth(text);
 	}
+	
+	@LuaMethod(
+	        returnType = LuaType.OBJECT, onTick = false, description = "Get the surface of a user to draw privately on their screen",
+	        args = {
+	                @Arg(name = "username", description = "The username of the user to get the draw surface for", type = LuaType.STRING)
+	        })
+	public ILuaObject getUserSurface(IComputerAccess computer, TileEntityGlassesBridge bridge, String username) {
+	    return bridge.getUserSurface(username);
+	}
 
 }

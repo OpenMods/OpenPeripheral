@@ -7,6 +7,7 @@ import java.io.IOException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import openperipheral.core.interfaces.IDrawable;
+import openperipheral.core.interfaces.ISurface;
 import openperipheral.core.util.ByteUtils;
 import openperipheral.core.util.FontSizeChecker;
 import openperipheral.glasses.block.TileEntityGlassesBridge;
@@ -32,7 +33,7 @@ public class DrawableText extends BaseDrawable implements IDrawable {
 		super();
 	}
 
-	public DrawableText(TileEntityGlassesBridge parent, int x, int y, String text, int color) {
+	public DrawableText(ISurface parent, int x, int y, String text, int color) {
 		super(parent);
 		this.x = (short)x;
 		this.y = (short)y;
