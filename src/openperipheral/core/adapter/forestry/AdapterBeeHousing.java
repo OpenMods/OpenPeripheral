@@ -90,27 +90,29 @@ public class AdapterBeeHousing implements IPeripheralAdapter {
 		if (beeRoot == null) {
 			return null;
 		}
+		int i = 1;
+		HashMap result = new HashMap();
 		for (IMutation mutation : beeRoot.getMutations(false)) {
 			IAllele[] template = mutation.getTemplate();
 			if (template == null || template.length < 1) {
-				return null;
+				continue;
 			}
 			if (template[0].getName().toLowerCase().equals(childType.toLowerCase())) {
-
-				HashMap result = new HashMap();
+				HashMap parentMap = new HashMap();
 				IAllele allele1 = mutation.getAllele0();
 				if (allele1 != null) {
-					result.put("allele1", allele1.getName());
+					parentMap.put("allele1", allele1.getName());
 				}
 				IAllele allele2 = mutation.getAllele1();
 				if (allele2 != null) {
-					result.put("allele2", allele2.getName());
+					parentMap.put("allele2", allele2.getName());
 				}
-				result.put("chance", mutation.getBaseChance());
-				result.put("specialConditions", TypeConversionRegistry.toLua(mutation.getSpecialConditions().toArray()));
-				return result;
+				parentMap.put("chance", mutation.getBaseChance());
+				parentMap.put("specialConditions", TypeConversionRegistry.toLua(mutation.getSpecialConditions().toArray()));
+				result.put(i++, parentMap);
 			}
 		}
-		return null;
+		return result;
 	}
+	
 }
