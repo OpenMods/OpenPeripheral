@@ -6,6 +6,7 @@ import java.util.Map;
 import cpw.mods.fml.common.Loader;
 
 import openperipheral.core.Mods;
+import openperipheral.core.integration.ModuleForestry;
 import openperipheral.core.integration.ModuleMystcraft;
 
 import net.minecraft.block.Block;
@@ -137,6 +138,9 @@ public class InventoryUtils {
 
 			if (Loader.isModLoaded(Mods.MYSTCRAFT)) {
 				ModuleMystcraft.appendMystcraftInfo(map, itemstack);
+			}
+			if (Loader.isModLoaded(Mods.FORESTRY)) {
+				ModuleForestry.appendBeeInfo(map, itemstack);
 			}
 
 		}
