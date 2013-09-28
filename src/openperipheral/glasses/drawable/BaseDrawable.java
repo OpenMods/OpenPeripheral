@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
 
@@ -124,9 +125,14 @@ public abstract class BaseDrawable implements IDrawable {
     }
 
     protected static void renderItemIntoGUI(FontRenderer fontRenderer, ItemStack itemStack, int x, int y, float scale) {
+        if(itemStack.getItem() == null) return;
         Icon icon = itemStack.getIconIndex();
         GL11.glDisable(GL11.GL_LIGHTING);
-        FMLClientHandler.instance().getClient().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
+        if(itemStack.getItem() instanceof ItemBlock) {
+            FMLClientHandler.instance().getClient().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
+        }else {
+            FMLClientHandler.instance().getClient().renderEngine.bindTexture(TextureMap.locationItemsTexture);
+        }
         int overlayColour = itemStack.getItem().getColorFromItemStack(itemStack, 0);
         float red = (overlayColour >> 16 & 255) / 255.0F;
         float green = (overlayColour >> 8 & 255) / 255.0F;
