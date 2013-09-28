@@ -174,4 +174,15 @@ public class AdapterInventory implements IPeripheralAdapter {
 		}
 		return allStacks;
 	}
+	
+	@LuaMethod (returnType = LuaType.VOID, description = "Destroy a stack",
+		args = {
+			@Arg( type = LuaType.NUMBER, name = "slotNumber", description = "The slot number, from 1 to the max amount of slots")
+		})
+	public void destroyStack(IComputerAccess computer, IInventory target, int slot) throws Exception {
+		IInventory invent = (IInventory)target;
+		slot--;
+		if (slot < 0 || slot >= invent.getSizeInventory()) { throw new Exception("Invalid slot number"); }
+		invent.setInventorySlotContents(slot, null);
+	}
 }
