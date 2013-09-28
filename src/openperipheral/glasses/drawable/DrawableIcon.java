@@ -100,7 +100,7 @@ public class DrawableIcon extends BaseDrawable {
     }
 
     public int setY(short y) {
-        if (x == this.y)
+        if (y == this.y)
             return -1;
         this.y = y;
         return Y_CHANGED;
@@ -239,7 +239,7 @@ public class DrawableIcon extends BaseDrawable {
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240, 240);
         GL11.glTranslatef(x, y, 0.0f);
         GL11.glScalef(10.0F, 10.0F, 10.0F);
-        //GL11.glTranslatef(1.0F, 0.5F, 1.0F);
+        GL11.glTranslatef(0.5F * scale, 0.5F * scale, 0.5F * scale);
         GL11.glScalef(1.0F * scale, 1.0F * scale, -1.0F);
         GL11.glRotatef(210.0F, 1.0F, 0.0F, 0.0F);
         GL11.glRotatef(0F + 1 * angle, 0.0F, 1.0F, 0.0F);
