@@ -32,7 +32,7 @@ public class AdapterTicketMachine implements IPeripheralAdapter {
 		return ticketMachine.createTicket(destination);
 	}
 
-	@LuaMethod(returnType = LuaType.BOOLEAN, description = "Returns type of this machine is locked")
+	@LuaMethod(returnType = LuaType.BOOLEAN, description = "Returns true if this machine is locked")
 	public boolean isLocked(IComputerAccess computer, TileEntityTicketMachine ticketMachine) {
 		return ticketMachine.isLocked();
 	}
