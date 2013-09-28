@@ -22,6 +22,8 @@ public interface ISurface {
     public abstract ILuaObject getById(int id);
 
     public abstract ILuaObject addText(int x, int y, String text, int color);
+    
+    public abstract ILuaObject addLiquid(int x, int y, int width, int height, int id);
 
     public abstract Short[] getAllIds();
 

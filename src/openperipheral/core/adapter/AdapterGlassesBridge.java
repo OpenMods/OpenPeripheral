@@ -71,6 +71,19 @@ public class AdapterGlassesBridge implements IPeripheralAdapter {
 	public ILuaObject addIcon(IComputerAccess computer, TileEntityGlassesBridge bridge, int x, int y, int id, int meta) {
 	    return bridge.addIcon(x, y, id, meta);
 	}
+	
+	@LuaMethod(
+	        returnType = LuaType.OBJECT, onTick = false, description = "Add a box textured like a liquid to the screen",
+	        args = {
+	                @Arg(name = "x", description = "The x position from the top left", type = LuaType.NUMBER),
+	                @Arg(name = "y", description = "The y position from the top left", type = LuaType.NUMBER),
+	                @Arg(name = "width", description = "The width of the liquid box", type = LuaType.NUMBER),
+	                @Arg(name = "height", description = "The height of the liquid box", type = LuaType.NUMBER),
+	                @Arg(name = "id", description = "The liquid id of the fluid to render", type = LuaType.NUMBER)
+	        })
+	public ILuaObject addLiquid(IComputerAccess computer, TileEntityGlassesBridge bridge, int x, int y, int width, int height, int id) {
+	    return bridge.addLiquid(x, y, width, height, id);
+	}
 
 	@LuaMethod(
 		returnType = LuaType.TABLE, onTick = false, description = "Get the Ids of all the objects on the screen")

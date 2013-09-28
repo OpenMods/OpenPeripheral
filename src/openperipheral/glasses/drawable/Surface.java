@@ -300,6 +300,23 @@ public class Surface implements ISurface, ILuaObject {
         }
         return (ILuaObject)obj;
     }
+    
+    public ILuaObject addLiquid(int x, int y, int width, int height, int id) {
+        ILuaObject obj = null;
+        try{
+            lock.lock();
+            try{
+                drawables.put(count, new DrawableLiquid(this,x,y,width,height,id));
+                changes.put(count, Short.MAX_VALUE);
+                obj = drawables.get(count++);
+            }finally{
+                lock.unlock();
+            }
+        }catch(Exception ex) {
+            ex.printStackTrace();
+        }
+        return (ILuaObject)obj;
+    }
 
     private void writeDrawableToStream(DataOutputStream outputStream, short drawableId, Short changeMask) throws IOException {
 
@@ -319,6 +336,8 @@ public class Surface implements ISurface, ILuaObject {
                 outputStream.writeByte((byte)1);
             } else if(drawable instanceof DrawableIcon) {
                 outputStream.writeByte((byte)2);
+            }else if(drawable instanceof DrawableLiquid) {
+                outputStream.writeByte((byte)3);
             }
 
             // write the rest of the drawable object

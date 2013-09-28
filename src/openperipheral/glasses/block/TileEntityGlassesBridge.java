@@ -325,6 +325,11 @@ public class TileEntityGlassesBridge extends TileEntity implements IAttachable,
             throws InterruptedException {
         return globalSurface.addGradientBox(x, y, width, height, color, alpha, color2, alpha2, gradient);
     }
+    
+    @Override
+    public ILuaObject addLiquid(int x, int y, int width, int height, int id) {
+        return globalSurface.addLiquid(x, y, width, height, id);
+    }
 
     @Override
     public ILuaObject getById(int id) {
