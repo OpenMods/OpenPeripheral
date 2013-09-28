@@ -3,9 +3,6 @@ package openperipheral.core.peripheral;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
-
-import cpw.mods.fml.common.FMLLog;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -18,7 +15,6 @@ import openperipheral.core.MethodDeclaration;
 import openperipheral.core.TickHandler;
 import openperipheral.core.TypeConversionRegistry;
 import openperipheral.core.interfaces.IAttachable;
-import openperipheral.core.util.CallWrapper;
 import openperipheral.core.util.MiscUtils;
 import openperipheral.core.util.StringUtils;
 import dan200.computer.api.IComputerAccess;
@@ -100,7 +96,7 @@ public class HostedPeripheral implements IHostedPeripheral {
 		// if it's on the tick, lets add a callback to execute on the tick
 		if (method.onTick()) {
 
-			Future callback = TickHandler.addTickCallback(worldObj, new Callable() {
+			TickHandler.addTickCallback(worldObj, new Callable<Object>() {
 				@Override
 				public Object call() throws Exception {
 					// on the tick, we execute the method, format the response,
@@ -144,7 +140,12 @@ public class HostedPeripheral implements IHostedPeripheral {
 		} else {
 			// no thread safety needed, lets just call the method, format the
 			// response and return it straight away
-			return formatResponse(method.getMethod().invoke(target, parameters));
+			try {
+				Object[] response = formatResponse(method.getMethod().invoke(target, parameters));
+				return response;
+			} catch (Throwable e) {
+				throw new Exception(getMessageForThrowable(e));
+			}
 		}
 	}
 
@@ -178,7 +179,7 @@ public class HostedPeripheral implements IHostedPeripheral {
 			if (!requiredParameters[i].type().getJavaType().isAssignableFrom(arguments[i].getClass())) { throw new Exception(String.format("Parameter number %s (%s) should be a %s", i + 1, requiredParameters[i].name(), requiredParameters[i].type().getName())); }
 		}
 
-		Class[] requiredJavaParameters = method.getRequiredJavaParameters();
+		Class<?>[] requiredJavaParameters = method.getRequiredJavaParameters();
 
 		for (int i = 0; i < arguments.length; i++) {
 			arguments[i] = TypeConversionRegistry.fromLua(arguments[i], requiredJavaParameters[i]);
