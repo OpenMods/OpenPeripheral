@@ -25,7 +25,7 @@ import openperipheral.core.util.ByteUtils;
 public class DrawableIcon extends BaseDrawable {
 
     private short x, y;
-    private double scale, alpha;
+    private double scale, angle;
     private int id, meta;
     private boolean updateItem = true;
 
@@ -36,7 +36,7 @@ public class DrawableIcon extends BaseDrawable {
     public static final int Y_CHANGED = 2;
     public static final int SCALE_CHANGED = 3;
     public static final int Z_CHANGED = 4;
-    public static final int ALPHA_CHANGED = 5;
+    public static final int ANGLE_CHANGED = 5;
     public static final int ID_CHANGED = 6;
     public static final int META_CHANGED = 7;
 
@@ -44,19 +44,16 @@ public class DrawableIcon extends BaseDrawable {
         super();
     }
     
-    public DrawableIcon(ISurface parent, int x, int y, int id, int meta, double scale,
-            double alpha) {
+    public DrawableIcon(ISurface parent, int x, int y, int id, int meta) {
         super(parent);
         this.x = (short) x;
         this.y = (short) y;
-        this.scale = scale;
-        if(this.scale == 0) this.scale = 1;
-        if(this.scale < 0.5) this.scale = 0.5;
-        this.alpha = alpha;
+        this.scale = 1;
+        this.angle = 30;
         this.id = id;
         this.meta = meta;
         methodNames = new String[] { "getX", "setX", "getY", "setY",
-                "getScale", "setScale", "getOpacity", "setOpacity",
+                "getScale", "setScale", "getAngle", "setAngle",
                 "setZIndex", "getZIndex", "setItem", "getItem", "setMeta", "getMeta", "delete" };
     }
     
@@ -109,15 +106,17 @@ public class DrawableIcon extends BaseDrawable {
         return Y_CHANGED;
     }
 
-    public double getOpacity() {
-        return alpha;
+    public double getAngle() {
+        return angle;
     }
 
-    public int setOpacity(double alpha) {
-        if (alpha == this.alpha)
+    public int setAngle(double angle) {
+        
+        if(angle > 359 || angle < 0) angle = angle % 360;
+        if (angle == this.angle)
             return -1;
-        this.alpha = alpha;
-        return ALPHA_CHANGED;
+        this.angle = angle;
+        return ANGLE_CHANGED;
     }
 
     public double getScale() {
@@ -145,8 +144,8 @@ public class DrawableIcon extends BaseDrawable {
             if (ByteUtils.get(changeMask, Z_CHANGED)) {
                 stream.writeByte(zIndex);
             }
-            if (ByteUtils.get(changeMask, ALPHA_CHANGED)) {
-                stream.writeDouble(alpha);
+            if (ByteUtils.get(changeMask, ANGLE_CHANGED)) {
+                stream.writeDouble(angle);
             }
             if (ByteUtils.get(changeMask, SCALE_CHANGED)) {
                 stream.writeDouble(scale);
@@ -176,8 +175,8 @@ public class DrawableIcon extends BaseDrawable {
             if (ByteUtils.get(changeMask, Z_CHANGED)) {
                 zIndex = stream.readByte();
             }
-            if (ByteUtils.get(changeMask, ALPHA_CHANGED)) {
-                alpha = stream.readDouble();
+            if (ByteUtils.get(changeMask, ANGLE_CHANGED)) {
+                angle = stream.readDouble();
             }
             if (ByteUtils.get(changeMask, SCALE_CHANGED)) {
                 scale = stream.readDouble();
@@ -221,22 +220,21 @@ public class DrawableIcon extends BaseDrawable {
         ItemStack stack = clientStack;
         if(stack != null && stack.getItem() != null) {
             if(stack.getItem() instanceof ItemBlock) {
-                renderRotatingBlockIntoGUI(renderer, clientStack, this.x, this.y, this.zIndex, (float)this.alpha, (float)this.scale, 30);
+                renderRotatingBlockIntoGUI(renderer, clientStack, this.x, this.y, this.zIndex, (float)this.scale, (float)this.angle);
             }else{
-                renderItemIntoGUI(renderer, clientStack, this.x, this.y, this.zIndex, (float)this.alpha, (float)this.scale);
+                renderItemIntoGUI(renderer, clientStack, this.x, this.y, this.zIndex, (float)this.scale);
             }
         }
     }
     
     /* Thanks Pahi- for your helpers :) P.S. I love your Dev Environment, and congratulations also. -NC */
-    private static void renderRotatingBlockIntoGUI(FontRenderer fontRenderer, ItemStack stack, int x, int y, float zLevel, float alpha, float scale, float angle) {
+    private static void renderRotatingBlockIntoGUI(FontRenderer fontRenderer, ItemStack stack, int x, int y, float zLevel, float scale, float angle) {
 
         RenderBlocks renderBlocks = new RenderBlocks();
 
         Block block = Block.blocksList[stack.itemID];
         FMLClientHandler.instance().getClient().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
         GL11.glPushMatrix();
-        //GL11.glEnable(GL11.GL_LIGHTING);
         RenderHelper.enableGUIStandardItemLighting();
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240, 240);
         GL11.glTranslatef(x - 2, y + 3, -3.0F + zLevel);
@@ -252,17 +250,17 @@ public class DrawableIcon extends BaseDrawable {
         float var12 = (var10 >> 8 & 255) / 255.0F;
         float var13 = (var10 & 255) / 255.0F;
 
-        GL11.glColor4f(var16, var12, var13, alpha);
+        GL11.glColor4f(var16, var12, var13, 1f);
 
         GL11.glRotatef(-90.0F, 0.0F, 1.0F, 0.0F);
-        renderBlocks.useInventoryTint = false; // Inventory Tint prevents the use of Alpha
+        renderBlocks.useInventoryTint = true;
         renderBlocks.renderBlockAsItem(block, stack.getItemDamage(), 1.0F);
+        renderBlocks.useInventoryTint = false;
         RenderHelper.disableStandardItemLighting();
-        //GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glPopMatrix();
     }
 
-    private static void renderItemIntoGUI(FontRenderer fontRenderer, ItemStack itemStack, int x, int y, float zLevel, float opacity, float scale) {
+    private static void renderItemIntoGUI(FontRenderer fontRenderer, ItemStack itemStack, int x, int y, float zLevel, float scale) {
         Icon icon = itemStack.getIconIndex();
         GL11.glDisable(GL11.GL_LIGHTING);
         FMLClientHandler.instance().getClient().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
@@ -270,7 +268,7 @@ public class DrawableIcon extends BaseDrawable {
         float red = (overlayColour >> 16 & 255) / 255.0F;
         float green = (overlayColour >> 8 & 255) / 255.0F;
         float blue = (overlayColour & 255) / 255.0F;
-        GL11.glColor4f(red, green, blue, opacity);
+        GL11.glColor4f(red, green, blue, 1f);
         drawTexturedQuad(x, y, icon, 16 * scale, 16 * scale, zLevel);
         GL11.glEnable(GL11.GL_LIGHTING);
 

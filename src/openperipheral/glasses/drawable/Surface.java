@@ -248,7 +248,7 @@ public class Surface implements ISurface, ILuaObject {
         try{
             lock.lock();
             try{
-                drawables.put(count, new DrawableIcon(this, x, y, id, meta, 1, 1));
+                drawables.put(count, new DrawableIcon(this, x, y, id, meta));
                 changes.put(count, Short.MAX_VALUE);
                 obj = drawables.get(count++);
             }catch(Exception ex) {

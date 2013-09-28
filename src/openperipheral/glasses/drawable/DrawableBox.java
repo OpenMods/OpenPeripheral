@@ -8,7 +8,6 @@ import net.minecraft.client.renderer.Tessellator;
 import openperipheral.core.interfaces.IDrawable;
 import openperipheral.core.interfaces.ISurface;
 import openperipheral.core.util.ByteUtils;
-import openperipheral.glasses.block.TileEntityGlassesBridge;
 
 import org.lwjgl.opengl.GL11;
 
