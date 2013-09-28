@@ -13,18 +13,18 @@ import dan200.computer.api.IComputerAccess;
 public class AdapterFrequencyOwner implements IPeripheralAdapter {
 
 	@Override
-	public Class getTargetClass() {
+	public Class<?> getTargetClass() {
 		return ReflectionHelper.getClass("codechicken.enderstorage.common.TileFrequencyOwner");
 	}
 
 	@LuaMethod(
 		returnType = LuaType.TABLE, onTick = false, description = "Get the colours active on this chest or tank")
-	public HashMap getColors(IComputerAccess computer, TileEntity frequencyOwner) {
-		HashMap map = new HashMap();
+	public HashMap<Integer, Double> getColors(IComputerAccess computer, TileEntity frequencyOwner) {
+		HashMap<Integer, Double> map = new HashMap<Integer, Double>();
 		int frequency = getFreq(frequencyOwner);
-		map.put(1, (frequency >> 8 & 0xF));
-		map.put(2, (frequency >> 4 & 0xF));
-		map.put(3, (frequency & 0xF));
+		map.put(1, Math.pow(2, (frequency >> 8 & 0xF)));
+		map.put(2, Math.pow(2, (frequency >> 4 & 0xF)));
+		map.put(3, Math.pow(2, (frequency & 0xF)));
 		return map;
 	}
 
