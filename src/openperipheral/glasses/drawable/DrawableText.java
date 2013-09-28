@@ -20,6 +20,7 @@ public class DrawableText extends BaseDrawable implements IDrawable {
 	private short y;
 	private String text;
 	private int color;
+	private double alpha = 1f;
 	private float scale = 1f;
 
 	public static final int X_CHANGED = 1;
@@ -28,6 +29,7 @@ public class DrawableText extends BaseDrawable implements IDrawable {
 	public static final int COLOR_CHANGED = 4;
 	public static final int Z_CHANGED = 5;
 	public static final int SCALE_CHANGED = 6;
+	public static final int OPACITY_CHANGED = 7;
 
 	public DrawableText() {
 		super();
@@ -39,7 +41,8 @@ public class DrawableText extends BaseDrawable implements IDrawable {
 		this.y = (short)y;
 		this.text = text;
 		this.color = color;
-		this.methodNames = new String[] { "setX", "getX", "setY", "getY", "setColor", "getColor", "setText", "getText", "setZIndex", "getZIndex", "setScale", "getScale", "getWidth", "delete" };
+		this.alpha = 1f;
+		this.methodNames = new String[] { "setX", "getX", "setY", "getY", "setColor", "getColor", "setText", "getText", "setZIndex", "getZIndex", "setScale", "getScale", "getWidth", "getHeight", "getOpacity", "setOpacity", "delete" };
 	}
 
 	@Override
@@ -49,7 +52,8 @@ public class DrawableText extends BaseDrawable implements IDrawable {
 		GL11.glTranslatef(x, y, 0);
 		GL11.glPushMatrix();
 		GL11.glScalef(scale, scale, scale);
-		fontRenderer.drawString(text, 0, 0, color);
+		
+		fontRenderer.drawString(text, 0, 0, ((int)(alpha*255) << 24 | color));
 		GL11.glPopMatrix();
 		GL11.glPopMatrix();
 	}
@@ -69,6 +73,10 @@ public class DrawableText extends BaseDrawable implements IDrawable {
 	public int getWidth() {
 		return (int)(FontSizeChecker.getInstance().getStringWidth(getText()) * getScale());
 	}
+	
+	public int getHeight() {
+		return (int)(FontSizeChecker.getInstance().getStringHeight(getText()) * getScale());
+	}
 
 	@Override
 	public int getX() {
@@ -82,6 +90,10 @@ public class DrawableText extends BaseDrawable implements IDrawable {
 
 	public int getZIndex() {
 		return zIndex;
+	}
+	
+	public double getOpacity() {
+		return alpha;
 	}
 
 	@Override
@@ -99,6 +111,8 @@ public class DrawableText extends BaseDrawable implements IDrawable {
 			if (ByteUtils.get(changeMask, Z_CHANGED)) zIndex = stream.readByte();
 
 			if (ByteUtils.get(changeMask, SCALE_CHANGED)) scale = stream.readFloat();
+			
+			if (ByteUtils.get(changeMask, OPACITY_CHANGED)) alpha = stream.readDouble();
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -140,6 +154,13 @@ public class DrawableText extends BaseDrawable implements IDrawable {
 		zIndex = z;
 		return Z_CHANGED;
 	}
+	
+	public int setOpacity(double o) {
+		if (alpha == o) { return -1; }
+		if (o < 0 || o > 1.0) { return -1; }
+		alpha = o;
+		return OPACITY_CHANGED;
+	}
 
 	@Override
 	public void writeTo(DataOutputStream stream, Short changeMask) {
@@ -155,6 +176,8 @@ public class DrawableText extends BaseDrawable implements IDrawable {
 			if (ByteUtils.get(changeMask, Z_CHANGED)) stream.writeByte(zIndex);
 
 			if (ByteUtils.get(changeMask, SCALE_CHANGED)) stream.writeFloat(scale);
+			
+			if (ByteUtils.get(changeMask, OPACITY_CHANGED)) stream.writeDouble(alpha);
 
 		} catch (IOException e) {
 			e.printStackTrace();

@@ -26,7 +26,7 @@ public class AdapterGlassesBridge implements IPeripheralAdapter {
 				@Arg(name = "x", description = "The x position from the top left", type = LuaType.NUMBER),
 				@Arg(name = "y", description = "The y position from the top left", type = LuaType.NUMBER),
 				@Arg(name = "text", description = "The text to display", type = LuaType.STRING),
-				@Arg(name = "color", description = "The text color", type = LuaType.NUMBER) })
+				@Arg(name = "color", description = "The text color", type = LuaType.NUMBER)})
 	public ILuaObject addText(IComputerAccess computer, TileEntityGlassesBridge bridge, int x, int y, String text, int color) {
 		return bridge.addText(x, y, text, color);
 	}

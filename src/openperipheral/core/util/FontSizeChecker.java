@@ -124,4 +124,7 @@ public class FontSizeChecker {
 		}
 	}
 
+	public int getStringHeight(String par1Str) {
+		return (par1Str == null ? 0 : 8);
+	}
 }
