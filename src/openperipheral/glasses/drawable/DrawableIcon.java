@@ -220,15 +220,15 @@ public class DrawableIcon extends BaseDrawable {
         ItemStack stack = clientStack;
         if(stack != null && stack.getItem() != null) {
             if(stack.getItem() instanceof ItemBlock) {
-                renderRotatingBlockIntoGUI(renderer, clientStack, this.x, this.y, this.zIndex, (float)this.scale, (float)this.angle);
+                renderRotatingBlockIntoGUI(renderer, clientStack, this.x, this.y, (float)this.scale, (float)this.angle);
             }else{
-                renderItemIntoGUI(renderer, clientStack, this.x, this.y, this.zIndex, (float)this.scale);
+                renderItemIntoGUI(renderer, clientStack, this.x, this.y, (float)this.scale);
             }
         }
     }
     
     /* Thanks Pahi- for your helpers :) P.S. I love your Dev Environment, and congratulations also. -NC */
-    private static void renderRotatingBlockIntoGUI(FontRenderer fontRenderer, ItemStack stack, int x, int y, float zLevel, float scale, float angle) {
+    private static void renderRotatingBlockIntoGUI(FontRenderer fontRenderer, ItemStack stack, int x, int y, float scale, float angle) {
 
         RenderBlocks renderBlocks = new RenderBlocks();
 
@@ -237,9 +237,9 @@ public class DrawableIcon extends BaseDrawable {
         GL11.glPushMatrix();
         RenderHelper.enableGUIStandardItemLighting();
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240, 240);
-        GL11.glTranslatef(x - 2, y + 3, -3.0F + zLevel);
+        GL11.glTranslatef(x, y, 0.0f);
         GL11.glScalef(10.0F, 10.0F, 10.0F);
-        GL11.glTranslatef(1.0F, 0.5F, 1.0F);
+        //GL11.glTranslatef(1.0F, 0.5F, 1.0F);
         GL11.glScalef(1.0F * scale, 1.0F * scale, -1.0F);
         GL11.glRotatef(210.0F, 1.0F, 0.0F, 0.0F);
         GL11.glRotatef(0F + 1 * angle, 0.0F, 1.0F, 0.0F);
@@ -260,7 +260,7 @@ public class DrawableIcon extends BaseDrawable {
         GL11.glPopMatrix();
     }
 
-    private static void renderItemIntoGUI(FontRenderer fontRenderer, ItemStack itemStack, int x, int y, float zLevel, float scale) {
+    private static void renderItemIntoGUI(FontRenderer fontRenderer, ItemStack itemStack, int x, int y, float scale) {
         Icon icon = itemStack.getIconIndex();
         GL11.glDisable(GL11.GL_LIGHTING);
         FMLClientHandler.instance().getClient().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
@@ -269,19 +269,19 @@ public class DrawableIcon extends BaseDrawable {
         float green = (overlayColour >> 8 & 255) / 255.0F;
         float blue = (overlayColour & 255) / 255.0F;
         GL11.glColor4f(red, green, blue, 1f);
-        drawTexturedQuad(x, y, icon, 16 * scale, 16 * scale, zLevel);
+        drawTexturedQuad(x, y, icon, 16 * scale, 16 * scale);
         GL11.glEnable(GL11.GL_LIGHTING);
 
     }
 
-    private static void drawTexturedQuad(int x, int y, Icon icon, float width, float height, double zLevel) {
+    private static void drawTexturedQuad(int x, int y, Icon icon, float width, float height) {
 
         Tessellator tessellator = Tessellator.instance;
         tessellator.startDrawingQuads();
-        tessellator.addVertexWithUV(x + 0, y + height, zLevel, icon.getMinU(), icon.getMaxV());
-        tessellator.addVertexWithUV(x + width, y + height, zLevel, icon.getMaxU(), icon.getMaxV());
-        tessellator.addVertexWithUV(x + width, y + 0, zLevel, icon.getMaxU(), icon.getMinV());
-        tessellator.addVertexWithUV(x + 0, y + 0, zLevel, icon.getMinU(), icon.getMinV());
+        tessellator.addVertexWithUV(x + 0, y + height, 0D, icon.getMinU(), icon.getMaxV());
+        tessellator.addVertexWithUV(x + width, y + height, 0D, icon.getMaxU(), icon.getMaxV());
+        tessellator.addVertexWithUV(x + width, y + 0, 0D, icon.getMaxU(), icon.getMinV());
+        tessellator.addVertexWithUV(x + 0, y + 0, 0D, icon.getMinU(), icon.getMinV());
         tessellator.draw();
     }
 
