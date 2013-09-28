@@ -220,7 +220,7 @@ public class DrawableIcon extends BaseDrawable {
         ItemStack stack = clientStack;
         if(stack != null && stack.getItem() != null) {
             if(stack.getItem() instanceof ItemBlock) {
-                renderRotatingBlockIntoGUI(renderer, clientStack, this.x, this.y, (float)this.scale, (float)this.angle);
+                renderRotatingBlockIntoGUI(renderer, clientStack, this.x + 1, this.y + 1, (float)this.scale, (float)this.angle);
             }else{
                 renderItemIntoGUI(renderer, clientStack, this.x, this.y, (float)this.scale);
             }

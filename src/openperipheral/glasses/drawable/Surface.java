@@ -377,7 +377,7 @@ public class Surface implements ISurface, ILuaObject {
         return playerName;
     }
 
-    private static String[] methodNames = new String[] { "getPlayerName", "clear", "getAllIds", "getById", "addBox", "addText", "addGradientBox" };
+    private static String[] methodNames = new String[] { "getPlayerName", "clear", "getAllIds", "getById", "addBox", "addText", "addGradientBox", "addIcon" };
     
     @Override
     public String[] getMethodNames() {
