@@ -4,6 +4,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
 import openperipheral.core.util.ByteUtils;
+import openperipheral.glasses.client.GlassesRenderHelper;
 
 import cpw.mods.fml.client.FMLClientHandler;
 
@@ -214,7 +215,7 @@ public class DrawableLiquid extends BaseDrawable {
                     float yDrawSize = yIterations - yIteration;
                     xDrawSize = xDrawSize > 1 ? 1f : xDrawSize;
                     yDrawSize = yDrawSize > 1 ? 1f : yDrawSize;
-                    drawTexturedQuadAdvanced(x + xIteration * fluidIcon.getIconWidth(), y + yIteration * fluidIcon.getIconHeight(), fluidIcon, xDrawSize * fluidIcon.getIconWidth(), yDrawSize * fluidIcon.getIconHeight(), xDrawSize, yDrawSize, this.alpha);
+                    GlassesRenderHelper.drawTexturedQuadAdvanced(x + xIteration * fluidIcon.getIconWidth(), y + yIteration * fluidIcon.getIconHeight(), fluidIcon, xDrawSize * fluidIcon.getIconWidth(), yDrawSize * fluidIcon.getIconHeight(), xDrawSize, yDrawSize, this.alpha);
                 }
             }
         }

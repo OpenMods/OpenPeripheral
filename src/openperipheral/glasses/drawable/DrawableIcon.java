@@ -21,6 +21,7 @@ import net.minecraft.util.Icon;
 
 import openperipheral.core.interfaces.ISurface;
 import openperipheral.core.util.ByteUtils;
+import openperipheral.glasses.client.GlassesRenderHelper;
 
 public class DrawableIcon extends BaseDrawable {
 
@@ -220,9 +221,9 @@ public class DrawableIcon extends BaseDrawable {
         ItemStack stack = clientStack;
         if(stack != null && stack.getItem() != null) {
             if(stack.getItem() instanceof ItemBlock) {
-                renderRotatingBlockIntoGUI(renderer, clientStack, this.x + 1, this.y + 1, (float)this.scale, (float)this.angle);
+                GlassesRenderHelper.renderRotatingBlockIntoGUI(renderer, clientStack, this.x + 1, this.y + 1, (float)this.scale, (float)this.angle);
             }else{
-                renderItemIntoGUI(renderer, clientStack, this.x, this.y, (float)this.scale);
+                GlassesRenderHelper.renderItemIntoGUI(renderer, clientStack, this.x, this.y, (float)this.scale);
             }
         }
     }
