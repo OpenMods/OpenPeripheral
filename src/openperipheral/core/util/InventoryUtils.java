@@ -20,6 +20,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 
@@ -227,6 +228,30 @@ public class InventoryUtils {
 			}
 		}
 		return null;
+	}
+	
+	private static IInventory getLargeInventories(TileEntity te) {
+	    if(te != null && te instanceof IInventory) {
+	        if(te instanceof TileEntityChest) {
+	            TileEntityChest chest = (TileEntityChest)te;
+	            if(!chest.adjacentChestChecked) {
+	                try {
+	                    chest.checkForAdjacentChests();
+	                }catch(Exception ex) {
+	                    ex.printStackTrace();
+	                    return (IInventory)te;
+	                }
+	            }
+                /* Lol, Incorrect name. That's positive not position. I'll report that to MCP -NC */
+                if(chest.adjacentChestZPosition != null) return new InventoryLargeChest("container.chestDouble", chest, chest.adjacentChestZPosition);
+                if(chest.adjacentChestZNeg != null) return new InventoryLargeChest("container.chestDouble", chest.adjacentChestZNeg, chest);
+                if(chest.adjacentChestXPos != null) return new InventoryLargeChest("container.chestDouble", chest, chest.adjacentChestXPos);
+	            if(chest.adjacentChestXNeg != null) return new InventoryLargeChest("container.chestDouble", chest.adjacentChestXNeg, chest);
+	            return chest;	            
+	        } 
+	        return (IInventory)te;
+	    }
+	    return null;
 	}
 
 	public static boolean canMoveItem(Object fromTile, Object toTile, int fromSlot, int intoSlot, ForgeDirection direction) {
