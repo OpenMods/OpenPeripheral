@@ -8,6 +8,7 @@ import openperipheral.core.AdapterManager;
 import openperipheral.core.BasicMount;
 import openperipheral.core.CommonProxy;
 import openperipheral.core.ConfigSettings;
+import openperipheral.core.ConnectionHandler;
 import openperipheral.core.Mods;
 import openperipheral.core.PeripheralHandler;
 import openperipheral.core.TickHandler;
@@ -61,6 +62,7 @@ import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
+import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 import dan200.computer.api.ComputerCraftAPI;
@@ -182,7 +184,7 @@ public class OpenPeripheral {
 		
 		TickRegistry.registerTickHandler(new TickHandler(), Side.SERVER);
 		ComputerCraftAPI.registerExternalPeripheral(TileEntity.class, peripheralHandler);
-
+		NetworkRegistry.instance().registerConnectionHandler(new ConnectionHandler());
 	}
 
 }

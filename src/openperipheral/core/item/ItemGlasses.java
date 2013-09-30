@@ -14,11 +14,13 @@ import openperipheral.OpenPeripheral;
 import openperipheral.core.ConfigSettings;
 import openperipheral.core.util.MiscUtils;
 import openperipheral.core.util.RecipeUtils;
+import openperipheral.glasses.block.TileEntityGlassesBridge;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemGlasses extends ItemArmor {
-
+	public TileEntityGlassesBridge bridge = null;
+	
 	public ItemGlasses() {
 		super(ConfigSettings.glassesId, EnumArmorMaterial.CHAIN, 0, 0);
 		setMaxDamage(0);
@@ -27,14 +29,14 @@ public class ItemGlasses extends ItemArmor {
 		setCreativeTab(OpenPeripheral.tabOpenPeripheral);
 		setUnlocalizedName("openperipheral.glasses");
 	}
-
+	
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void getSubItems(int id, CreativeTabs tab, List subItems) {
 		subItems.add(new ItemStack(id, 1, 0));
 		subItems.add(RecipeUtils.getGuideItemStack());
 	}
-
+	
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4) {
