@@ -203,34 +203,22 @@ public class InventoryUtils {
 	}
 
 	public static IInventory getInventory(World world, int x, int y, int z, ForgeDirection direction) {
-		if (direction != null && direction != ForgeDirection.UNKNOWN) {
+		/* If a direction is supplied, shift the coordinate paramters by their offset */
+	    if (direction != null && direction != ForgeDirection.UNKNOWN) {
 			x += direction.offsetX;
 			y += direction.offsetY;
 			z += direction.offsetZ;
-			TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
-			if ((tileEntity != null) && ((tileEntity instanceof IInventory)))
-			{
-				int blockID = world.getBlockId(x, y, z);
-				Block block = Block.blocksList[blockID];
-				if ((block instanceof BlockChest))
-				{
-					if (world.getBlockId(x - 1, y, z) == blockID) { return new InventoryLargeChest("Large chest", (IInventory)world.getBlockTileEntity(x - 1, y, z), (IInventory)tileEntity); }
-					if (world.getBlockId(x + 1, y, z) == blockID) { return new InventoryLargeChest("Large chest", (IInventory)tileEntity, (IInventory)world.getBlockTileEntity(x + 1, y, z)); }
-					if (world.getBlockId(x, y, z - 1) == blockID) { return new InventoryLargeChest("Large chest", (IInventory)world.getBlockTileEntity(x, y, z - 1), (IInventory)tileEntity); }
-					if (world.getBlockId(x, y, z + 1) == blockID) { return new InventoryLargeChest("Large chest", (IInventory)tileEntity, (IInventory)world.getBlockTileEntity(x, y, z + 1)); }
-				}
-				return (IInventory)tileEntity;
-			}
-		}else {
-			TileEntity te = world.getBlockTileEntity(x, y, z);
-			if (te instanceof IInventory) {
-				return (IInventory) te;
-			}
 		}
-		return null;
+		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+		return getLargeInventory(tileEntity);
 	}
 	
-	private static IInventory getLargeInventories(TileEntity te) {
+	/**
+	 * Returns the inventory of a TileEntity
+	 * @param te The TileEntity to get the inventory for
+	 * @return IInventory of any generic TE Inventory or an InventoryLargeChest for Double Chests.
+	 */
+	private static IInventory getLargeInventory(TileEntity te) {
 	    if(te != null && te instanceof IInventory) {
 	        if(te instanceof TileEntityChest) {
 	            TileEntityChest chest = (TileEntityChest)te;
