@@ -202,6 +202,30 @@ public class InventoryUtils {
 		return merged;
 	}
 
+	/**
+	 * Gets an adjacent IInventory from a specified IInventory
+	 * @param inventory IInventory to get an adjacent Inventory for
+	 * @param offsetDirection The offset for the Inventory
+	 * @return IInventory of an adjacent TileEntity or null if one is not available. Returns the inventory parameter if the direction is invalid.
+	 */
+	public static IInventory getInventory(IInventory inventory, ForgeDirection offsetDirection) {
+	    if(offsetDirection == null || offsetDirection == ForgeDirection.UNKNOWN || !(inventory instanceof TileEntity)) { 
+	        return inventory;
+	    }
+	    TileEntity targetTileEntity = (TileEntity)inventory;
+	    TileEntity otherTileEntity = BlockUtils.getTileInDirection(targetTileEntity, offsetDirection);
+	    return getInventory(otherTileEntity); 
+	}
+	
+	/**
+	 * Returns an inventory at a world location
+	 * @param world World Object to get the inventory for
+	 * @param x X position for the inventory
+	 * @param y Y position for the inventory
+	 * @param z Z position for the inventory
+	 * @param direction Offset direction for the inventory. null or UNKNOWN for no offset.
+	 * @return The inventory at a location in a world. Supports large chests.
+	 */
 	public static IInventory getInventory(World world, int x, int y, int z, ForgeDirection direction) {
 		/* If a direction is supplied, shift the coordinate paramters by their offset */
 	    if (direction != null && direction != ForgeDirection.UNKNOWN) {
@@ -210,8 +234,17 @@ public class InventoryUtils {
 			z += direction.offsetZ;
 		}
 		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
-		return getLargeInventory(tileEntity);
+		return getInventory(tileEntity);
 	}
+    
+	/**
+	 * Get an IInventory from a TileEntity
+	 * @param tileEntity TileEntity to get the Inventory for.
+	 * @return IInventory from the TileEntity, or null if it wasn't a valid TE.
+	 */
+    public static IInventory getInventory(TileEntity tileEntity) {
+        return getLargeInventory(tileEntity);
+    }
 	
 	/**
 	 * Returns the inventory of a TileEntity
