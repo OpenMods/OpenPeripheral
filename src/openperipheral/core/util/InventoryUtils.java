@@ -203,13 +203,25 @@ public class InventoryUtils {
 	}
 
 	/**
+	 * Get the same inventory handling inventory expansion
+	 * @param inventory Inventory to get
+	 * @return Inventory parameter or a large chest inventory if it's a large chest
+	 */
+	public static IInventory getInventory(IInventory inventory) {
+	    if(!(inventory instanceof TileEntity)) {
+	        return inventory;
+	    }
+	    return getLargeInventory((TileEntity)inventory);
+	}
+	
+	/**
 	 * Gets an adjacent IInventory from a specified IInventory
 	 * @param inventory IInventory to get an adjacent Inventory for
 	 * @param offsetDirection The offset for the Inventory
 	 * @return IInventory of an adjacent TileEntity or null if one is not available. Returns the inventory parameter if the direction is invalid.
 	 */
 	public static IInventory getInventory(IInventory inventory, ForgeDirection offsetDirection) {
-	    if(offsetDirection == null || offsetDirection == ForgeDirection.UNKNOWN || !(inventory instanceof TileEntity)) { 
+	    if(!(inventory instanceof TileEntity)) { 
 	        return inventory;
 	    }
 	    TileEntity targetTileEntity = (TileEntity)inventory;

@@ -26,14 +26,14 @@ public class AdapterInventory implements IPeripheralAdapter {
 
 	@LuaMethod(returnType = LuaType.STRING, description = "Get the name of this inventory")
 	public String getInventoryName(IComputerAccess computer, IInventory target) {
-	    IInventory inventory = InventoryUtils.getInventory(target, null);
+	    IInventory inventory = InventoryUtils.getInventory(target);
 	    if(inventory == null) return null;
 		return inventory.getInvName();
 	}
 
 	@LuaMethod(returnType = LuaType.NUMBER, description = "Get the size of this inventory")
 	public int getInventorySize(IComputerAccess computer, IInventory target) {
-	    IInventory inventory = InventoryUtils.getInventory(target, null);
+	    IInventory inventory = InventoryUtils.getInventory(target);
 	    if(inventory == null) return 0;
 		return inventory.getSizeInventory();
 	}
@@ -49,7 +49,7 @@ public class AdapterInventory implements IPeripheralAdapter {
 		int merged = 0; // Still using merged for the sake of debugging, but it's redundant now.
 		IInventory otherInventory = InventoryUtils.getInventory(target, direction); // Get adjacent inventory
 		if(otherInventory == null || otherInventory == target) return 0; // Invalid direction or target
-		merged = InventoryUtils.moveItemInto(otherInventory, slot - 1, target, intoSlot - 1, maxAmount, direction.getOpposite());
+		merged = InventoryUtils.moveItemInto(otherInventory, slot - 1, InventoryUtils.getInventory(target), intoSlot - 1, maxAmount, direction.getOpposite());
 		return merged;
 	}
 
@@ -66,7 +66,7 @@ public class AdapterInventory implements IPeripheralAdapter {
 		int merged = 0;
 		IInventory otherInventory = InventoryUtils.getInventory(target, direction);
 		if(otherInventory == null || otherInventory == target) return 0;
-		merged = InventoryUtils.moveItemInto(target, slot - 1, otherInventory, intoSlot - 1, maxAmount, direction.getOpposite());
+		merged = InventoryUtils.moveItemInto(InventoryUtils.getInventory(target), slot - 1, otherInventory, intoSlot - 1, maxAmount, direction.getOpposite());
 		return merged;
 	}
 
@@ -80,7 +80,7 @@ public class AdapterInventory implements IPeripheralAdapter {
 		int merged = 0;
 		IInventory otherInventory = InventoryUtils.getInventory(target, direction);
 		if(otherInventory == null || otherInventory == target) return 0;
-		merged = InventoryUtils.moveItem(target, slot - 1, otherInventory, maxAmount, direction.getOpposite());
+		merged = InventoryUtils.moveItem(InventoryUtils.getInventory(target), slot - 1, otherInventory, maxAmount, direction.getOpposite());
 		return merged;
 	}
 
@@ -94,13 +94,13 @@ public class AdapterInventory implements IPeripheralAdapter {
 		int merged = 0;
 		IInventory otherInventory = InventoryUtils.getInventory(target, direction);
 		if(otherInventory == null || otherInventory == target) return 0;
-		merged = InventoryUtils.moveItem(otherInventory, slot - 1, target, maxAmount, direction.getOpposite());
+		merged = InventoryUtils.moveItem(otherInventory, slot - 1, InventoryUtils.getInventory(target), maxAmount, direction.getOpposite());
 		return merged;
 	}
 
 	@LuaMethod(returnType = LuaType.VOID, description = "Condense and tidy the stacks in an inventory")
 	public void condenseItems(IComputerAccess computer, IInventory target) throws Exception {
-	    IInventory inventory = InventoryUtils.getInventory(target,  null);
+	    IInventory inventory = InventoryUtils.getInventory(target);
 	    if(inventory == null && target != null) {
 	        // I hope to never see this ever. -NC
 	        System.out.println("OpenPeripheral Warning: (condenseItems) getInventory for the same inventory failed hard. That's a bug!!!");
@@ -127,7 +127,7 @@ public class AdapterInventory implements IPeripheralAdapter {
 	public boolean swapStacks(IComputerAccess computer, IInventory target, int from, int to) throws Exception {
 		from--;
 		to--;
-		IInventory inventory = InventoryUtils.getInventory(target,  null);
+		IInventory inventory = InventoryUtils.getInventory(target);
 		if(inventory == null && target != null) {
 		    System.out.println("OpenPeripheral Warning: (swapStacks) getInventory for the same inventory failed hard. That's a bug!!!");
             inventory = target;
@@ -156,7 +156,7 @@ public class AdapterInventory implements IPeripheralAdapter {
 			@Arg( type = LuaType.NUMBER, name = "slotNumber", description = "The slot number, from 1 to the max amount of slots")
 		})
 	public ItemStack getStackInSlot(IComputerAccess computer, IInventory target, int slot) throws Exception {
-		IInventory invent = InventoryUtils.getInventory(target, null);
+		IInventory invent = InventoryUtils.getInventory(target);
 		slot--;
 		if (slot < 0 || slot >= invent.getSizeInventory()) { throw new Exception("Invalid slot number"); }
 		return invent.getStackInSlot(slot);
@@ -164,7 +164,7 @@ public class AdapterInventory implements IPeripheralAdapter {
 	
 	@LuaMethod(returnType = LuaType.TABLE, description = "Get a table with all the items of the chest")
 	public ItemStack[] getAllStacks(IComputerAccess computer, IInventory target) {
-	    IInventory inventory = InventoryUtils.getInventory(target, null);
+	    IInventory inventory = InventoryUtils.getInventory(target);
 		ItemStack[] allStacks = new ItemStack[inventory.getSizeInventory()];
 		for (int i = 0; i < inventory.getSizeInventory(); i++) {
 			allStacks[i] = inventory.getStackInSlot(i);
@@ -177,7 +177,7 @@ public class AdapterInventory implements IPeripheralAdapter {
 			@Arg( type = LuaType.NUMBER, name = "slotNumber", description = "The slot number, from 1 to the max amount of slots")
 		})
 	public void destroyStack(IComputerAccess computer, IInventory target, int slot) throws Exception {
-		IInventory invent = InventoryUtils.getInventory(target, null);
+		IInventory invent = InventoryUtils.getInventory(target);
 		slot--;
 		if (slot < 0 || slot >= invent.getSizeInventory()) { throw new Exception("Invalid slot number"); }
 		invent.setInventorySlotContents(slot, null);
