@@ -19,6 +19,7 @@ import net.minecraft.world.WorldProvider;
 import openperipheral.core.interfaces.IAttachable;
 import openperipheral.core.interfaces.IDrawable;
 import openperipheral.core.interfaces.ISurface;
+import openperipheral.core.item.ItemGlasses;
 import openperipheral.core.util.MiscUtils;
 import openperipheral.core.util.PacketChunker;
 import openperipheral.core.util.StringUtils;
@@ -229,6 +230,12 @@ public class TileEntityGlassesBridge extends TileEntity implements IAttachable,
                     username, getGuid(), computer.getAttachmentName() });
         }
     }
+    
+    public void enqueueComputerEvent(String event, String playerName) {
+    	for (IComputerAccess computer :computers) {
+    		computer.queueEvent(event, new Object[] { playerName });
+    	}
+    }
 
     @Override
     public void addComputer(IComputerAccess computer) {
@@ -296,6 +303,7 @@ public class TileEntityGlassesBridge extends TileEntity implements IAttachable,
         openPTag.setInteger("d", worldObj.provider.dimensionId);
         tag.setTag("openp", openPTag);
         stack.setTagCompound(tag);
+        ((ItemGlasses)stack.getItem()).bridge = this;
     }
 
     @Override
