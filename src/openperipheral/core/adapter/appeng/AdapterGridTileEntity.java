@@ -109,6 +109,9 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 			throw new Exception("Slot is out of range");
 		}
 		ItemStack stack = inventory.getStackInSlot(slot);
+		if (stack == null) {
+			return 0;
+		}
 		amount = Math.min(amount, stack.stackSize);
 		amount = Math.max(amount, 0);
 		ItemStack sendStack = stack.copy();
