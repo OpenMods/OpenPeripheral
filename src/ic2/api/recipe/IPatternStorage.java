@@ -8,4 +8,8 @@ public interface IPatternStorage {
 
 	int[] getPatternvalus(ItemStack itemstack);
 
+	short getPatternCount();
+
+	ItemStack getPatternItemstack(int index);
+
 }
