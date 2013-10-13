@@ -15,6 +15,7 @@ import openperipheral.core.TickHandler;
 import openperipheral.core.TypeConversionRegistry;
 import openperipheral.core.adapter.AdapterGlassesBridge;
 import openperipheral.core.adapter.AdapterObject;
+import openperipheral.core.adapter.AdapterPlayerInventory;
 import openperipheral.core.adapter.AdapterSensor;
 import openperipheral.core.adapter.AdapterTicketMachine;
 import openperipheral.core.adapter.vanilla.AdapterBeacon;
@@ -148,6 +149,7 @@ public class OpenPeripheral {
 		AdapterManager.addPeripheralAdapter(new AdapterFluidHandler());
 		AdapterManager.addPeripheralAdapter(new AdapterGlassesBridge());
 		AdapterManager.addPeripheralAdapter(new AdapterSensor());
+		AdapterManager.addPeripheralAdapter(new AdapterPlayerInventory());
 		
 		if (ModLoader.isModLoaded(Mods.RAILCRAFT)) {
 			AdapterManager.addPeripheralAdapter(new AdapterTicketMachine());
