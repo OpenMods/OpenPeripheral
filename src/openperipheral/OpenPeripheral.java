@@ -17,6 +17,7 @@ import openperipheral.core.adapter.AdapterGlassesBridge;
 import openperipheral.core.adapter.AdapterObject;
 import openperipheral.core.adapter.AdapterSensor;
 import openperipheral.core.adapter.AdapterTicketMachine;
+import openperipheral.core.adapter.vanilla.AdapterBeacon;
 import openperipheral.core.adapter.vanilla.AdapterBrewingStand;
 import openperipheral.core.adapter.vanilla.AdapterComparator;
 import openperipheral.core.adapter.vanilla.AdapterFluidHandler;
@@ -141,6 +142,7 @@ public class OpenPeripheral {
 		AdapterManager.addPeripheralAdapter(new AdapterFurnace());
 		AdapterManager.addPeripheralAdapter(new AdapterObject());
 		AdapterManager.addPeripheralAdapter(new AdapterRecordPlayer());
+		AdapterManager.addPeripheralAdapter(new AdapterBeacon());
 		AdapterManager.addPeripheralAdapter(new AdapterFluidHandler());
 		AdapterManager.addPeripheralAdapter(new AdapterGlassesBridge());
 		AdapterManager.addPeripheralAdapter(new AdapterSensor());
