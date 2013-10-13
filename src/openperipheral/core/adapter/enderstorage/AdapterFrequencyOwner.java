@@ -77,8 +77,8 @@ public class AdapterFrequencyOwner implements IPeripheralAdapter {
 	
 	private static int parseComputerCraftColor(int color) throws Exception {
 		if (color < 0 || color > 32768) { throw new Exception("Invalid color supplied"); }
-		int val = (int) Math.floor(Math.log(color)/Math.log(2));
-		if (val < 0 || val > 15) { throw new Exception("Invalid color supplied."); }
-		return val;
+		double val = Math.log(color)/Math.log(2);
+		if (val < 0 || val > 15 || val % 1 != 0) { throw new Exception("Invalid color supplied."); }
+		return (int)val;
 	}
 }
