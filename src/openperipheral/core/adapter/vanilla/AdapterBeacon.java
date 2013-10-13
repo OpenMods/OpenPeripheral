@@ -1,7 +1,6 @@
 package openperipheral.core.adapter.vanilla;
 
 import dan200.computer.api.IComputerAccess;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntityBeacon;
 import openperipheral.api.IPeripheralAdapter;
@@ -26,22 +25,6 @@ public class AdapterBeacon implements IPeripheralAdapter {
 	public String getSecondaryEffect(IComputerAccess computer, TileEntityBeacon beacon) {
 		Integer effectId = beacon.getSecondaryEffect();
 		return getEffectName(effectId);
-	}
-	
-	@LuaMethod(returnType = LuaType.STRING, description = "Get the primary effect of the beacon as a localised string")
-	public String getPrimaryEffectLocaleName(IComputerAccess computer, TileEntityBeacon beacon) {
-		Integer effectId = beacon.getPrimaryEffect();
-		return I18n.getString(getEffectName(effectId));
-	}
-	
-	@LuaMethod(returnType = LuaType.STRING, description = "Get the secondary effect of the beacon as a localised string")
-	public String getSecondaryEffectLocaleName(IComputerAccess computer, TileEntityBeacon beacon) {
-		Integer effectId = beacon.getSecondaryEffect();
-		String name = I18n.getString(getEffectName(effectId));
-		if (effectId == beacon.getPrimaryEffect()) {
-			return name + " II";
-		}
-		return name;
 	}
 	
 	@LuaMethod(returnType = LuaType.NUMBER, description = "Get the height of the beacon's pyramid")
