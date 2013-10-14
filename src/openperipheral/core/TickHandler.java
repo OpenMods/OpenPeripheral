@@ -72,7 +72,7 @@ public class TickHandler implements ITickHandler {
 				for (EntityPlayer player : (List<EntityPlayer>)world.playerEntities) {
 					ItemStack helmet = player.inventory.armorItemInSlot(3);
 					if (MiscUtils.canBeGlasses(helmet)) {
-						TileEntityGlassesBridge bridge = TileEntityGlassesBridge.getGlassesBridgeFromStack(player.worldObj, helmet);
+						TileEntityGlassesBridge bridge = TileEntityGlassesBridge.getGlassesBridgeFromStack(helmet);
 						if (bridge != null) {
 							bridge.registerPlayer(player);
 						}

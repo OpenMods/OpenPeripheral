@@ -16,6 +16,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
+import net.minecraftforge.common.DimensionManager;
 import openperipheral.core.interfaces.IAttachable;
 import openperipheral.core.interfaces.IDrawable;
 import openperipheral.core.interfaces.ISurface;
@@ -249,8 +250,7 @@ public class TileEntityGlassesBridge extends TileEntity implements IAttachable,
         computers.remove(computer);
     }
 
-    public static TileEntityGlassesBridge getGlassesBridgeFromStack(
-            World worldObj, ItemStack stack) {
+    public static TileEntityGlassesBridge getGlassesBridgeFromStack(ItemStack stack) {
         if (stack.hasTagCompound()) {
             NBTTagCompound tag = stack.getTagCompound();
             if (tag.hasKey("openp")) {
@@ -260,14 +260,10 @@ public class TileEntityGlassesBridge extends TileEntity implements IAttachable,
                 int y = openPTag.getInteger("y");
                 int z = openPTag.getInteger("z");
                 int d = openPTag.getInteger("d");
-
-                if (worldObj == null) {
-                    WorldProvider provider = WorldProvider
-                            .getProviderForDimension(d);
-                    worldObj = provider.worldObj;
-                }
-
-                if (worldObj != null && d == worldObj.provider.dimensionId) {
+                
+                World worldObj = DimensionManager.getWorld(d);
+                
+                if (worldObj != null) {
                     if (worldObj.blockExists(x, y, z)) {
                         TileEntity tile = worldObj.getBlockTileEntity(x, y, z);
                         if (tile instanceof TileEntityGlassesBridge) {

@@ -20,7 +20,7 @@ public class ChatCommandInterceptor {
 
 					event.setCanceled(true);
 
-					TileEntityGlassesBridge te = TileEntityGlassesBridge.getGlassesBridgeFromStack(event.player.worldObj, headSlot);
+					TileEntityGlassesBridge te = TileEntityGlassesBridge.getGlassesBridgeFromStack(headSlot);
 
 					if (te != null) {
 						te.onChatCommand(event.message.substring(2).trim(), event.username);
