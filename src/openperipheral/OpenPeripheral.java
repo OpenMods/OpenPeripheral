@@ -17,16 +17,7 @@ import openperipheral.core.adapter.AdapterGlassesBridge;
 import openperipheral.core.adapter.AdapterObject;
 import openperipheral.core.adapter.AdapterPlayerInventory;
 import openperipheral.core.adapter.AdapterSensor;
-import openperipheral.core.adapter.AdapterTicketMachine;
-import openperipheral.core.adapter.vanilla.AdapterBeacon;
-import openperipheral.core.adapter.vanilla.AdapterBrewingStand;
-import openperipheral.core.adapter.vanilla.AdapterComparator;
 import openperipheral.core.adapter.vanilla.AdapterFluidHandler;
-import openperipheral.core.adapter.vanilla.AdapterFurnace;
-import openperipheral.core.adapter.vanilla.AdapterInventory;
-import openperipheral.core.adapter.vanilla.AdapterMobSpawner;
-import openperipheral.core.adapter.vanilla.AdapterNoteBlock;
-import openperipheral.core.adapter.vanilla.AdapterRecordPlayer;
 import openperipheral.core.block.BlockPlayerInventory;
 import openperipheral.core.block.BlockProxy;
 import openperipheral.core.block.BlockTicketMachine;
@@ -43,6 +34,8 @@ import openperipheral.core.integration.ModuleEnderStorage;
 import openperipheral.core.integration.ModuleForestry;
 import openperipheral.core.integration.ModuleIC2;
 import openperipheral.core.integration.ModuleMystcraft;
+import openperipheral.core.integration.ModuleRailcraft;
+import openperipheral.core.integration.ModuleVanilla;
 import openperipheral.core.item.ItemGeneric;
 import openperipheral.core.item.ItemGlasses;
 import openperipheral.core.item.ItemRemote;
@@ -136,24 +129,12 @@ public class OpenPeripheral {
 		TypeConversionRegistry.registerTypeConverter(new ConverterFluidTankInfo());
 		TypeConversionRegistry.registerTypeConverter(new ConverterForgeDirection());
 		TypeConversionRegistry.registerTypeConverter(new ConverterFluidTankInfo());
-
-		AdapterManager.addPeripheralAdapter(new AdapterInventory());
-		AdapterManager.addPeripheralAdapter(new AdapterNoteBlock());
-		AdapterManager.addPeripheralAdapter(new AdapterComparator());
-		AdapterManager.addPeripheralAdapter(new AdapterBrewingStand());
-		AdapterManager.addPeripheralAdapter(new AdapterFurnace());
+		
 		AdapterManager.addPeripheralAdapter(new AdapterObject());
-		AdapterManager.addPeripheralAdapter(new AdapterRecordPlayer());
-		AdapterManager.addPeripheralAdapter(new AdapterBeacon());
-		AdapterManager.addPeripheralAdapter(new AdapterMobSpawner());
 		AdapterManager.addPeripheralAdapter(new AdapterFluidHandler());
 		AdapterManager.addPeripheralAdapter(new AdapterGlassesBridge());
 		AdapterManager.addPeripheralAdapter(new AdapterSensor());
 		AdapterManager.addPeripheralAdapter(new AdapterPlayerInventory());
-		
-		if (ModLoader.isModLoaded(Mods.RAILCRAFT)) {
-			AdapterManager.addPeripheralAdapter(new AdapterTicketMachine());
-		}
 
 		if (ConfigSettings.robotsEnabled) {
 			RobotUpgradeManager.registerUpgradeProvider(new ProviderMovementUpgrade());
@@ -163,6 +144,8 @@ public class OpenPeripheral {
 			RobotUpgradeManager.registerUpgradeProvider(new ProviderInventoryUpgrade());
 			RobotUpgradeManager.registerUpgradeProvider(new ProviderTargetingUpgrade());
 		}
+		
+		ModuleVanilla.init();
 
 		if (Loader.isModLoaded(Mods.APPLIED_ENERGISTICS)) {
 			ModuleAppEng.init();
@@ -185,7 +168,11 @@ public class OpenPeripheral {
 		}
 
 		if (Loader.isModLoaded(Mods.MYSTCRAFT)) { 
-		  ModuleMystcraft.init();
+			ModuleMystcraft.init();
+		}
+		
+		if (ModLoader.isModLoaded(Mods.RAILCRAFT)) {
+			ModuleRailcraft.init();
 		}
 		
 		TickRegistry.registerTickHandler(new TickHandler(), Side.SERVER);
