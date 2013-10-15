@@ -38,6 +38,9 @@ public class ConfigSettings {
 	public static String CACHE_PATH = "";
 	public static String DATA_URL = String.format("%s%s", externalBase, "methods_new.json");
 	public static String previousVersion;
+	
+	public static int sensorRange = 5;
+	public static int sensorRangeInStorm = 5;
 
 	// blocks and items
 	public static int glassesId = 1055;
@@ -102,6 +105,14 @@ public class ConfigSettings {
 		prop = configFile.get("general", "robotsEnabled", robotsEnabled);
 		prop.comment = "Are robots enabled?";
 		robotsEnabled = prop.getBoolean(robotsEnabled);
+		
+		prop = configFile.get("general", "sensorRange", sensorRange);
+		prop.comment = "The range of the sensor block";
+		sensorRange = prop.getInt(sensorRange);
+		
+		prop = configFile.get("general", "sensorRangeInStorm", sensorRangeInStorm);
+		prop.comment = "The range of the sensor block during a storm";
+		sensorRangeInStorm = prop.getInt(sensorRangeInStorm);
 
 		prop = configFile.get("items", "glassesId", glassesId);
 		prop.comment = "The id of the glasses";

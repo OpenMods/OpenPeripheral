@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import openperipheral.core.ConfigSettings;
 import openperipheral.core.OPInventory;
 import openperipheral.core.interfaces.IConditionalSlots;
 import openperipheral.core.interfaces.IInventoryCallback;
@@ -130,7 +131,10 @@ public class TileEntitySensor extends TileEntity implements IInventory, IInvento
 
 	@Override
 	public int getSensorRange() {
-		return 5;
+		if (getWorld().isRaining() && getWorld().isThundering()) {
+			return ConfigSettings.sensorRangeInStorm;
+		}
+		return ConfigSettings.sensorRange;
 	}
 
 }
