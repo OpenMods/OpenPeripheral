@@ -92,7 +92,7 @@ public class AdapterSensor implements IPeripheralAdapter {
 		args = {
 			@Arg(type = LuaType.NUMBER, name = "minecartId", description = "The minecart id retrieved from getMobIds()") })
 	public Map getMinecartData(IComputerAccess computer, ISensorEnvironment env, int minecartId) {
-		ArrayList<Integer> surroundingCarts = getMobIds(computer, env);
+		ArrayList<Integer> surroundingCarts = getMinecartIds(computer, env);
 		if (surroundingCarts.contains(minecartId)) {
 			Entity cart = env.getWorld().getEntityByID(minecartId);
 			return EntityUtils.entityToMap(cart, env.getLocation());
