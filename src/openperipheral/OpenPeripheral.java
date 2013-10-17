@@ -4,6 +4,8 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.src.ModLoader;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityCommandBlock;
+import openperipheral.api.BlacklistRegistry;
 import openperipheral.core.AdapterManager;
 import openperipheral.core.BasicMount;
 import openperipheral.core.CommonProxy;
@@ -63,6 +65,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 import dan200.computer.api.ComputerCraftAPI;
+import dan200.computer.api.IPeripheral;
 
 @Mod(
 	modid = "OpenPeripheral",
@@ -145,6 +148,9 @@ public class OpenPeripheral {
 			RobotUpgradeManager.registerUpgradeProvider(new ProviderInventoryUpgrade());
 			RobotUpgradeManager.registerUpgradeProvider(new ProviderTargetingUpgrade());
 		}
+		
+		BlacklistRegistry.registerTileEntity(TileEntityCommandBlock.class);
+		BlacklistRegistry.registerTileEntity(IPeripheral.class);
 		
 		ModuleVanilla.init();
 

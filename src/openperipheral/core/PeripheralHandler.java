@@ -6,6 +6,7 @@ import java.util.WeakHashMap;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityCommandBlock;
+import openperipheral.api.BlacklistRegistry;
 import openperipheral.core.interfaces.IPeripheralProvider;
 import openperipheral.core.peripheral.HostedPeripheral;
 import dan200.computer.api.IHostedPeripheral;
@@ -33,12 +34,7 @@ public class PeripheralHandler implements IPeripheralHandler {
 
 	@Override
 	public IHostedPeripheral getPeripheral(TileEntity tile) {
-
-		if (tile instanceof TileEntityCommandBlock) { return null; }
-
-		if (tile instanceof IPeripheral) { return null; }
-
-		if (tile == null) { return null; }
+		if (BlacklistRegistry.contains(tile.getClass())) { return null; }
 
 		if (tile instanceof IPeripheralProvider) { return ((IPeripheralProvider)tile).providePeripheral(tile.worldObj); }
 		
