@@ -5,7 +5,6 @@ import java.util.Map.Entry;
 import java.util.WeakHashMap;
 
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityCommandBlock;
 import openperipheral.api.BlacklistRegistry;
 import openperipheral.core.interfaces.IPeripheralProvider;
 import openperipheral.core.peripheral.HostedPeripheral;
@@ -34,7 +33,7 @@ public class PeripheralHandler implements IPeripheralHandler {
 
 	@Override
 	public IHostedPeripheral getPeripheral(TileEntity tile) {
-		if (BlacklistRegistry.contains(tile.getClass())) { return null; }
+		if (BlacklistRegistry.containsClass(tile.getClass())) { return null; }
 
 		if (tile instanceof IPeripheralProvider) { return ((IPeripheralProvider)tile).providePeripheral(tile.worldObj); }
 		

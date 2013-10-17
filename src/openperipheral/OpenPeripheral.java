@@ -4,7 +4,6 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.src.ModLoader;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityCommandBlock;
 import openperipheral.api.BlacklistRegistry;
 import openperipheral.core.AdapterManager;
 import openperipheral.core.BasicMount;
@@ -117,7 +116,6 @@ public class OpenPeripheral {
 	public void preInit(FMLPreInitializationEvent evt) {
 		ConfigSettings.loadAndSaveConfig(evt.getSuggestedConfigurationFile());
 		MountingUtils.refreshLatestFiles();
-
 	}
 
 	@Mod.EventHandler
@@ -148,9 +146,6 @@ public class OpenPeripheral {
 			RobotUpgradeManager.registerUpgradeProvider(new ProviderInventoryUpgrade());
 			RobotUpgradeManager.registerUpgradeProvider(new ProviderTargetingUpgrade());
 		}
-		
-		BlacklistRegistry.registerTileEntity(TileEntityCommandBlock.class);
-		BlacklistRegistry.registerTileEntity(IPeripheral.class);
 		
 		ModuleVanilla.init();
 
@@ -185,6 +180,8 @@ public class OpenPeripheral {
 		if (ModLoader.isModLoaded(Mods.THAUMCRAFT)) {
 			ModuleThaumcraft.init();
 		}
+		
+		BlacklistRegistry.registerClass(IPeripheral.class);
 		
 		TickRegistry.registerTickHandler(new TickHandler(), Side.SERVER);
 		ComputerCraftAPI.registerExternalPeripheral(TileEntity.class, peripheralHandler);

@@ -1,6 +1,10 @@
 package openperipheral.api;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import net.minecraft.tileentity.TileEntity;
 
 import openperipheral.core.util.ReflectionHelper;
 
@@ -10,6 +14,9 @@ import openperipheral.core.util.ReflectionHelper;
  * added to this registry a Computer will not be allowed to interface with.
  */
 public class BlacklistRegistry {
+	@SuppressWarnings("unchecked")
+	// Add any classes here that should never be allowed onto the blacklist as it could be bad
+	private static List<Class<?>> cannotBlacklist = Arrays.asList(TileEntity.class, IPeripheralAdapter.class);
 	private static ArrayList<Class<?>> blacklistedTileEntities = new ArrayList<Class<?>>();
 	
 	/**
@@ -18,8 +25,15 @@ public class BlacklistRegistry {
 	 * @param targetClass
 	 * @return whether or not the class was successfully added to the blacklist
 	 */
-	public static boolean registerTileEntity(Class<?> targetClass) {
-		if (blacklistedTileEntities.contains(targetClass)) { return false; }
+	public static boolean registerClass(Class<?> targetClass) {
+		if (cannotBlacklist.contains(targetClass)) {
+			System.err.println(String.format("Cannot blacklist %s, it would break all the things!", targetClass.getName()));
+			return false;
+		}
+		if (blacklistedTileEntities.contains(targetClass)) {
+			System.out.println(String.format("Class %s is already blacklisted", targetClass.getName()));
+			return false;
+		}
 		System.out.println(String.format("Adding class %s to the blacklist", targetClass.getName()));
 		return blacklistedTileEntities.add(targetClass);
 	}
@@ -30,9 +44,9 @@ public class BlacklistRegistry {
 	 * @param className
 	 * @return whether or not the class was successfully added to the blacklist
 	 */
-	public static boolean registerTileEntity(String className) {
+	public static boolean registerClass(String className) {
 		Class<?> targetClass = ReflectionHelper.getClass(className);
-		return registerTileEntity(targetClass);
+		return registerClass(targetClass);
 	}
 	
 	/**
@@ -41,7 +55,7 @@ public class BlacklistRegistry {
 	 * @param checkClass
 	 * @return whether or not the class is registered
 	 */
-	public static boolean contains(Class<?> checkClass) {
+	public static boolean containsClass(Class<?> checkClass) {
 		return blacklistedTileEntities.contains(checkClass);
 	}
 	
@@ -51,8 +65,8 @@ public class BlacklistRegistry {
 	 * @param checkClass
 	 * @return whether or not the class is registered
 	 */
-	public static boolean contains(String className) {
+	public static boolean containsClass(String className) {
 		Class<?> checkClass = ReflectionHelper.getClass(className);
-		return contains(checkClass);
+		return containsClass(checkClass);
 	}
 }
