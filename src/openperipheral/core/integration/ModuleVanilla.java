@@ -6,10 +6,16 @@ import java.util.Map;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.monster.EntityCreeper;
+import net.minecraft.entity.monster.EntityWitch;
 import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.entity.passive.EntityBat;
 import net.minecraft.entity.passive.EntityHorse;
+import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.entity.passive.EntitySheep;
+import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.passive.EntityVillager;
+import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.potion.PotionEffect;
@@ -64,16 +70,62 @@ public class ModuleVanilla {
 		if (entity instanceof EntityVillager) {
 			EntityVillager villager = (EntityVillager) entity;
 			map.put("profession", villager.getProfession());
+			map.put("isMating", villager.isMating());
+			map.put("isPlaying", villager.isPlaying());
+			boolean isTrading = villager.isTrading();
+			map.put("isTrading", isTrading);
+			if (isTrading) {
+				map.put("customer", villager.getCustomer().username);
+			}
 		}
 
 		if (entity instanceof EntitySheep) {
 			EntitySheep sheep = (EntitySheep)entity;
 			map.put("sheepColor", sheep.getFleeceColor());
+			map.put("isSheared", sheep.getSheared());
 		}
 
 		if (entity instanceof EntityZombie) {
 			EntityZombie zombie = (EntityZombie)entity;
 			map.put("isVillagerZombie", zombie.isVillager());
+			map.put("convertingToVillager", zombie.isConverting());
+		}
+		
+		if (entity instanceof EntityBat) {
+			EntityBat bat = (EntityBat)entity;
+			map.put("isHanging", bat.getIsBatHanging());
+		}
+		
+		if (entity instanceof EntityPig) {
+			EntityPig pig = (EntityPig)entity;
+			map.put("isSaddled", pig.getSaddled());
+		}
+		
+		if (entity instanceof EntityWolf) {
+			EntityWolf wolf = (EntityWolf)entity;
+			map.put("isShaking", wolf.getWolfShaking());
+			map.put("isAngry", wolf.isAngry());
+			map.put("collarColor", Math.pow(2, wolf.getCollarColor()));
+		}
+		
+		if (entity instanceof EntityTameable) {
+			EntityTameable mob = (EntityTameable)entity;
+			boolean isTamed = mob.isTamed();
+			map.put("isTamed", isTamed);
+			if (isTamed) {
+				map.put("isSitting", mob.isSitting());
+				map.put("owner", mob.getOwnerName());
+			}
+		}
+		
+		if (entity instanceof EntityCreeper) {
+			EntityCreeper creeper = (EntityCreeper)entity;
+			map.put("isCharged", creeper.getPowered());
+		}
+		
+		if (entity instanceof EntityWitch) {
+			EntityWitch witch = (EntityWitch)entity;
+			map.put("isAggressive", witch.getAggressive());
 		}
 
 		if (entity instanceof EntityLivingBase) {
