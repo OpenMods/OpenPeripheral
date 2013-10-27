@@ -34,19 +34,17 @@ public class ModuleIC2 {
   public static void appendIC2Info(Map map, ItemStack stack) {
     if (stack != null) {
       Item item = stack.getItem();
-      if (item != null) {
-        if (item instanceof IElectricItem) {
-          IElectricItem electricItem = (IElectricItem)item;
-          HashMap<String,Object> electricInfo = new HashMap<String,Object>();
-          
-          electricInfo.put("tier", electricItem.getTier(stack));
-          electricInfo.put("maxCharge", electricItem.getMaxCharge(stack));
-          electricInfo.put("transferLimit", electricItem.getTransferLimit(stack));
-          electricInfo.put("canProvideEnergy", electricItem.canProvideEnergy(stack));
-          electricInfo.put("charge", ElectricItem.manager.getCharge(stack));
-          
-          map.put("electric", electricInfo);
-        }
+			if (item instanceof IElectricItem) {
+				IElectricItem electricItem = (IElectricItem)item;
+				HashMap<String,Object> electricInfo = new HashMap<String,Object>();
+				
+				electricInfo.put("tier", electricItem.getTier(stack));
+				electricInfo.put("maxCharge", electricItem.getMaxCharge(stack));
+				electricInfo.put("transferLimit", electricItem.getTransferLimit(stack));
+				electricInfo.put("canProvideEnergy", electricItem.canProvideEnergy(stack));
+				electricInfo.put("charge", ElectricItem.manager.getCharge(stack));
+				
+				map.put("electric", electricInfo);
       }
     }
   }
