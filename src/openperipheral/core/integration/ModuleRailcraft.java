@@ -15,11 +15,13 @@ import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.util.Vec3;
 import openperipheral.core.AdapterManager;
 import openperipheral.core.adapter.AdapterTicketMachine;
+import openperipheral.core.adapter.railcraft.AdapterTileSteamTurbine;
 
 public class ModuleRailcraft {
 
 	public static void init() {
 		AdapterManager.addPeripheralAdapter(new AdapterTicketMachine());
+		AdapterManager.addPeripheralAdapter(new AdapterTileSteamTurbine());
 	}
 
 	public static void entityToMap(Entity entity, HashMap map, Vec3 relativePos) {
