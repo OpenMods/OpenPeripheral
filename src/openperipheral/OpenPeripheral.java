@@ -35,6 +35,7 @@ import openperipheral.core.integration.ModuleForestry;
 import openperipheral.core.integration.ModuleIC2;
 import openperipheral.core.integration.ModuleMystcraft;
 import openperipheral.core.integration.ModuleRailcraft;
+import openperipheral.core.integration.ModuleSgCraft;
 import openperipheral.core.integration.ModuleThaumcraft;
 import openperipheral.core.integration.ModuleVanilla;
 import openperipheral.core.item.ItemGeneric;
@@ -178,6 +179,10 @@ public class OpenPeripheral {
 		
 		if (ModLoader.isModLoaded(Mods.THAUMCRAFT)) {
 			ModuleThaumcraft.init();
+		}
+		
+		if (ModLoader.isModLoaded(Mods.SGCRAFT)) {
+			ModuleSgCraft.init();
 		}
 		
 		TickRegistry.registerTickHandler(new TickHandler(), Side.SERVER);
