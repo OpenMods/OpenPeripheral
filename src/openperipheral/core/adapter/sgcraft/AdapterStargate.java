@@ -23,13 +23,11 @@ public class AdapterStargate implements IPeripheralAdapter {
 		// make sure the gate is built
 		checkGateComplete(tile);
 		
-		if (targetAddress.length() != 7) throw new Exception("Stargate addresses must be 7 letters");
+		targetAddress = targetAddress.toUpperCase();
+		validateAddress(tile, targetAddress);
 		
 		String homeAddress = (String) ReflectionHelper.callMethod(getTargetClass(), tile, new String[]{"findHomeAddress"});
 		TileEntity targetStargate = (TileEntity) ReflectionHelper.callMethod(false, SG_ADDRESSING_CLASS, null, new String[] {"findAddressedStargate"}, new Object[] {targetAddress});
-		
-		if (targetStargate == null) throw new Exception("No Stargate at address " + targetAddress);
-		if (targetStargate == tile) throw new Exception("Stargate cannot connect to itself");
 		
 		boolean targetBusy = (Boolean) ReflectionHelper.callMethod(getTargetClass(), targetStargate, new String[]{"isConnected"});
 		if (targetBusy) throw new Exception("Stargate at address " + targetAddress + " is busy");
@@ -53,6 +51,17 @@ public class AdapterStargate implements IPeripheralAdapter {
 		String[] method = new String[] {"clearConnection"};
 		if (connectedGate != null) ReflectionHelper.callMethod(getTargetClass(), connectedGate, method);
 		ReflectionHelper.callMethod(getTargetClass(), tile, method);
+	}
+	
+	@LuaMethod(returnType = LuaType.BOOLEAN, description = "whether or not the supplied address is a valid address",
+			args = {@Arg(type = LuaType.STRING, description = "the address of the gate to validate")})
+	public boolean isValidAddress(IComputerAccess computer, TileEntity tile, String address) {
+		try {
+			validateAddress(tile, address.toUpperCase());
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 	
 	@LuaMethod(returnType = LuaType.BOOLEAN, description = "whether or not the stargate currently has a connection")
@@ -100,5 +109,14 @@ public class AdapterStargate implements IPeripheralAdapter {
 	private void checkGateComplete(TileEntity tile) throws Exception {
 		boolean ringComplete = (Boolean) ReflectionHelper.getProperty(getTargetClass(), tile, new String[]{"isMerged"});
 		if (!ringComplete) throw new Exception("Stargate damaged or incompelte");
+	}
+	
+	private void validateAddress(TileEntity tile, String address) throws Exception {
+		if (address.length() != 7) throw new Exception("Stargate addresses must be 7 letters");
+		
+		TileEntity targetStargate = (TileEntity) ReflectionHelper.callMethod(false, SG_ADDRESSING_CLASS, null, new String[] {"findAddressedStargate"}, new Object[] {address});
+		
+		if (targetStargate == null) throw new Exception("No Stargate at address " + address);
+		if (targetStargate == tile) throw new Exception("Stargate cannot connect to itself");
 	}
 }
