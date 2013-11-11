@@ -41,6 +41,15 @@ public class AdapterStargate implements IPeripheralAdapter {
 		ReflectionHelper.callMethod(getTargetClass(), targetStargate, method, new Object[]{homeAddress, tile, false});
 	}
 	
+	@LuaMethod(returnType = LuaType.STRING, description = "gets state of the stargate")
+	public String getState(IComputerAccess computer, TileEntity tile) throws Exception {
+		// you know it
+		checkGateComplete(tile);
+		
+		Object state = ReflectionHelper.getField(getTargetClass(), "state");
+		return state.toString();
+	}
+	
 	@LuaMethod(returnType = LuaType.VOID, description = "disconnects the stargate")
 	public void disconnect(IComputerAccess computer, TileEntity tile) throws Exception {
 		// make sure the gate is built
