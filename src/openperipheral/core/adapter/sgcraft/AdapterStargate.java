@@ -1,5 +1,7 @@
 package openperipheral.core.adapter.sgcraft;
 
+import java.lang.reflect.Field;
+
 import net.minecraft.tileentity.TileEntity;
 import dan200.computer.api.IComputerAccess;
 import openperipheral.api.Arg;
@@ -46,8 +48,8 @@ public class AdapterStargate implements IPeripheralAdapter {
 		// you know it
 		checkGateComplete(tile);
 		
-		Object state = ReflectionHelper.getField(getTargetClass(), "state");
-		return state.toString();
+		Field field = ReflectionHelper.getField(getTargetClass(), "state");
+		return field.get(tile).toString();
 	}
 	
 	@LuaMethod(returnType = LuaType.VOID, description = "disconnects the stargate")
