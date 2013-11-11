@@ -1,3 +1,5 @@
 build/
 bin/
 download/
+Thumbs.db
+.DS_Store
