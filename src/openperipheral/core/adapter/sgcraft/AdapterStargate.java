@@ -52,6 +52,34 @@ public class AdapterStargate implements IPeripheralAdapter {
 		return field.get(tile).toString();
 	}
 	
+	@LuaMethod(returnType = LuaType.NUMBER, description = "gets the number of locked chevrons")
+	public int getLockedChevronCount(IComputerAccess computer, TileEntity tile) throws Exception {
+		checkGateComplete(tile);
+		Field field = ReflectionHelper.getField(getTargetClass(), "numEngagedChevrons");
+		return field.getInt(tile);
+	}
+	
+	@LuaMethod(returnType = LuaType.NUMBER, description = "gets the amount of buffered fuel")
+	public int getFuelLevel(IComputerAccess computer, TileEntity tile) throws Exception {
+		checkGateComplete(tile);
+		Field field = ReflectionHelper.getField(getTargetClass(), "fuelBuffer");
+		return field.getInt(tile);
+	}
+	
+	@LuaMethod(returnType = LuaType.NUMBER, description = "gets maximum amount of buffered fuel")
+	public int getMaxFuelLevel(IComputerAccess computer, TileEntity tile) throws Exception {
+		checkGateComplete(tile);
+		Field field = ReflectionHelper.getField(getTargetClass(), "maxFuelBuffer");
+		return field.getInt(tile);
+	}
+	
+	@LuaMethod(returnType = LuaType.NUMBER, description = "is the stargate connected to a controller")
+	public boolean isDHDConnected(IComputerAccess computer, TileEntity tile) throws Exception {
+		checkGateComplete(tile);
+		Field field = ReflectionHelper.getField(getTargetClass(), "isLinkedToController");
+		return field.getBoolean(tile);
+	}
+	
 	@LuaMethod(returnType = LuaType.VOID, description = "disconnects the stargate")
 	public void disconnect(IComputerAccess computer, TileEntity tile) throws Exception {
 		// make sure the gate is built
