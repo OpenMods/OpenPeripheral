@@ -9,6 +9,7 @@ import openperipheral.core.Mods;
 import openperipheral.core.integration.ModuleForestry;
 import openperipheral.core.integration.ModuleIC2;
 import openperipheral.core.integration.ModuleMystcraft;
+import openperipheral.core.integration.ModuleThermalExpansion;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockChest;
@@ -146,6 +147,9 @@ public class InventoryUtils {
 			}
 			if (Loader.isModLoaded(Mods.IC2)) {
 			  ModuleIC2.appendIC2Info(map, itemstack);
+			}
+			if (Loader.isModLoaded(Mods.THERMALEXPANSION)) {
+				ModuleThermalExpansion.appendRFEnergyInfo(map, itemstack);
 			}
 
 		}
