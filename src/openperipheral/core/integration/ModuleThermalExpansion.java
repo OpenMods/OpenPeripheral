@@ -10,6 +10,7 @@ import openperipheral.core.AdapterManager;
 import openperipheral.core.adapter.thermalexpansion.AdapterEnderAttuned;
 import openperipheral.core.adapter.thermalexpansion.AdapterEnergyHandler;
 import openperipheral.core.adapter.thermalexpansion.AdapterEnergyInfo;
+import openperipheral.core.adapter.thermalexpansion.AdapterSecureTile;
 import openperipheral.core.adapter.thermalexpansion.AdapterTileLamp;
 
 public class ModuleThermalExpansion {
@@ -18,6 +19,7 @@ public class ModuleThermalExpansion {
 		AdapterManager.addPeripheralAdapter(new AdapterEnderAttuned());
 		AdapterManager.addPeripheralAdapter(new AdapterEnergyInfo());
 		AdapterManager.addPeripheralAdapter(new AdapterTileLamp());
+		AdapterManager.addPeripheralAdapter(new AdapterSecureTile());
 	}
 	
 	public static void appendRFEnergyInfo(Map map, ItemStack stack) {

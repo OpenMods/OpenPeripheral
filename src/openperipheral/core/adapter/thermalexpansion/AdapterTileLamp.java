@@ -15,7 +15,7 @@ public class AdapterTileLamp implements IPeripheralAdapter {
 		return ReflectionHelper.getClass("thermalexpansion.block.lamp.TileLamp");
 	}
 	
-	@LuaMethod(description="Sets the colour of the lamp.", returnType=LuaType.BOOLEAN, args={
+	@LuaMethod(description="Sets the colour of the lamp.", returnType=LuaType.BOOLEAN,onTick=false, args={
 			@Arg(description="The colour you want to set to (in RGB hexadecimal 0xRRGGBB)", type=LuaType.NUMBER)
 	})
 	public boolean setColor(IComputerAccess computer, TileEntity tile, int colour) {
