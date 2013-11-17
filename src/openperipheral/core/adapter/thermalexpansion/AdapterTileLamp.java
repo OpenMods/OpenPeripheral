@@ -10,6 +10,8 @@ import openperipheral.core.util.ReflectionHelper;
 
 public class AdapterTileLamp implements IPeripheralAdapter {
 
+	private static final String[] SET_COLOR_METHOD_NAME = new String[]{"setColor"};
+	
 	@Override
 	public Class<?> getTargetClass() {
 		return ReflectionHelper.getClass("thermalexpansion.block.lamp.TileLamp");
@@ -20,7 +22,7 @@ public class AdapterTileLamp implements IPeripheralAdapter {
 	})
 	public boolean setColor(IComputerAccess computer, TileEntity tile, int colour) {
 		try {
-			return (Boolean) ReflectionHelper.callMethod(getTargetClass(), tile, new String[]{"setColor"}, new Object[]{colour});
+			return (Boolean) ReflectionHelper.callMethod(getTargetClass(), tile, SET_COLOR_METHOD_NAME, colour);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
