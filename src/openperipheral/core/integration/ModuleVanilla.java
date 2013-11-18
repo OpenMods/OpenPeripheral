@@ -31,6 +31,7 @@ import openperipheral.core.adapter.vanilla.AdapterInventory;
 import openperipheral.core.adapter.vanilla.AdapterMobSpawner;
 import openperipheral.core.adapter.vanilla.AdapterNoteBlock;
 import openperipheral.core.adapter.vanilla.AdapterRecordPlayer;
+import openperipheral.core.adapter.vanilla.AdapterSign;
 import openperipheral.core.util.InventoryUtils;
 import openperipheral.core.util.ReflectionHelper;
 
@@ -44,9 +45,10 @@ public class ModuleVanilla {
 		AdapterManager.addPeripheralAdapter(new AdapterRecordPlayer());
 		AdapterManager.addPeripheralAdapter(new AdapterBeacon());
 		AdapterManager.addPeripheralAdapter(new AdapterMobSpawner());
+		AdapterManager.addPeripheralAdapter(new AdapterSign());
 	}
 	
-	public static void entityToMap(Entity entity, HashMap map, Vec3 relativePos) {
+	public static void entityToMap(Entity entity, HashMap<String, Object> map, Vec3 relativePos) {
 		if (entity instanceof IInventory) {
 			map.put("inventory", InventoryUtils.invToMap((IInventory)entity));
 		}
@@ -132,9 +134,9 @@ public class ModuleVanilla {
 
 			EntityLivingBase living = (EntityLivingBase)entity;
 
-			HashMap armor = new HashMap();
+			HashMap<String, Map<?, ?>> armor = new HashMap<String, Map<?, ?>>();
 			map.put("armor", armor);
-			HashMap potionEffects = new HashMap();
+			HashMap<Object, String> potionEffects = new HashMap<Object, String>();
 			map.put("potionEffects", potionEffects);
 
 			armor.put("boots", InventoryUtils.itemstackToMap(living.getCurrentItemOrArmor(1)));
@@ -160,6 +162,7 @@ public class ModuleVanilla {
 			map.put("yawHead", living.rotationYawHead);
 			map.put("heldItem", InventoryUtils.itemstackToMap(living.getHeldItem()));
 
+			@SuppressWarnings("unchecked")
 			Collection<PotionEffect> effects = living.getActivePotionEffects();
 
 			int count = 1;
@@ -175,8 +178,8 @@ public class ModuleVanilla {
 			if (mop != null) {
 				map.put("IsLookingAtBlock", mop.typeOfHit == EnumMovingObjectType.TILE);
 				if (mop.typeOfHit == EnumMovingObjectType.TILE) {
-					int blockId = living.worldObj.getBlockId(mop.blockX, mop.blockY, mop.blockZ);
-					HashMap lookingAt = new HashMap();
+					//int blockId = living.worldObj.getBlockId(mop.blockX, mop.blockY, mop.blockZ);
+					HashMap<String, Object> lookingAt = new HashMap<String, Object>();
 					if (relativePos != null) {
 						lookingAt.put("x", mop.blockX - relativePos.xCoord);
 						lookingAt.put("y", mop.blockY - relativePos.yCoord);
