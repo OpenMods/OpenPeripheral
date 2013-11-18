@@ -4,6 +4,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.src.ModLoader;
 import net.minecraft.tileentity.TileEntity;
+import openperipheral.api.BlacklistRegistry;
 import openperipheral.core.AdapterManager;
 import openperipheral.core.BasicMount;
 import openperipheral.core.CommonProxy;
@@ -65,6 +66,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 import dan200.computer.api.ComputerCraftAPI;
+import dan200.computer.api.IPeripheral;
 
 @Mod(
 	modid = "OpenPeripheral",
@@ -116,7 +118,6 @@ public class OpenPeripheral {
 	public void preInit(FMLPreInitializationEvent evt) {
 		ConfigSettings.loadAndSaveConfig(evt.getSuggestedConfigurationFile());
 		MountingUtils.refreshLatestFiles();
-
 	}
 
 	@Mod.EventHandler
@@ -187,6 +188,8 @@ public class OpenPeripheral {
 		if (ModLoader.isModLoaded(Mods.SGCRAFT)) {
 			ModuleSgCraft.init();
 		}
+		
+		BlacklistRegistry.registerClass(IPeripheral.class);
 		
 		TickRegistry.registerTickHandler(new TickHandler(), Side.SERVER);
 		ComputerCraftAPI.registerExternalPeripheral(TileEntity.class, peripheralHandler);

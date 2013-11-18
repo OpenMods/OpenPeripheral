@@ -2,7 +2,6 @@ package openperipheral.core.integration;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Map;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -19,9 +18,13 @@ import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.tileentity.TileEntityCommandBlock;
+import net.minecraft.tileentity.TileEntityDaylightDetector;
+import net.minecraft.tileentity.TileEntityEnchantmentTable;
 import net.minecraft.util.EnumMovingObjectType;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
+import openperipheral.api.BlacklistRegistry;
 import openperipheral.core.AdapterManager;
 import openperipheral.core.adapter.vanilla.AdapterBeacon;
 import openperipheral.core.adapter.vanilla.AdapterBrewingStand;
@@ -44,6 +47,12 @@ public class ModuleVanilla {
 		AdapterManager.addPeripheralAdapter(new AdapterRecordPlayer());
 		AdapterManager.addPeripheralAdapter(new AdapterBeacon());
 		AdapterManager.addPeripheralAdapter(new AdapterMobSpawner());
+		
+		// These have nothing to interact with, but were registering, removing them
+		BlacklistRegistry.registerClass(TileEntityEnchantmentTable.class);
+		BlacklistRegistry.registerClass(TileEntityDaylightDetector.class);
+		// TODO: Fix this, it means that we don't handle it, but it also means CC doesn't handle it when on a network
+		BlacklistRegistry.registerClass(TileEntityCommandBlock.class);
 	}
 	
 	public static void entityToMap(Entity entity, HashMap map, Vec3 relativePos) {
