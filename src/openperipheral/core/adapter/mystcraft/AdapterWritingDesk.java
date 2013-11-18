@@ -1,9 +1,5 @@
 package openperipheral.core.adapter.mystcraft;
 
-import java.lang.reflect.Constructor;
-import java.util.Arrays;
-
-import cpw.mods.fml.common.FMLLog;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -16,21 +12,16 @@ import openperipheral.core.adapter.vanilla.AdapterInventory;
 import openperipheral.core.util.BlockUtils;
 import openperipheral.core.util.CallWrapper;
 import openperipheral.core.util.InventoryUtils;
+import openperipheral.core.util.ReflectionHelper;
 import dan200.computer.api.IComputerAccess;
 
-public class AdapterWritingDesk implements IPeripheralAdapter{
-
-  private static final String QUALIFIED_NAME_TILE_ENTITY_DESK = "com.xcompwiz.mystcraft.tileentity.TileEntityDesk";
-  private static final String QUALIFIED_NAME_INVENTORY_NOTEBOOK = "com.xcompwiz.mystcraft.inventory.InventoryNotebook";
+public class AdapterWritingDesk implements IPeripheralAdapter {
+  private static final Class<?> DESK_CLAZZ = ReflectionHelper.getClass("com.xcompwiz.mystcraft.tileentity.TileEntityDesk");
   
   @Override
   @SuppressWarnings("rawtypes")
   public Class getTargetClass() {
-    try {
-      return Class.forName(QUALIFIED_NAME_TILE_ENTITY_DESK);
-    } catch (ClassNotFoundException e) {
-      return null; // Mystcraft isn't loaded?
-    }
+	  return DESK_CLAZZ;
   }
 
   @LuaMethod(description = "Get the maximum number of notebooks this desk can store", returnType = LuaType.NUMBER)
@@ -137,19 +128,18 @@ public class AdapterWritingDesk implements IPeripheralAdapter{
   
   private static class NotebookWrapper{
     public ItemStack notebook;
-    public Class<?> inventoryNotebookClass;
+    public Class<?> inventoryNotebookClass = ReflectionHelper.getClass("com.xcompwiz.mystcraft.inventory.InventoryNotebook");
     public Object tileEntityDesk;
     
-    public NotebookWrapper(Object tileEntityDesk, int number) throws Exception{
-      this.tileEntityDesk = tileEntityDesk;
-      this.inventoryNotebookClass = Class.forName(QUALIFIED_NAME_INVENTORY_NOTEBOOK);
+    public NotebookWrapper(Object tile, int number) throws Exception{
+      tileEntityDesk = tile;
       
       int slot = number + 4 - 1; // Slot numbers for notebooks are offset by the 4 plain slots, and -1 because it's 0 based. 
       IInventory inventory = (IInventory)tileEntityDesk;
       if (slot < 4 || slot > inventory.getSizeInventory()){
         throw new Exception("Invalid slot number");
       }else{
-        this.notebook = inventory.getStackInSlot(slot);
+        notebook = inventory.getStackInSlot(slot);
       }
       
     }

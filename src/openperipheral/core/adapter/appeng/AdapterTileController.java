@@ -8,17 +8,15 @@ import openperipheral.api.IPeripheralAdapter;
 import openperipheral.api.LuaMethod;
 import openperipheral.api.LuaType;
 import openperipheral.core.util.CallWrapper;
+import openperipheral.core.util.ReflectionHelper;
 import dan200.computer.api.IComputerAccess;
 
 public class AdapterTileController implements IPeripheralAdapter {
-
+	private static final Class<?> CLAZZ = ReflectionHelper.getClass("appeng.me.tile.TileController");
+	
 	@Override
-	public Class getTargetClass() {
-		try {
-			return Class.forName("appeng.me.tile.TileController");
-		}catch (Exception e) {
-		}
-		return null;
+	public Class<?> getTargetClass() {
+		return CLAZZ;
 	}
 	
 	@LuaMethod(description="Get the current job list", returnType=LuaType.TABLE)

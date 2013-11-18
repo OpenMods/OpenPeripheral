@@ -9,7 +9,7 @@ import dan200.computer.api.IComputerAccess;
 public class AdapterFurnace implements IPeripheralAdapter {
 
 	@Override
-	public Class getTargetClass() {
+	public Class<?> getTargetClass() {
 		return TileEntityFurnace.class;
 	}
 

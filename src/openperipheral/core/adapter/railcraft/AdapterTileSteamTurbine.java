@@ -1,6 +1,5 @@
 package openperipheral.core.adapter.railcraft;
 
-import cpw.mods.fml.common.FMLLog;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -9,21 +8,16 @@ import openperipheral.api.IPeripheralAdapter;
 import openperipheral.api.LuaMethod;
 import openperipheral.api.LuaType;
 import openperipheral.core.util.CallWrapper;
+import openperipheral.core.util.ReflectionHelper;
 
 public class AdapterTileSteamTurbine implements IPeripheralAdapter {
 
-  private static final String QUALIFIED_NAME_TURBINE = "mods.railcraft.common.blocks.machine.alpha.TileSteamTurbine";
+  private static final Class<?> CLAZZ = ReflectionHelper.getClass("mods.railcraft.common.blocks.machine.alpha.TileSteamTurbine");
   
   @Override
-  public Class getTargetClass() {
-    try {
-      return Class.forName(QUALIFIED_NAME_TURBINE);
-    } catch (ClassNotFoundException e) {
-      return null; // Railcraft isn't loaded?
-    }
+  public Class<?> getTargetClass() {
+	  return CLAZZ;
   }
-
-
   
   @LuaMethod(description = "Get the undamagedness of the rotor, from 0% (dead) to 100% (brand new)", returnType = LuaType.NUMBER)
   public Integer getTurbineRotorStatus(IComputerAccess computer, Object tileSteamTurbine) throws Exception{

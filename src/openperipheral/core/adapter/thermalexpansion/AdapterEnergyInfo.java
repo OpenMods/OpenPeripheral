@@ -9,7 +9,7 @@ import openperipheral.api.LuaType;
 public class AdapterEnergyInfo implements IPeripheralAdapter{
 
 	@Override
-	public Class getTargetClass() {
+	public Class<?> getTargetClass() {
 		return IEnergyInfo.class;
 	}
 

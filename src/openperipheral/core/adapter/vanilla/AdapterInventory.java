@@ -3,15 +3,12 @@ package openperipheral.core.adapter.vanilla;
 import java.util.ArrayList;
 
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import openperipheral.api.Arg;
 import openperipheral.api.IPeripheralAdapter;
 import openperipheral.api.LuaMethod;
 import openperipheral.api.LuaType;
-import openperipheral.core.util.BlockUtils;
 import openperipheral.core.util.InventoryUtils;
 import dan200.computer.api.IComputerAccess;
 
@@ -20,7 +17,7 @@ public class AdapterInventory implements IPeripheralAdapter {
 	public AdapterInventory() {}
 
 	@Override
-	public Class getTargetClass() {
+	public Class<?> getTargetClass() {
 		return IInventory.class;
 	}
 

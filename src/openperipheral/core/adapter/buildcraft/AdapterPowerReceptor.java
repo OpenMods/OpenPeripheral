@@ -11,7 +11,7 @@ import dan200.computer.api.IComputerAccess;
 public class AdapterPowerReceptor implements IPeripheralAdapter {
 
 	@Override
-	public Class getTargetClass() {
+	public Class<?> getTargetClass() {
 		return IPowerReceptor.class;
 	}
 

@@ -11,10 +11,11 @@ import openperipheral.core.util.ReflectionHelper;
 public class AdapterTileLamp implements IPeripheralAdapter {
 
 	private static final String[] SET_COLOR_METHOD_NAME = new String[]{"setColor"};
+	private static final Class<?> CLAZZ = ReflectionHelper.getClass("thermalexpansion.block.lamp.TileLamp");
 	
 	@Override
 	public Class<?> getTargetClass() {
-		return ReflectionHelper.getClass("thermalexpansion.block.lamp.TileLamp");
+		return CLAZZ;
 	}
 	
 	@LuaMethod(description="Sets the colour of the lamp.", returnType=LuaType.BOOLEAN,onTick=false, args={

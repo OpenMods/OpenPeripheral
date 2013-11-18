@@ -11,7 +11,7 @@ import openperipheral.api.LuaType;
 public class AdapterEnergyHandler implements IPeripheralAdapter{
 
 	@Override
-	public Class getTargetClass() {
+	public Class<?> getTargetClass() {
 		return IEnergyHandler.class;
 	}
 	

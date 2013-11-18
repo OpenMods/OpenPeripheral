@@ -16,7 +16,7 @@ public class TypeConversionRegistry {
 		converters.add(converter);
 	}
 
-	public static Object fromLua(Object obj, Class type) {
+	public static Object fromLua(Object obj, Class<?> type) {
 		for (ITypeConverter converter : converters) {
 			Object response = converter.fromLua(obj, type);
 			if (response != null) { return response; }

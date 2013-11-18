@@ -11,7 +11,7 @@ import dan200.computer.api.ILuaObject;
 public class AdapterGlassesBridge implements IPeripheralAdapter {
 
 	@Override
-	public Class getTargetClass() {
+	public Class<?> getTargetClass() {
 		return TileEntityGlassesBridge.class;
 	}
 

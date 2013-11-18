@@ -9,7 +9,7 @@ import dan200.computer.api.IComputerAccess;
 public class AdapterEnergyConductor implements IPeripheralAdapter {
 
 	@Override
-	public Class getTargetClass() {
+	public Class<?> getTargetClass() {
 		return IEnergyConductor.class;
 	}
 

@@ -10,7 +10,7 @@ import dan200.computer.api.IComputerAccess;
 public class AdapterTicketMachine implements IPeripheralAdapter {
 
 	@Override
-	public Class getTargetClass() {
+	public Class<?> getTargetClass() {
 		return TileEntityTicketMachine.class;
 	}
 

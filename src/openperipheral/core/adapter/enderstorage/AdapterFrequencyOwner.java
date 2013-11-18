@@ -12,10 +12,11 @@ import openperipheral.core.util.ReflectionHelper;
 import dan200.computer.api.IComputerAccess;
 
 public class AdapterFrequencyOwner implements IPeripheralAdapter {
-
+	private static final Class<?> CLAZZ = ReflectionHelper.getClass("codechicken.enderstorage.common.TileFrequencyOwner");
+	
 	@Override
 	public Class<?> getTargetClass() {
-		return ReflectionHelper.getClass("codechicken.enderstorage.common.TileFrequencyOwner");
+		return CLAZZ;
 	}
 
 	@LuaMethod(

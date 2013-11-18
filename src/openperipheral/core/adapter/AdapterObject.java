@@ -17,7 +17,7 @@ import dan200.computer.api.IComputerAccess;
 public class AdapterObject implements IPeripheralAdapter {
 
 	@Override
-	public Class getTargetClass() {
+	public Class<?> getTargetClass() {
 		return Object.class;
 	}
 
@@ -27,7 +27,7 @@ public class AdapterObject implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(returnType = LuaType.TABLE, description = "Get a complete table of information about all available methods")
-	public Map getAdvancedMethodsData(IComputerAccess computer, Object object) {
+	public Map<?, ?> getAdvancedMethodsData(IComputerAccess computer, Object object) {
 		return MiscUtils.documentMethods(getUniqueMethods(object));
 	}
 

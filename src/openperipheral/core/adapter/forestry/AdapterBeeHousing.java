@@ -20,7 +20,7 @@ import forestry.api.genetics.ISpeciesRoot;
 public class AdapterBeeHousing implements IPeripheralAdapter {
 
 	@Override
-	public Class getTargetClass() {
+	public Class<?> getTargetClass() {
 		return IBeeHousing.class;
 	}
 
@@ -51,15 +51,15 @@ public class AdapterBeeHousing implements IPeripheralAdapter {
 	 * @return
 	 */
 	@LuaMethod(returnType = LuaType.TABLE, description="Get the full breeding list thingy. Experimental!")
-	public Map getBeeBreedingData(IComputerAccess computer, IBeeHousing housing) {
+	public Map<?, HashMap<String, Object>> getBeeBreedingData(IComputerAccess computer, IBeeHousing housing) {
 		ISpeciesRoot beeRoot = AlleleManager.alleleRegistry.getSpeciesRoot("rootBees");
 		if (beeRoot == null) {
 			return null;
 		}
-		HashMap result = new HashMap();
+		HashMap<Object, HashMap<String, Object>> result = new HashMap<Object, HashMap<String, Object>>();
 		int j = 1;
 		for (IMutation mutation : beeRoot.getMutations(false)) {
-			HashMap mutationMap = new HashMap();
+			HashMap<String, Object> mutationMap = new HashMap<String, Object>();
 			IAllele allele1 = mutation.getAllele0();
 			if (allele1 != null) {
 				mutationMap.put("allele1", allele1.getName());
@@ -85,20 +85,20 @@ public class AdapterBeeHousing implements IPeripheralAdapter {
 			args = {
 				@Arg( name="childType", description="The type of bee you want the parents for", type=LuaType.STRING)
 			})
-	public Map getBeeParents(IComputerAccess computer, IBeeHousing housing, String childType) {
+	public Map<Object, HashMap<String, Object>> getBeeParents(IComputerAccess computer, IBeeHousing housing, String childType) {
 		ISpeciesRoot beeRoot = AlleleManager.alleleRegistry.getSpeciesRoot("rootBees");
 		if (beeRoot == null) {
 			return null;
 		}
 		int i = 1;
-		HashMap result = new HashMap();
+		HashMap<Object, HashMap<String, Object>> result = new HashMap<Object, HashMap<String, Object>>();
 		for (IMutation mutation : beeRoot.getMutations(false)) {
 			IAllele[] template = mutation.getTemplate();
 			if (template == null || template.length < 1) {
 				continue;
 			}
 			if (template[0].getName().toLowerCase().equals(childType.toLowerCase())) {
-				HashMap parentMap = new HashMap();
+				HashMap<String, Object> parentMap = new HashMap<String, Object>();
 				IAllele allele1 = mutation.getAllele0();
 				if (allele1 != null) {
 					parentMap.put("allele1", allele1.getName());

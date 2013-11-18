@@ -11,12 +11,11 @@ public class MethodDeclaration {
 
 	protected boolean isOnTick = false;
 	protected Method method;
-	protected Class[] requiredParameters;
-	protected Class[] requiredJavaParameters;
+	protected Class<?>[] requiredParameters;
+	protected Class<?>[] requiredJavaParameters;
 	protected String luaName;
 	protected IAdapterBase targetAdapter;
 	private LuaMethod luaMethod;
-	private String description;
 
 	public MethodDeclaration(LuaMethod luaMethod, Method method, IAdapterBase targetAdapter) {
 		isOnTick = luaMethod.onTick();
@@ -31,7 +30,7 @@ public class MethodDeclaration {
 	}
 
 	public void initalize() {
-		Class[] allParameters = method.getParameterTypes();
+		Class<?>[] allParameters = method.getParameterTypes();
 		requiredJavaParameters = new Class[allParameters.length - 2];
 		System.arraycopy(allParameters, 2, requiredJavaParameters, 0, requiredJavaParameters.length);
 	}
@@ -44,7 +43,7 @@ public class MethodDeclaration {
 		return method;
 	}
 
-	public Class[] getRequiredJavaParameters() {
+	public Class<?>[] getRequiredJavaParameters() {
 		return requiredJavaParameters;
 	}
 

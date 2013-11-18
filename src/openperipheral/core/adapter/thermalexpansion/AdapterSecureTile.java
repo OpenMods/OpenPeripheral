@@ -13,7 +13,7 @@ import openperipheral.api.Arg;
 public class AdapterSecureTile implements IPeripheralAdapter{
 
 	@Override
-	public Class getTargetClass() {
+	public Class<?> getTargetClass() {
 		return ISecureTile.class;
 	}
 

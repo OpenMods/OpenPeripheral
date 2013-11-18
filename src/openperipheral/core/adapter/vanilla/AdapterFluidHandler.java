@@ -12,7 +12,7 @@ import dan200.computer.api.IComputerAccess;
 public class AdapterFluidHandler implements IPeripheralAdapter {
 
 	@Override
-	public Class getTargetClass() {
+	public Class<?> getTargetClass() {
 		return IFluidHandler.class;
 	}
 

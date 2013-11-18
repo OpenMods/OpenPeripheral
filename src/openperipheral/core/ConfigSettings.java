@@ -1,7 +1,6 @@
 package openperipheral.core;
 
 import java.io.File;
-import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
@@ -186,7 +185,7 @@ public class ConfigSettings {
 			URLConnection connection = new URL(url).openConnection();
 			connection.setConnectTimeout(4000);
 			connection.setRequestProperty("Accept-Charset", charset);
-			InputStream response = connection.getInputStream();
+			// InputStream response = connection.getInputStream();
 		} catch (Exception e) {}
 	}
 }

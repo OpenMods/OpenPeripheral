@@ -14,11 +14,11 @@ import dan200.computer.api.IComputerAccess;
 
 public class AdapterManager {
 
-	public static HashMap<Class, ArrayList<MethodDeclaration>> classList = new HashMap<Class, ArrayList<MethodDeclaration>>();
+	public static HashMap<Class<?>, ArrayList<MethodDeclaration>> classList = new HashMap<Class<?>, ArrayList<MethodDeclaration>>();
 
 	public static void addPeripheralAdapter(IPeripheralAdapter adapter) {
 
-		Class targetClass = adapter.getTargetClass();
+		Class<?> targetClass = adapter.getTargetClass();
 		System.out.println("Enabling adapter " + adapter);
 		try {
 			if (targetClass != null) {
@@ -28,7 +28,7 @@ public class AdapterManager {
 
 					if (annotation != null) {
 
-						Class[] parameters = method.getParameterTypes();
+						Class<?>[] parameters = method.getParameterTypes();
 
 						if (parameters.length < 1 || !IComputerAccess.class.isAssignableFrom(parameters[0])) { throw new Exception(String.format("Parameter 1 of %s must be IComputerAccess", method.getName())); }
 						if (parameters.length < 2 || !parameters[1].isAssignableFrom(targetClass)) { throw new Exception(String.format("Parameter 2 of %s must be a %s", method.getName(), targetClass.getSimpleName())); }
@@ -58,7 +58,7 @@ public class AdapterManager {
 
 					if (annotation != null) {
 
-						Class[] parameters = method.getParameterTypes();
+						Class<?>[] parameters = method.getParameterTypes();
 
 						if (parameters.length < 2) { throw new Exception("The first two parameters of a robot upgrade method should be an IComputerAccess and an IRobot"); }
 
@@ -88,11 +88,11 @@ public class AdapterManager {
 		return null;
 	}
 
-	public static ArrayList<MethodDeclaration> getMethodsForClass(Class klazz) {
+	public static ArrayList<MethodDeclaration> getMethodsForClass(Class<?> klazz) {
 
 		HashMap<String, MethodDeclaration> methods = new HashMap<String, MethodDeclaration>();
 
-		for (Entry<Class, ArrayList<MethodDeclaration>> entry : classList.entrySet()) {
+		for (Entry<Class<?>, ArrayList<MethodDeclaration>> entry : classList.entrySet()) {
 			if (entry.getKey().isAssignableFrom(klazz)) {
 				for (MethodDeclaration method : entry.getValue()) {
 					if (!methods.containsKey(method.getLuaName())) {

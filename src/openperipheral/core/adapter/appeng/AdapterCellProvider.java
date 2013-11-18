@@ -17,7 +17,7 @@ import dan200.computer.api.IComputerAccess;
 public class AdapterCellProvider implements IPeripheralAdapter {
 
 	@Override
-	public Class getTargetClass() {
+	public Class<?> getTargetClass() {
 		return ICellProvider.class;
 	}
 

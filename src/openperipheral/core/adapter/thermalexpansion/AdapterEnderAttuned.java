@@ -10,7 +10,7 @@ import openperipheral.api.LuaType;
 public class AdapterEnderAttuned implements IPeripheralAdapter{
 
 	@Override
-	public Class getTargetClass() {
+	public Class<?> getTargetClass() {
 		return IEnderAttuned.class;
 	}
 

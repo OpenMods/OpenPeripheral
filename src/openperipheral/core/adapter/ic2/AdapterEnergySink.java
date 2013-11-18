@@ -9,7 +9,7 @@ import dan200.computer.api.IComputerAccess;
 public class AdapterEnergySink implements IPeripheralAdapter {
 
 	@Override
-	public Class getTargetClass() {
+	public Class<?> getTargetClass() {
 		return IEnergySink.class;
 	}
 

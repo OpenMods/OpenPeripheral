@@ -13,25 +13,21 @@ import openperipheral.api.LuaMethod;
 import openperipheral.api.LuaType;
 import openperipheral.core.util.CallWrapper;
 import openperipheral.core.util.InventoryUtils;
+import openperipheral.core.util.ReflectionHelper;
 import appeng.api.IAEItemStack;
 import appeng.api.IItemList;
 import appeng.api.Util;
 import appeng.api.exceptions.AppEngTileMissingException;
-import appeng.api.me.tiles.ICellProvider;
-import appeng.api.me.util.ICraftRequest;
 import appeng.api.me.util.IGridInterface;
 import appeng.api.me.util.IMEInventoryHandler;
 import dan200.computer.api.IComputerAccess;
 
 public class AdapterGridTileEntity implements IPeripheralAdapter {
-
+	private static final Class<?> CLAZZ = ReflectionHelper.getClass("appeng.api.me.tiles.IGridTileEntity");
+	
 	@Override
-	public Class getTargetClass() {
-		 try {
-		    return Class.forName("appeng.api.me.tiles.IGridTileEntity");
-		 } catch (ClassNotFoundException e) {
-		   return null;
-		 }
+	public Class<?> getTargetClass() {
+		return CLAZZ;
 	}
 	
 	private IGridInterface getGrid(Object tile) {
@@ -42,7 +38,7 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 		args = {
 			@Arg(type = LuaType.TABLE, name = "stack", description = "A table representing the item stack") })
 	public void requestCrafting(IComputerAccess computer, Object te, ItemStack stack) throws AppEngTileMissingException {
-		ICraftRequest request = getGrid(te).craftingRequest(stack);
+		getGrid(te).craftingRequest(stack);
 	}
 
 	

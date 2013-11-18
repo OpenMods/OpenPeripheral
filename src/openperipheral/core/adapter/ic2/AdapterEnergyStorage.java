@@ -9,7 +9,7 @@ import dan200.computer.api.IComputerAccess;
 public class AdapterEnergyStorage implements IPeripheralAdapter {
 
 	@Override
-	public Class getTargetClass() {
+	public Class<?> getTargetClass() {
 		return IEnergyStorage.class;
 	}
 
