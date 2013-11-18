@@ -149,7 +149,7 @@ public class InventoryUtils {
 			  ModuleIC2.appendIC2Info(map, itemstack);
 			}
 			if (Loader.isModLoaded(Mods.THERMALEXPANSION)) {
-				ModuleThermalExpansion.appendRFEnergyInfo(map, itemstack);
+				ModuleThermalExpansion.appendTEInfo(map, itemstack);
 			}
 
 		}

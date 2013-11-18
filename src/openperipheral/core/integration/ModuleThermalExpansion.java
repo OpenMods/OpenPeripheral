@@ -3,6 +3,8 @@ package openperipheral.core.integration;
 import java.util.Map;
 
 import cofh.api.energy.IEnergyContainerItem;
+import cofh.api.item.IInventoryContainerItem;
+import cofh.api.item.ISecureItem;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -22,13 +24,22 @@ public class ModuleThermalExpansion {
 		AdapterManager.addPeripheralAdapter(new AdapterSecureTile());
 	}
 	
-	public static void appendRFEnergyInfo(Map map, ItemStack stack) {
+	public static void appendTEInfo(Map map, ItemStack stack) {
 		if (stack != null) {
 			Item item = stack.getItem();		
 			if (item instanceof IEnergyContainerItem) {
 				IEnergyContainerItem energyItem = (IEnergyContainerItem)item;
 				map.put("energyStored", energyItem.getEnergyStored(stack));
 				map.put("maxEnergyStored", energyItem.getMaxEnergyStored(stack));
+			}
+			if (item instanceof IInventoryContainerItem) {
+				IInventoryContainerItem itemItem = (IInventoryContainerItem)item;
+				map.put("sizeInventory", itemItem.getSizeInventory(stack));
+				map.put("inventoryContents", itemItem.getInventoryContents(stack));
+			}
+			if (item instanceof ISecureItem) {
+				ISecureItem secureItem = (ISecureItem)item;
+				map.put("owner", secureItem.getOwnerString());
 			}
 		}
 	}
