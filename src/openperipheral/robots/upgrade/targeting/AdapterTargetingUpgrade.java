@@ -16,7 +16,6 @@ import openperipheral.codechicken.core.vec.Vector3;
 import dan200.computer.api.IComputerAccess;
 
 public class AdapterTargetingUpgrade implements IRobotUpgradeAdapter {
-
 	private IRobot robot;
 	private int tier;
 
@@ -30,14 +29,10 @@ public class AdapterTargetingUpgrade implements IRobotUpgradeAdapter {
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbt) {
-
-	}
+	public void writeToNBT(NBTTagCompound nbt) {}
 
 	@Override
-	public void readFromNBT(NBTTagCompound nbt) {
-
-	}
+	public void readFromNBT(NBTTagCompound nbt) {}
 
 	@Override
 	public HashMap<Integer, EntityAIBase> getAITasks() {
@@ -45,15 +40,10 @@ public class AdapterTargetingUpgrade implements IRobotUpgradeAdapter {
 	}
 
 	@Override
-	public void onTierChanged(int tier) {
-
-	}
+	public void onTierChanged(int tier) {}
 
 	@Override
-	public void update() {
-		// TODO Auto-generated method stub
-
-	}
+	public void update() {}
 
 	public Vec3 getEyePosition() {
 		Vec3 pos = robot.getLocation();

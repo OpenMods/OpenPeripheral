@@ -9,7 +9,6 @@ public class ConverterArray implements ITypeConverter {
 
 	@Override
 	public Object fromLua(Object o, Class required) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

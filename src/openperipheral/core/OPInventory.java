@@ -39,7 +39,6 @@ public class OPInventory implements IInventory, ISidedInventory {
 
 	@Override
 	public boolean canInsertItem(int i, ItemStack itemstack, int j) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

@@ -15,7 +15,6 @@ import net.minecraft.network.packet.Packet;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldProvider;
 import net.minecraftforge.common.DimensionManager;
 import openperipheral.core.interfaces.IAttachable;
 import openperipheral.core.interfaces.IDrawable;

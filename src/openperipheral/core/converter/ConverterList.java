@@ -10,7 +10,6 @@ public class ConverterList implements ITypeConverter {
 
 	@Override
 	public Object fromLua(Object obj, Class expected) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

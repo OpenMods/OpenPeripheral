@@ -11,8 +11,6 @@ import openperipheral.core.integration.ModuleIC2;
 import openperipheral.core.integration.ModuleMystcraft;
 import openperipheral.core.integration.ModuleThermalExpansion;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockChest;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;

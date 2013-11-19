@@ -37,15 +37,10 @@ public class AdapterInventoryUpgrade extends AdapterInventory implements IRobotU
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbt) {
-
-	}
+	public void writeToNBT(NBTTagCompound nbt) {}
 
 	@Override
-	public void readFromNBT(NBTTagCompound nbt) {
-		// TODO Auto-generated method stub
-
-	}
+	public void readFromNBT(NBTTagCompound nbt) {}
 
 	@Override
 	public HashMap<Integer, EntityAIBase> getAITasks() {
@@ -53,9 +48,7 @@ public class AdapterInventoryUpgrade extends AdapterInventory implements IRobotU
 	}
 
 	@Override
-	public void update() {
-
-	}
+	public void update() {}
 
 	@Override
 	public void onTierChanged(int tier) {

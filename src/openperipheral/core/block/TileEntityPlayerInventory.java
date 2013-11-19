@@ -74,16 +74,10 @@ public class TileEntityPlayerInventory extends TileEntity implements IInventory,
 	}
 
 	@Override
-	public void openChest() {
-		// TODO Auto-generated method stub
-
-	}
+	public void openChest() {}
 
 	@Override
-	public void closeChest() {
-		// TODO Auto-generated method stub
-
-	}
+	public void closeChest() {}
 
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack) {

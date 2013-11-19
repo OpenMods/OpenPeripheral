@@ -1,8 +1,5 @@
 package openperipheral.core.adapter.buildcraft;
 
-import java.util.Locale;
-
-import cofh.api.tileentity.ISecureTile.AccessMode;
 import dan200.computer.api.IComputerAccess;
 import buildcraft.api.transport.IPipe;
 import openperipheral.api.IPeripheralAdapter;
@@ -14,7 +11,6 @@ public class AdapterPipe implements IPeripheralAdapter {
 
 	@Override
 	public Class<?> getTargetClass() {
-		// TODO Auto-generated method stub
 		return IPipe.class;
 	}
 

@@ -268,16 +268,10 @@ public class TileEntityRobot extends TileEntity implements IPeripheralProvider, 
 	}
 
 	@Override
-	public void onClientButtonClicked(int button) {
-		// TODO Auto-generated method stub
-
-	}
+	public void onClientButtonClicked(int button) {}
 
 	@Override
-	public void onServerButtonClicked(EntityPlayer player, int button) {
-		// TODO Auto-generated method stub
-
-	}
+	public void onServerButtonClicked(EntityPlayer player, int button) {}
 
 	@Override
 	public void setGuiValue(int i, int value) {
