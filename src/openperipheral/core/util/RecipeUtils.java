@@ -9,7 +9,6 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
-import net.minecraftforge.oredict.ShapedOreRecipe;
 import openperipheral.OpenPeripheral;
 import openperipheral.core.item.ItemGeneric;
 import openperipheral.core.item.ItemGeneric.Metas;
@@ -26,41 +25,41 @@ public class RecipeUtils {
 	public static String page8 = new StringBuilder().append("Peripheral Proxy\n").append("-----------------\n\n").append("You can't connect wired modems to non-solid blocks, so stick down a Peripheral Proxy next to you're block and attach your wired modem to that instead!").toString();
 
 	public static void addGlassesRecipe() {
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(OpenPeripheral.Items.glasses), new Object[] { "lpa", "gdg", "ppp", 'l', Metas.lcdScreen.newItemStack(), 'p', Metas.plasticCasing.newItemStack(), 'a', Metas.duckAntenna.newItemStack(), 'g', new ItemStack(Block.thinGlass), 'd', Metas.dataLink.newItemStack() }));
+		CraftingManager.getInstance().addRecipe(new ItemStack(OpenPeripheral.Items.glasses), new Object[] { "lpa", "gdg", "ppp", 'l', Metas.lcdScreen.newItemStack(), 'p', Metas.plasticCasing.newItemStack(), 'a', Metas.duckAntenna.newItemStack(), 'g', new ItemStack(Block.thinGlass), 'd', Metas.dataLink.newItemStack() });
 	}
 	
 	//TODO: remove this placeholder rubbish
 	public static void addRobotRecipe() {
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(OpenPeripheral.Items.robot), new Object[] { "rrr", "rrr", "rrr", 'r', Metas.plasticCasing.newItemStack() }));
+		CraftingManager.getInstance().addRecipe(new ItemStack(OpenPeripheral.Items.robot), new Object[] { "rrr", "rrr", "rrr", 'r', Metas.plasticCasing.newItemStack() });
 		
 	}
 
 	public static void addBridgeRecipe() {
 		Block peripheral = getCCBlock("peripheral");
 		Block cable = getCCBlock("cable");
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(OpenPeripheral.Blocks.glassesBridge), new Object[] { "lwl", "wrw", "lwl", Character.valueOf('w'), new ItemStack(cable, 1, 1), Character.valueOf('r'), new ItemStack(Block.blockRedstone), Character.valueOf('l'), new ItemStack(peripheral, 1, 1), }));
+		CraftingManager.getInstance().addRecipe(new ItemStack(OpenPeripheral.Blocks.glassesBridge), new Object[] { "lwl", "wrw", "lwl", Character.valueOf('w'), new ItemStack(cable, 1, 1), Character.valueOf('r'), new ItemStack(Block.blockRedstone), Character.valueOf('l'), new ItemStack(peripheral, 1, 1), });
 	}
 
 	public static void addTicketMachineRecipe() {
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(OpenPeripheral.Blocks.ticketMachine), new Object[] { "iii", "iii", "igi", Character.valueOf('i'), new ItemStack(Item.ingotIron), Character.valueOf('g'), new ItemStack(Block.thinGlass), }));
+		CraftingManager.getInstance().addRecipe(new ItemStack(OpenPeripheral.Blocks.ticketMachine), new Object[] { "iii", "iii", "igi", Character.valueOf('i'), new ItemStack(Item.ingotIron), Character.valueOf('g'), new ItemStack(Block.thinGlass), });
 	}
 
 	public static void addSensorRecipe() {
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(OpenPeripheral.Blocks.sensor), new Object[] { "ooo", " t ", "sss", 'o', new ItemStack(Block.obsidian), 't', Metas.scanningSensor.newItemStack(), 's', new ItemStack(Block.stoneSingleSlab) }));
+		CraftingManager.getInstance().addRecipe(new ItemStack(OpenPeripheral.Blocks.sensor), new Object[] { "ooo", " t ", "sss", 'o', new ItemStack(Block.obsidian), 't', Metas.scanningSensor.newItemStack(), 's', new ItemStack(Block.stoneSingleSlab) });
 	}
 
 	public static void addProxyRecipe() {
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(OpenPeripheral.Blocks.proxy), new Object[] { "iri", "rrr", "iri", Character.valueOf('i'), new ItemStack(Item.ingotIron), Character.valueOf('r'), new ItemStack(Item.redstone), }));
+		CraftingManager.getInstance().addRecipe(new ItemStack(OpenPeripheral.Blocks.proxy), new Object[] { "iri", "rrr", "iri", Character.valueOf('i'), new ItemStack(Item.ingotIron), Character.valueOf('r'), new ItemStack(Item.redstone), });
 	}
 
 	public static void addPIMRecipe() {
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(OpenPeripheral.Blocks.playerInventory), new Object[] { "ooo", "rcr", Character.valueOf('o'), new ItemStack(Block.obsidian), Character.valueOf('r'), new ItemStack(Item.redstone), Character.valueOf('c'), new ItemStack(Block.chest), }));
+		CraftingManager.getInstance().addRecipe(new ItemStack(OpenPeripheral.Blocks.playerInventory), new Object[] { "ooo", "rcr", Character.valueOf('o'), new ItemStack(Block.obsidian), Character.valueOf('r'), new ItemStack(Item.redstone), Character.valueOf('c'), new ItemStack(Block.chest), });
 	}
 
 	public static Block getCCBlock(String fieldName) {
 		Block block = null;
 		try {
-			Class cc = Class.forName("dan200.ComputerCraft$Blocks");
+			Class<?> cc = Class.forName("dan200.ComputerCraft$Blocks");
 			if (cc != null) {
 				Field peripheralField = cc.getDeclaredField(fieldName);
 				if (peripheralField != null) {
@@ -94,10 +93,10 @@ public class RecipeUtils {
 
 	public static void addBookRecipe() {
 		Block cable = getCCBlock("cable");
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(getGuideItemStack(), new Object[] { "r", "c", "b", Character.valueOf('r'), new ItemStack(Item.redstone), Character.valueOf('c'), new ItemStack(cable), Character.valueOf('b'), new ItemStack(Item.book) }));
+		CraftingManager.getInstance().addRecipe(getGuideItemStack(), new Object[] { "r", "c", "b", Character.valueOf('r'), new ItemStack(Item.redstone), Character.valueOf('c'), new ItemStack(cable), Character.valueOf('b'), new ItemStack(Item.book) });
 	}
 
 	public static void addRemoteRecipe() {
-		CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(OpenPeripheral.Items.remote), new Object[] { "apa", "plp", " r ", Character.valueOf('l'), ItemGeneric.Metas.lcdScreen.newItemStack(), Character.valueOf('a'), ItemGeneric.Metas.duckAntenna.newItemStack(), Character.valueOf('p'), ItemGeneric.Metas.plasticCasing.newItemStack(), Character.valueOf('r'), ItemGeneric.Metas.ribbonCable.newItemStack(), }));
+		CraftingManager.getInstance().addRecipe(new ItemStack(OpenPeripheral.Items.remote), new Object[] { "apa", "plp", " r ", Character.valueOf('l'), ItemGeneric.Metas.lcdScreen.newItemStack(), Character.valueOf('a'), ItemGeneric.Metas.duckAntenna.newItemStack(), Character.valueOf('p'), ItemGeneric.Metas.plasticCasing.newItemStack(), Character.valueOf('r'), ItemGeneric.Metas.ribbonCable.newItemStack(), });
 	}
 }
