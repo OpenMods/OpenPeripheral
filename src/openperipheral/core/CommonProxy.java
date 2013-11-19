@@ -71,7 +71,10 @@ public class CommonProxy implements IGuiHandler {
 		RecipeUtils.addPIMRecipe();
 		RecipeUtils.addRemoteRecipe();
 		RecipeUtils.addSensorRecipe();
-		RecipeUtils.addRobotRecipe();
+		
+		if (ConfigSettings.robotsEnabled) {
+			RecipeUtils.addRobotRecipe();
+		}
 
 		MinecraftForge.EVENT_BUS.register(new ChatCommandInterceptor());
 
