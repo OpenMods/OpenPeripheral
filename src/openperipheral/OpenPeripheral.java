@@ -30,6 +30,7 @@ import openperipheral.core.converter.ConverterItemStack;
 import openperipheral.core.converter.ConverterList;
 import openperipheral.core.integration.ModuleAppEng;
 import openperipheral.core.integration.ModuleBuildCraft;
+import openperipheral.core.integration.ModuleChickenChunks;
 import openperipheral.core.integration.ModuleEnderStorage;
 import openperipheral.core.integration.ModuleForestry;
 import openperipheral.core.integration.ModuleIC2;
@@ -187,6 +188,11 @@ public class OpenPeripheral {
 		if (ModLoader.isModLoaded(Mods.SGCRAFT)) {
 			ModuleSgCraft.init();
 		}
+		
+		if (ModLoader.isModLoaded(Mods.CHICKENCHUNKS)) {
+      ModuleChickenChunks.init();
+    }
+    
 		
 		TickRegistry.registerTickHandler(new TickHandler(), Side.SERVER);
 		ComputerCraftAPI.registerExternalPeripheral(TileEntity.class, peripheralHandler);
