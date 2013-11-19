@@ -15,7 +15,10 @@ import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.relauncher.FMLLaunchHandler;
 
 public class ConfigSettings {
-
+	private static final String GENERAL = "general";
+	private static final String BLOCKS = "blocks";
+	private static final String ITEMS = "items";
+	
 	public static final String NETWORK_CHANNEL = "OpenPeripheral";
 	public static int CACHE_REFRESH_INTERVAL = 7;
 	public static String RESOURCE_PATH = "/assets/openperipheral";
@@ -67,15 +70,15 @@ public class ConfigSettings {
 		ModContainer container = FMLCommonHandler.instance().findContainerFor(OpenPeripheral.instance);
 		String version = container.getVersion();
 
-		Property prop = configFile.get("general", "cellsPerRedstone", cellsPerRedstone);
+		Property prop = configFile.get(GENERAL, "cellsPerRedstone", cellsPerRedstone);
 		prop.comment = "How many cells are crafted per redstone? Use this to balance";
 		cellsPerRedstone = prop.getInt();
 
-		prop = configFile.get("general", "enableAnalytics", true);
+		prop = configFile.get(GENERAL, "enableAnalytics", true);
 		prop.comment = "Do you want analytics enabled?";
 		analyticsEnabled = prop.getBoolean(true);
 
-		prop = configFile.get("general", "currentVersion", 0);
+		prop = configFile.get(GENERAL, "currentVersion", 0);
 		prop.comment = "You do not need to change this";
 		previousVersion = prop.getString();
 
@@ -85,71 +88,71 @@ public class ConfigSettings {
 
 		prop.set(version);
 
-		prop = configFile.get("general", "dataUrl", DATA_URL);
+		prop = configFile.get(GENERAL, "dataUrl", DATA_URL);
 		prop.comment = "The URL of the data file";
 		DATA_URL = prop.getString();
 
-		prop = configFile.get("general", "cacheFile", CACHE_FILE);
+		prop = configFile.get(GENERAL, "cacheFile", CACHE_FILE);
 		prop.comment = "The path to the cache file";
 		CACHE_FILE = prop.getString();
 
-		prop = configFile.get("general", "cacheInterval", CACHE_REFRESH_INTERVAL);
+		prop = configFile.get(GENERAL, "cacheInterval", CACHE_REFRESH_INTERVAL);
 		prop.comment = "How often the cache file gets updated (in days)";
 		CACHE_REFRESH_INTERVAL = prop.getInt();
 
-		prop = configFile.get("general", "enabledExtendedInventory", enabledExtendedInventory);
+		prop = configFile.get(GENERAL, "enabledExtendedInventory", enabledExtendedInventory);
 		prop.comment = "Do you wish to enable the extended inventory methods? (pull, push, swap)";
 		enabledExtendedInventory = prop.getBoolean(enabledExtendedInventory);
 
-		prop = configFile.get("general", "robotsEnabled", robotsEnabled);
+		prop = configFile.get(GENERAL, "robotsEnabled", robotsEnabled);
 		prop.comment = "Are robots enabled?";
 		robotsEnabled = prop.getBoolean(robotsEnabled);
 		
-		prop = configFile.get("general", "sensorRange", sensorRange);
+		prop = configFile.get(GENERAL, "sensorRange", sensorRange);
 		prop.comment = "The range of the sensor block";
 		sensorRange = prop.getInt(sensorRange);
 		
-		prop = configFile.get("general", "sensorRangeInStorm", sensorRangeInStorm);
+		prop = configFile.get(GENERAL, "sensorRangeInStorm", sensorRangeInStorm);
 		prop.comment = "The range of the sensor block during a storm";
 		sensorRangeInStorm = prop.getInt(sensorRangeInStorm);
 
-		prop = configFile.get("items", "glassesId", glassesId);
+		prop = configFile.get(ITEMS, "glassesId", glassesId);
 		prop.comment = "The id of the glasses";
 		glassesId = prop.getInt();
 
-		prop = configFile.get("items", "genericItemId", genericItemId);
+		prop = configFile.get(ITEMS, "genericItemId", genericItemId);
 		prop.comment = "The id of the generic item";
 		genericItemId = prop.getInt();
 
-		prop = configFile.get("items", "remoteId", remoteId);
+		prop = configFile.get(ITEMS, "remoteId", remoteId);
 		prop.comment = "The id of the computer remote";
 		remoteId = prop.getInt();
 
-		prop = configFile.get("items", "robotItemId", robotItemId);
+		prop = configFile.get(ITEMS, "robotItemId", robotItemId);
 		prop.comment = "The id of the robot";
 		robotItemId = prop.getInt();
 
-		prop = configFile.get("blocks", "bridgeId", glassesBridgeId);
+		prop = configFile.get(BLOCKS, "bridgeId", glassesBridgeId);
 		prop.comment = "The id of the glasses bridge";
 		glassesBridgeId = prop.getInt();
 
-		prop = configFile.get("blocks", "playerInventoryId", playerInventoryId);
+		prop = configFile.get(BLOCKS, "playerInventoryId", playerInventoryId);
 		prop.comment = "The id of the player inventory block";
 		playerInventoryId = prop.getInt();
 
-		prop = configFile.get("blocks", "ticketMachineId", ticketMachineId);
+		prop = configFile.get(BLOCKS, "ticketMachineId", ticketMachineId);
 		prop.comment = "The id of the player ticket machine";
 		ticketMachineId = prop.getInt();
 
-		prop = configFile.get("blocks", "proxyBlockId", proxyBlockId);
+		prop = configFile.get(BLOCKS, "proxyBlockId", proxyBlockId);
 		prop.comment = "The id of the proxy block";
 		proxyBlockId = prop.getInt();
 
-		prop = configFile.get("blocks", "sensorBlockId", sensorBlockId);
+		prop = configFile.get(BLOCKS, "sensorBlockId", sensorBlockId);
 		prop.comment = "The id of the sensor block";
 		sensorBlockId = prop.getInt();
 
-		prop = configFile.get("blocks", "robotBlockId", robotBlockId);
+		prop = configFile.get(BLOCKS, "robotBlockId", robotBlockId);
 		prop.comment = "The id of the robot block";
 		robotBlockId = prop.getInt();
 
