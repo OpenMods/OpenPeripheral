@@ -14,7 +14,7 @@ public class TileEntityRobotRenderer extends TileEntitySpecialRenderer {
 
 	private ModelRobotWarrior model = new ModelRobotWarrior();
 	private ModelBlockFrame frame = new ModelBlockFrame();
-	private EntityRobot robot = new EntityRobotWarrior(null, "fake");
+	private EntityRobot robot = new EntityRobotWarrior(null, null);
 	private static final ResourceLocation frameTexture = new ResourceLocation("openperipheral", "textures/models/blockframe.png");
 	private static final ResourceLocation robotTexture = new ResourceLocation("openperipheral", "textures/models/robot.png");
 

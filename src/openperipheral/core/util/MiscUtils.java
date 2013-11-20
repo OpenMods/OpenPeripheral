@@ -29,7 +29,6 @@ public class MiscUtils {
 	public static boolean isPlayerOp(String username) {
 		username = username.toLowerCase();
 		
-		System.out.println("Checking if player is op: " + username);
         MinecraftServer server = FMLCommonHandler.instance().getSidedDelegate().getServer();
 
         // SP and LAN
