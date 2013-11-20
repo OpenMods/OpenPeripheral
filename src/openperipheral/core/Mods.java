@@ -15,4 +15,5 @@ public class Mods {
 	public static final String COMPUTERCRAFT = "ComputerCraft";
 	public static final String ENDER_STORAGE = "EnderStorage";
 	public static final String MYSTCRAFT = "Mystcraft";
+	public static final String PROJECTRED_TRANSMISSION = "ProjRed|Transmission";
 }

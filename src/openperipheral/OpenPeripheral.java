@@ -34,6 +34,7 @@ import openperipheral.core.integration.ModuleEnderStorage;
 import openperipheral.core.integration.ModuleForestry;
 import openperipheral.core.integration.ModuleIC2;
 import openperipheral.core.integration.ModuleMystcraft;
+import openperipheral.core.integration.ModuleProjectRed;
 import openperipheral.core.integration.ModuleRailcraft;
 import openperipheral.core.integration.ModuleSgCraft;
 import openperipheral.core.integration.ModuleThaumcraft;
@@ -173,7 +174,9 @@ public class OpenPeripheral {
 		if (Loader.isModLoaded(Mods.MYSTCRAFT)) { 
 			ModuleMystcraft.init();
 		}
-		
+		if (Loader.isModLoaded(Mods.PROJECTRED_TRANSMISSION)) {
+			ModuleProjectRed.init();
+		}
 		if (ModLoader.isModLoaded(Mods.RAILCRAFT)) {
 			ModuleRailcraft.init();
 		}
