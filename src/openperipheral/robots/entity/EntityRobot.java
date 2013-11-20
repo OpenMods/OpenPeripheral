@@ -12,6 +12,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatMessageComponent;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
@@ -25,6 +26,7 @@ import openperipheral.core.OPInventory;
 import openperipheral.core.interfaces.IInventoryCallback;
 import openperipheral.core.interfaces.ISensorEnvironment;
 import openperipheral.core.util.BlockUtils;
+import openperipheral.core.util.MiscUtils;
 import openperipheral.robots.RobotUpgradeManager;
 import openperipheral.robots.block.TileEntityRobot;
 
@@ -40,6 +42,7 @@ public abstract class EntityRobot extends EntityCreature implements IInventory, 
 	private boolean linkedToController = false;
 	private int robotId = 0;
 	private float moveSpeed = 0.3f;
+	private String owner;
 
 	private float fuelLevel = 0;
 
@@ -71,17 +74,18 @@ public abstract class EntityRobot extends EntityCreature implements IInventory, 
 	private HashMap<EntityAIBase, IRobotUpgradeAdapter> upgradeAIMap;
 
 	private NBTTagCompound upgradesNBT = new NBTTagCompound();
-
-	public EntityRobot(World par1World) {
-		super(par1World);
+	
+	public EntityRobot(World world, String playerName) {
+		super(world);
 		upgradeMethodMap = new HashMap<String, IRobotUpgradeAdapter>();
 		upgradeInstances = new HashMap<String, IRobotUpgradeAdapter>();
 		upgradeAIMap = new HashMap<EntityAIBase, IRobotUpgradeAdapter>();
 		upgradeTiers = new HashMap<String, Integer>();
-		this.setSize(1F, 3F);
-		this.setMaxRobotHealth(20);
-		this.getNavigator().setAvoidsWater(true);
+		setSize(1F, 3F);
+		setMaxRobotHealth(20);
+		getNavigator().setAvoidsWater(true);
 		inventory.addCallback(this);
+		owner = playerName;
 	}
 
 	/**
@@ -528,6 +532,7 @@ public abstract class EntityRobot extends EntityCreature implements IInventory, 
 			upgradesNBT = tag.getCompoundTag("upgrades");
 		}
 		onInventoryChanged(inventory, 0);
+		owner = tag.getString("owner");
 	}
 
 	public void writeEntityToNBT(NBTTagCompound tag) {
@@ -545,23 +550,30 @@ public abstract class EntityRobot extends EntityCreature implements IInventory, 
 			entry.getValue().writeToNBT(instanceTag);
 			upgrades.setCompoundTag(entry.getKey(), instanceTag);
 		}
+		tag.setString("owner", owner);
 	}
 
 	/**
-	 * If the player is sneaking and they click lets dismantle the robot TODO:
-	 * only dismantle if owner or OP
+	 * If the player is sneaking and they click lets dismantle the robot
 	 */
 	@Override
 	public boolean interact(EntityPlayer player) {
 		if (!worldObj.isRemote) {
+			String username = player.username;
+			boolean canDismantle = owner == username || MiscUtils.isPlayerOp(username);
+			
 			if (player.isSneaking()) {
-				ItemStack robot = new ItemStack(OpenPeripheral.Items.robot);
-				NBTTagCompound tag = new NBTTagCompound();
-				this.writeEntityToNBT(tag);
-				robot.setTagCompound(tag);
-				setDead();
-				BlockUtils.dropItemStackInWorld(worldObj, posX, posY, posZ, robot);
-				return true;
+				if (!canDismantle) {
+					player.sendChatToPlayer(ChatMessageComponent.createFromText("You are not my owner, you cannot dismantle me!"));
+				} else {
+					ItemStack robot = new ItemStack(OpenPeripheral.Items.robot);
+					NBTTagCompound tag = new NBTTagCompound();
+					writeEntityToNBT(tag);
+					robot.setTagCompound(tag);
+					setDead();
+					BlockUtils.dropItemStackInWorld(worldObj, posX, posY, posZ, robot);
+					return true;
+				}
 			} else {
 				player.openGui(OpenPeripheral.instance, OpenPeripheral.Gui.robotEntity.ordinal(), player.worldObj, entityId, 0, 0);
 			}

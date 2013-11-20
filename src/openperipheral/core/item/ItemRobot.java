@@ -56,7 +56,7 @@ public class ItemRobot extends Item {
 
 			if (world.isAirBlock(blockX, blockY, blockZ) && world.isAirBlock(blockX, blockY + 1, blockZ) && world.isAirBlock(blockX, blockY + 2, blockZ)) {
 
-				EntityRobot robot = new EntityRobotWarrior(world);
+				EntityRobot robot = new EntityRobotWarrior(world, player.username);
 				if (robot.createFromItem(stack)) {
 					robot.setPositionAndRotation(pos.x, pos.y + 0.5, pos.z, 0, 0);
 					world.spawnEntityInWorld(robot);

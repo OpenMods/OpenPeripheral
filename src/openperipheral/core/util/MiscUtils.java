@@ -7,10 +7,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+
 import net.minecraft.block.Block;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.tileentity.TileEntity;
 import openperipheral.OpenPeripheral;
 import openperipheral.api.Arg;
@@ -21,6 +25,24 @@ public class MiscUtils {
 		// || (Loader.isModLoaded(Mods.MPS) && MPSUtils.isValidHelmet(stack)))
 		return stack != null && (stack.getItem() == OpenPeripheral.Items.glasses);
 	}
+	
+	public static boolean isPlayerOp(String username) {
+		username = username.toLowerCase();
+		
+		System.out.println("Checking if player is op: " + username);
+        MinecraftServer server = FMLCommonHandler.instance().getSidedDelegate().getServer();
+
+        // SP and LAN
+        if (server.isSinglePlayer()) {
+            if (server instanceof IntegratedServer)
+                return server.getServerOwner().equals(username);
+            else
+                return server.getConfigurationManager().getOps().contains(username);
+        }
+
+        // SMP
+        return server.getConfigurationManager().getOps().contains(username);
+    }
 
 	public static int getHoliday() {
 		Calendar today = Calendar.getInstance();

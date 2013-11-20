@@ -16,9 +16,13 @@ public class EntityRobotWarrior extends EntityRobot implements ILaserRobot {
 	private float weaponSpinSpeed = 0;
 
 	private String[] dataWatcherMethod = new String[] { "getWatchedObject" };
-
+	
 	public EntityRobotWarrior(World world) {
-		super(world);
+		super(world, null);
+	}
+	
+	public EntityRobotWarrior(World world, String playerName) {
+		super(world, playerName);
 	}
 
 	@Override
