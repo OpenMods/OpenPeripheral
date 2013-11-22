@@ -16,7 +16,7 @@ public class AdapterAspectContainer implements IPeripheralAdapter {
 	public Class<?> getTargetClass() {
 		return IAspectContainer.class;
 	}
-	
+
 	@LuaMethod(returnType = LuaType.TABLE, description = "Get the Aspects stored in the block")
 	public ArrayList<HashMap<String, Object>> getAspects(IComputerAccess computer, IAspectContainer container) {
 		if (container == null) { return null; }

@@ -5,7 +5,7 @@ import java.util.Map;
 
 import cpw.mods.fml.common.Loader;
 
-import openperipheral.core.Mods;
+import openmods.Mods;
 import openperipheral.core.integration.ModuleForestry;
 import openperipheral.core.integration.ModuleIC2;
 import openperipheral.core.integration.ModuleMystcraft;
@@ -144,7 +144,7 @@ public class InventoryUtils {
 				ModuleForestry.appendBeeInfo(map, itemstack);
 			}
 			if (Loader.isModLoaded(Mods.IC2)) {
-			  ModuleIC2.appendIC2Info(map, itemstack);
+				ModuleIC2.appendIC2Info(map, itemstack);
 			}
 			if (Loader.isModLoaded(Mods.THERMALEXPANSION)) {
 				ModuleThermalExpansion.appendTEInfo(map, itemstack);
@@ -214,12 +214,12 @@ public class InventoryUtils {
 	 * @return Inventory parameter or a large chest inventory if it's a large chest
 	 */
 	public static IInventory getInventory(IInventory inventory) {
-	    if(!(inventory instanceof TileEntity)) {
-	        return inventory;
-	    }
-	    return getLargeInventory((TileEntity)inventory);
+		if(!(inventory instanceof TileEntity)) {
+			return inventory;
+		}
+		return getLargeInventory((TileEntity)inventory);
 	}
-	
+
 	/**
 	 * Gets an adjacent IInventory from a specified IInventory
 	 * @param inventory IInventory to get an adjacent Inventory for
@@ -227,14 +227,14 @@ public class InventoryUtils {
 	 * @return IInventory of an adjacent TileEntity or null if one is not available. Returns the inventory parameter if the direction is invalid.
 	 */
 	public static IInventory getInventory(IInventory inventory, ForgeDirection offsetDirection) {
-	    if(!(inventory instanceof TileEntity)) { 
-	        return inventory;
-	    }
-	    TileEntity targetTileEntity = (TileEntity)inventory;
-	    TileEntity otherTileEntity = BlockUtils.getTileInDirection(targetTileEntity, offsetDirection);
-	    return getInventory(otherTileEntity); 
+		if(!(inventory instanceof TileEntity)) { 
+			return inventory;
+		}
+		TileEntity targetTileEntity = (TileEntity)inventory;
+		TileEntity otherTileEntity = BlockUtils.getTileInDirection(targetTileEntity, offsetDirection);
+		return getInventory(otherTileEntity); 
 	}
-	
+
 	/**
 	 * Returns an inventory at a world location
 	 * @param world World Object to get the inventory for
@@ -246,7 +246,7 @@ public class InventoryUtils {
 	 */
 	public static IInventory getInventory(World world, int x, int y, int z, ForgeDirection direction) {
 		/* If a direction is supplied, shift the coordinate paramters by their offset */
-	    if (direction != null && direction != ForgeDirection.UNKNOWN) {
+		if (direction != null && direction != ForgeDirection.UNKNOWN) {
 			x += direction.offsetX;
 			y += direction.offsetY;
 			z += direction.offsetZ;
@@ -254,43 +254,43 @@ public class InventoryUtils {
 		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
 		return getInventory(tileEntity);
 	}
-    
+
 	/**
 	 * Get an IInventory from a TileEntity
 	 * @param tileEntity TileEntity to get the Inventory for.
 	 * @return IInventory from the TileEntity, or null if it wasn't a valid TE.
 	 */
-    public static IInventory getInventory(TileEntity tileEntity) {
-        return getLargeInventory(tileEntity);
-    }
-	
+	public static IInventory getInventory(TileEntity tileEntity) {
+		return getLargeInventory(tileEntity);
+	}
+
 	/**
 	 * Returns the inventory of a TileEntity
 	 * @param te The TileEntity to get the inventory for
 	 * @return IInventory of any generic TE Inventory or an InventoryLargeChest for Double Chests.
 	 */
 	private static IInventory getLargeInventory(TileEntity te) {
-	    if(te != null && te instanceof IInventory) {
-	        if(te instanceof TileEntityChest) {
-	            TileEntityChest chest = (TileEntityChest)te;
-	            if(!chest.adjacentChestChecked) {
-	                try {
-	                    chest.checkForAdjacentChests();
-	                }catch(Exception ex) {
-	                    ex.printStackTrace();
-	                    return (IInventory)te;
-	                }
-	            }
-                /* Lol, Incorrect name. That's positive not position. I'll report that to MCP -NC */
-                if(chest.adjacentChestZPosition != null) return new InventoryLargeChest("container.chestDouble", chest, chest.adjacentChestZPosition);
-                if(chest.adjacentChestZNeg != null) return new InventoryLargeChest("container.chestDouble", chest.adjacentChestZNeg, chest);
-                if(chest.adjacentChestXPos != null) return new InventoryLargeChest("container.chestDouble", chest, chest.adjacentChestXPos);
-	            if(chest.adjacentChestXNeg != null) return new InventoryLargeChest("container.chestDouble", chest.adjacentChestXNeg, chest);
-	            return chest;	            
-	        } 
-	        return (IInventory)te;
-	    }
-	    return null;
+		if(te != null && te instanceof IInventory) {
+			if(te instanceof TileEntityChest) {
+				TileEntityChest chest = (TileEntityChest)te;
+				if(!chest.adjacentChestChecked) {
+					try {
+						chest.checkForAdjacentChests();
+					}catch(Exception ex) {
+						ex.printStackTrace();
+						return (IInventory)te;
+					}
+				}
+				/* Lol, Incorrect name. That's positive not position. I'll report that to MCP -NC */
+				if(chest.adjacentChestZPosition != null) return new InventoryLargeChest("container.chestDouble", chest, chest.adjacentChestZPosition);
+				if(chest.adjacentChestZNeg != null) return new InventoryLargeChest("container.chestDouble", chest.adjacentChestZNeg, chest);
+				if(chest.adjacentChestXPos != null) return new InventoryLargeChest("container.chestDouble", chest, chest.adjacentChestXPos);
+				if(chest.adjacentChestXNeg != null) return new InventoryLargeChest("container.chestDouble", chest.adjacentChestXNeg, chest);
+				return chest;	            
+			} 
+			return (IInventory)te;
+		}
+		return null;
 	}
 
 	public static boolean canMoveItem(Object fromTile, Object toTile, int fromSlot, int intoSlot, ForgeDirection direction) {

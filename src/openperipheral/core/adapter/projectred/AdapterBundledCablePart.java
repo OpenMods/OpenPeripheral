@@ -7,18 +7,18 @@ import openperipheral.api.LuaMethod;
 import openperipheral.api.LuaType;
 import openperipheral.api.Arg;
 
-public class AdapterBundledCablePart implements IPeripheralAdapter{
+public class AdapterBundledCablePart implements IPeripheralAdapter {
 
 	@Override
-	public Class getTargetClass() {
+	public Class<?> getTargetClass() {
 		return IBundledCablePart.class;
 	}
-	
+
 	@LuaMethod(description="gets the signals from the cable.", returnType=LuaType.TABLE)
 	public byte[] getBundledSignal(IComputerAccess computer, IBundledCablePart cable) {
 		return cable.getBundledSignal();
 	}
-	
+
 	@LuaMethod(description="Sets the signals of the cable.", args={
 			@Arg(name="signals", type=LuaType.TABLE, description="The signals of the cable.")
 	})

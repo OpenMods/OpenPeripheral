@@ -76,13 +76,13 @@ public class HostedPeripheral implements IHostedPeripheral {
 
 	@Override
 	public Object[] callMethod(final IComputerAccess computer, ILuaContext context, int index, Object[] arguments) throws Exception {
-		
+
 		// refresh the TE
 		if (getTargetObject() instanceof TileEntity) {
 			TileEntity tile = (TileEntity)getTargetObject();
 			targetObject = tile.worldObj.getBlockTileEntity(tile.xCoord, tile.yCoord, tile.zCoord);
 		}
-		
+
 		final MethodDeclaration method = methods.get(index);
 
 		final Object[] formattedParameters = formatParameters(computer, method, arguments);
@@ -149,27 +149,28 @@ public class HostedPeripheral implements IHostedPeripheral {
 		}
 	}
 
-  protected static String getMessageForThrowable(Throwable e) {
-    Throwable cause = e.getCause();
-    
-    String firstMessage = e.getMessage();
-    String secondMessage = (cause != null) ? cause.getMessage() : null;
-    
-    if (StringUtils.isEmpty(firstMessage) && StringUtils.isEmpty(secondMessage)) {
-      e.printStackTrace();
-      return "Unknown error. Please contact Mikee on esper.net IRC #OpenMods";
-    }else if (!StringUtils.isEmpty(firstMessage) && !StringUtils.isEmpty(secondMessage)) {
-      return String.format("%s, caused by %s", firstMessage, secondMessage);
-    }else{
-      if(StringUtils.isEmpty(firstMessage)){
-        return secondMessage;
-      }else{ // We already checked the empty/empty cause so firstMessage has to be valid. 
-        return firstMessage; 
-      }
-    }
-  }
+	protected static String getMessageForThrowable(Throwable e) {
+		Throwable cause = e.getCause();
 
-  protected Object[] formatParameters(IComputerAccess computer, MethodDeclaration method, Object[] arguments) throws Exception {
+		String firstMessage = e.getMessage();
+		String secondMessage = (cause != null) ? cause.getMessage() : null;
+
+		if (StringUtils.isEmpty(firstMessage) && StringUtils.isEmpty(secondMessage)) {
+			e.printStackTrace();
+			return "Unknown error. Please contact Mikee on esper.net IRC #OpenMods";
+		} else if (!StringUtils.isEmpty(firstMessage) && !StringUtils.isEmpty(secondMessage)) {
+			return String.format("%s, caused by %s", firstMessage, secondMessage);
+		} else {
+			if (StringUtils.isEmpty(firstMessage)) {
+				return secondMessage;
+			} else { // We already checked the empty/empty cause so firstMessage has to be valid. 
+				return firstMessage; 
+			}
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	protected Object[] formatParameters(IComputerAccess computer, MethodDeclaration method, Object[] arguments) throws Exception {
 
 		Arg[] requiredParameters = method.getRequiredParameters();
 
@@ -258,18 +259,11 @@ public class HostedPeripheral implements IHostedPeripheral {
 	}
 
 	@Override
-	public void update() {
-
-	}
+	public void update() {}
 
 	@Override
-	public void readFromNBT(NBTTagCompound nbttagcompound) {
-
-	}
+	public void readFromNBT(NBTTagCompound nbttagcompound) {}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbttagcompound) {
-
-	}
-
+	public void writeToNBT(NBTTagCompound nbttagcompound) {}
 }

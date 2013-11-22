@@ -14,13 +14,11 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.util.Vec3;
 import openperipheral.core.AdapterManager;
-import openperipheral.core.adapter.AdapterTicketMachine;
 import openperipheral.core.adapter.railcraft.AdapterTileSteamTurbine;
 
 public class ModuleRailcraft {
 
 	public static void init() {
-		AdapterManager.addPeripheralAdapter(new AdapterTicketMachine());
 		AdapterManager.addPeripheralAdapter(new AdapterTileSteamTurbine());
 	}
 
@@ -33,13 +31,13 @@ public class ModuleRailcraft {
 			map.put("powerTier", cart.getTier());
 			map.put("transferRate", cart.getTransferLimit());
 		}
-		
+
 		if (entity instanceof IExplosiveCart) {
 			IExplosiveCart cart = (IExplosiveCart)entity;
 			map.put("primed", cart.isPrimed());
 			map.put("fuse", cart.getFuse());
 		}
-		
+
 		if (entity instanceof ILinkableCart) {
 			ILinkableCart cart = (ILinkableCart)entity;
 			EntityMinecart minecart = (EntityMinecart)entity;
@@ -55,24 +53,24 @@ public class ModuleRailcraft {
 				map.put("owner", CartTools.getCartOwner(minecart));
 			}
 		}
-		
+
 		// tank carts
 		if (entity instanceof ILiquidTransfer) {
 			ILiquidTransfer cart = (ILiquidTransfer)entity;
 			map.put("isFilling", cart.isFilling());
 		}
-		
+
 		if (entity instanceof IPaintedCart) {
 			IPaintedCart cart = (IPaintedCart)entity;
 			map.put("primaryColor", cart.getPrimaryColor());
 			map.put("secondaryColor", cart.getSecondaryColor());
 		}
-		
+
 		if (entity instanceof IRefuelableCart) {
 			IRefuelableCart cart = (IRefuelableCart)entity;
 			map.put("needsRefuel", cart.needsRefuel());
 		}
-		
+
 		if (entity instanceof IRoutableCart) {
 			IRoutableCart cart = (IRoutableCart)entity;
 			map.put("destination", cart.getDestination());

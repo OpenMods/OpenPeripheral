@@ -16,9 +16,7 @@ import cpw.mods.fml.relauncher.FMLLaunchHandler;
 
 public class ConfigSettings {
 	private static final String GENERAL = "general";
-	private static final String BLOCKS = "blocks";
-	private static final String ITEMS = "items";
-	
+
 	public static final String NETWORK_CHANNEL = "OpenPeripheral";
 	public static int CACHE_REFRESH_INTERVAL = 7;
 	public static String RESOURCE_PATH = "/assets/openperipheral";
@@ -40,31 +38,12 @@ public class ConfigSettings {
 	public static String CACHE_PATH = "";
 	public static String DATA_URL = String.format("%s%s", externalBase, "methods_new.json");
 	public static String previousVersion;
-	
-	public static int sensorRange = 5;
-	public static int sensorRangeInStorm = 5;
-
-	// blocks and items
-	public static int glassesId = 1055;
-	public static int remoteId = 1056;
-	public static int genericItemId = 1057;
-	public static int robotItemId = 1058;
-
-	public static int glassesBridgeId = 580;
-	public static int proxyBlockId = 581;
-	public static int playerInventoryId = 582;
-	public static int ticketMachineId = 583;
-	public static int sensorBlockId = 584;
-	public static int robotBlockId = 585;
 
 	public static boolean enabledExtendedInventory = true;
-
-	public static boolean robotsEnabled = true;
 
 	public static int cellsPerRedstone = 3;
 
 	public static void loadAndSaveConfig(File suggestedConfigFile) {
-
 		Configuration configFile = new Configuration(suggestedConfigFile);
 
 		ModContainer container = FMLCommonHandler.instance().findContainerFor(OpenPeripheral.instance);
@@ -103,58 +82,6 @@ public class ConfigSettings {
 		prop = configFile.get(GENERAL, "enabledExtendedInventory", enabledExtendedInventory);
 		prop.comment = "Do you wish to enable the extended inventory methods? (pull, push, swap)";
 		enabledExtendedInventory = prop.getBoolean(enabledExtendedInventory);
-
-		prop = configFile.get(GENERAL, "robotsEnabled", robotsEnabled);
-		prop.comment = "Are robots enabled?";
-		robotsEnabled = prop.getBoolean(robotsEnabled);
-		
-		prop = configFile.get(GENERAL, "sensorRange", sensorRange);
-		prop.comment = "The range of the sensor block";
-		sensorRange = prop.getInt(sensorRange);
-		
-		prop = configFile.get(GENERAL, "sensorRangeInStorm", sensorRangeInStorm);
-		prop.comment = "The range of the sensor block during a storm";
-		sensorRangeInStorm = prop.getInt(sensorRangeInStorm);
-
-		prop = configFile.get(ITEMS, "glassesId", glassesId);
-		prop.comment = "The id of the glasses";
-		glassesId = prop.getInt();
-
-		prop = configFile.get(ITEMS, "genericItemId", genericItemId);
-		prop.comment = "The id of the generic item";
-		genericItemId = prop.getInt();
-
-		prop = configFile.get(ITEMS, "remoteId", remoteId);
-		prop.comment = "The id of the computer remote";
-		remoteId = prop.getInt();
-
-		prop = configFile.get(ITEMS, "robotItemId", robotItemId);
-		prop.comment = "The id of the robot";
-		robotItemId = prop.getInt();
-
-		prop = configFile.get(BLOCKS, "bridgeId", glassesBridgeId);
-		prop.comment = "The id of the glasses bridge";
-		glassesBridgeId = prop.getInt();
-
-		prop = configFile.get(BLOCKS, "playerInventoryId", playerInventoryId);
-		prop.comment = "The id of the player inventory block";
-		playerInventoryId = prop.getInt();
-
-		prop = configFile.get(BLOCKS, "ticketMachineId", ticketMachineId);
-		prop.comment = "The id of the player ticket machine";
-		ticketMachineId = prop.getInt();
-
-		prop = configFile.get(BLOCKS, "proxyBlockId", proxyBlockId);
-		prop.comment = "The id of the proxy block";
-		proxyBlockId = prop.getInt();
-
-		prop = configFile.get(BLOCKS, "sensorBlockId", sensorBlockId);
-		prop.comment = "The id of the sensor block";
-		sensorBlockId = prop.getInt();
-
-		prop = configFile.get(BLOCKS, "robotBlockId", robotBlockId);
-		prop.comment = "The id of the robot block";
-		robotBlockId = prop.getInt();
 
 		if (FRESH_INSTALL && analyticsEnabled) {
 			analytics(container);

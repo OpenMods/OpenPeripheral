@@ -13,14 +13,13 @@ import dan200.computer.api.IComputerAccess;
 
 public class AdapterFrequencyOwner implements IPeripheralAdapter {
 	private static final Class<?> CLAZZ = ReflectionHelper.getClass("codechicken.enderstorage.common.TileFrequencyOwner");
-	
+
 	@Override
 	public Class<?> getTargetClass() {
 		return CLAZZ;
 	}
 
-	@LuaMethod(
-		returnType = LuaType.TABLE, onTick = false, description = "Get the colours active on this chest or tank")
+	@LuaMethod(returnType = LuaType.TABLE, onTick = false, description = "Get the colours active on this chest or tank")
 	public HashMap<Integer, Double> getColors(IComputerAccess computer, TileEntity frequencyOwner) {
 		// get the current frequency
 		int frequency = getFreq(frequencyOwner);
@@ -32,9 +31,8 @@ public class AdapterFrequencyOwner implements IPeripheralAdapter {
 		colors.put(3, Math.pow(2, (frequency & 0xF)));
 		return colors;
 	}
-	
-	@LuaMethod(
-		returnType = LuaType.VOID, onTick = false, description = "Set the frequency of this chest or tank",
+
+	@LuaMethod(returnType = LuaType.VOID, onTick = false, description = "Set the frequency of this chest or tank",
 			args = {
 			@Arg(name = "color_left", type = LuaType.NUMBER, description = "The first color"),
 			@Arg(name = "color_middle", type = LuaType.NUMBER, description = "The second color"),
@@ -49,15 +47,13 @@ public class AdapterFrequencyOwner implements IPeripheralAdapter {
 		// set the TE's frequency to the new colours
 		setFreq(frequencyOwner, frequency);
 	}
-	
-	@LuaMethod(
-		returnType = LuaType.TABLE, onTick = false, description = "Get the frequency of this chest or tank")
+
+	@LuaMethod(returnType = LuaType.TABLE, onTick = false, description = "Get the frequency of this chest or tank")
 	public int getFrequency(IComputerAccess computer, TileEntity frequencyOwner) {
 		return getFreq(frequencyOwner);
 	}
-	
-	@LuaMethod(
-		returnType = LuaType.VOID, onTick = false, description = "Set the frequency of this chest or tank",
+
+	@LuaMethod(returnType = LuaType.VOID, onTick = false, description = "Set the frequency of this chest or tank",
 			args = {
 			@Arg(name = "frequency", type = LuaType.NUMBER, description = "A single color that represents all three colours on this chest or tank") })
 	public void setFrequency(IComputerAccess computer, TileEntity frequencyOwner, int frequency) throws Exception {
@@ -70,12 +66,12 @@ public class AdapterFrequencyOwner implements IPeripheralAdapter {
 		if (nbt.hasKey("freq")) { return nbt.getInteger("freq"); }
 		return 0;
 	}
-	
+
 	private void setFreq(TileEntity frequencyOwner, int frequency) throws Exception {
 		if (frequency < 0 || frequency > 4095) { throw new Exception("Frequency out of bounds. Should be 0-4095"); }
 		ReflectionHelper.callMethod(getTargetClass(), frequencyOwner, new String[] {"setFreq"}, frequency);
 	}
-	
+
 	private static int parseComputerCraftColor(int color) throws Exception {
 		if (color < 0 || color > 32768) { throw new Exception("Invalid color supplied"); }
 		double val = Math.log(color)/Math.log(2);

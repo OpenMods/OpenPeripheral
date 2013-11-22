@@ -18,7 +18,7 @@ public class ModuleForestry {
 		AdapterManager.addPeripheralAdapter(new AdapterBeeHousing());
 		TypeConversionRegistry.registerTypeConverter(new ConverterIIndividual());
 	}
-	
+
 	public static void entityToMap(Entity entity, HashMap map, Vec3 relativePos) {
 		// TODO: Add butterfly information forestry.api.lepidopterology.IEntityButterfly
 	}

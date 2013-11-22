@@ -12,12 +12,12 @@ public class AdapterTileLamp implements IPeripheralAdapter {
 
 	private static final String[] SET_COLOR_METHOD_NAME = new String[]{"setColor"};
 	private static final Class<?> CLAZZ = ReflectionHelper.getClass("thermalexpansion.block.lamp.TileLamp");
-	
+
 	@Override
 	public Class<?> getTargetClass() {
 		return CLAZZ;
 	}
-	
+
 	@LuaMethod(description="Sets the colour of the lamp.", returnType=LuaType.BOOLEAN,onTick=false, args={
 			@Arg(description="The colour you want to set to (in RGB hexadecimal 0xRRGGBB)", type=LuaType.NUMBER)
 	})

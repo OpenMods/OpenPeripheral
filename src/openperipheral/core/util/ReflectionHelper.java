@@ -10,7 +10,7 @@ import openperipheral.core.TypeConversionRegistry;
 
 public class ReflectionHelper {
 
-	public static void setProperty(Class klazz, Object instance, Object value, String... fields) {
+	public static void setProperty(Class<?> klazz, Object instance, Object value, String... fields) {
 		Field field = getField(klazz == null? instance.getClass() : klazz, fields);
 		if (field != null) {
 			try {
@@ -25,7 +25,7 @@ public class ReflectionHelper {
 		setProperty(getClass(className), instance, value, fields);
 	}
 
-	public static Object getProperty(Class klazz, Object instance, String... fields) {
+	public static Object getProperty(Class<?> klazz, Object instance, String... fields) {
 		Field field = getField(klazz == null? instance.getClass() : klazz, fields);
 		if (field != null) {
 			try {
@@ -47,10 +47,10 @@ public class ReflectionHelper {
 		return callMethod(getClass(className), instance, methodNames, args);
 	}
 
-	public static Object callMethod(boolean replace, Class klazz, Object instance, String[] methodNames, Object... args) throws Exception {
+	public static Object callMethod(boolean replace, Class<?> klazz, Object instance, String[] methodNames, Object... args) throws Exception {
 		Method m = getMethod(klazz == null? instance.getClass() : klazz, methodNames, args.length);
 		if (m != null) {
-			Class[] types = m.getParameterTypes();
+			Class<?>[] types = m.getParameterTypes();
 			List<Object> argumentList = Arrays.asList(args);
 			if (replace) {
 				for (int i = 0; i < argumentList.size(); i++) {
@@ -64,11 +64,11 @@ public class ReflectionHelper {
 		return null;
 	}
 
-	public static Object callMethod(Class klazz, Object instance, String[] methodNames, Object... args) throws Exception {
+	public static Object callMethod(Class<?> klazz, Object instance, String[] methodNames, Object... args) throws Exception {
 		return callMethod(true, klazz, instance, methodNames, args);
 	}
 
-	public static Method getMethod(Class klazz, String[] methodNames, int argCount) {
+	public static Method getMethod(Class<?> klazz, String[] methodNames, int argCount) {
 		if (klazz == null) { return null; }
 		for (String method : methodNames) {
 			try {
@@ -83,7 +83,7 @@ public class ReflectionHelper {
 		return null;
 	}
 
-	public static Method[] getAllMethods(Class clazz) {
+	public static Method[] getAllMethods(Class<?> clazz) {
 		ArrayList<Method> methods = new ArrayList<Method>();
 		while (clazz != null) {
 			for (Method m : clazz.getDeclaredMethods()) {
@@ -95,9 +95,9 @@ public class ReflectionHelper {
 
 	}
 
-	public static Field getField(Class klazz, String... fields) {
+	public static Field getField(Class<?> klazz, String... fields) {
 		for (String field : fields) {
-			Class current = klazz;
+			Class<?> current = klazz;
 			while (current != null) {
 				try {
 					Field f = current.getDeclaredField(field);
@@ -110,7 +110,7 @@ public class ReflectionHelper {
 		return null;
 	}
 
-	public static Class getClass(String className) {
+	public static Class<?> getClass(String className) {
 		if (className == null || className.isEmpty()) { return null; }
 		try {
 			return Class.forName(className);

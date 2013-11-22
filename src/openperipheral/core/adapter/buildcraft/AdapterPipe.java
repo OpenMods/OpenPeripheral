@@ -28,5 +28,5 @@ public class AdapterPipe implements IPeripheralAdapter {
 		} catch (IllegalArgumentException e){}
 		return false;
 	}
-	
+
 }

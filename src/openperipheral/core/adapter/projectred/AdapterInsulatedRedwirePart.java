@@ -9,10 +9,10 @@ import openperipheral.api.LuaType;
 public class AdapterInsulatedRedwirePart implements IPeripheralAdapter {
 
 	@Override
-	public Class getTargetClass() {
+	public Class<?> getTargetClass() {
 		return IInsulatedRedwirePart.class;
 	}
-	
+
 	@LuaMethod(description="Gets the colour of the cable.", returnType=LuaType.NUMBER)
 	public int getInsulatedColour(IComputerAccess computer, IInsulatedRedwirePart cable) {
 		return cable.getInsulatedColour();

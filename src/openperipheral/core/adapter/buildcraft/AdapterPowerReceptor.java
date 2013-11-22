@@ -16,35 +16,35 @@ public class AdapterPowerReceptor implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(returnType = LuaType.NUMBER, description = "Get the activation MJ for this block",
-		args = {
+			args = {
 			@Arg(name = "direction",type = LuaType.STRING, description = "The side of the block that you're interested in") })
 	public float getActivationEnergy(IComputerAccess computer, IPowerReceptor powerReceptor, ForgeDirection direction) {
 		return powerReceptor.getPowerReceiver(direction).getActivationEnergy();
 	}
 
 	@LuaMethod(returnType = LuaType.NUMBER, description = "Get the MJ stored for this block",
-		args = {
+			args = {
 			@Arg(name = "direction", type = LuaType.STRING, description = "The side of the block that you're interested in") })
 	public float getMJStored(IComputerAccess computer, IPowerReceptor powerReceptor, ForgeDirection direction) {
 		return powerReceptor.getPowerReceiver(direction).getEnergyStored();
 	}
 
 	@LuaMethod(returnType = LuaType.NUMBER, description = "Get the max MJ received",
-		args = {
+			args = {
 			@Arg(name = "direction", type = LuaType.STRING, description = "The side of the block that you're interested in") })
 	public float getMaxMJReceived(IComputerAccess computer, IPowerReceptor powerReceptor, ForgeDirection direction) {
 		return powerReceptor.getPowerReceiver(direction).getMaxEnergyReceived();
 	}
 
 	@LuaMethod(returnType = LuaType.NUMBER, description = "Get the max MJ stored",
-		args = {
+			args = {
 			@Arg(name = "direction", type = LuaType.STRING, description = "The side of the block that you're interested in") })
 	public float getMaxMJStored(IComputerAccess computer, IPowerReceptor powerReceptor, ForgeDirection direction) {
 		return powerReceptor.getPowerReceiver(direction).getMaxEnergyStored();
 	}
 
 	@LuaMethod(returnType = LuaType.NUMBER, description = "Get the min MJ received",
-		args = {
+			args = {
 			@Arg(name = "direction", type = LuaType.STRING, description = "The side of the block that you're interested in") })
 	public float getMinMJReceived(IComputerAccess computer, IPowerReceptor powerReceptor, ForgeDirection direction) {
 		return powerReceptor.getPowerReceiver(direction).getMinEnergyReceived();

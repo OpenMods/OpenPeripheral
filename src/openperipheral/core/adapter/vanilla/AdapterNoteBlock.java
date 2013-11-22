@@ -25,7 +25,7 @@ public class AdapterNoteBlock implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(returnType = LuaType.VOID, description = "Set the note on the noteblock",
-		args = {
+			args = {
 			@Arg(type = LuaType.NUMBER, name = "note", description = "The note you want. From 0 to 25")
 	})
 	public void setPitch(IComputerAccess computer, TileEntityNote noteblock, int note) {
@@ -39,7 +39,7 @@ public class AdapterNoteBlock implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(returnType = LuaType.VOID, description = "Plays a minecraft sound",
-		args = {
+			args = {
 			@Arg(type = LuaType.STRING, name = "sound", description = "The identifier for the sound"),
 			@Arg(type = LuaType.NUMBER, name = "pitch", description = "The pitch from 0 to 1"),
 			@Arg(type = LuaType.NUMBER, name = "volume", description = "The volume from 0 to 1")

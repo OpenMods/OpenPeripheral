@@ -39,7 +39,7 @@ public class EntityUtils {
 		if (entity.ridingEntity != null) {
 			map.put("ridingEntity", entity.ridingEntity.entityId);
 		}
-		
+
 		// Add mod entity mappings
 		ModuleVanilla.entityToMap(entity, map, relativePos);
 		ModuleForestry.entityToMap(entity, map, relativePos);

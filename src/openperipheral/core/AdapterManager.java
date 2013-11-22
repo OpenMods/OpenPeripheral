@@ -7,9 +7,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import openperipheral.api.IPeripheralAdapter;
-import openperipheral.api.IRobotUpgradeAdapter;
 import openperipheral.api.LuaMethod;
-import openperipheral.robots.RobotMethodDeclaration;
 import dan200.computer.api.IComputerAccess;
 
 public class AdapterManager {
@@ -39,38 +37,6 @@ public class AdapterManager {
 						}
 
 						classList.get(targetClass).add(new MethodDeclaration(annotation, method, adapter));
-					}
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public static void addRobotAdapter(Class<? extends IRobotUpgradeAdapter> robotAdapter) {
-
-		try {
-			if (robotAdapter != null) {
-
-				for (Method method : robotAdapter.getMethods()) {
-
-					LuaMethod annotation = method.getAnnotation(LuaMethod.class);
-
-					if (annotation != null) {
-
-						Class<?>[] parameters = method.getParameterTypes();
-
-						if (parameters.length < 2) { throw new Exception("The first two parameters of a robot upgrade method should be an IComputerAccess and an IRobot"); }
-
-						if (!IComputerAccess.class.isAssignableFrom(parameters[0])) { throw new Exception(String.format("Parameter 1 of %s must be IComputerAccess", method.getName())); }
-
-						if (annotation.args().length < parameters.length - 2) { throw new Exception(String.format("Not all of your method arguments are annotated for method %s/%s", robotAdapter.getCanonicalName(), method.getName())); }
-
-						if (!classList.containsKey(robotAdapter)) {
-							classList.put(robotAdapter, new ArrayList<MethodDeclaration>());
-						}
-
-						classList.get(robotAdapter).add(new RobotMethodDeclaration(annotation, method));
 					}
 				}
 			}

@@ -47,7 +47,7 @@ public class ModuleVanilla {
 		AdapterManager.addPeripheralAdapter(new AdapterMobSpawner());
 		AdapterManager.addPeripheralAdapter(new AdapterSign());
 	}
-	
+
 	public static void entityToMap(Entity entity, HashMap<String, Object> map, Vec3 relativePos) {
 		if (entity instanceof IInventory) {
 			map.put("inventory", InventoryUtils.invToMap((IInventory)entity));
@@ -68,7 +68,7 @@ public class ModuleVanilla {
 			map.put("ownerName", horse.getOwnerName());
 			map.put("horseInventory", InventoryUtils.invToMap(invent));
 		}
-		
+
 		if (entity instanceof EntityVillager) {
 			EntityVillager villager = (EntityVillager) entity;
 			map.put("profession", villager.getProfession());
@@ -92,24 +92,24 @@ public class ModuleVanilla {
 			map.put("isVillagerZombie", zombie.isVillager());
 			map.put("convertingToVillager", zombie.isConverting());
 		}
-		
+
 		if (entity instanceof EntityBat) {
 			EntityBat bat = (EntityBat)entity;
 			map.put("isHanging", bat.getIsBatHanging());
 		}
-		
+
 		if (entity instanceof EntityPig) {
 			EntityPig pig = (EntityPig)entity;
 			map.put("isSaddled", pig.getSaddled());
 		}
-		
+
 		if (entity instanceof EntityWolf) {
 			EntityWolf wolf = (EntityWolf)entity;
 			map.put("isShaking", wolf.getWolfShaking());
 			map.put("isAngry", wolf.isAngry());
 			map.put("collarColor", Math.pow(2, wolf.getCollarColor()));
 		}
-		
+
 		if (entity instanceof EntityTameable) {
 			EntityTameable mob = (EntityTameable)entity;
 			boolean isTamed = mob.isTamed();
@@ -119,12 +119,12 @@ public class ModuleVanilla {
 				map.put("owner", mob.getOwnerName());
 			}
 		}
-		
+
 		if (entity instanceof EntityCreeper) {
 			EntityCreeper creeper = (EntityCreeper)entity;
 			map.put("isCharged", creeper.getPowered());
 		}
-		
+
 		if (entity instanceof EntityWitch) {
 			EntityWitch witch = (EntityWitch)entity;
 			map.put("isAggressive", witch.getAggressive());

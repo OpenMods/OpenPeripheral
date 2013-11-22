@@ -12,30 +12,30 @@ import openperipheral.core.util.ReflectionHelper;
 
 public class AdapterTileSteamTurbine implements IPeripheralAdapter {
 
-  private static final Class<?> CLAZZ = ReflectionHelper.getClass("mods.railcraft.common.blocks.machine.alpha.TileSteamTurbine");
-  
-  @Override
-  public Class<?> getTargetClass() {
-	  return CLAZZ;
-  }
-  
-  @LuaMethod(description = "Get the undamagedness of the rotor, from 0% (dead) to 100% (brand new)", returnType = LuaType.NUMBER)
-  public Integer getTurbineRotorStatus(IComputerAccess computer, Object tileSteamTurbine) throws Exception{
-    IInventory inventory = new CallWrapper<IInventory>().call(tileSteamTurbine, "getInventory");
-    if (inventory != null && inventory.getSizeInventory() >= 1) {
-      ItemStack itemStack = inventory.getStackInSlot(0);
-      if (itemStack != null) {
-        Item item = itemStack.getItem();
-        if (item != null ){
-          return 100-(int)(itemStack.getItemDamage() * 100.0 / item.getMaxDamage());
-        }
-      }
-    }
-    return null; 
-  }
-  
-  @LuaMethod(description = "Get power output percentage", returnType = LuaType.NUMBER)
-  public double getTurbineOutput(IComputerAccess computer, Object tileSteamTurbine) {
-    return new CallWrapper<Float>().call(tileSteamTurbine, "getOutput");
-  }
+	private static final Class<?> CLAZZ = ReflectionHelper.getClass("mods.railcraft.common.blocks.machine.alpha.TileSteamTurbine");
+
+	@Override
+	public Class<?> getTargetClass() {
+		return CLAZZ;
+	}
+
+	@LuaMethod(description = "Get the undamagedness of the rotor, from 0% (dead) to 100% (brand new)", returnType = LuaType.NUMBER)
+	public Integer getTurbineRotorStatus(IComputerAccess computer, Object tileSteamTurbine) throws Exception{
+		IInventory inventory = new CallWrapper<IInventory>().call(tileSteamTurbine, "getInventory");
+		if (inventory != null && inventory.getSizeInventory() >= 1) {
+			ItemStack itemStack = inventory.getStackInSlot(0);
+			if (itemStack != null) {
+				Item item = itemStack.getItem();
+				if (item != null ){
+					return 100-(int)(itemStack.getItemDamage() * 100.0 / item.getMaxDamage());
+				}
+			}
+		}
+		return null; 
+	}
+
+	@LuaMethod(description = "Get power output percentage", returnType = LuaType.NUMBER)
+	public double getTurbineOutput(IComputerAccess computer, Object tileSteamTurbine) {
+		return new CallWrapper<Float>().call(tileSteamTurbine, "getOutput");
+	}
 }

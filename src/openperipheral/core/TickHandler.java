@@ -3,18 +3,13 @@ package openperipheral.core;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import openperipheral.core.util.MiscUtils;
-import openperipheral.glasses.block.TileEntityGlassesBridge;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
 
@@ -63,24 +58,6 @@ public class TickHandler implements ITickHandler {
 	}
 
 	@Override
-	public void tickStart(EnumSet<TickType> type, Object... tickObjects) {
-
-		if (type.contains(TickType.WORLD)) {
-
-			World world = (World)tickObjects[0];
-			if (!world.isRemote) {
-				for (EntityPlayer player : (List<EntityPlayer>)world.playerEntities) {
-					ItemStack helmet = player.inventory.armorItemInSlot(3);
-					if (MiscUtils.canBeGlasses(helmet)) {
-						TileEntityGlassesBridge bridge = TileEntityGlassesBridge.getGlassesBridgeFromStack(helmet);
-						if (bridge != null) {
-							bridge.registerPlayer(player);
-						}
-					}
-				}
-			}
-
-		}
-	}
+	public void tickStart(EnumSet<TickType> type, Object... tickData) {}
 
 }

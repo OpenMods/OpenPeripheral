@@ -16,32 +16,26 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.tileentity.TileEntity;
-import openperipheral.OpenPeripheral;
 import openperipheral.api.Arg;
 import openperipheral.core.MethodDeclaration;
 
 public class MiscUtils {
-	public static boolean canBeGlasses(ItemStack stack) {
-		// || (Loader.isModLoaded(Mods.MPS) && MPSUtils.isValidHelmet(stack)))
-		return stack != null && (stack.getItem() == OpenPeripheral.Items.glasses);
-	}
-	
 	public static boolean isPlayerOp(String username) {
 		username = username.toLowerCase();
-		
-        MinecraftServer server = FMLCommonHandler.instance().getSidedDelegate().getServer();
 
-        // SP and LAN
-        if (server.isSinglePlayer()) {
-            if (server instanceof IntegratedServer)
-                return server.getServerOwner().equals(username);
-            else
-                return server.getConfigurationManager().getOps().contains(username);
-        }
+		MinecraftServer server = FMLCommonHandler.instance().getSidedDelegate().getServer();
 
-        // SMP
-        return server.getConfigurationManager().getOps().contains(username);
-    }
+		// SP and LAN
+		if (server.isSinglePlayer()) {
+			if (server instanceof IntegratedServer)
+				return server.getServerOwner().equals(username);
+			else
+				return server.getConfigurationManager().getOps().contains(username);
+		}
+
+		// SMP
+		return server.getConfigurationManager().getOps().contains(username);
+	}
 
 	public static int getHoliday() {
 		Calendar today = Calendar.getInstance();

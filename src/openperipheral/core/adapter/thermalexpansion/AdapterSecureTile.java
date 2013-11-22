@@ -21,19 +21,19 @@ public class AdapterSecureTile implements IPeripheralAdapter{
 	public String getOwnerName(IComputerAccess computer, ISecureTile tile) {
 		return tile.getOwnerName();
 	}
-	
+
 	@LuaMethod(description="Is this username allowed to access the machine.", returnType=LuaType.BOOLEAN, args={
 			@Arg(name="username", description="The username to check for", type=LuaType.STRING)
 	})
 	public boolean canPlayerAccess(IComputerAccess computer, ISecureTile tile, String name) {
 		return tile.canPlayerAccess(name);
 	}
-	
+
 	@LuaMethod(description="Gets the AccessMode of this machine.", returnType=LuaType.STRING)
 	public String getAccess(IComputerAccess computer, ISecureTile tile) {
 		return tile.getAccess().name();
 	}
-	
+
 	@LuaMethod(description="Sets the AccessMode of this machine.", returnType=LuaType.BOOLEAN, args={
 			@Arg(name="accessMode", description="The access mode you wish to set (can be PUBLIC,RESTRICTED or PRIVATE)", type=LuaType.STRING)
 	})

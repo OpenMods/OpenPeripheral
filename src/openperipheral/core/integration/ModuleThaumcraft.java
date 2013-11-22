@@ -14,8 +14,8 @@ public class ModuleThaumcraft {
 		AdapterManager.addPeripheralAdapter(new AdapterAspectContainer());
 		AdapterManager.addPeripheralAdapter(new AdapterNode());
 	}
-	
+
 	public static void entityToMap(Entity entity, HashMap map, Vec3 relativePos) {
-		
+		// TODO: Add whisps and that zombie thing
 	}
 }

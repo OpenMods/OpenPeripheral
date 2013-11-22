@@ -42,7 +42,7 @@ public class AdapterBeeHousing implements IPeripheralAdapter {
 		if (queen != null) { return AlleleManager.alleleRegistry.getIndividual(queen); }
 		return null;
 	}
-	
+
 	/**
 	 * Experimental method. Adding it aganist beehousing for now as we need some kind of block to run it against
 	 * Trying to get the full breeding tree for all bees
@@ -78,12 +78,12 @@ public class AdapterBeeHousing implements IPeripheralAdapter {
 		}
 		return result;
 	}
-	
+
 	@LuaMethod(
 			returnType = LuaType.TABLE,
 			description="Get the parents for a particular mutation",
 			args = {
-				@Arg( name="childType", description="The type of bee you want the parents for", type=LuaType.STRING)
+					@Arg( name="childType", description="The type of bee you want the parents for", type=LuaType.STRING)
 			})
 	public Map<Object, HashMap<String, Object>> getBeeParents(IComputerAccess computer, IBeeHousing housing, String childType) {
 		ISpeciesRoot beeRoot = AlleleManager.alleleRegistry.getSpeciesRoot("rootBees");
@@ -114,5 +114,5 @@ public class AdapterBeeHousing implements IPeripheralAdapter {
 		}
 		return result;
 	}
-	
+
 }

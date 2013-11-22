@@ -17,14 +17,14 @@ public class BlockUtils {
 	public static ForgeDirection get2dOrientation(EntityLivingBase entity) {
 		int l = MathHelper.floor_double(entity.rotationYaw * 4.0F / 360.0F + 0.5D) & 0x3;
 		switch (l) {
-			case 0:
-				return ForgeDirection.SOUTH;
-			case 1:
-				return ForgeDirection.WEST;
-			case 2:
-				return ForgeDirection.NORTH;
-			case 3:
-				return ForgeDirection.EAST;
+		case 0:
+			return ForgeDirection.SOUTH;
+		case 1:
+			return ForgeDirection.WEST;
+		case 2:
+			return ForgeDirection.NORTH;
+		case 3:
+			return ForgeDirection.EAST;
 		}
 		return ForgeDirection.SOUTH;
 

@@ -23,7 +23,7 @@ public class ModuleThermalExpansion {
 		AdapterManager.addPeripheralAdapter(new AdapterTileLamp());
 		AdapterManager.addPeripheralAdapter(new AdapterSecureTile());
 	}
-	
+
 	public static void appendTEInfo(Map map, ItemStack stack) {
 		if (stack != null) {
 			Item item = stack.getItem();		

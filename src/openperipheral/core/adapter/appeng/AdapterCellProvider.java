@@ -67,19 +67,19 @@ public class AdapterCellProvider implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(
-		description = "Check to see if the network contains an item type",
-		returnType = LuaType.BOOLEAN,
-		args = {
-			@Arg(type = LuaType.NUMBER, name = "itemId", description = "The item id"),
-			@Arg(type = LuaType.NUMBER, name = "dmgValue", description = "The item dmg value") })
+			description = "Check to see if the network contains an item type",
+			returnType = LuaType.BOOLEAN,
+			args = {
+					@Arg(type = LuaType.NUMBER, name = "itemId", description = "The item id"),
+					@Arg(type = LuaType.NUMBER, name = "dmgValue", description = "The item dmg value") })
 	public boolean containsItemType(IComputerAccess computer, ICellProvider provider, int itemId, int dmgValue) {
 		return countOfItemType(computer, provider, itemId, dmgValue) > 0;
 	}
 
 	@LuaMethod(description = "Count the amount of a certain item type", returnType = LuaType.NUMBER, args = { @Arg(type = LuaType.NUMBER, name = "itemId", description = "The item id"), @Arg(
-		type = LuaType.NUMBER,
-		name = "dmgValue",
-		description = "The item dmg value") })
+			type = LuaType.NUMBER,
+			name = "dmgValue",
+			description = "The item dmg value") })
 	public long countOfItemType(IComputerAccess computer, ICellProvider provider, int itemId, int dmgValue) {
 		IMEInventoryHandler cell = provider.provideCell();
 		if (cell == null) {
@@ -194,5 +194,5 @@ public class AdapterCellProvider implements IPeripheralAdapter {
 		}
 		return 0;
 	}
-	
+
 }
