@@ -1,7 +1,7 @@
 OpenPeripheral
 =============
 
-An open source Peripheral for ComputerCraft to make the block the Peripheral
+An open source Addon for ComputerCraft to make any block a Peripheral
 
 Official thread: http://www.computercraft.info/forums2/index.php?/topic/13063-
 
