@@ -16,8 +16,7 @@ import cpw.mods.fml.relauncher.FMLLaunchHandler;
 
 public class ConfigSettings {
 	private static final String GENERAL = "general";
-
-	public static final String NETWORK_CHANNEL = "OpenPeripheral";
+	
 	public static int CACHE_REFRESH_INTERVAL = 7;
 	public static String RESOURCE_PATH = "/assets/openperipheral";
 	public static String LANGUAGE_PATH = String.format("%s/languages", RESOURCE_PATH);
