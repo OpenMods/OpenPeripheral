@@ -9,11 +9,14 @@ import openperipheral.core.util.InventoryUtils;
 public class ConverterItemStack implements ITypeConverter {
 
 	@Override
-	public Object fromLua(Object o, Class required) {
+	public Object fromLua(Object o, Class<?> required) {
 		if (required == ItemStack.class && o instanceof Map) {
 			int quantity = 1;
 			int dmg = 0;
-			Map m = (Map)o;
+			
+			@SuppressWarnings({ "unchecked", "rawtypes" })
+			Map<Object, Object> m = (Map)o;
+			
 			if (!m.containsKey("id")) { return null; }
 			int id = (int)(double)(Double)m.get("id");
 			if (m.containsKey("qty")) {

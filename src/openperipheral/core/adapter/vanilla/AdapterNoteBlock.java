@@ -45,6 +45,6 @@ public class AdapterNoteBlock implements IPeripheralAdapter {
 			@Arg(type = LuaType.NUMBER, name = "volume", description = "The volume from 0 to 1")
 	})
 	public void playSound(IComputerAccess computer, TileEntityNote noteblock, String name, float pitch, float volume) {
-		noteblock.worldObj.playSoundEffect((double)noteblock.xCoord + 0.5, (double)noteblock.yCoord + 0.5, (double)noteblock.zCoord + 0.5, name, volume, pitch);
+		noteblock.worldObj.playSoundEffect(noteblock.xCoord + 0.5, noteblock.yCoord + 0.5, noteblock.zCoord + 0.5, name, volume, pitch);
 	}
 }

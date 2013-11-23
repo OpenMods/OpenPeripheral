@@ -2,10 +2,10 @@ package openperipheral;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.tileentity.TileEntity;
+import openblocks.IOpenBlocksProxy;
 import openmods.Log;
 import openmods.Mods;
-import openmods.common.api.IOpenMod;
-import openmods.interfaces.IProxy;
+import openmods.api.IOpenMod;
 import openperipheral.core.AdapterManager;
 import openperipheral.core.BasicMount;
 import openperipheral.core.ConfigSettings;
@@ -49,7 +49,7 @@ public class OpenPeripheral implements IOpenMod {
 	public static OpenPeripheral instance;
 
 	@SidedProxy(clientSide = ModInfo.PROXY_CLIENT, serverSide = ModInfo.PROXY_SERVER)
-	public static IProxy proxy;
+	public static IOpenBlocksProxy proxy;
 
 	public static BasicMount mount = new BasicMount();
 
@@ -120,11 +120,6 @@ public class OpenPeripheral implements IOpenMod {
 		}
 
 		ComputerCraftAPI.registerExternalPeripheral(TileEntity.class, peripheralHandler);
-	}
-
-	@Override
-	public IProxy getProxy() {
-		return proxy;
 	}
 
 	@Override

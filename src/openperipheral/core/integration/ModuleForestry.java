@@ -23,7 +23,8 @@ public class ModuleForestry {
 		// TODO: Add butterfly information forestry.api.lepidopterology.IEntityButterfly
 	}
 
-	public static void appendBeeInfo(HashMap map, ItemStack itemstack) {
+	@SuppressWarnings("rawtypes")
+	public static void appendBeeInfo(HashMap<Object, Object> map, ItemStack itemstack) {
 		Map beeMap = (Map) TypeConversionRegistry.toLua(AlleleManager.alleleRegistry.getIndividual(itemstack));
 		if (beeMap != null) {
 			map.put("beeInfo", beeMap);

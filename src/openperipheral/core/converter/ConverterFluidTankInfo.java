@@ -11,7 +11,7 @@ import openperipheral.api.ITypeConverter;
 public class ConverterFluidTankInfo implements ITypeConverter {
 
 	@Override
-	public Object fromLua(Object o, Class required) {
+	public Object fromLua(Object o, Class<?> required) {
 		return null;
 	}
 

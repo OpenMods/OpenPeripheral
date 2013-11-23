@@ -7,7 +7,7 @@ import appeng.api.IItemList;
 public class ConverterIItemList implements ITypeConverter {
 
 	@Override
-	public Object fromLua(Object obj, Class expected) {
+	public Object fromLua(Object obj, Class<?> expected) {
 		return null;
 	}
 

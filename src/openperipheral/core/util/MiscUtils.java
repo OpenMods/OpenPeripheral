@@ -29,8 +29,7 @@ public class MiscUtils {
 		if (server.isSinglePlayer()) {
 			if (server instanceof IntegratedServer)
 				return server.getServerOwner().equals(username);
-			else
-				return server.getConfigurationManager().getOps().contains(username);
+			return server.getConfigurationManager().getOps().contains(username);
 		}
 
 		// SMP
@@ -114,12 +113,12 @@ public class MiscUtils {
 		return builder.toString();
 	}
 
-	public static Map documentMethods(List<MethodDeclaration> methods) {
-		Map map = new HashMap();
+	public static Map<Object, Object> documentMethods(List<MethodDeclaration> methods) {
+		Map<Object, Object> map = new HashMap<Object, Object>();
 		int i = 1;
 		for (MethodDeclaration method : methods) {
-			HashMap methodMap = new HashMap();
-			HashMap args = new HashMap();
+			HashMap<Object, Object> methodMap = new HashMap<Object, Object>();
+			HashMap<Object, Object> args = new HashMap<Object, Object>();
 			map.put(i++, methodMap);
 			methodMap.put("name", method.getLuaName());
 			methodMap.put("description", method.getDescription());
@@ -127,7 +126,7 @@ public class MiscUtils {
 			methodMap.put("args", args);
 			int j = 1;
 			for (Arg arg : method.getRequiredParameters()) {
-				HashMap argMap = new HashMap();
+				HashMap<Object, Object> argMap = new HashMap<Object, Object>();
 				argMap.put("type", arg.type().toString());
 				argMap.put("name", arg.name());
 				argMap.put("description", arg.description());

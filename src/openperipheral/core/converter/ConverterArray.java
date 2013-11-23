@@ -8,14 +8,14 @@ import openperipheral.core.TypeConversionRegistry;
 public class ConverterArray implements ITypeConverter {
 
 	@Override
-	public Object fromLua(Object o, Class required) {
+	public Object fromLua(Object o, Class<?> required) {
 		return null;
 	}
 
 	@Override
 	public Object toLua(Object o) {
 		if (o.getClass().isArray()) {
-			HashMap ret = new HashMap();
+			HashMap<Object, Object> ret = new HashMap<Object, Object>();
 			int index = 1;
 			Object[] objArray = (Object[])o;
 			for (int i = 0; i < objArray.length; i++) {

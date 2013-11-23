@@ -5,7 +5,7 @@ import openperipheral.api.ITypeConverter;
 public class ConverterDouble implements ITypeConverter {
 
 	@Override
-	public Object fromLua(Object o, Class required) {
+	public Object fromLua(Object o, Class<?> required) {
 		if ((required == Integer.class || required == int.class || required == short.class || required == Short.class || required == byte.class || required == Byte.class || required == float.class || required == Float.class)
 				&& o instanceof Double) {
 			Integer v = ((Double)o).intValue();

@@ -17,14 +17,14 @@ import forestry.api.genetics.IIndividual;
 public class ConverterIIndividual implements ITypeConverter {
 
 	@Override
-	public Object fromLua(Object obj, Class expected) {
+	public Object fromLua(Object obj, Class<?> expected) {
 		return null;
 	}
 
 	@Override
 	public Object toLua(Object obj) {
 		if (obj instanceof IIndividual) {
-			HashMap map = new HashMap();
+			HashMap<Object, Object> map = new HashMap<Object, Object>();
 			IIndividual individual = (IIndividual)obj;
 			map.put("displayName", individual.getDisplayName());
 			map.put("ident", individual.getIdent());
@@ -43,8 +43,8 @@ public class ConverterIIndividual implements ITypeConverter {
 
 				if (individual.isAnalyzed()) {
 					IGenome genome = individual.getGenome();
-					HashMap active = new HashMap();
-					HashMap inactive = new HashMap();
+					HashMap<Object, Object> active = new HashMap<Object, Object>();
+					HashMap<Object, Object> inactive = new HashMap<Object, Object>();
 					active.put("species", genome.getActiveAllele(EnumBeeChromosome.SPECIES.ordinal()).getName());
 					inactive.put("species", genome.getInactiveAllele(EnumBeeChromosome.SPECIES.ordinal()).getName());
 

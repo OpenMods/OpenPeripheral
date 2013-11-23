@@ -138,10 +138,8 @@ public class AdapterWritingDesk implements IPeripheralAdapter {
 			IInventory inventory = (IInventory)tileEntityDesk;
 			if (slot < 4 || slot > inventory.getSizeInventory()){
 				throw new Exception("Invalid slot number");
-			}else{
-				notebook = inventory.getStackInSlot(slot);
 			}
-
+			notebook = inventory.getStackInSlot(slot);
 		}
 
 		public IInventory getTargetTile(ForgeDirection direction) throws Exception{

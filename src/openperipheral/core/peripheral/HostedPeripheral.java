@@ -137,15 +137,14 @@ public class HostedPeripheral implements IHostedPeripheral {
 				}
 			}
 
-		} else {
-			// no thread safety needed, lets just call the method, format the
-			// response and return it straight away
-			try {
-				Object[] response = formatResponse(method.getMethod().invoke(target, parameters));
-				return response;
-			} catch (Throwable e) {
-				throw new Exception(getMessageForThrowable(e));
-			}
+		}
+		// no thread safety needed, lets just call the method, format the
+		// response and return it straight away
+		try {
+			Object[] response = formatResponse(method.getMethod().invoke(target, parameters));
+			return response;
+		} catch (Throwable e) {
+			throw new Exception(getMessageForThrowable(e));
 		}
 	}
 
@@ -163,9 +162,8 @@ public class HostedPeripheral implements IHostedPeripheral {
 		} else {
 			if (StringUtils.isEmpty(firstMessage)) {
 				return secondMessage;
-			} else { // We already checked the empty/empty cause so firstMessage has to be valid. 
-				return firstMessage; 
 			}
+			return firstMessage;
 		}
 	}
 

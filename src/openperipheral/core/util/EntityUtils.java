@@ -13,10 +13,10 @@ import net.minecraft.util.Vec3;
 
 public class EntityUtils {
 
-	public static Map entityToMap(Entity entity, Vec3 relativePos) {
+	public static Map<Object, Object> entityToMap(Entity entity, Vec3 relativePos) {
 
-		HashMap map = new HashMap();
-		HashMap position = new HashMap();
+		HashMap<Object, Object> map = new HashMap<Object, Object>();
+		HashMap<Object, Object> position = new HashMap<Object, Object>();
 
 		map.put("position", position);
 
