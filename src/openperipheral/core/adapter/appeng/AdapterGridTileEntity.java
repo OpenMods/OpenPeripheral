@@ -7,12 +7,12 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
+import openmods.utils.InventoryUtils;
 import openperipheral.api.Arg;
 import openperipheral.api.IPeripheralAdapter;
 import openperipheral.api.LuaMethod;
 import openperipheral.api.LuaType;
 import openperipheral.core.util.CallWrapper;
-import openperipheral.core.util.InventoryUtils;
 import openperipheral.core.util.ReflectionHelper;
 import appeng.api.IAEItemStack;
 import appeng.api.IItemList;
@@ -73,7 +73,7 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 			giveBack = returned.copy();
 		}else {
 			ItemStack returnedStack = returned.getItemStack();
-			InventoryUtils.insertItemIntoInventory(inventory, returnedStack, direction.getOpposite());
+			InventoryUtils.insertItemIntoInventory(inventory, returnedStack, direction.getOpposite(), -1);
 			giveBack = Util.createItemStack(returnedStack.copy());
 		}
 		if (giveBack != null) {

@@ -7,16 +7,16 @@ import java.util.concurrent.Callable;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import openmods.utils.StringUtils;
 import openperipheral.OpenPeripheral;
 import openperipheral.api.Arg;
+import openperipheral.api.IAttachable;
 import openperipheral.api.IMultiReturn;
 import openperipheral.core.AdapterManager;
 import openperipheral.core.MethodDeclaration;
 import openperipheral.core.TickHandler;
 import openperipheral.core.TypeConversionRegistry;
-import openperipheral.core.interfaces.IAttachable;
-import openperipheral.core.util.MiscUtils;
-import openperipheral.core.util.StringUtils;
+import openperipheral.core.util.PeripheralUtils;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IHostedPeripheral;
 import dan200.computer.api.ILuaContext;
@@ -53,7 +53,7 @@ public class HostedPeripheral implements IHostedPeripheral {
 			methodNames[i] = methods.get(i).getLuaName();
 		}
 
-		type = MiscUtils.getNameForTarget(targetObject);
+		type = PeripheralUtils.getNameForTarget(targetObject);
 	}
 
 	@Override

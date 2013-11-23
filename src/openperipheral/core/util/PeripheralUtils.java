@@ -1,57 +1,19 @@
 package openperipheral.core.util;
 
-import java.util.Arrays;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-
 import net.minecraft.block.Block;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.tileentity.TileEntity;
 import openperipheral.api.Arg;
 import openperipheral.core.MethodDeclaration;
 
-public class MiscUtils {
-	public static boolean isPlayerOp(String username) {
-		username = username.toLowerCase();
-
-		MinecraftServer server = FMLCommonHandler.instance().getSidedDelegate().getServer();
-
-		// SP and LAN
-		if (server.isSinglePlayer()) {
-			if (server instanceof IntegratedServer)
-				return server.getServerOwner().equals(username);
-			return server.getConfigurationManager().getOps().contains(username);
-		}
-
-		// SMP
-		return server.getConfigurationManager().getOps().contains(username);
-	}
-
-	public static int getHoliday() {
-		Calendar today = Calendar.getInstance();
-		int month = today.get(2);
-		int day = today.get(5);
-		if ((month == 1) && (day == 14)) { return 1; }
-		if ((month == 9) && (day == 31)) { return 2; }
-		if ((month == 11) && (day >= 24) && (day <= 30)) { return 3; }
-		return 0;
-	}
-
-	public static <T> T[] append(T[] arr, T element) {
-		final int N = arr.length;
-		arr = Arrays.copyOf(arr, N + 1);
-		arr[N] = element;
-		return arr;
-	}
+public class PeripheralUtils {
 
 	public static String getNameForTarget(Object target) {
 		String name = "";
@@ -103,7 +65,7 @@ public class MiscUtils {
 		Iterator<MethodDeclaration> methodsIterator = methods.iterator();
 		while (methodsIterator.hasNext()) {
 			MethodDeclaration method = methodsIterator.next();
-			builder.append(MiscUtils.documentMethod(method));
+			builder.append(PeripheralUtils.documentMethod(method));
 			if (!methodsIterator.hasNext()) {
 				break;
 			}

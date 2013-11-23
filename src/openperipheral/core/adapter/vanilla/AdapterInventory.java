@@ -4,12 +4,13 @@ import java.util.ArrayList;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
+import openmods.utils.InventoryUtils;
 import openperipheral.api.Arg;
 import openperipheral.api.IPeripheralAdapter;
 import openperipheral.api.LuaMethod;
 import openperipheral.api.LuaType;
-import openperipheral.core.util.InventoryUtils;
 import dan200.computer.api.IComputerAccess;
 
 public class AdapterInventory implements IPeripheralAdapter {
@@ -43,10 +44,11 @@ public class AdapterInventory implements IPeripheralAdapter {
 			@Arg(type = LuaType.NUMBER, name = "intoSlot", description = "The slot in the current inventory that you want to pull into")
 	})
 	public int pullItemIntoSlot(IComputerAccess computer, IInventory target, ForgeDirection direction, int slot, int maxAmount, int intoSlot) throws Exception {
-		int merged = 0; // Still using merged for the sake of debugging, but it's redundant now.
-		IInventory otherInventory = InventoryUtils.getInventory(target, direction); // Get adjacent inventory
+		int merged = 0;
+		TileEntity te = (TileEntity) target;
+		IInventory otherInventory = InventoryUtils.getInventory(te.worldObj, te.xCoord, te.yCoord, te.zCoord, direction);
 		if(otherInventory == null || otherInventory == target) return 0; // Invalid direction or target
-		merged = InventoryUtils.moveItemInto(otherInventory, slot - 1, InventoryUtils.getInventory(target), intoSlot - 1, maxAmount, direction.getOpposite());
+		merged = InventoryUtils.moveItemInto(otherInventory, slot - 1, InventoryUtils.getInventory(target), intoSlot - 1, maxAmount, direction.getOpposite(), true);
 		return merged;
 	}
 
@@ -61,9 +63,10 @@ public class AdapterInventory implements IPeripheralAdapter {
 			})
 	public int pushItemIntoSlot(IComputerAccess computer, IInventory target, ForgeDirection direction, int slot, int maxAmount, int intoSlot) throws Exception {
 		int merged = 0;
-		IInventory otherInventory = InventoryUtils.getInventory(target, direction);
+		TileEntity te = (TileEntity) target;
+		IInventory otherInventory = InventoryUtils.getInventory(te.worldObj, te.xCoord, te.yCoord, te.zCoord, direction);
 		if(otherInventory == null || otherInventory == target) return 0;
-		merged = InventoryUtils.moveItemInto(InventoryUtils.getInventory(target), slot - 1, otherInventory, intoSlot - 1, maxAmount, direction.getOpposite());
+		merged = InventoryUtils.moveItemInto(InventoryUtils.getInventory(target), slot - 1, otherInventory, intoSlot - 1, maxAmount, direction.getOpposite(), true);
 		return merged;
 	}
 
@@ -75,9 +78,10 @@ public class AdapterInventory implements IPeripheralAdapter {
 	})
 	public int pushItem(IComputerAccess computer, IInventory target, ForgeDirection direction, int slot, int maxAmount) throws Exception {
 		int merged = 0;
-		IInventory otherInventory = InventoryUtils.getInventory(target, direction);
+		TileEntity te = (TileEntity) target;
+		IInventory otherInventory = InventoryUtils.getInventory(te.worldObj, te.xCoord, te.yCoord, te.zCoord, direction);
 		if(otherInventory == null || otherInventory == target) return 0;
-		merged = InventoryUtils.moveItem(InventoryUtils.getInventory(target), slot - 1, otherInventory, maxAmount, direction.getOpposite());
+		merged = InventoryUtils.moveItemInto(InventoryUtils.getInventory(target), slot - 1, otherInventory, -1, maxAmount, direction.getOpposite(), true);
 		return merged;
 	}
 
@@ -89,9 +93,10 @@ public class AdapterInventory implements IPeripheralAdapter {
 	})
 	public int pullItem(IComputerAccess computer, IInventory target, ForgeDirection direction, int slot, int maxAmount) throws Exception {
 		int merged = 0;
-		IInventory otherInventory = InventoryUtils.getInventory(target, direction);
+		TileEntity te = (TileEntity) target;
+		IInventory otherInventory = InventoryUtils.getInventory(te.worldObj, te.xCoord, te.yCoord, te.zCoord, direction);
 		if(otherInventory == null || otherInventory == target) return 0;
-		merged = InventoryUtils.moveItem(otherInventory, slot - 1, InventoryUtils.getInventory(target), maxAmount, direction.getOpposite());
+		merged = InventoryUtils.moveItemInto(otherInventory, slot - 1, InventoryUtils.getInventory(target), -1, maxAmount, direction.getOpposite(), true);
 		return merged;
 	}
 
@@ -112,7 +117,7 @@ public class AdapterInventory implements IPeripheralAdapter {
 			inventory.setInventorySlotContents(i, null);
 		}
 		for (ItemStack stack : stacks) {
-			InventoryUtils.insertItemIntoInventory(inventory, stack, ForgeDirection.UNKNOWN);
+			InventoryUtils.insertItemIntoInventory(inventory, stack, ForgeDirection.UNKNOWN, -1);
 		}
 	}
 

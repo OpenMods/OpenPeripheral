@@ -4,14 +4,14 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
+import openmods.utils.BlockUtils;
+import openmods.utils.InventoryUtils;
 import openperipheral.api.Arg;
 import openperipheral.api.IPeripheralAdapter;
 import openperipheral.api.LuaMethod;
 import openperipheral.api.LuaType;
 import openperipheral.core.adapter.vanilla.AdapterInventory;
-import openperipheral.core.util.BlockUtils;
 import openperipheral.core.util.CallWrapper;
-import openperipheral.core.util.InventoryUtils;
 import openperipheral.core.util.ReflectionHelper;
 import dan200.computer.api.IComputerAccess;
 
@@ -95,7 +95,7 @@ public class AdapterWritingDesk implements IPeripheralAdapter {
 			})
 	public int pushNotebookPageIntoSlot(IComputerAccess computer, Object tileEntityDesk, int deskSlot, ForgeDirection direction, int fromSlot, int maxAmount, int intoSlot) throws Exception {
 		NotebookWrapper notebookWrapper = new NotebookWrapper(tileEntityDesk, deskSlot);
-		return InventoryUtils.moveItemInto(notebookWrapper.getinventoryWrapper(), fromSlot - 1, notebookWrapper.getTargetTile(direction), intoSlot - 1, maxAmount, direction.getOpposite());
+		return InventoryUtils.moveItemInto(notebookWrapper.getinventoryWrapper(), fromSlot - 1, notebookWrapper.getTargetTile(direction), intoSlot - 1, maxAmount, direction.getOpposite(), true);
 	}
 
 	@LuaMethod(returnType = LuaType.NUMBER, description = "Push an item from the current inventory into any slot on the other one. Returns the amount of items moved",
@@ -107,7 +107,7 @@ public class AdapterWritingDesk implements IPeripheralAdapter {
 	})
 	public int pushNotebookPage(IComputerAccess computer, Object desk, int deskSlot, ForgeDirection direction, int notebookSlot, int maxAmount) throws Exception {
 		NotebookWrapper notebookWrapper = new NotebookWrapper(desk, deskSlot);
-		return InventoryUtils.moveItem(notebookWrapper.getinventoryWrapper(), notebookSlot - 1, notebookWrapper.getTargetTile(direction), maxAmount, direction.getOpposite());
+		return InventoryUtils.moveItemInto(notebookWrapper.getinventoryWrapper(), notebookSlot - 1, notebookWrapper.getTargetTile(direction), -1, maxAmount, direction.getOpposite(), true);
 	}
 
 	@LuaMethod(returnType = LuaType.NUMBER, description = "Pull an item from the target inventory into any slot in the current one. Returns the amount of items moved",
@@ -119,7 +119,7 @@ public class AdapterWritingDesk implements IPeripheralAdapter {
 	})
 	public int pullNotebookPage(IComputerAccess computer, Object desk, int deskSlot, ForgeDirection direction, int notebookSlot, int maxAmount) throws Exception {
 		NotebookWrapper notebookWrapper = new NotebookWrapper(desk, deskSlot);
-		return InventoryUtils.moveItem(notebookWrapper.getTargetTile(direction), notebookSlot - 1, notebookWrapper.getinventoryWrapper(), maxAmount, direction.getOpposite());
+		return InventoryUtils.moveItemInto(notebookWrapper.getTargetTile(direction), notebookSlot - 1, notebookWrapper.getinventoryWrapper(), -1, maxAmount, direction.getOpposite(), true);
 	}
 
 

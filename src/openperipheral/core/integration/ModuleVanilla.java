@@ -32,7 +32,7 @@ import openperipheral.core.adapter.vanilla.AdapterMobSpawner;
 import openperipheral.core.adapter.vanilla.AdapterNoteBlock;
 import openperipheral.core.adapter.vanilla.AdapterRecordPlayer;
 import openperipheral.core.adapter.vanilla.AdapterSign;
-import openperipheral.core.util.InventoryUtils;
+import openperipheral.core.util.InventoryDescriptionUtils;
 import openperipheral.core.util.ReflectionHelper;
 
 public class ModuleVanilla {
@@ -50,7 +50,7 @@ public class ModuleVanilla {
 
 	public static void entityToMap(Entity entity, HashMap<Object, Object> map, Vec3 relativePos) {
 		if (entity instanceof IInventory) {
-			map.put("inventory", InventoryUtils.invToMap((IInventory)entity));
+			map.put("inventory", InventoryDescriptionUtils.invToMap((IInventory)entity));
 		}
 
 		if (entity instanceof EntityHorse) {
@@ -66,7 +66,7 @@ public class ModuleVanilla {
 			map.put("horseTemper", horse.getTemper());
 			map.put("horseTame", horse.isTame());
 			map.put("ownerName", horse.getOwnerName());
-			map.put("horseInventory", InventoryUtils.invToMap(invent));
+			map.put("horseInventory", InventoryDescriptionUtils.invToMap(invent));
 		}
 
 		if (entity instanceof EntityVillager) {
@@ -139,10 +139,10 @@ public class ModuleVanilla {
 			HashMap<Object, String> potionEffects = new HashMap<Object, String>();
 			map.put("potionEffects", potionEffects);
 
-			armor.put("boots", InventoryUtils.itemstackToMap(living.getCurrentItemOrArmor(1)));
-			armor.put("leggings", InventoryUtils.itemstackToMap(living.getCurrentItemOrArmor(2)));
-			armor.put("chestplate", InventoryUtils.itemstackToMap(living.getCurrentItemOrArmor(3)));
-			armor.put("helmet", InventoryUtils.itemstackToMap(living.getCurrentItemOrArmor(4)));
+			armor.put("boots", InventoryDescriptionUtils.itemstackToMap(living.getCurrentItemOrArmor(1)));
+			armor.put("leggings", InventoryDescriptionUtils.itemstackToMap(living.getCurrentItemOrArmor(2)));
+			armor.put("chestplate", InventoryDescriptionUtils.itemstackToMap(living.getCurrentItemOrArmor(3)));
+			armor.put("helmet", InventoryDescriptionUtils.itemstackToMap(living.getCurrentItemOrArmor(4)));
 			map.put("health", living.getHealth());
 			map.put("maxHealth", living.getMaxHealth());
 			map.put("isAirborne", living.isAirBorne);
@@ -160,7 +160,7 @@ public class ModuleVanilla {
 			map.put("yaw", living.rotationYaw);
 			map.put("pitch", living.rotationPitch);
 			map.put("yawHead", living.rotationYawHead);
-			map.put("heldItem", InventoryUtils.itemstackToMap(living.getHeldItem()));
+			map.put("heldItem", InventoryDescriptionUtils.itemstackToMap(living.getHeldItem()));
 
 			@SuppressWarnings("unchecked")
 			Collection<PotionEffect> effects = living.getActivePotionEffects();
@@ -199,7 +199,7 @@ public class ModuleVanilla {
 		if (entity instanceof EntityPlayer) {
 			EntityPlayer player = (EntityPlayer)entity;
 			map.put("type", "Player");
-			map.put("inventory", InventoryUtils.invToMap(player.inventory));
+			map.put("inventory", InventoryDescriptionUtils.invToMap(player.inventory));
 			map.put("isAirBorne", player.isAirBorne);
 			map.put("isBlocking", player.isBlocking());
 			map.put("username", player.username);

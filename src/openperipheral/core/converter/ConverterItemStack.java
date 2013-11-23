@@ -4,7 +4,7 @@ import java.util.Map;
 
 import net.minecraft.item.ItemStack;
 import openperipheral.api.ITypeConverter;
-import openperipheral.core.util.InventoryUtils;
+import openperipheral.core.util.InventoryDescriptionUtils;
 
 public class ConverterItemStack implements ITypeConverter {
 
@@ -32,7 +32,7 @@ public class ConverterItemStack implements ITypeConverter {
 
 	@Override
 	public Object toLua(Object o) {
-		if (o instanceof ItemStack) { return InventoryUtils.itemstackToMap((ItemStack)o); }
+		if (o instanceof ItemStack) { return InventoryDescriptionUtils.itemstackToMap((ItemStack)o); }
 		return null;
 	}
 
