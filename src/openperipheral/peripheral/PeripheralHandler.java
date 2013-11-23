@@ -1,4 +1,4 @@
-package openperipheral;
+package openperipheral.peripheral;
 
 import java.util.Iterator;
 import java.util.Map.Entry;
@@ -7,7 +7,6 @@ import java.util.WeakHashMap;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import openperipheral.api.IPeripheralProvider;
-import openperipheral.peripheral.HostedPeripheral;
 import dan200.computer.api.IHostedPeripheral;
 import dan200.computer.api.IPeripheral;
 import dan200.computer.api.IPeripheralHandler;

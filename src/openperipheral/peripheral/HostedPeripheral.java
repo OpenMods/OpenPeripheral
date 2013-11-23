@@ -8,7 +8,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import openperipheral.AdapterManager;
-import openperipheral.MethodDeclaration;
 import openperipheral.OpenPeripheral;
 import openperipheral.TickHandler;
 import openperipheral.TypeConversionRegistry;

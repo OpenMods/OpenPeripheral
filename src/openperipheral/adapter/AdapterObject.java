@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import openperipheral.AdapterManager;
-import openperipheral.MethodDeclaration;
 import openperipheral.api.IPeripheralAdapter;
 import openperipheral.api.LuaMethod;
 import openperipheral.api.LuaType;
+import openperipheral.peripheral.MethodDeclaration;
 import openperipheral.util.PeripheralUtils;
 import dan200.computer.api.IComputerAccess;
 

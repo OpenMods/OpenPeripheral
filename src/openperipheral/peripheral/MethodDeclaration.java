@@ -1,4 +1,4 @@
-package openperipheral;
+package openperipheral.peripheral;
 
 import java.lang.reflect.Method;
 

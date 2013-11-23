@@ -2,6 +2,7 @@ package openperipheral;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.Configuration;
 import openmods.Log;
 import openmods.Mods;
 import openmods.api.IOpenMod;
@@ -25,7 +26,8 @@ import openperipheral.integration.ModuleSgCraft;
 import openperipheral.integration.ModuleThaumcraft;
 import openperipheral.integration.ModuleThermalExpansion;
 import openperipheral.integration.ModuleVanilla;
-import openperipheral.util.MountingUtils;
+import openperipheral.peripheral.PeripheralHandler;
+import openperipheral.util.BasicMount;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Instance;
@@ -49,8 +51,11 @@ public class OpenPeripheral implements IOpenMod {
 
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent evt) {
-		ConfigSettings.loadAndSaveConfig(evt.getSuggestedConfigurationFile());
-		MountingUtils.refreshLatestFiles();
+		Configuration configFile = new Configuration(evt.getSuggestedConfigurationFile());
+		Config.readConfig(configFile);
+		if (configFile.hasChanged()) {
+			configFile.save();
+		}
 	}
 
 	@Mod.EventHandler

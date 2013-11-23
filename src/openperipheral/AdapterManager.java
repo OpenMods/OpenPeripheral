@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 
 import openperipheral.api.IPeripheralAdapter;
 import openperipheral.api.LuaMethod;
+import openperipheral.peripheral.MethodDeclaration;
 import dan200.computer.api.IComputerAccess;
 
 public class AdapterManager {

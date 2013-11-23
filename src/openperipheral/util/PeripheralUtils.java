@@ -10,8 +10,8 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import openperipheral.MethodDeclaration;
 import openperipheral.api.Arg;
+import openperipheral.peripheral.MethodDeclaration;
 
 public class PeripheralUtils {
 
