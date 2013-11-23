@@ -2,8 +2,8 @@ package openperipheral.util;
 
 import java.io.IOException;
 
-import openmods.utils.FileLineReader;
-import openmods.utils.ILineReadMethod;
+import openmods.utils.io.FileLineReader;
+import openmods.utils.io.ILineReadMethod;
 import openperipheral.ConfigSettings;
 
 public class MountingUtils {
