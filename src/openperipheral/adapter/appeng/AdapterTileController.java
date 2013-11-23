@@ -19,7 +19,7 @@ public class AdapterTileController implements IPeripheralAdapter {
 		return CLAZZ;
 	}
 
-	@LuaMethod(description="Get the current job list", returnType=LuaType.TABLE)
+	@LuaMethod(description = "Get the current job list", returnType = LuaType.TABLE)
 	public List<ItemStack> getJobList(IComputerAccess computer, TileEntity controller) {
 		return new CallWrapper<List<ItemStack>>().call(controller, "getJobList");
 	}

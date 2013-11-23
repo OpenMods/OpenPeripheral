@@ -33,11 +33,10 @@ public class TypeConversionRegistry {
 			if (response != null) { return response; }
 		}
 		if (obj instanceof Map) { return obj; }
-		if (obj.getClass().isPrimitive() || isWrapperType(obj.getClass())) {
-			return obj;
-		}
+		if (obj.getClass().isPrimitive() || isWrapperType(obj.getClass())) { return obj; }
 		return obj.toString();
 	}
+
 	private static final Set<Class<?>> WRAPPER_TYPES = getWrapperTypes();
 
 	public static boolean isWrapperType(Class<?> clazz)

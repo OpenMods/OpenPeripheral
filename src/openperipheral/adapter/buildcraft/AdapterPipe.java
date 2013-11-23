@@ -1,11 +1,11 @@
 package openperipheral.adapter.buildcraft;
 
-import dan200.computer.api.IComputerAccess;
-import buildcraft.api.transport.IPipe;
+import openperipheral.api.Arg;
 import openperipheral.api.IPeripheralAdapter;
 import openperipheral.api.LuaMethod;
 import openperipheral.api.LuaType;
-import openperipheral.api.Arg;
+import buildcraft.api.transport.IPipe;
+import dan200.computer.api.IComputerAccess;
 
 public class AdapterPipe implements IPeripheralAdapter {
 
@@ -18,14 +18,15 @@ public class AdapterPipe implements IPeripheralAdapter {
 	public boolean hasGate(IComputerAccess computer, IPipe pipe) {
 		return pipe.hasGate();
 	}
-	@LuaMethod(description = "Checks if a wire of your colour choice is on the pipe.", returnType = LuaType.BOOLEAN, args={
-			@Arg(name="color", description="The colour of the wire, can be \"Yellow\", \"Green\", \"Blue\" and \"Red\". (Case sensitive)", type=LuaType.STRING)
+
+	@LuaMethod(description = "Checks if a wire of your colour choice is on the pipe.", returnType = LuaType.BOOLEAN, args = {
+			@Arg(name = "color", description = "The colour of the wire, can be \"Yellow\", \"Green\", \"Blue\" and \"Red\". (Case sensitive)", type = LuaType.STRING)
 	})
 	public boolean isWired(IComputerAccess computer, IPipe pipe, String colour) {
 		try {
 			IPipe.WireColor color = IPipe.WireColor.valueOf(colour);
 			return pipe.isWired(color);
-		} catch (IllegalArgumentException e){}
+		} catch (IllegalArgumentException e) {}
 		return false;
 	}
 

@@ -79,9 +79,9 @@ public class ConverterIIndividual implements ITypeConverter {
 					inactive.put("temperatureTolerance", ((IAlleleTolerance)genome.getInactiveAllele(EnumBeeChromosome.TEMPERATURE_TOLERANCE.ordinal())).getValue().name());
 
 					int[] area = ((IAlleleArea)genome.getActiveAllele(EnumBeeChromosome.TERRITORY.ordinal())).getValue();
-					active.put("territory", area[0] + ","+area[1]+","+area[2]);
+					active.put("territory", area[0] + "," + area[1] + "," + area[2]);
 					area = ((IAlleleArea)genome.getInactiveAllele(EnumBeeChromosome.TERRITORY.ordinal())).getValue();
-					inactive.put("territory", area[0] + ","+area[1]+","+area[2]);
+					inactive.put("territory", area[0] + "," + area[1] + "," + area[2]);
 
 					active.put("tolerantFlyer", genome.getActiveAllele(EnumBeeChromosome.TOLERANT_FLYER.ordinal()).isDominant());
 					inactive.put("tolerantFlyer", genome.getInactiveAllele(EnumBeeChromosome.TOLERANT_FLYER.ordinal()).isDominant());

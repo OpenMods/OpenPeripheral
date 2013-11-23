@@ -29,14 +29,13 @@ public class ModuleIC2 {
 		AdapterManager.addPeripheralAdapter(new AdapterEnergyStorage());
 	}
 
-
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static void appendIC2Info(Map map, ItemStack stack) {
 		if (stack != null) {
 			Item item = stack.getItem();
 			if (item instanceof IElectricItem) {
 				IElectricItem electricItem = (IElectricItem)item;
-				HashMap<String,Object> electricInfo = new HashMap<String,Object>();
+				HashMap<String, Object> electricInfo = new HashMap<String, Object>();
 
 				electricInfo.put("tier", electricItem.getTier(stack));
 				electricInfo.put("maxCharge", electricItem.getMaxCharge(stack));

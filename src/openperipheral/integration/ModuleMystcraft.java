@@ -43,18 +43,18 @@ public class ModuleMystcraft {
 		NBTTagCompound tag = stack.getTagCompound();
 		HashMap<Integer, Integer> pos = new HashMap<Integer, Integer>();
 		map.put("spawn", pos);
-		pos.put(1,tag.getInteger("SpawnX"));
-		pos.put(2,tag.getInteger("SpawnY"));
-		pos.put(3,tag.getInteger("SpawnZ"));
-		map.put("spawnYaw",tag.getFloat("SpawnYaw"));
+		pos.put(1, tag.getInteger("SpawnX"));
+		pos.put(2, tag.getInteger("SpawnY"));
+		pos.put(3, tag.getInteger("SpawnZ"));
+		map.put("spawnYaw", tag.getFloat("SpawnYaw"));
 	}
 
 	private static void addLinkingBookFlags(Map map, ItemStack stack) {
-		Map<String,Boolean> flags = new HashMap<String,Boolean>();
+		Map<String, Boolean> flags = new HashMap<String, Boolean>();
 		map.put("flags", flags);
 		NBTTagCompound tag = stack.getTagCompound();
-		if (tag.hasKey("Flags")){
-			for(NBTBase s:(Collection<NBTBase>)tag.getCompoundTag("Flags").getTags()){
+		if (tag.hasKey("Flags")) {
+			for (NBTBase s : (Collection<NBTBase>)tag.getCompoundTag("Flags").getTags()) {
 				flags.put(s.getName(), Boolean.TRUE);
 			}
 

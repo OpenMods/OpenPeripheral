@@ -93,7 +93,7 @@ public class OpenPeripheral implements IOpenMod {
 			ModuleForestry.init();
 		}
 
-		if (Loader.isModLoaded(Mods.MYSTCRAFT)) { 
+		if (Loader.isModLoaded(Mods.MYSTCRAFT)) {
 			ModuleMystcraft.init();
 		}
 

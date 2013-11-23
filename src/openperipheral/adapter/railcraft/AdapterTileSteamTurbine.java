@@ -3,12 +3,12 @@ package openperipheral.adapter.railcraft;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import dan200.computer.api.IComputerAccess;
 import openperipheral.api.IPeripheralAdapter;
 import openperipheral.api.LuaMethod;
 import openperipheral.api.LuaType;
 import openperipheral.util.CallWrapper;
 import openperipheral.util.ReflectionHelper;
+import dan200.computer.api.IComputerAccess;
 
 public class AdapterTileSteamTurbine implements IPeripheralAdapter {
 
@@ -20,18 +20,16 @@ public class AdapterTileSteamTurbine implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(description = "Get the undamagedness of the rotor, from 0% (dead) to 100% (brand new)", returnType = LuaType.NUMBER)
-	public Integer getTurbineRotorStatus(IComputerAccess computer, Object tileSteamTurbine) throws Exception{
+	public Integer getTurbineRotorStatus(IComputerAccess computer, Object tileSteamTurbine) throws Exception {
 		IInventory inventory = new CallWrapper<IInventory>().call(tileSteamTurbine, "getInventory");
 		if (inventory != null && inventory.getSizeInventory() >= 1) {
 			ItemStack itemStack = inventory.getStackInSlot(0);
 			if (itemStack != null) {
 				Item item = itemStack.getItem();
-				if (item != null ){
-					return 100-(int)(itemStack.getItemDamage() * 100.0 / item.getMaxDamage());
-				}
+				if (item != null) { return 100 - (int)(itemStack.getItemDamage() * 100.0 / item.getMaxDamage()); }
 			}
 		}
-		return null; 
+		return null;
 	}
 
 	@LuaMethod(description = "Get power output percentage", returnType = LuaType.NUMBER)

@@ -3,13 +3,13 @@ package openperipheral.adapter.thaumcraft;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import dan200.computer.api.IComputerAccess;
 import openperipheral.api.IPeripheralAdapter;
 import openperipheral.api.LuaMethod;
 import openperipheral.api.LuaType;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.aspects.IAspectContainer;
+import dan200.computer.api.IComputerAccess;
 
 public class AdapterAspectContainer implements IPeripheralAdapter {
 	@Override

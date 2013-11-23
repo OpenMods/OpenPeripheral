@@ -15,10 +15,12 @@ import openperipheral.api.Arg;
 import openperipheral.api.IAttachable;
 import openperipheral.api.IMultiReturn;
 import openperipheral.util.PeripheralUtils;
+
+import com.google.common.base.Strings;
+
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IHostedPeripheral;
 import dan200.computer.api.ILuaContext;
-import com.google.common.base.Strings;
 
 public class HostedPeripheral implements IHostedPeripheral {
 
@@ -151,7 +153,7 @@ public class HostedPeripheral implements IHostedPeripheral {
 		Throwable cause = e.getCause();
 
 		String firstMessage = e.getMessage();
-		String secondMessage = (cause != null) ? cause.getMessage() : null;
+		String secondMessage = (cause != null)? cause.getMessage() : null;
 
 		if (Strings.isNullOrEmpty(firstMessage) && Strings.isNullOrEmpty(secondMessage)) {
 			e.printStackTrace();
@@ -159,9 +161,7 @@ public class HostedPeripheral implements IHostedPeripheral {
 		} else if (!Strings.isNullOrEmpty(firstMessage) && !Strings.isNullOrEmpty(secondMessage)) {
 			return String.format("%s, caused by %s", firstMessage, secondMessage);
 		} else {
-			if (Strings.isNullOrEmpty(firstMessage)) {
-				return secondMessage;
-			}
+			if (Strings.isNullOrEmpty(firstMessage)) { return secondMessage; }
 			return firstMessage;
 		}
 	}

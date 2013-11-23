@@ -2,10 +2,6 @@ package openperipheral.integration;
 
 import java.util.Map;
 
-import cofh.api.energy.IEnergyContainerItem;
-import cofh.api.item.IInventoryContainerItem;
-import cofh.api.item.ISecureItem;
-
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import openperipheral.AdapterManager;
@@ -14,6 +10,9 @@ import openperipheral.adapter.thermalexpansion.AdapterEnergyHandler;
 import openperipheral.adapter.thermalexpansion.AdapterEnergyInfo;
 import openperipheral.adapter.thermalexpansion.AdapterSecureTile;
 import openperipheral.adapter.thermalexpansion.AdapterTileLamp;
+import cofh.api.energy.IEnergyContainerItem;
+import cofh.api.item.IInventoryContainerItem;
+import cofh.api.item.ISecureItem;
 
 public class ModuleThermalExpansion {
 	public static void init() {
@@ -26,7 +25,7 @@ public class ModuleThermalExpansion {
 
 	public static void appendTEInfo(Map map, ItemStack stack) {
 		if (stack != null) {
-			Item item = stack.getItem();		
+			Item item = stack.getItem();
 			if (item instanceof IEnergyContainerItem) {
 				IEnergyContainerItem energyItem = (IEnergyContainerItem)item;
 				map.put("energyStored", energyItem.getEnergyStored(stack));

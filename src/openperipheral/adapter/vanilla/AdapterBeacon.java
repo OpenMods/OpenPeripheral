@@ -1,11 +1,11 @@
 package openperipheral.adapter.vanilla;
 
-import dan200.computer.api.IComputerAccess;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntityBeacon;
 import openperipheral.api.IPeripheralAdapter;
 import openperipheral.api.LuaMethod;
 import openperipheral.api.LuaType;
+import dan200.computer.api.IComputerAccess;
 
 public class AdapterBeacon implements IPeripheralAdapter {
 	private static final String NONE = "None";

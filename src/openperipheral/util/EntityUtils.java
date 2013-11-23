@@ -3,13 +3,12 @@ package openperipheral.util;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.util.Vec3;
 import openperipheral.integration.ModuleForestry;
 import openperipheral.integration.ModuleMystcraft;
 import openperipheral.integration.ModuleRailcraft;
 import openperipheral.integration.ModuleVanilla;
-
-import net.minecraft.entity.Entity;
-import net.minecraft.util.Vec3;
 
 public class EntityUtils {
 

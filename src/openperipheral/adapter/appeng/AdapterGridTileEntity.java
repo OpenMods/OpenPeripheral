@@ -36,42 +36,31 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 
 	@LuaMethod(description = "Request crafting of a specific item", returnType = LuaType.VOID,
 			args = {
-			@Arg(type = LuaType.TABLE, name = "stack", description = "A table representing the item stack") })
+					@Arg(type = LuaType.TABLE, name = "stack", description = "A table representing the item stack") })
 	public void requestCrafting(IComputerAccess computer, Object te, ItemStack stack) throws AppEngTileMissingException {
 		getGrid(te).craftingRequest(stack);
 	}
 
-
 	@LuaMethod(description = "Extract an item", returnType = LuaType.NUMBER,
 			args = {
-			@Arg(type = LuaType.TABLE, name = "stack", description = "A table representing the item stack"),
-			@Arg(type = LuaType.STRING, name = "direction", description = "The direction of the chest relative to the wrapped peripheral")})
+					@Arg(type = LuaType.TABLE, name = "stack", description = "A table representing the item stack"),
+					@Arg(type = LuaType.STRING, name = "direction", description = "The direction of the chest relative to the wrapped peripheral") })
 	public int extractItem(IComputerAccess computer, Object te, ItemStack stack, ForgeDirection direction) {
-		if (stack == null) {
-			return 0;
-		}
+		if (stack == null) { return 0; }
 		IGridInterface grid = getGrid(te);
-		if (grid == null) {
-			return 0;
-		}
+		if (grid == null) { return 0; }
 		IAEItemStack request = Util.createItemStack(stack);
-		if (request == null) {
-			return 0;
-		}
+		if (request == null) { return 0; }
 		IAEItemStack returned = grid.getCellArray().extractItems(request);
-		if (returned == null) {
-			return 0;
-		}
+		if (returned == null) { return 0; }
 		IAEItemStack giveBack = null;
 		int requestAmount = stack.stackSize;
-		if (!(te instanceof TileEntity)) {
-			return 0;
-		}
-		TileEntity tile = (TileEntity) te;
+		if (!(te instanceof TileEntity)) { return 0; }
+		TileEntity tile = (TileEntity)te;
 		IInventory inventory = InventoryUtils.getInventory(tile.worldObj, tile.xCoord, tile.yCoord, tile.zCoord, direction);
 		if (inventory == null) {
 			giveBack = returned.copy();
-		}else {
+		} else {
 			ItemStack returnedStack = returned.getItemStack();
 			InventoryUtils.insertItemIntoInventory(inventory, returnedStack, direction.getOpposite(), -1);
 			giveBack = Util.createItemStack(returnedStack.copy());
@@ -79,35 +68,25 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 		if (giveBack != null) {
 			grid.getCellArray().addItems(giveBack);
 		}
-		if (giveBack != null) {
-			return requestAmount - (int)giveBack.getStackSize();
-		}
+		if (giveBack != null) { return requestAmount - (int)giveBack.getStackSize(); }
 		return requestAmount;
 	}
 
 	@LuaMethod(description = "Insert an item back into the system", returnType = LuaType.NUMBER,
 			args = {
-			@Arg(type = LuaType.NUMBER, name = "slot", description = "The slot you wish to send"),
-			@Arg(type = LuaType.NUMBER, name = "amount", description = "The amount you want to send"),
-			@Arg(type = LuaType.STRING, name = "direction", description = "The direction of the chest relative to the wrapped peripheral")})
+					@Arg(type = LuaType.NUMBER, name = "slot", description = "The slot you wish to send"),
+					@Arg(type = LuaType.NUMBER, name = "amount", description = "The amount you want to send"),
+					@Arg(type = LuaType.STRING, name = "direction", description = "The direction of the chest relative to the wrapped peripheral") })
 	public int insertItem(IComputerAccess computer, Object te, int slot, int amount, ForgeDirection direction) throws Exception {
-		TileEntity tile = (TileEntity) te;
+		TileEntity tile = (TileEntity)te;
 		IGridInterface grid = getGrid(te);
-		if (grid == null) {
-			return 0;
-		}
+		if (grid == null) { return 0; }
 		IInventory inventory = InventoryUtils.getInventory(tile.worldObj, tile.xCoord, tile.yCoord, tile.zCoord, direction);
-		if (inventory == null) {
-			return 0;
-		}
+		if (inventory == null) { return 0; }
 		slot--;
-		if (slot < 0 || slot >= inventory.getSizeInventory()) {
-			throw new Exception("Slot is out of range");
-		}
+		if (slot < 0 || slot >= inventory.getSizeInventory()) { throw new Exception("Slot is out of range"); }
 		ItemStack stack = inventory.getStackInSlot(slot);
-		if (stack == null) {
-			return 0;
-		}
+		if (stack == null) { return 0; }
 		amount = Math.min(amount, stack.stackSize);
 		amount = Math.max(amount, 0);
 		ItemStack sendStack = stack.copy();
@@ -119,7 +98,7 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 			stack.stackSize -= amount;
 			if (stack.stackSize <= 0) {
 				inventory.setInventorySlotContents(slot, null);
-			}else {
+			} else {
 				inventory.setInventorySlotContents(slot, stack);
 			}
 			return amount;
@@ -127,22 +106,19 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 		int sent = (int)(amount - remaining.getStackSize());
 		if (sent <= 0) {
 			inventory.setInventorySlotContents(slot, null);
-		}else {
+		} else {
 			stack.stackSize -= sent;
 			inventory.setInventorySlotContents(slot, stack);
 		}
 		return sent;
 	}
 
-
 	@LuaMethod(description = "Get the total total item types stored", returnType = LuaType.NUMBER)
 	public long getTotalItemTypes(IComputerAccess computer, Object te) {
 		IGridInterface grid = getGrid(te);
 		if (grid != null) {
 			IMEInventoryHandler cell = grid.getCellArray();
-			if (cell != null) {
-				return cell.getTotalItemTypes();
-			}
+			if (cell != null) { return cell.getTotalItemTypes(); }
 		}
 		return 0;
 	}
@@ -152,9 +128,7 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 		IGridInterface grid = getGrid(te);
 		if (grid != null) {
 			IMEInventoryHandler cell = grid.getCellArray();
-			if (cell != null) {
-				return cell.getPriority();
-			}
+			if (cell != null) { return cell.getPriority(); }
 		}
 		return 0;
 	}
@@ -164,9 +138,7 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 		IGridInterface grid = getGrid(te);
 		if (grid != null) {
 			IMEInventoryHandler cell = grid.getCellArray();
-			if (cell != null) {
-				return cell.canHoldNewItem();
-			}
+			if (cell != null) { return cell.canHoldNewItem(); }
 		}
 		return false;
 	}
@@ -176,9 +148,7 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 		IGridInterface grid = getGrid(te);
 		if (grid != null) {
 			IMEInventoryHandler cell = grid.getCellArray();
-			if (cell != null) {
-				return cell.freeBytes();
-			}
+			if (cell != null) { return cell.freeBytes(); }
 		}
 		return 0;
 	}
@@ -188,9 +158,7 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 		IGridInterface grid = getGrid(te);
 		if (grid != null) {
 			IMEInventoryHandler cell = grid.getCellArray();
-			if (cell != null) {
-				return cell.getAvailableItems();
-			}
+			if (cell != null) { return cell.getAvailableItems(); }
 		}
 		return null;
 	}
@@ -207,17 +175,13 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 
 	@LuaMethod(description = "Count the amount of a certain item type", returnType = LuaType.NUMBER,
 			args = {
-			@Arg(type = LuaType.NUMBER, name = "itemId", description = "The item id"),
-			@Arg(type = LuaType.NUMBER, name = "dmgValue", description = "The item dmg value") })
+					@Arg(type = LuaType.NUMBER, name = "itemId", description = "The item id"),
+					@Arg(type = LuaType.NUMBER, name = "dmgValue", description = "The item dmg value") })
 	public long countOfItemType(IComputerAccess computer, Object te, int itemId, int dmgValue) {
 		IGridInterface grid = getGrid(te);
-		if (grid == null) {
-			return 0;
-		}
+		if (grid == null) { return 0; }
 		IMEInventoryHandler cell = grid.getCellArray();
-		if (cell == null) {
-			return 0;
-		}
+		if (cell == null) { return 0; }
 		Iterator<IAEItemStack> iterator = cell.getAvailableItems().iterator();
 		long c = 0;
 		while (iterator.hasNext()) {
@@ -234,9 +198,7 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 		IGridInterface grid = getGrid(te);
 		if (grid != null) {
 			IMEInventoryHandler cell = grid.getCellArray();
-			if (cell != null) {
-				return cell.getPreformattedItems();
-			}
+			if (cell != null) { return cell.getPreformattedItems(); }
 		}
 		return null;
 	}
@@ -246,9 +208,7 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 		IGridInterface grid = getGrid(te);
 		if (grid != null) {
 			IMEInventoryHandler cell = grid.getCellArray();
-			if (cell != null) {
-				return cell.isFuzzyPreformatted();
-			}
+			if (cell != null) { return cell.isFuzzyPreformatted(); }
 		}
 		return false;
 	}
@@ -258,9 +218,7 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 		IGridInterface grid = getGrid(te);
 		if (grid != null) {
 			IMEInventoryHandler cell = grid.getCellArray();
-			if (cell != null) {
-				return cell.isPreformatted();
-			}
+			if (cell != null) { return cell.isPreformatted(); }
 		}
 		return false;
 	}
@@ -270,9 +228,7 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 		IGridInterface grid = getGrid(te);
 		if (grid != null) {
 			IMEInventoryHandler cell = grid.getCellArray();
-			if (cell != null) {
-				return cell.remainingItemCount();
-			}
+			if (cell != null) { return cell.remainingItemCount(); }
 		}
 		return 0;
 	}
@@ -282,9 +238,7 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 		IGridInterface grid = getGrid(te);
 		if (grid != null) {
 			IMEInventoryHandler cell = grid.getCellArray();
-			if (cell != null) {
-				return cell.remainingItemTypes();
-			}
+			if (cell != null) { return cell.remainingItemTypes(); }
 		}
 		return 0;
 	}
@@ -294,9 +248,7 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 		IGridInterface grid = getGrid(te);
 		if (grid != null) {
 			IMEInventoryHandler cell = grid.getCellArray();
-			if (cell != null) {
-				return cell.storedItemCount();
-			}
+			if (cell != null) { return cell.storedItemCount(); }
 		}
 		return 0;
 	}
@@ -306,9 +258,7 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 		IGridInterface grid = getGrid(te);
 		if (grid != null) {
 			IMEInventoryHandler cell = grid.getCellArray();
-			if (cell != null) {
-				return cell.storedItemTypes();
-			}
+			if (cell != null) { return cell.storedItemTypes(); }
 		}
 		return 0;
 	}
@@ -318,9 +268,7 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 		IGridInterface grid = getGrid(te);
 		if (grid != null) {
 			IMEInventoryHandler cell = grid.getCellArray();
-			if (cell != null) {
-				return cell.totalBytes();
-			}
+			if (cell != null) { return cell.totalBytes(); }
 		}
 		return 0;
 	}
@@ -330,9 +278,7 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 		IGridInterface grid = getGrid(te);
 		if (grid != null) {
 			IMEInventoryHandler cell = grid.getCellArray();
-			if (cell != null) {
-				return cell.unusedItemCount();
-			}
+			if (cell != null) { return cell.unusedItemCount(); }
 		}
 		return 0;
 	}
@@ -342,9 +288,7 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 		IGridInterface grid = getGrid(te);
 		if (grid != null) {
 			IMEInventoryHandler cell = grid.getCellArray();
-			if (cell != null) {
-				return cell.usedBytes();
-			}
+			if (cell != null) { return cell.usedBytes(); }
 		}
 		return 0;
 	}

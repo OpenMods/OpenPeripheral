@@ -18,10 +18,8 @@ public class CallWrapper<T> {
 	private T explicitCall(Class<?> targetClass, Object target, String[] methodNames, Object... args) throws CallFailureException {
 		try {
 			Method method = ReflectionHelper.getMethod(targetClass, methodNames, args.length);
-			if (method == null) {
-				throw new CallFailureException("Method not found");
-			}
-			return (T) method.invoke(target, args);
+			if (method == null) { throw new CallFailureException("Method not found"); }
+			return (T)method.invoke(target, args);
 		} catch (Exception e) {
 			throw new CallFailureException(e);
 		}

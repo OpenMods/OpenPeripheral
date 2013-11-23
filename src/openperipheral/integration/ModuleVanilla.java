@@ -70,7 +70,7 @@ public class ModuleVanilla {
 		}
 
 		if (entity instanceof EntityVillager) {
-			EntityVillager villager = (EntityVillager) entity;
+			EntityVillager villager = (EntityVillager)entity;
 			map.put("profession", villager.getProfession());
 			map.put("isMating", villager.isMating());
 			map.put("isPlaying", villager.isPlaying());
@@ -178,7 +178,8 @@ public class ModuleVanilla {
 			if (mop != null) {
 				map.put("IsLookingAtBlock", mop.typeOfHit == EnumMovingObjectType.TILE);
 				if (mop.typeOfHit == EnumMovingObjectType.TILE) {
-					//int blockId = living.worldObj.getBlockId(mop.blockX, mop.blockY, mop.blockZ);
+					// int blockId = living.worldObj.getBlockId(mop.blockX,
+					// mop.blockY, mop.blockZ);
 					HashMap<String, Object> lookingAt = new HashMap<String, Object>();
 					if (relativePos != null) {
 						lookingAt.put("x", mop.blockX - relativePos.xCoord);

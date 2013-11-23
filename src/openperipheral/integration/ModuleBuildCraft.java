@@ -16,9 +16,7 @@ public class ModuleBuildCraft {
 	}
 
 	public static int tryAcceptIntoPipe(TileEntity possiblePipe, ItemStack nextStack, ForgeDirection direction) {
-		if (possiblePipe instanceof IPipeTile) {
-			return ((IPipeTile)possiblePipe).injectItem(nextStack, true, direction.getOpposite());
-		}
+		if (possiblePipe instanceof IPipeTile) { return ((IPipeTile)possiblePipe).injectItem(nextStack, true, direction.getOpposite()); }
 		return 0;
 	}
 }

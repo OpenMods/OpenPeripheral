@@ -26,7 +26,7 @@ public class IntegrationRegistry {
 		} catch (Exception e) {}
 		return false;
 	}
-	
+
 	public static boolean registerPeripheralAdapter(IPeripheralAdapter adapter) {
 		return registerClass(IPeripheralAdapter.class, adapter, "openperipheral.core.AdapterManager", "addPeripheralAdapter");
 	}

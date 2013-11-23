@@ -5,9 +5,9 @@ import java.util.Map;
 
 import net.minecraft.item.ItemStack;
 import openperipheral.TypeConversionRegistry;
+import openperipheral.api.Arg;
 import openperipheral.api.IPeripheralAdapter;
 import openperipheral.api.LuaMethod;
-import openperipheral.api.Arg;
 import openperipheral.api.LuaType;
 import dan200.computer.api.IComputerAccess;
 import forestry.api.apiculture.IBeeHousing;
@@ -44,18 +44,18 @@ public class AdapterBeeHousing implements IPeripheralAdapter {
 	}
 
 	/**
-	 * Experimental method. Adding it aganist beehousing for now as we need some kind of block to run it against
+	 * Experimental method. Adding it aganist beehousing for now as we need some
+	 * kind of block to run it against
 	 * Trying to get the full breeding tree for all bees
+	 * 
 	 * @param computer
 	 * @param housing
 	 * @return
 	 */
-	@LuaMethod(returnType = LuaType.TABLE, description="Get the full breeding list thingy. Experimental!")
+	@LuaMethod(returnType = LuaType.TABLE, description = "Get the full breeding list thingy. Experimental!")
 	public Map<?, HashMap<String, Object>> getBeeBreedingData(IComputerAccess computer, IBeeHousing housing) {
 		ISpeciesRoot beeRoot = AlleleManager.alleleRegistry.getSpeciesRoot("rootBees");
-		if (beeRoot == null) {
-			return null;
-		}
+		if (beeRoot == null) { return null; }
 		HashMap<Object, HashMap<String, Object>> result = new HashMap<Object, HashMap<String, Object>>();
 		int j = 1;
 		for (IMutation mutation : beeRoot.getMutations(false)) {
@@ -81,15 +81,13 @@ public class AdapterBeeHousing implements IPeripheralAdapter {
 
 	@LuaMethod(
 			returnType = LuaType.TABLE,
-			description="Get the parents for a particular mutation",
+			description = "Get the parents for a particular mutation",
 			args = {
-					@Arg( name="childType", description="The type of bee you want the parents for", type=LuaType.STRING)
+					@Arg(name = "childType", description = "The type of bee you want the parents for", type = LuaType.STRING)
 			})
 	public Map<Object, HashMap<String, Object>> getBeeParents(IComputerAccess computer, IBeeHousing housing, String childType) {
 		ISpeciesRoot beeRoot = AlleleManager.alleleRegistry.getSpeciesRoot("rootBees");
-		if (beeRoot == null) {
-			return null;
-		}
+		if (beeRoot == null) { return null; }
 		int i = 1;
 		HashMap<Object, HashMap<String, Object>> result = new HashMap<Object, HashMap<String, Object>>();
 		for (IMutation mutation : beeRoot.getMutations(false)) {

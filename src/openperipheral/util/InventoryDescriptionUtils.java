@@ -3,14 +3,6 @@ package openperipheral.util;
 import java.util.HashMap;
 import java.util.Map;
 
-import cpw.mods.fml.common.Loader;
-
-import openmods.Mods;
-import openperipheral.integration.ModuleForestry;
-import openperipheral.integration.ModuleIC2;
-import openperipheral.integration.ModuleMystcraft;
-import openperipheral.integration.ModuleThermalExpansion;
-
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemEnchantedBook;
@@ -18,6 +10,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import openmods.Mods;
+import openperipheral.integration.ModuleForestry;
+import openperipheral.integration.ModuleIC2;
+import openperipheral.integration.ModuleMystcraft;
+import openperipheral.integration.ModuleThermalExpansion;
+import cpw.mods.fml.common.Loader;
 
 public class InventoryDescriptionUtils {
 

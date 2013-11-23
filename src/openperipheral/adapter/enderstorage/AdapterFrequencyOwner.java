@@ -34,11 +34,12 @@ public class AdapterFrequencyOwner implements IPeripheralAdapter {
 
 	@LuaMethod(returnType = LuaType.VOID, onTick = false, description = "Set the frequency of this chest or tank",
 			args = {
-			@Arg(name = "color_left", type = LuaType.NUMBER, description = "The first color"),
-			@Arg(name = "color_middle", type = LuaType.NUMBER, description = "The second color"),
-			@Arg(name = "color_right", type = LuaType.NUMBER, description = "The third color")})
+					@Arg(name = "color_left", type = LuaType.NUMBER, description = "The first color"),
+					@Arg(name = "color_middle", type = LuaType.NUMBER, description = "The second color"),
+					@Arg(name = "color_right", type = LuaType.NUMBER, description = "The third color") })
 	public void setColors(IComputerAccess computer, TileEntity frequencyOwner, int color_left, int color_middle, int color_right) throws Exception {
-		// transform the ComputerCraft colours (2^n) into the range 0-15 And validate they're within this range
+		// transform the ComputerCraft colours (2^n) into the range 0-15 And
+		// validate they're within this range
 		int high = parseComputerCraftColor(color_left);
 		int med = parseComputerCraftColor(color_middle);
 		int low = parseComputerCraftColor(color_right);
@@ -55,7 +56,7 @@ public class AdapterFrequencyOwner implements IPeripheralAdapter {
 
 	@LuaMethod(returnType = LuaType.VOID, onTick = false, description = "Set the frequency of this chest or tank",
 			args = {
-			@Arg(name = "frequency", type = LuaType.NUMBER, description = "A single color that represents all three colours on this chest or tank") })
+					@Arg(name = "frequency", type = LuaType.NUMBER, description = "A single color that represents all three colours on this chest or tank") })
 	public void setFrequency(IComputerAccess computer, TileEntity frequencyOwner, int frequency) throws Exception {
 		setFreq(frequencyOwner, frequency);
 	}
@@ -69,12 +70,12 @@ public class AdapterFrequencyOwner implements IPeripheralAdapter {
 
 	private void setFreq(TileEntity frequencyOwner, int frequency) throws Exception {
 		if (frequency < 0 || frequency > 4095) { throw new Exception("Frequency out of bounds. Should be 0-4095"); }
-		ReflectionHelper.callMethod(getTargetClass(), frequencyOwner, new String[] {"setFreq"}, frequency);
+		ReflectionHelper.callMethod(getTargetClass(), frequencyOwner, new String[] { "setFreq" }, frequency);
 	}
 
 	private static int parseComputerCraftColor(int color) throws Exception {
 		if (color < 0 || color > 32768) { throw new Exception("Invalid color supplied"); }
-		double val = Math.log(color)/Math.log(2);
+		double val = Math.log(color) / Math.log(2);
 		if (val < 0 || val > 15 || val % 1 != 0) { throw new Exception("Invalid color supplied."); }
 		return (int)val;
 	}

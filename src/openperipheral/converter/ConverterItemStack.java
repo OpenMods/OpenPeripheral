@@ -13,10 +13,10 @@ public class ConverterItemStack implements ITypeConverter {
 		if (required == ItemStack.class && o instanceof Map) {
 			int quantity = 1;
 			int dmg = 0;
-			
+
 			@SuppressWarnings({ "unchecked", "rawtypes" })
 			Map<Object, Object> m = (Map)o;
-			
+
 			if (!m.containsKey("id")) { return null; }
 			int id = (int)(double)(Double)m.get("id");
 			if (m.containsKey("qty")) {

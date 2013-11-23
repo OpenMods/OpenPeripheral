@@ -2,12 +2,11 @@ package openperipheral.integration;
 
 import java.util.HashMap;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.util.Vec3;
 import openperipheral.AdapterManager;
 import openperipheral.adapter.thaumcraft.AdapterAspectContainer;
 import openperipheral.adapter.thaumcraft.AdapterNode;
-
-import net.minecraft.entity.Entity;
-import net.minecraft.util.Vec3;
 
 public class ModuleThaumcraft {
 	public static void init() {

@@ -1,10 +1,10 @@
 package openperipheral.adapter.vanilla;
 
-import dan200.computer.api.IComputerAccess;
 import net.minecraft.tileentity.TileEntityMobSpawner;
 import openperipheral.api.IPeripheralAdapter;
 import openperipheral.api.LuaMethod;
 import openperipheral.api.LuaType;
+import dan200.computer.api.IComputerAccess;
 
 public class AdapterMobSpawner implements IPeripheralAdapter {
 	@Override
