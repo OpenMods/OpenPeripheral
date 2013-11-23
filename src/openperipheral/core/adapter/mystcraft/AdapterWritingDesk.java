@@ -19,8 +19,7 @@ public class AdapterWritingDesk implements IPeripheralAdapter {
 	private static final Class<?> DESK_CLAZZ = ReflectionHelper.getClass("com.xcompwiz.mystcraft.tileentity.TileEntityDesk");
 
 	@Override
-	@SuppressWarnings("rawtypes")
-	public Class getTargetClass() {
+	public Class<?> getTargetClass() {
 		return DESK_CLAZZ;
 	}
 

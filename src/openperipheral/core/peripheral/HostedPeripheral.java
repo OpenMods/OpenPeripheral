@@ -167,7 +167,6 @@ public class HostedPeripheral implements IHostedPeripheral {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	protected Object[] formatParameters(IComputerAccess computer, MethodDeclaration method, Object[] arguments) throws Exception {
 
 		Arg[] requiredParameters = method.getRequiredParameters();

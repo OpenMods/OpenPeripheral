@@ -2,7 +2,6 @@ package openperipheral;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.tileentity.TileEntity;
-import openblocks.IOpenBlocksProxy;
 import openmods.Log;
 import openmods.Mods;
 import openmods.api.IOpenMod;
@@ -10,6 +9,7 @@ import openperipheral.core.AdapterManager;
 import openperipheral.core.BasicMount;
 import openperipheral.core.ConfigSettings;
 import openperipheral.core.PeripheralHandler;
+import openperipheral.core.TickHandler;
 import openperipheral.core.TypeConversionRegistry;
 import openperipheral.core.adapter.AdapterObject;
 import openperipheral.core.adapter.vanilla.AdapterFluidHandler;
@@ -35,10 +35,11 @@ import openperipheral.core.util.MountingUtils;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
+import cpw.mods.fml.common.registry.TickRegistry;
+import cpw.mods.fml.relauncher.Side;
 import dan200.computer.api.ComputerCraftAPI;
 
 @Mod(modid = ModInfo.ID, name = ModInfo.NAME, version = ModInfo.VERSION, dependencies = ModInfo.DEPENDENCIES)
@@ -47,9 +48,6 @@ public class OpenPeripheral implements IOpenMod {
 
 	@Instance(value = ModInfo.ID)
 	public static OpenPeripheral instance;
-
-	@SidedProxy(clientSide = ModInfo.PROXY_CLIENT, serverSide = ModInfo.PROXY_SERVER)
-	public static IOpenBlocksProxy proxy;
 
 	public static BasicMount mount = new BasicMount();
 
@@ -118,6 +116,8 @@ public class OpenPeripheral implements IOpenMod {
 		if (Loader.isModLoaded(Mods.SGCRAFT)) {
 			ModuleSgCraft.init();
 		}
+
+		TickRegistry.registerTickHandler(new TickHandler(), Side.SERVER);
 
 		ComputerCraftAPI.registerExternalPeripheral(TileEntity.class, peripheralHandler);
 	}
