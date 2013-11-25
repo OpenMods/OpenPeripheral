@@ -22,7 +22,7 @@ public class AdapterManager {
 		System.out.println("Enabling adapter " + adapter);
 		try {
 			if (targetClass != null) {
-				
+
 				for (Method method : adapter.getClass().getMethods()) {
 					LuaMethod annotation = method.getAnnotation(LuaMethod.class);
 
@@ -55,7 +55,7 @@ public class AdapterManager {
 		}
 		return null;
 	}
-	
+
 	public static Set<Class<?>> getRegisteredClasses() {
 		return classList.keySet();
 	}

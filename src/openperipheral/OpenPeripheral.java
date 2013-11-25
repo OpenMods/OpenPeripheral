@@ -124,7 +124,6 @@ public class OpenPeripheral implements IOpenMod {
 		TickRegistry.registerTickHandler(new TickHandler(), Side.SERVER);
 
 	}
-	
 
 	@SuppressWarnings("unchecked")
 	@Mod.EventHandler
@@ -141,7 +140,6 @@ public class OpenPeripheral implements IOpenMod {
 			}
 		}
 	}
-	
 
 	@Override
 	public Log getLog() {
