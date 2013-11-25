@@ -1,5 +1,8 @@
 package openperipheral;
 
+import java.util.Map;
+import java.util.Set;
+
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.Configuration;
@@ -28,10 +31,12 @@ import openperipheral.integration.ModuleThermalExpansion;
 import openperipheral.integration.ModuleVanilla;
 import openperipheral.peripheral.PeripheralHandler;
 import openperipheral.util.BasicMount;
+import openperipheral.util.ReflectionHelper;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.registry.TickRegistry;
@@ -118,8 +123,25 @@ public class OpenPeripheral implements IOpenMod {
 
 		TickRegistry.registerTickHandler(new TickHandler(), Side.SERVER);
 
-		ComputerCraftAPI.registerExternalPeripheral(TileEntity.class, peripheralHandler);
 	}
+	
+
+	@SuppressWarnings("unchecked")
+	@Mod.EventHandler
+	public void postInit(FMLPostInitializationEvent evt) {
+		Map<Class<? extends TileEntity>, String> classToNameMap = (Map<Class<? extends TileEntity>, String>)ReflectionHelper.getProperty("net.minecraft.tileentity.TileEntity", null, "classToNameMap", "field_70323_b");
+		Set<Class<? extends TileEntity>> teClasses = classToNameMap.keySet();
+		for (Class<?> klazz : AdapterManager.getRegisteredClasses()) {
+			if (!klazz.equals(Object.class)) {
+				for (Class<? extends TileEntity> teClass : teClasses) {
+					if (klazz.isAssignableFrom(teClass)) {
+						ComputerCraftAPI.registerExternalPeripheral(teClass, peripheralHandler);
+					}
+				}
+			}
+		}
+	}
+	
 
 	@Override
 	public Log getLog() {

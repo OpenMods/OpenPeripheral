@@ -21,11 +21,11 @@ public class IntegrationRegistry {
 	}
 
 	public static boolean register(IPeripheralAdapter adapter) {
-		return register(IPeripheralAdapter.class, adapter, "openperipheral.core.AdapterManager", "addPeripheralAdapter");
+		return register(IPeripheralAdapter.class, adapter, "openperipheral.AdapterManager", "addPeripheralAdapter");
 	}
 
 	public static boolean register(ITypeConverter converter) {
-		return register(ITypeConverter.class, converter, "openperipheral.core.TypeConversionRegistry", "registerTypeConverter");
+		return register(ITypeConverter.class, converter, "openperipheral.TypeConversionRegistry", "registerTypeConverter");
 	}
 
 	private static boolean register(Class<?> type, Object obj, String klazzName, String methodName) {

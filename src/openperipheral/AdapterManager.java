@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import openperipheral.api.IPeripheralAdapter;
 import openperipheral.api.LuaMethod;
@@ -21,7 +22,7 @@ public class AdapterManager {
 		System.out.println("Enabling adapter " + adapter);
 		try {
 			if (targetClass != null) {
-
+				
 				for (Method method : adapter.getClass().getMethods()) {
 					LuaMethod annotation = method.getAnnotation(LuaMethod.class);
 
@@ -53,6 +54,10 @@ public class AdapterManager {
 			}
 		}
 		return null;
+	}
+	
+	public static Set<Class<?>> getRegisteredClasses() {
+		return classList.keySet();
 	}
 
 	public static ArrayList<MethodDeclaration> getMethodsForClass(Class<?> klazz) {
