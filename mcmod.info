@@ -1,7 +1,7 @@
 [
 {
-  "modid" : "OpenPeripheral",
-  "name" : "OpenPeripheral",
+  "modid" : "OpenPeripheralCore",
+  "name" : "OpenPeripheralCore",
   "version" : "@VERSION@",
   "url" : "http://www.openperipheral.info",
   "credits" : "Everyone in #ComputerCraft, #OpenMods and #OpenCCSensors, also ChickenBones",
