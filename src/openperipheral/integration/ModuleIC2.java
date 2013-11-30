@@ -6,14 +6,24 @@ import ic2.api.item.IElectricItem;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Vec3;
+import openmods.Mods;
 import openperipheral.AdapterManager;
 import openperipheral.adapter.ic2.*;
+import openperipheral.api.IIntegrationModule;
 
-public class ModuleIC2 {
+public class ModuleIC2 implements IIntegrationModule {
 
-	public static void init() {
+	@Override
+	public String getModId() {
+		return Mods.IC2;
+	}
+
+	@Override
+	public void init() {
 		AdapterManager.addPeripheralAdapter(new AdapterReactor());
 		AdapterManager.addPeripheralAdapter(new AdapterReactorChamber());
 		AdapterManager.addPeripheralAdapter(new AdapterMassFab());
@@ -23,7 +33,8 @@ public class ModuleIC2 {
 		AdapterManager.addPeripheralAdapter(new AdapterEnergyStorage());
 	}
 
-	public static void appendIC2Info(Map<String, Object> map, ItemStack stack) {
+	@Override
+	public void appendItemInfo(Map<String, Object> map, ItemStack stack) {
 		if (stack != null) {
 			Item item = stack.getItem();
 			if (item instanceof IElectricItem) {
@@ -40,4 +51,7 @@ public class ModuleIC2 {
 			}
 		}
 	}
+
+	@Override
+	public void appendEntityInfo(Map<String, Object> map, Entity entity, Vec3 relativePos) {}
 }

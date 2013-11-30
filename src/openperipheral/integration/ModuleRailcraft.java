@@ -5,17 +5,27 @@ import java.util.Map;
 import mods.railcraft.api.carts.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityMinecart;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.Vec3;
+import openmods.Mods;
 import openperipheral.AdapterManager;
 import openperipheral.adapter.railcraft.AdapterTileSteamTurbine;
+import openperipheral.api.IIntegrationModule;
 
-public class ModuleRailcraft {
+public class ModuleRailcraft implements IIntegrationModule {
 
-	public static void init() {
+	@Override
+	public String getModId() {
+		return Mods.RAILCRAFT;
+	}
+
+	@Override
+	public void init() {
 		AdapterManager.addPeripheralAdapter(new AdapterTileSteamTurbine());
 	}
 
-	public static void entityToMap(Entity entity, Map<String, Object> map, Vec3 relativePos) {
+	@Override
+	public void appendEntityInfo(Map<String, Object> map, Entity entity, Vec3 relativePos) {
 		// Batbox, MFE, and MFSU carts
 		if (entity instanceof IEnergyTransfer) {
 			IEnergyTransfer cart = (IEnergyTransfer)entity;
@@ -69,4 +79,7 @@ public class ModuleRailcraft {
 			map.put("destination", cart.getDestination());
 		}
 	}
+
+	@Override
+	public void appendItemInfo(Map<String, Object> map, ItemStack itemstack) {}
 }

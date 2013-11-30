@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import openmods.Log;
 import openperipheral.api.IPeripheralAdapter;
 import openperipheral.api.LuaMethod;
 import openperipheral.peripheral.MethodDeclaration;
@@ -23,7 +24,7 @@ public class AdapterManager {
 	public static void addPeripheralAdapter(IPeripheralAdapter adapter) {
 
 		Class<?> targetClass = adapter.getTargetClass();
-		System.out.println("Enabling adapter " + adapter);
+		Log.info("Enabling adapter %s ", adapter);
 		try {
 			if (targetClass != null) {
 

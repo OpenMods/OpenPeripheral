@@ -4,10 +4,7 @@ import java.util.Map;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Vec3;
-import openperipheral.integration.ModuleForestry;
-import openperipheral.integration.ModuleMystcraft;
-import openperipheral.integration.ModuleRailcraft;
-import openperipheral.integration.ModuleVanilla;
+import openperipheral.IntegrationModuleRegistry;
 
 import com.google.common.collect.Maps;
 
@@ -28,11 +25,7 @@ public class EntityUtils {
 			map.put("ridingEntity", entity.ridingEntity.entityId);
 		}
 
-		// Add mod entity mappings
-		ModuleVanilla.entityToMap(entity, map, relativePos);
-		ModuleForestry.entityToMap(entity, map, relativePos);
-		ModuleMystcraft.entityToMap(entity, map, relativePos);
-		ModuleRailcraft.entityToMap(entity, map, relativePos);
+		IntegrationModuleRegistry.appendEntityInfo(map, entity, relativePos);
 
 		return map;
 	}

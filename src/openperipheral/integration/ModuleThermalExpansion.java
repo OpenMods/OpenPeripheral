@@ -2,16 +2,27 @@ package openperipheral.integration;
 
 import java.util.Map;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Vec3;
+import openmods.Mods;
 import openperipheral.AdapterManager;
 import openperipheral.adapter.thermalexpansion.*;
+import openperipheral.api.IIntegrationModule;
 import cofh.api.energy.IEnergyContainerItem;
 import cofh.api.item.IInventoryContainerItem;
 import cofh.api.item.ISecureItem;
 
-public class ModuleThermalExpansion {
-	public static void init() {
+public class ModuleThermalExpansion implements IIntegrationModule {
+
+	@Override
+	public String getModId() {
+		return Mods.THERMALEXPANSION;
+	}
+
+	@Override
+	public void init() {
 		AdapterManager.addPeripheralAdapter(new AdapterEnergyHandler());
 		AdapterManager.addPeripheralAdapter(new AdapterEnderAttuned());
 		AdapterManager.addPeripheralAdapter(new AdapterEnergyInfo());
@@ -19,7 +30,8 @@ public class ModuleThermalExpansion {
 		AdapterManager.addPeripheralAdapter(new AdapterSecureTile());
 	}
 
-	public static void appendTEInfo(Map<String, Object> map, ItemStack stack) {
+	@Override
+	public void appendItemInfo(Map<String, Object> map, ItemStack stack) {
 		if (stack != null) {
 			Item item = stack.getItem();
 			if (item instanceof IEnergyContainerItem) {
@@ -38,4 +50,8 @@ public class ModuleThermalExpansion {
 			}
 		}
 	}
+
+	@Override
+	public void appendEntityInfo(Map<String, Object> map, Entity entity, Vec3 relativePos) {}
+
 }

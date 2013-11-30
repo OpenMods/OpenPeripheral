@@ -10,15 +10,25 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Vec3;
+import openmods.Mods;
 import openperipheral.AdapterManager;
 import openperipheral.adapter.mystcraft.AdapterWritingDesk;
+import openperipheral.api.IIntegrationModule;
 
-public class ModuleMystcraft {
-	public static void init() {
+public class ModuleMystcraft implements IIntegrationModule {
+
+	@Override
+	public String getModId() {
+		return Mods.MYSTCRAFT;
+	}
+
+	@Override
+	public void init() {
 		AdapterManager.addPeripheralAdapter(new AdapterWritingDesk());
 	}
 
-	public static void appendMystcraftInfo(Map<String, Object> map, ItemStack stack) {
+	@Override
+	public void appendItemInfo(Map<String, Object> map, ItemStack stack) {
 		if (stack != null) {
 			Item item = stack.getItem();
 			if (item != null) {
@@ -35,7 +45,8 @@ public class ModuleMystcraft {
 		}
 	}
 
-	public static void entityToMap(Entity entity, Map<String, Object> map, Vec3 relativePos) {
+	@Override
+	public void appendEntityInfo(Map<String, Object> map, Entity entity, Vec3 relativePos) {
 		// TODO: Add the linking book entity information
 	}
 

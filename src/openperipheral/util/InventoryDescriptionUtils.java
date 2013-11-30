@@ -2,22 +2,13 @@ package openperipheral.util;
 
 import java.util.Map;
 
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemEnchantedBook;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import openmods.Mods;
-import openperipheral.integration.ModuleForestry;
-import openperipheral.integration.ModuleIC2;
-import openperipheral.integration.ModuleMystcraft;
-import openperipheral.integration.ModuleThermalExpansion;
+import openperipheral.IntegrationModuleRegistry;
 
 import com.google.common.collect.Maps;
-
-import cpw.mods.fml.common.Loader;
 
 public class InventoryDescriptionUtils {
 
@@ -96,42 +87,9 @@ public class InventoryDescriptionUtils {
 			map.put("dmg", itemstack.getItemDamage());
 			map.put("maxSize", itemstack.getMaxStackSize());
 
-			if (Loader.isModLoaded(Mods.MYSTCRAFT)) {
-				ModuleMystcraft.appendMystcraftInfo(map, itemstack);
-			}
-			if (Loader.isModLoaded(Mods.FORESTRY)) {
-				ModuleForestry.appendBeeInfo(map, itemstack);
-			}
-			if (Loader.isModLoaded(Mods.IC2)) {
-				ModuleIC2.appendIC2Info(map, itemstack);
-			}
-			if (Loader.isModLoaded(Mods.THERMALEXPANSION)) {
-				ModuleThermalExpansion.appendTEInfo(map, itemstack);
-			}
-
+			IntegrationModuleRegistry.appendItemInfo(map, itemstack);
 		}
 
 		return map;
 	}
-
-	// TODO use it somewhere
-	public static Map<Integer, Object> getBookEnchantments(ItemStack stack) {
-		Map<Integer, Object> response = Maps.newHashMap();
-		ItemEnchantedBook book = (ItemEnchantedBook)stack.getItem();
-		NBTTagList nbttaglist = book.func_92110_g(stack);
-		int offset = 1;
-		if (nbttaglist != null) {
-			for (int i = 0; i < nbttaglist.tagCount(); ++i) {
-				short short1 = ((NBTTagCompound)nbttaglist.tagAt(i)).getShort("id");
-				short short2 = ((NBTTagCompound)nbttaglist.tagAt(i)).getShort("lvl");
-
-				if (Enchantment.enchantmentsList[short1] != null) {
-					response.put(offset, Enchantment.enchantmentsList[short1].getTranslatedName(short2));
-					offset++;
-				}
-			}
-		}
-		return response;
-	}
-
 }

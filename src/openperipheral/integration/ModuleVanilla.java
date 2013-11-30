@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityCreeper;
@@ -12,17 +13,31 @@ import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.passive.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemEnchantedBook;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.EnumMovingObjectType;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import openperipheral.AdapterManager;
 import openperipheral.adapter.vanilla.*;
+import openperipheral.api.IIntegrationModule;
 import openperipheral.util.InventoryDescriptionUtils;
 import openperipheral.util.ReflectionHelper;
 
-public class ModuleVanilla {
-	public static void init() {
+import com.google.common.collect.Maps;
+
+public class ModuleVanilla implements IIntegrationModule {
+	@Override
+	public String getModId() {
+		return "";
+	}
+
+	@Override
+	public void init() {
 		AdapterManager.addPeripheralAdapter(new AdapterInventory());
 		AdapterManager.addPeripheralAdapter(new AdapterNoteBlock());
 		AdapterManager.addPeripheralAdapter(new AdapterComparator());
@@ -34,7 +49,8 @@ public class ModuleVanilla {
 		AdapterManager.addPeripheralAdapter(new AdapterSign());
 	}
 
-	public static void entityToMap(Entity entity, Map<String, Object> map, Vec3 relativePos) {
+	@Override
+	public void appendEntityInfo(Map<String, Object> map, Entity entity, Vec3 relativePos) {
 		if (entity instanceof IInventory) {
 			map.put("inventory", InventoryDescriptionUtils.invToMap((IInventory)entity));
 		}
@@ -193,5 +209,41 @@ public class ModuleVanilla {
 			map.put("foodLevel", player.getFoodStats().getFoodLevel());
 			map.put("isCreativeMode", player.capabilities.isCreativeMode);
 		}
+	}
+
+	@Override
+	public void appendItemInfo(Map<String, Object> map, ItemStack itemstack) {
+		Map<Integer, Object> ench = getBookEnchantments(itemstack);
+		if (ench != null) map.put("ench", ench);
+	}
+
+	private static Map<Integer, Object> getBookEnchantments(ItemStack stack) {
+		Item item = stack.getItem();
+
+		if (item instanceof ItemEnchantedBook) {
+			NBTTagList ench = Item.enchantedBook.func_92110_g(stack);
+			return createEnchantmentList(ench);
+		} else {
+			NBTTagList ench = stack.getEnchantmentTagList();
+			return createEnchantmentList(ench);
+		}
+	}
+
+	private static Map<Integer, Object> createEnchantmentList(NBTTagList ench) {
+		Map<Integer, Object> response = Maps.newHashMap();
+		int offset = 1;
+		if (ench != null) {
+			for (int i = 0; i < ench.tagCount(); ++i) {
+				NBTTagCompound enchTag = (NBTTagCompound)ench.tagAt(i);
+				short id = enchTag.getShort("id");
+				short lvl = enchTag.getShort("lvl");
+
+				if (Enchantment.enchantmentsList[id] != null) {
+					response.put(offset, Enchantment.enchantmentsList[id].getTranslatedName(lvl));
+					offset++;
+				}
+			}
+		}
+		return response;
 	}
 }

@@ -7,7 +7,6 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.Configuration;
 import openmods.Log;
-import openmods.Mods;
 import openmods.api.IOpenMod;
 import openperipheral.adapter.AdapterObject;
 import openperipheral.adapter.vanilla.AdapterFluidHandler;
@@ -16,7 +15,6 @@ import openperipheral.integration.*;
 import openperipheral.peripheral.PeripheralHandler;
 import openperipheral.util.BasicMount;
 import openperipheral.util.ReflectionHelper;
-import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -60,50 +58,20 @@ public class OpenPeripheral implements IOpenMod {
 		AdapterManager.addPeripheralAdapter(new AdapterObject());
 		AdapterManager.addPeripheralAdapter(new AdapterFluidHandler());
 
-		ModuleVanilla.init();
+		IntegrationModuleRegistry.registerModule(new ModuleAppEng());
+		IntegrationModuleRegistry.registerModule(new ModuleIC2());
+		IntegrationModuleRegistry.registerModule(new ModuleEnderStorage());
+		IntegrationModuleRegistry.registerModule(new ModuleBuildCraft());
+		IntegrationModuleRegistry.registerModule(new ModuleForestry());
+		IntegrationModuleRegistry.registerModule(new ModuleMystcraft());
+		IntegrationModuleRegistry.registerModule(new ModuleProjectRed());
+		IntegrationModuleRegistry.registerModule(new ModuleRailcraft());
+		IntegrationModuleRegistry.registerModule(new ModuleThaumcraft());
+		IntegrationModuleRegistry.registerModule(new ModuleThermalExpansion());
+		IntegrationModuleRegistry.registerModule(new ModuleSgCraft());
 
-		if (Loader.isModLoaded(Mods.APPLIEDENERGISTICS)) {
-			ModuleAppEng.init();
-		}
-
-		if (Loader.isModLoaded(Mods.IC2)) {
-			ModuleIC2.init();
-		}
-
-		if (Loader.isModLoaded(Mods.ENDERSTORAGE)) {
-			ModuleEnderStorage.init();
-		}
-
-		if (Loader.isModLoaded(Mods.BUILDCRAFT)) {
-			ModuleBuildCraft.init();
-		}
-
-		if (Loader.isModLoaded(Mods.FORESTRY)) {
-			ModuleForestry.init();
-		}
-
-		if (Loader.isModLoaded(Mods.MYSTCRAFT)) {
-			ModuleMystcraft.init();
-		}
-
-		if (Loader.isModLoaded(Mods.PROJECTRED_TRANSMISSION)) {
-			ModuleProjectRed.init();
-		}
-		if (Loader.isModLoaded(Mods.RAILCRAFT)) {
-			ModuleRailcraft.init();
-		}
-
-		if (Loader.isModLoaded(Mods.THAUMCRAFT)) {
-			ModuleThaumcraft.init();
-		}
-
-		if (Loader.isModLoaded(Mods.THERMALEXPANSION)) {
-			ModuleThermalExpansion.init();
-		}
-
-		if (Loader.isModLoaded(Mods.SGCRAFT)) {
-			ModuleSgCraft.init();
-		}
+		IntegrationModuleRegistry.selectLoadedModules();
+		IntegrationModuleRegistry.initAllModules();
 
 		TickRegistry.registerTickHandler(new TickHandler(), Side.SERVER);
 
