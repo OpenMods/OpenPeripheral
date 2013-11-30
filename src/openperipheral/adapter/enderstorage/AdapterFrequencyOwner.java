@@ -61,11 +61,10 @@ public class AdapterFrequencyOwner implements IPeripheralAdapter {
 		setFreq(frequencyOwner, frequency);
 	}
 
-	private int getFreq(TileEntity frequencyOwner) {
+	private static int getFreq(TileEntity frequencyOwner) {
 		NBTTagCompound nbt = new NBTTagCompound();
 		frequencyOwner.writeToNBT(nbt);
-		if (nbt.hasKey("freq")) { return nbt.getInteger("freq"); }
-		return 0;
+		return nbt.getInteger("freq");
 	}
 
 	private void setFreq(TileEntity frequencyOwner, int frequency) throws Exception {

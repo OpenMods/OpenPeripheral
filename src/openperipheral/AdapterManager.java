@@ -1,17 +1,24 @@
 package openperipheral;
 
 import java.lang.reflect.Method;
-import java.util.*;
-import java.util.Map.Entry;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import openperipheral.api.IPeripheralAdapter;
 import openperipheral.api.LuaMethod;
 import openperipheral.peripheral.MethodDeclaration;
+
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
+
 import dan200.computer.api.IComputerAccess;
 
 public class AdapterManager {
 
-	public static HashMap<Class<?>, ArrayList<MethodDeclaration>> classList = new HashMap<Class<?>, ArrayList<MethodDeclaration>>();
+	private static Multimap<Class<?>, MethodDeclaration> classList = HashMultimap.create();
 
 	public static void addPeripheralAdapter(IPeripheralAdapter adapter) {
 
@@ -31,10 +38,6 @@ public class AdapterManager {
 						if (parameters.length < 2 || !parameters[1].isAssignableFrom(targetClass)) { throw new Exception(String.format("Parameter 2 of %s must be a %s", method.getName(), targetClass.getSimpleName())); }
 						if (annotation.args().length < parameters.length - 2) { throw new Exception(String.format("Not all of your method arguments are annotated for method %s/%s", adapter.getClass().getCanonicalName(), method.getName())); }
 
-						if (!classList.containsKey(targetClass)) {
-							classList.put(targetClass, new ArrayList<MethodDeclaration>());
-						}
-
 						classList.get(targetClass).add(new MethodDeclaration(annotation, method, adapter));
 					}
 				}
@@ -45,10 +48,8 @@ public class AdapterManager {
 	}
 
 	public static MethodDeclaration getMethodByName(String name) {
-		for (ArrayList<MethodDeclaration> list : classList.values()) {
-			for (MethodDeclaration dec : list) {
-				if (dec.getLuaName().equals(name)) { return dec; }
-			}
+		for (MethodDeclaration dec : classList.values()) {
+			if (dec.getLuaName().equals(name)) return dec;
 		}
 		return null;
 	}
@@ -57,26 +58,22 @@ public class AdapterManager {
 		return classList.keySet();
 	}
 
-	public static ArrayList<MethodDeclaration> getMethodsForClass(Class<?> klazz) {
+	public static List<MethodDeclaration> getMethodsForClass(Class<?> klazz) {
+		Map<String, MethodDeclaration> methods = Maps.newHashMap();
 
-		HashMap<String, MethodDeclaration> methods = new HashMap<String, MethodDeclaration>();
-
-		for (Entry<Class<?>, ArrayList<MethodDeclaration>> entry : classList.entrySet()) {
-			if (entry.getKey().isAssignableFrom(klazz)) {
-				for (MethodDeclaration method : entry.getValue()) {
+		for (Class<?> cls : classList.keySet()) {
+			if (cls.isAssignableFrom(klazz)) {
+				for (MethodDeclaration method : classList.get(cls)) {
 					if (!methods.containsKey(method.getLuaName())) {
 						methods.put(method.getLuaName(), method);
 					}
 				}
 			}
 		}
-
-		Collection<MethodDeclaration> collection = methods.values();
-
-		return new ArrayList<MethodDeclaration>(collection);
+		return ImmutableList.copyOf(methods.values());
 	}
 
-	public static ArrayList<MethodDeclaration> getMethodsForTarget(Object target) {
+	public static List<MethodDeclaration> getMethodsForTarget(Object target) {
 		return getMethodsForClass(target.getClass());
 	}
 }

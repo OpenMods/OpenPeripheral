@@ -18,7 +18,7 @@ public class ModuleMystcraft {
 		AdapterManager.addPeripheralAdapter(new AdapterWritingDesk());
 	}
 
-	public static void appendMystcraftInfo(Map map, ItemStack stack) {
+	public static void appendMystcraftInfo(Map<String, Object> map, ItemStack stack) {
 		if (stack != null) {
 			Item item = stack.getItem();
 			if (item != null) {
@@ -35,11 +35,11 @@ public class ModuleMystcraft {
 		}
 	}
 
-	public static void entityToMap(Entity entity, HashMap map, Vec3 relativePos) {
+	public static void entityToMap(Entity entity, Map<String, Object> map, Vec3 relativePos) {
 		// TODO: Add the linking book entity information
 	}
 
-	private static void addCoordinates(Map map, ItemStack stack) {
+	private static void addCoordinates(Map<String, Object> map, ItemStack stack) {
 		NBTTagCompound tag = stack.getTagCompound();
 		HashMap<Integer, Integer> pos = new HashMap<Integer, Integer>();
 		map.put("spawn", pos);
@@ -49,19 +49,21 @@ public class ModuleMystcraft {
 		map.put("spawnYaw", tag.getFloat("SpawnYaw"));
 	}
 
-	private static void addLinkingBookFlags(Map map, ItemStack stack) {
+	private static void addLinkingBookFlags(Map<String, Object> map, ItemStack stack) {
 		Map<String, Boolean> flags = new HashMap<String, Boolean>();
 		map.put("flags", flags);
 		NBTTagCompound tag = stack.getTagCompound();
 		if (tag.hasKey("Flags")) {
-			for (NBTBase s : (Collection<NBTBase>)tag.getCompoundTag("Flags").getTags()) {
+			@SuppressWarnings("unchecked")
+			Collection<NBTBase> tags = tag.getCompoundTag("Flags").getTags();
+			for (NBTBase s : tags) {
 				flags.put(s.getName(), Boolean.TRUE);
 			}
 
 		}
 	}
 
-	private static void addStringFromNBT(Map map, ItemStack stack, String outputName, String nbtTagName) {
+	private static void addStringFromNBT(Map<String, Object> map, ItemStack stack, String outputName, String nbtTagName) {
 		NBTTagCompound tag = stack.getTagCompound();
 		if (tag.hasKey(nbtTagName)) {
 			map.put(outputName, tag.getString(nbtTagName));

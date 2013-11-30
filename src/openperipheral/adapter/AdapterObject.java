@@ -1,6 +1,6 @@
 package openperipheral.adapter;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import openperipheral.AdapterManager;
@@ -20,23 +20,13 @@ public class AdapterObject implements IPeripheralAdapter {
 
 	@LuaMethod(returnType = LuaType.STRING, description = "List all the methods available")
 	public String listMethods(IComputerAccess computer, Object object) {
-		return PeripheralUtils.listMethods(getUniqueMethods(object));
+		List<MethodDeclaration> methods = AdapterManager.getMethodsForTarget(object);
+		return PeripheralUtils.listMethods(methods);
 	}
 
 	@LuaMethod(returnType = LuaType.TABLE, description = "Get a complete table of information about all available methods")
 	public Map<?, ?> getAdvancedMethodsData(IComputerAccess computer, Object object) {
-		return PeripheralUtils.documentMethods(getUniqueMethods(object));
+		List<MethodDeclaration> methods = AdapterManager.getMethodsForTarget(object);
+		return PeripheralUtils.documentMethods(methods);
 	}
-
-	private ArrayList<MethodDeclaration> getUniqueMethods(Object object) {
-		ArrayList<MethodDeclaration> methods = AdapterManager.getMethodsForTarget(object);
-		ArrayList<MethodDeclaration> unique = new ArrayList<MethodDeclaration>();
-		for (MethodDeclaration method : methods) {
-			if (!unique.contains(method)) {
-				unique.add(method);
-			}
-		}
-		return unique;
-	}
-
 }

@@ -19,7 +19,7 @@ public class ModuleThermalExpansion {
 		AdapterManager.addPeripheralAdapter(new AdapterSecureTile());
 	}
 
-	public static void appendTEInfo(Map map, ItemStack stack) {
+	public static void appendTEInfo(Map<String, Object> map, ItemStack stack) {
 		if (stack != null) {
 			Item item = stack.getItem();
 			if (item instanceof IEnergyContainerItem) {

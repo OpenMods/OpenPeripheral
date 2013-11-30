@@ -23,8 +23,7 @@ public class ModuleIC2 {
 		AdapterManager.addPeripheralAdapter(new AdapterEnergyStorage());
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static void appendIC2Info(Map map, ItemStack stack) {
+	public static void appendIC2Info(Map<String, Object> map, ItemStack stack) {
 		if (stack != null) {
 			Item item = stack.getItem();
 			if (item instanceof IElectricItem) {

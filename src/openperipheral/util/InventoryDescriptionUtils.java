@@ -1,6 +1,5 @@
 package openperipheral.util;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraft.enchantment.Enchantment;
@@ -15,6 +14,9 @@ import openperipheral.integration.ModuleForestry;
 import openperipheral.integration.ModuleIC2;
 import openperipheral.integration.ModuleMystcraft;
 import openperipheral.integration.ModuleThermalExpansion;
+
+import com.google.common.collect.Maps;
+
 import cpw.mods.fml.common.Loader;
 
 public class InventoryDescriptionUtils {
@@ -55,9 +57,8 @@ public class InventoryDescriptionUtils {
 		return rawName.trim();
 	}
 
-	@SuppressWarnings("unchecked")
-	public static Map<Object, Object> invToMap(IInventory inventory) {
-		HashMap<Object, Object> map = new HashMap<Object, Object>();
+	public static Map<Integer, Map<String, Object>> invToMap(IInventory inventory) {
+		Map<Integer, Map<String, Object>> map = Maps.newHashMap();
 		for (int i = 0; i < inventory.getSizeInventory(); i++) {
 			map.put((i + 1), itemstackToMap(inventory.getStackInSlot(i)));
 		}
@@ -67,7 +68,7 @@ public class InventoryDescriptionUtils {
 				TileEntity barrel = (TileEntity)inventory;
 				NBTTagCompound compound = new NBTTagCompound();
 				barrel.writeToNBT(compound);
-				HashMap<Object, Object> firstStack = (HashMap<Object, Object>)map.get(1);
+				Map<String, Object> firstStack = map.get(1);
 				firstStack.put("size", compound.getInteger("item_count"));
 				firstStack.put("maxStack", compound.getInteger("upgrade") == 1? 65536 : 4096);
 			} catch (Exception e) {}
@@ -75,9 +76,8 @@ public class InventoryDescriptionUtils {
 		return map;
 	}
 
-	public static Map<Object, Object> itemstackToMap(ItemStack itemstack) {
-
-		HashMap<Object, Object> map = new HashMap<Object, Object>();
+	public static Map<String, Object> itemstackToMap(ItemStack itemstack) {
+		Map<String, Object> map = Maps.newHashMap();
 
 		if (itemstack == null) {
 
@@ -114,8 +114,9 @@ public class InventoryDescriptionUtils {
 		return map;
 	}
 
-	protected static HashMap<Object, Object> getBookEnchantments(ItemStack stack) {
-		HashMap<Object, Object> response = new HashMap<Object, Object>();
+	// TODO use it somewhere
+	public static Map<Integer, Object> getBookEnchantments(ItemStack stack) {
+		Map<Integer, Object> response = Maps.newHashMap();
 		ItemEnchantedBook book = (ItemEnchantedBook)stack.getItem();
 		NBTTagList nbttaglist = book.func_92110_g(stack);
 		int offset = 1;

@@ -1,6 +1,6 @@
 package openperipheral.integration;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Vec3;
@@ -14,7 +14,7 @@ public class ModuleThaumcraft {
 		AdapterManager.addPeripheralAdapter(new AdapterNode());
 	}
 
-	public static void entityToMap(Entity entity, HashMap map, Vec3 relativePos) {
+	public static void entityToMap(Entity entity, Map<Object, Object> map, Vec3 relativePos) {
 		// TODO: Add whisps and that zombie thing
 	}
 }

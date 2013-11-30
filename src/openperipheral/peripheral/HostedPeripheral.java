@@ -1,8 +1,7 @@
 package openperipheral.peripheral;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.concurrent.Callable;
+import java.util.List;
+import java.util.Map;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -17,6 +16,7 @@ import openperipheral.api.IMultiReturn;
 import openperipheral.util.PeripheralUtils;
 
 import com.google.common.base.Strings;
+import com.google.common.collect.Maps;
 
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IHostedPeripheral;
@@ -27,13 +27,13 @@ public class HostedPeripheral implements IHostedPeripheral {
 	public static final String EVENT_SUCCESS = "openperipheral_success";
 	public static final String EVENT_ERROR = "openperipheral_error";
 
-	protected ArrayList<MethodDeclaration> methods;
+	protected List<MethodDeclaration> methods;
 	protected String[] methodNames;
 	protected String type;
 	protected Object targetObject;
 	protected World worldObj;
 
-	private static HashMap<Integer, Integer> mountMap = new HashMap<Integer, Integer>();
+	private static Map<Integer, Integer> mountMap = Maps.newHashMap();
 
 	public HostedPeripheral(Object targetObject, World worldObj) {
 		this.targetObject = targetObject;
@@ -46,7 +46,6 @@ public class HostedPeripheral implements IHostedPeripheral {
 	}
 
 	public void initialize() {
-
 		methods = AdapterManager.getMethodsForTarget(targetObject);
 
 		methodNames = new String[methods.size()];
@@ -96,21 +95,17 @@ public class HostedPeripheral implements IHostedPeripheral {
 
 		// if it's on the tick, lets add a callback to execute on the tick
 		if (method.onTick()) {
-
-			TickHandler.addTickCallback(worldObj, new Callable<Object>() {
+			TickHandler.addTickCallback(worldObj, new Runnable() {
 				@Override
-				public Object call() throws Exception {
+				public void run() {
 					// on the tick, we execute the method, format the response,
 					// then stick it into an event
 					try {
-
 						Object[] response = formatResponse(method.getMethod().invoke(target, parameters));
 						computer.queueEvent(EVENT_SUCCESS, response);
-
 					} catch (Throwable e) {
 						computer.queueEvent(EVENT_ERROR, new Object[] { getMessageForThrowable(e) });
 					}
-					return null;
 				}
 			});
 
@@ -157,7 +152,7 @@ public class HostedPeripheral implements IHostedPeripheral {
 
 		if (Strings.isNullOrEmpty(firstMessage) && Strings.isNullOrEmpty(secondMessage)) {
 			e.printStackTrace();
-			return "Unknown error. Please contact Mikee on esper.net IRC #OpenMods";
+			return "Unknown error. Please contact devs on esper.net IRC #OpenMods";
 		} else if (!Strings.isNullOrEmpty(firstMessage) && !Strings.isNullOrEmpty(secondMessage)) {
 			return String.format("%s, caused by %s", firstMessage, secondMessage);
 		} else {

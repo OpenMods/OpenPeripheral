@@ -1,9 +1,8 @@
 package openperipheral.util;
 
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import net.minecraft.block.Block;
 import net.minecraft.inventory.IInventory;
@@ -12,6 +11,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import openperipheral.api.Arg;
 import openperipheral.peripheral.MethodDeclaration;
+
+import com.google.common.base.Joiner;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 public class PeripheralUtils {
 
@@ -61,40 +64,36 @@ public class PeripheralUtils {
 	}
 
 	public static String listMethods(List<MethodDeclaration> methods) {
-		StringBuilder builder = new StringBuilder();
-		Iterator<MethodDeclaration> methodsIterator = methods.iterator();
-		while (methodsIterator.hasNext()) {
-			MethodDeclaration method = methodsIterator.next();
-			builder.append(PeripheralUtils.documentMethod(method));
-			if (!methodsIterator.hasNext()) {
-				break;
-			}
-			builder.append(" ");
-		}
+		Set<String> methodsInfo = Sets.newIdentityHashSet();
+		for (MethodDeclaration method : methods)
+			methodsInfo.add(documentMethod(method));
 
-		return builder.toString();
+		return Joiner.on(" ").join(methodsInfo);
 	}
 
-	public static Map<Object, Object> documentMethods(List<MethodDeclaration> methods) {
-		Map<Object, Object> map = new HashMap<Object, Object>();
+	public static Map<Integer, Map<String, Object>> documentMethods(List<MethodDeclaration> methods) {
+		Map<Integer, Map<String, Object>> result = Maps.newHashMap();
 		int i = 1;
 		for (MethodDeclaration method : methods) {
-			HashMap<Object, Object> methodMap = new HashMap<Object, Object>();
-			HashMap<Object, Object> args = new HashMap<Object, Object>();
-			map.put(i++, methodMap);
-			methodMap.put("name", method.getLuaName());
-			methodMap.put("description", method.getDescription());
-			methodMap.put("returnType", method.getReturnType().toString());
-			methodMap.put("args", args);
+			Map<Integer, Map<?, ?>> argsInfo = Maps.newHashMap();
+
 			int j = 1;
 			for (Arg arg : method.getRequiredParameters()) {
-				HashMap<Object, Object> argMap = new HashMap<Object, Object>();
+				Map<String, Object> argMap = Maps.newHashMap();
 				argMap.put("type", arg.type().toString());
 				argMap.put("name", arg.name());
 				argMap.put("description", arg.description());
-				args.put(j++, argMap);
+				argsInfo.put(j++, argMap);
 			}
+
+			Map<String, Object> methodInfo = Maps.newHashMap();
+			methodInfo.put("name", method.getLuaName());
+			methodInfo.put("description", method.getDescription());
+			methodInfo.put("returnType", method.getReturnType().toString());
+			methodInfo.put("args", argsInfo);
+
+			result.put(i++, methodInfo);
 		}
-		return map;
+		return result;
 	}
 }

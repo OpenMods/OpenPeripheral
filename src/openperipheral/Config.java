@@ -2,10 +2,9 @@ package openperipheral;
 
 import java.io.File;
 
-import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
-import cpw.mods.fml.relauncher.FMLLaunchHandler;
+import openmods.OpenMods;
 
 public class Config {
 
@@ -16,12 +15,7 @@ public class Config {
 		String folderLoc = prop.getString();
 
 		if (folderLoc.equals(localLuaFolder)) {
-			File baseDirectory = null;
-			if (FMLLaunchHandler.side().isClient()) {
-				baseDirectory = Minecraft.getMinecraft().mcDataDir;
-			} else {
-				baseDirectory = new File(".");
-			}
+			File baseDirectory = OpenMods.proxy.getMinecraftDir();
 			File openPeripheralFolder = new File(baseDirectory, "openperipheral/");
 			File luaFolder = new File(openPeripheralFolder, "lua/");
 			localLuaFolder = luaFolder.getAbsolutePath();

@@ -30,7 +30,7 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 		return CLAZZ;
 	}
 
-	private IGridInterface getGrid(Object tile) {
+	private static IGridInterface getGrid(Object tile) {
 		return new CallWrapper<IGridInterface>().call(tile, "getGrid");
 	}
 

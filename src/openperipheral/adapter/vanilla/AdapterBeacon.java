@@ -32,7 +32,7 @@ public class AdapterBeacon implements IPeripheralAdapter {
 		return beacon.getLevels();
 	}
 
-	private String getEffectName(int effectId) {
+	private static String getEffectName(int effectId) {
 		if (effectId != 0) {
 			PotionEffect effect = new PotionEffect(effectId, 180, 0, true);
 			return effect.getEffectName();

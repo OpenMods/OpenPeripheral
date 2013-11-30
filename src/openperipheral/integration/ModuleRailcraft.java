@@ -1,6 +1,6 @@
 package openperipheral.integration;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import mods.railcraft.api.carts.*;
 import net.minecraft.entity.Entity;
@@ -15,7 +15,7 @@ public class ModuleRailcraft {
 		AdapterManager.addPeripheralAdapter(new AdapterTileSteamTurbine());
 	}
 
-	public static void entityToMap(Entity entity, HashMap map, Vec3 relativePos) {
+	public static void entityToMap(Entity entity, Map<String, Object> map, Vec3 relativePos) {
 		// Batbox, MFE, and MFSU carts
 		if (entity instanceof IEnergyTransfer) {
 			IEnergyTransfer cart = (IEnergyTransfer)entity;

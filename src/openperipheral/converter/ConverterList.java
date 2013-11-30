@@ -1,10 +1,12 @@
 package openperipheral.converter;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import openperipheral.TypeConversionRegistry;
 import openperipheral.api.ITypeConverter;
+
+import com.google.common.collect.Maps;
 
 public class ConverterList implements ITypeConverter {
 
@@ -16,14 +18,13 @@ public class ConverterList implements ITypeConverter {
 	@Override
 	public Object toLua(Object obj) {
 		if (obj instanceof List) {
-			HashMap<Object, Object> ret = new HashMap<Object, Object>();
-			int index = 1;
+			Map<Integer, Object> ret = Maps.newHashMap();
 
 			@SuppressWarnings("unchecked")
 			List<Object> objList = (List<Object>)obj;
 
 			for (int i = 0; i < objList.size(); i++) {
-				ret.put(index++, TypeConversionRegistry.toLua(objList.get(i)));
+				ret.put(i + 1, TypeConversionRegistry.toLua(objList.get(i)));
 			}
 			return ret;
 		}

@@ -1,6 +1,5 @@
 package openperipheral.util;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraft.entity.Entity;
@@ -10,25 +9,15 @@ import openperipheral.integration.ModuleMystcraft;
 import openperipheral.integration.ModuleRailcraft;
 import openperipheral.integration.ModuleVanilla;
 
+import com.google.common.collect.Maps;
+
 public class EntityUtils {
 
-	public static Map<Object, Object> entityToMap(Entity entity, Vec3 relativePos) {
+	public static Map<String, Object> entityToMap(Entity entity, Vec3 relativePos) {
 
-		HashMap<Object, Object> map = new HashMap<Object, Object>();
-		HashMap<Object, Object> position = new HashMap<Object, Object>();
+		Map<String, Object> map = Maps.newHashMap();
 
-		map.put("position", position);
-
-		if (relativePos != null) {
-			position.put("x", entity.posX - relativePos.xCoord);
-			position.put("y", entity.posY - relativePos.yCoord);
-			position.put("z", entity.posZ - relativePos.zCoord);
-		} else {
-			position.put("x", entity.posX);
-			position.put("y", entity.posY);
-			position.put("z", entity.posZ);
-		}
-
+		addPositionInfo(map, entity, relativePos);
 		map.put("type", entity.getEntityName());
 
 		if (entity.riddenByEntity != null) {
@@ -46,6 +35,21 @@ public class EntityUtils {
 		ModuleRailcraft.entityToMap(entity, map, relativePos);
 
 		return map;
+	}
+
+	private static void addPositionInfo(Map<String, Object> map, Entity entity, Vec3 relativePos) {
+		Map<Object, Object> position = Maps.newHashMap();
+
+		if (relativePos != null) {
+			position.put("x", entity.posX - relativePos.xCoord);
+			position.put("y", entity.posY - relativePos.yCoord);
+			position.put("z", entity.posZ - relativePos.zCoord);
+		} else {
+			position.put("x", entity.posX);
+			position.put("y", entity.posY);
+			position.put("z", entity.posZ);
+		}
+		map.put("position", position);
 	}
 
 }

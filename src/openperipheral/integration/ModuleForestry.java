@@ -1,6 +1,5 @@
 package openperipheral.integration;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraft.entity.Entity;
@@ -18,13 +17,13 @@ public class ModuleForestry {
 		TypeConversionRegistry.registerTypeConverter(new ConverterIIndividual());
 	}
 
-	public static void entityToMap(Entity entity, HashMap map, Vec3 relativePos) {
+	public static void entityToMap(Entity entity, Map<String, Object> map, Vec3 relativePos) {
 		// TODO: Add butterfly information
 		// forestry.api.lepidopterology.IEntityButterfly
 	}
 
 	@SuppressWarnings("rawtypes")
-	public static void appendBeeInfo(HashMap<Object, Object> map, ItemStack itemstack) {
+	public static void appendBeeInfo(Map<String, Object> map, ItemStack itemstack) {
 		Map beeMap = (Map)TypeConversionRegistry.toLua(AlleleManager.alleleRegistry.getIndividual(itemstack));
 		if (beeMap != null) {
 			map.put("beeInfo", beeMap);

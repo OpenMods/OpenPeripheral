@@ -34,7 +34,7 @@ public class ModuleVanilla {
 		AdapterManager.addPeripheralAdapter(new AdapterSign());
 	}
 
-	public static void entityToMap(Entity entity, HashMap<Object, Object> map, Vec3 relativePos) {
+	public static void entityToMap(Entity entity, Map<String, Object> map, Vec3 relativePos) {
 		if (entity instanceof IInventory) {
 			map.put("inventory", InventoryDescriptionUtils.invToMap((IInventory)entity));
 		}
