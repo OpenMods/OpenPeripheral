@@ -12,6 +12,7 @@ import openperipheral.adapter.projectred.AdapterInsulatedRedwirePart;
 import openperipheral.api.IIntegrationModule;
 
 public class ModuleProjectRed implements IIntegrationModule {
+
 	@Override
 	public String getModId() {
 		return Mods.PROJECTRED_TRANSMISSION;
