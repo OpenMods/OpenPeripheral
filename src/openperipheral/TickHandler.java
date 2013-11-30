@@ -36,7 +36,7 @@ public class TickHandler implements ITickHandler {
 
 	@Override
 	public String getLabel() {
-		return "OpenPeripheral";
+		return "OpenPeripheralCore";
 	}
 
 	@Override

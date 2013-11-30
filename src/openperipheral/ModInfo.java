@@ -1,8 +1,8 @@
 package openperipheral;
 
 public class ModInfo {
-	public static final String ID = "OpenPeripheral";
-	public static final String NAME = "OpenPeripheral";
+	public static final String ID = "OpenPeripheralCore";
+	public static final String NAME = "OpenPeripheralCore";
 	public static final String VERSION = "@VERSION@";
 	public static final String PROXY_SERVER = "openperipheral.core.CommonProxy";
 	public static final String PROXY_CLIENT = "openperipheral.core.client.ClientProxy";

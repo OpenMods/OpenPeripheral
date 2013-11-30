@@ -13,7 +13,6 @@ import openperipheral.adapter.vanilla.AdapterFluidHandler;
 import openperipheral.converter.*;
 import openperipheral.integration.*;
 import openperipheral.peripheral.PeripheralHandler;
-import openperipheral.util.BasicMount;
 import openperipheral.util.ReflectionHelper;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Instance;
@@ -27,14 +26,12 @@ import dan200.computer.api.ComputerCraftAPI;
 
 @Mod(modid = ModInfo.ID, name = ModInfo.NAME, version = ModInfo.VERSION, dependencies = ModInfo.DEPENDENCIES)
 @NetworkMod(serverSideRequired = true, clientSideRequired = false, channels = { ModInfo.ID })
-public class OpenPeripheral implements IOpenMod {
+public class OpenPeripheralCore implements IOpenMod {
 
 	@Instance(value = ModInfo.ID)
-	public static OpenPeripheral instance;
+	public static OpenPeripheralCore instance;
 
-	public static BasicMount mount = new BasicMount();
-
-	public static PeripheralHandler peripheralHandler = new PeripheralHandler();
+	public static final PeripheralHandler peripheralHandler = new PeripheralHandler();
 
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent evt) {

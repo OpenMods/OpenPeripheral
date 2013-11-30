@@ -7,12 +7,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import openperipheral.AdapterManager;
-import openperipheral.OpenPeripheral;
 import openperipheral.TickHandler;
 import openperipheral.TypeConversionRegistry;
 import openperipheral.api.Arg;
 import openperipheral.api.IAttachable;
 import openperipheral.api.IMultiReturn;
+import openperipheral.util.BasicMount;
 import openperipheral.util.PeripheralUtils;
 
 import com.google.common.base.Strings;
@@ -26,7 +26,8 @@ public class HostedPeripheral implements IHostedPeripheral {
 
 	public static final String EVENT_SUCCESS = "openperipheral_success";
 	public static final String EVENT_ERROR = "openperipheral_error";
-
+	public static final BasicMount MOUNT = new BasicMount();
+	
 	protected List<MethodDeclaration> methods;
 	protected String[] methodNames;
 	protected String type;
@@ -217,7 +218,7 @@ public class HostedPeripheral implements IHostedPeripheral {
 		}
 		if (mountCount < 1) {
 			mountCount = 0;
-			computer.mount("openp", OpenPeripheral.mount);
+			computer.mount("openp", HostedPeripheral.MOUNT);
 		}
 		mountMap.put(id, mountCount + 1);
 
