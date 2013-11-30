@@ -1,11 +1,8 @@
 package openperipheral;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import openperipheral.api.IPeripheralAdapter;
 import openperipheral.api.LuaMethod;

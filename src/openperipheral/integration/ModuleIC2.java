@@ -9,13 +9,7 @@ import java.util.Map;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import openperipheral.AdapterManager;
-import openperipheral.adapter.ic2.AdapterEnergyConductor;
-import openperipheral.adapter.ic2.AdapterEnergySink;
-import openperipheral.adapter.ic2.AdapterEnergySource;
-import openperipheral.adapter.ic2.AdapterEnergyStorage;
-import openperipheral.adapter.ic2.AdapterMassFab;
-import openperipheral.adapter.ic2.AdapterReactor;
-import openperipheral.adapter.ic2.AdapterReactorChamber;
+import openperipheral.adapter.ic2.*;
 
 public class ModuleIC2 {
 

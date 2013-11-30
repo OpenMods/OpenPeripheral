@@ -33,7 +33,7 @@ public class NotebookIInventoryWrapper implements IInventory {
 	@Override
 	public ItemStack decrStackSize(int i, int j) {
 		FMLLog.warning("NotebookIInventoryWrapper.decrStackSize(%d,%d)", i, j);
-		ItemStack stack = this.getStackInSlot(i);
+		ItemStack stack = getStackInSlot(i);
 		if (stack != null) {
 			ItemStack returning = stack.copy();
 			stack = stack.copy();
@@ -42,7 +42,7 @@ public class NotebookIInventoryWrapper implements IInventory {
 			if (stack.stackSize <= 0) {
 				stack = null;
 			}
-			this.setInventorySlotContents(i, stack);
+			setInventorySlotContents(i, stack);
 			return returning;
 		}
 		return null;

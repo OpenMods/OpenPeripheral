@@ -5,14 +5,7 @@ import java.util.HashMap;
 import openperipheral.api.ITypeConverter;
 import forestry.api.apiculture.EnumBeeChromosome;
 import forestry.api.apiculture.IBee;
-import forestry.api.genetics.IAlleleArea;
-import forestry.api.genetics.IAlleleBoolean;
-import forestry.api.genetics.IAlleleFlowers;
-import forestry.api.genetics.IAlleleInteger;
-import forestry.api.genetics.IAlleleSpecies;
-import forestry.api.genetics.IAlleleTolerance;
-import forestry.api.genetics.IGenome;
-import forestry.api.genetics.IIndividual;
+import forestry.api.genetics.*;
 
 public class ConverterIIndividual implements ITypeConverter {
 

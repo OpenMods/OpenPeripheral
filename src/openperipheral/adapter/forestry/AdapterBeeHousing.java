@@ -11,11 +11,7 @@ import openperipheral.api.LuaMethod;
 import openperipheral.api.LuaType;
 import dan200.computer.api.IComputerAccess;
 import forestry.api.apiculture.IBeeHousing;
-import forestry.api.genetics.AlleleManager;
-import forestry.api.genetics.IAllele;
-import forestry.api.genetics.IIndividual;
-import forestry.api.genetics.IMutation;
-import forestry.api.genetics.ISpeciesRoot;
+import forestry.api.genetics.*;
 
 public class AdapterBeeHousing implements IPeripheralAdapter {
 

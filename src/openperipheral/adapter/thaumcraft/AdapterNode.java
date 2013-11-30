@@ -11,6 +11,7 @@ import dan200.computer.api.IComputerAccess;
 public class AdapterNode implements IPeripheralAdapter {
 	private static final String NONE = "NONE";
 
+	@Override
 	public Class<?> getTargetClass() {
 		return INode.class;
 	}

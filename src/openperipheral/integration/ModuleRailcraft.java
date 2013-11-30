@@ -2,14 +2,7 @@ package openperipheral.integration;
 
 import java.util.HashMap;
 
-import mods.railcraft.api.carts.CartTools;
-import mods.railcraft.api.carts.IEnergyTransfer;
-import mods.railcraft.api.carts.IExplosiveCart;
-import mods.railcraft.api.carts.ILinkableCart;
-import mods.railcraft.api.carts.ILiquidTransfer;
-import mods.railcraft.api.carts.IPaintedCart;
-import mods.railcraft.api.carts.IRefuelableCart;
-import mods.railcraft.api.carts.IRoutableCart;
+import mods.railcraft.api.carts.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.util.Vec3;
