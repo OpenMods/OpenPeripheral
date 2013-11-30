@@ -3,11 +3,8 @@ package openperipheral;
 import java.util.Map;
 import java.util.Set;
 
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.Configuration;
-import openmods.Log;
-import openmods.api.IOpenMod;
 import openperipheral.adapter.AdapterObject;
 import openperipheral.adapter.vanilla.AdapterFluidHandler;
 import openperipheral.converter.*;
@@ -26,7 +23,7 @@ import dan200.computer.api.ComputerCraftAPI;
 
 @Mod(modid = ModInfo.ID, name = ModInfo.NAME, version = ModInfo.VERSION, dependencies = ModInfo.DEPENDENCIES)
 @NetworkMod(serverSideRequired = true, clientSideRequired = false, channels = { ModInfo.ID })
-public class OpenPeripheralCore implements IOpenMod {
+public class OpenPeripheralCore {
 
 	@Instance(value = ModInfo.ID)
 	public static OpenPeripheralCore instance;
@@ -89,25 +86,4 @@ public class OpenPeripheralCore implements IOpenMod {
 			}
 		}
 	}
-
-	@Override
-	public Log getLog() {
-		return null;
-	}
-
-	@Override
-	public CreativeTabs getCreativeTab() {
-		return null;
-	}
-
-	@Override
-	public String getId() {
-		return null;
-	}
-
-	@Override
-	public int getRenderId() {
-		return 0;
-	}
-
 }
