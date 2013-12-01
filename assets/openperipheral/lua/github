@@ -160,7 +160,7 @@ elseif sCommand == "help" then
   print("There is also another spelling:")
   print("github get <username> <reponame> <branch> <path> <filename>")
   print("github run <username> <reponame> <branch> <path> [arguments]")
-  print("Note: Do not use the '/' (slash) character with this spelling!")
+  print("Note: Do not use the '/' (slash) character with this spelling, except in <path>!")
 else
     printUsage()
     return
