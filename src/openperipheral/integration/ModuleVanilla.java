@@ -223,10 +223,10 @@ public class ModuleVanilla implements IIntegrationModule {
 		if (item instanceof ItemEnchantedBook) {
 			NBTTagList ench = Item.enchantedBook.func_92110_g(stack);
 			return createEnchantmentList(ench);
-		} else {
-			NBTTagList ench = stack.getEnchantmentTagList();
-			return createEnchantmentList(ench);
 		}
+
+		NBTTagList ench = stack.getEnchantmentTagList();
+		return createEnchantmentList(ench);
 	}
 
 	private static Map<Integer, Object> createEnchantmentList(NBTTagList ench) {
