@@ -7,7 +7,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.Configuration;
 import openperipheral.adapter.AdapterObject;
 import openperipheral.adapter.vanilla.AdapterFluidHandler;
-import openperipheral.converter.*;
 import openperipheral.integration.*;
 import openperipheral.peripheral.PeripheralHandler;
 import openperipheral.util.ReflectionHelper;
@@ -41,14 +40,6 @@ public class OpenPeripheralCore {
 
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent evt) {
-		TypeConversionRegistry.registerTypeConverter(new ConverterArray());
-		TypeConversionRegistry.registerTypeConverter(new ConverterList());
-		TypeConversionRegistry.registerTypeConverter(new ConverterDouble());
-		TypeConversionRegistry.registerTypeConverter(new ConverterItemStack());
-		TypeConversionRegistry.registerTypeConverter(new ConverterFluidTankInfo());
-		TypeConversionRegistry.registerTypeConverter(new ConverterForgeDirection());
-		TypeConversionRegistry.registerTypeConverter(new ConverterFluidTankInfo());
-
 		AdapterManager.addPeripheralAdapter(new AdapterObject());
 		AdapterManager.addPeripheralAdapter(new AdapterFluidHandler());
 

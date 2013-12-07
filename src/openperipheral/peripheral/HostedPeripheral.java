@@ -27,7 +27,7 @@ public class HostedPeripheral implements IHostedPeripheral {
 	public static final String EVENT_SUCCESS = "openperipheral_success";
 	public static final String EVENT_ERROR = "openperipheral_error";
 	public static final BasicMount MOUNT = new BasicMount();
-	
+
 	protected List<MethodDeclaration> methods;
 	protected String[] methodNames;
 	protected String type;
