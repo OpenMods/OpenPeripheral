@@ -9,7 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Vec3;
 import openmods.Log;
 import openperipheral.api.IIntegrationModule;
-import openperipheral.integration.ModuleVanilla;
+import openperipheral.integration.vanilla.ModuleVanilla;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
