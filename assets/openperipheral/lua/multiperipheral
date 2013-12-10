@@ -38,28 +38,19 @@ local multiperipheral = {
   
   -- wrap multiple targets by their type
   types = function(self, ...)
-    local checkTypes = { ... }
+    local checkTypes = {}
     local addNames = {}
-    for k, side in pairs(sideNames) do
-      local sideType = peripheral.getType(side)
-      if sideType == "modem" then
-        for k1, remoteName in pairs(peripheral.call(side, "getNamesRemote")) do
-          local remoteType = peripheral.call(side, "getTypeRemote", remoteName)
-          for k2, checkType in pairs(checkTypes) do
-            if remoteType == checkType then
-              table.insert(addNames, remoteName)
-            end
-          end
-        end
-      else
-        for k2, checkType in pairs(checkTypes) do
-          if sideType == checkType then
-            table.insert(addNames, side)
-          end
-        end
+
+    for _,v in ipairs({...}) do
+      checkTypes[v] = true
+    end
+
+    for _,name in pairs(peripheral.getNames()) do
+      if checkTypes[peripheral.getType(name)] then
+        addNames[#addNames+1] = name
       end
     end
-    
+
     return self:wrap(unpack(addNames))
   end,
   
