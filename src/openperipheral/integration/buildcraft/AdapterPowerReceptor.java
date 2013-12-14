@@ -1,13 +1,11 @@
 package openperipheral.integration.buildcraft;
 
 import net.minecraftforge.common.ForgeDirection;
-import openperipheral.api.Arg;
-import openperipheral.api.IPeripheralAdapter;
-import openperipheral.api.LuaMethod;
-import openperipheral.api.LuaType;
+import openperipheral.api.*;
 import buildcraft.api.power.IPowerReceptor;
 import dan200.computer.api.IComputerAccess;
 
+@OnTickSafe
 public class AdapterPowerReceptor implements IPeripheralAdapter {
 
 	@Override

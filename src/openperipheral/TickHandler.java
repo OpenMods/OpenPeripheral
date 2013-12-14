@@ -29,7 +29,7 @@ public class TickHandler implements ITickHandler {
 		}
 	}
 
-	public static void addTickCallback(World world, Runnable callback) throws InterruptedException {
+	public static void addTickCallback(World world, Runnable callback) {
 		int worldId = world.provider.dimensionId;
 		getWorldQueue(worldId).add(callback);
 	}

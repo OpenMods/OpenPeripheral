@@ -8,7 +8,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.ForgeDirection;
 import openmods.Mods;
-import openperipheral.AdapterManager;
+import openperipheral.adapter.AdapterManager;
 import openperipheral.api.IIntegrationModule;
 import buildcraft.api.transport.IPipeTile;
 

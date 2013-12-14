@@ -28,19 +28,18 @@ public class AdapterStargate implements IPeripheralAdapter {
 		targetAddress = targetAddress.toUpperCase();
 		validateAddress(tile, targetAddress);
 
-		String homeAddress = (String)ReflectionHelper.callMethod(getTargetClass(), tile, new String[] { "findHomeAddress" });
-		TileEntity targetStargate = (TileEntity)ReflectionHelper.callMethod(false, SG_ADDRESSING_CLASS, null, new String[] { "findAddressedStargate" }, new Object[] { targetAddress });
+		String homeAddress = ReflectionHelper.<String> call(tile, "findHomeAddress");
+		TileEntity targetStargate = ReflectionHelper.<TileEntity> call(SG_ADDRESSING_CLASS, "findAddressedStargate", targetAddress);
 
-		boolean targetBusy = (Boolean)ReflectionHelper.callMethod(getTargetClass(), targetStargate, new String[] { "isConnected" });
+		boolean targetBusy = ReflectionHelper.<Boolean> call(targetStargate, "isConnected");
 		if (targetBusy) throw new Exception("Stargate at address " + targetAddress + " is busy");
 
 		int requiredFuel = (Integer)ReflectionHelper.getProperty(getTargetClass(), tile, new String[] { "fuelToOpen" });
-		boolean fuelReloaded = (Boolean)ReflectionHelper.callMethod(getTargetClass(), tile, new String[] { "reloadFuel" }, new Object[] { requiredFuel });
+		boolean fuelReloaded = ReflectionHelper.<Boolean> call(tile, "reloadFuel", requiredFuel);
 		if (!fuelReloaded) throw new Exception("Stargate has insufficient fuel");
 
-		String[] method = new String[] { "startDiallingStargate" };
-		ReflectionHelper.callMethod(getTargetClass(), tile, method, new Object[] { targetAddress, targetStargate, true });
-		ReflectionHelper.callMethod(getTargetClass(), targetStargate, method, new Object[] { homeAddress, tile, false });
+		ReflectionHelper.call(tile, "startDiallingStargate", targetAddress, targetStargate, true);
+		ReflectionHelper.call(targetStargate, "startDiallingStargate", homeAddress, tile, false);
 	}
 
 	@LuaMethod(returnType = LuaType.STRING, description = "gets state of the stargate", onTick = false)
@@ -86,10 +85,9 @@ public class AdapterStargate implements IPeripheralAdapter {
 		checkGateComplete(tile);
 
 		Object connectedLocation = ReflectionHelper.getProperty(getTargetClass(), tile, new String[] { "connectedLocation" });
-		TileEntity connectedGate = (TileEntity)ReflectionHelper.callMethod(getTargetClass(), null, new String[] { "at" }, new Object[] { connectedLocation });
-		String[] method = new String[] { "clearConnection" };
-		if (connectedGate != null) ReflectionHelper.callMethod(getTargetClass(), connectedGate, method);
-		ReflectionHelper.callMethod(getTargetClass(), tile, method);
+		TileEntity connectedGate = (TileEntity)ReflectionHelper.call(getTargetClass(), null, new String[] { "at" }, new Object[] { connectedLocation });
+		if (connectedGate != null) ReflectionHelper.call(connectedGate, "clearConnection");
+		ReflectionHelper.call(tile, "clearConnection");
 	}
 
 	@LuaMethod(returnType = LuaType.BOOLEAN, description = "whether or not the supplied address is a valid address",
@@ -108,7 +106,7 @@ public class AdapterStargate implements IPeripheralAdapter {
 		// make sure the gate is built
 		checkGateComplete(tile);
 
-		return (Boolean)ReflectionHelper.callMethod(getTargetClass(), tile, new String[] { "isConnected" });
+		return (Boolean)ReflectionHelper.call(tile, "isConnected");
 	}
 
 	@LuaMethod(returnType = LuaType.BOOLEAN, description = "whether or not the stargate created the connection", onTick = false)
@@ -124,7 +122,7 @@ public class AdapterStargate implements IPeripheralAdapter {
 		// make sure the gate is built
 		checkGateComplete(tile);
 
-		return (Boolean)ReflectionHelper.callMethod(getTargetClass(), tile, new String[] { "canTravelFromThisEnd" });
+		return (Boolean)ReflectionHelper.call(tile, "canTravelFromThisEnd");
 	}
 
 	@LuaMethod(returnType = LuaType.STRING, description = "the address of the stargate the connection is linked", onTick = false)
@@ -153,7 +151,7 @@ public class AdapterStargate implements IPeripheralAdapter {
 	private void validateAddress(TileEntity tile, String address) throws Exception {
 		if (address.length() != 7) throw new Exception("Stargate addresses must be 7 letters");
 
-		TileEntity targetStargate = (TileEntity)ReflectionHelper.callMethod(false, SG_ADDRESSING_CLASS, null, new String[] { "findAddressedStargate" }, new Object[] { address });
+		TileEntity targetStargate = (TileEntity)ReflectionHelper.call(SG_ADDRESSING_CLASS, null, new String[] { "findAddressedStargate" }, new Object[] { address });
 
 		if (targetStargate == null) throw new Exception("No Stargate at address " + address);
 		if (targetStargate == tile) throw new Exception("Stargate cannot connect to itself");

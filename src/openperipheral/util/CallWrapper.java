@@ -17,7 +17,7 @@ public class CallWrapper<T> {
 	@SuppressWarnings("unchecked")
 	private T explicitCall(Class<?> targetClass, Object target, String[] methodNames, Object... args) throws CallFailureException {
 		try {
-			Method method = ReflectionHelper.getMethod(targetClass, methodNames, args.length);
+			Method method = ReflectionHelper.getMethod(targetClass, methodNames, args);
 			if (method == null) { throw new CallFailureException("Method not found"); }
 			return (T)method.invoke(target, args);
 		} catch (Exception e) {

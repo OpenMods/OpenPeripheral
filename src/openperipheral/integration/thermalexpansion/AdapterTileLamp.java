@@ -10,7 +10,6 @@ import dan200.computer.api.IComputerAccess;
 
 public class AdapterTileLamp implements IPeripheralAdapter {
 
-	private static final String[] SET_COLOR_METHOD_NAME = new String[] { "setColor" };
 	private static final Class<?> CLAZZ = ReflectionHelper.getClass("thermalexpansion.block.lamp.TileLamp");
 
 	@Override
@@ -23,7 +22,7 @@ public class AdapterTileLamp implements IPeripheralAdapter {
 	})
 	public boolean setColor(IComputerAccess computer, TileEntity tile, int colour) {
 		try {
-			return (Boolean)ReflectionHelper.callMethod(getTargetClass(), tile, SET_COLOR_METHOD_NAME, colour);
+			return ReflectionHelper.<Boolean> call(tile, "setColor", colour);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

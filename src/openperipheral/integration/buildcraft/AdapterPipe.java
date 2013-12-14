@@ -1,12 +1,10 @@
 package openperipheral.integration.buildcraft;
 
-import openperipheral.api.Arg;
-import openperipheral.api.IPeripheralAdapter;
-import openperipheral.api.LuaMethod;
-import openperipheral.api.LuaType;
+import openperipheral.api.*;
 import buildcraft.api.transport.IPipe;
 import dan200.computer.api.IComputerAccess;
 
+@OnTickSafe
 public class AdapterPipe implements IPeripheralAdapter {
 
 	@Override

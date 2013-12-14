@@ -5,14 +5,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.METHOD, ElementType.PARAMETER })
-public @interface Arg {
-	public static final String DEFAULT_NAME = "[none set]";
+public @interface LuaCallable {
+	public static final String USE_METHOD_NAME = "[none set]";
 
-	String name() default DEFAULT_NAME;
+	String name() default USE_METHOD_NAME;
 
 	String description() default "";
 
-	LuaType type();
+	LuaType[] returnTypes() default {};
+
+	boolean validateReturn() default true;
 }

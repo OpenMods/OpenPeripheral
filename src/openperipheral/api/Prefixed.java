@@ -6,13 +6,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.METHOD, ElementType.PARAMETER })
-public @interface Arg {
-	public static final String DEFAULT_NAME = "[none set]";
+@Target(ElementType.TYPE)
+public @interface Prefixed {
 
-	String name() default DEFAULT_NAME;
-
-	String description() default "";
-
-	LuaType type();
+	public String[] value();
 }

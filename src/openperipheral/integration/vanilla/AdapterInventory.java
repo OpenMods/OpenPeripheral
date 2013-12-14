@@ -7,12 +7,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import openmods.utils.InventoryUtils;
-import openperipheral.api.Arg;
-import openperipheral.api.IPeripheralAdapter;
-import openperipheral.api.LuaMethod;
-import openperipheral.api.LuaType;
+import openperipheral.api.*;
 import dan200.computer.api.IComputerAccess;
 
+@OnTickSafe
 public class AdapterInventory implements IPeripheralAdapter {
 
 	public AdapterInventory() {}

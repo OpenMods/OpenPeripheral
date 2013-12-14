@@ -22,7 +22,7 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.EnumMovingObjectType;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
-import openperipheral.AdapterManager;
+import openperipheral.adapter.AdapterManager;
 import openperipheral.api.IIntegrationModule;
 import openperipheral.util.InventoryDescriptionUtils;
 import openperipheral.util.ReflectionHelper;

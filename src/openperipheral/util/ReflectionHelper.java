@@ -2,96 +2,104 @@ package openperipheral.util;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import openperipheral.TypeConversionRegistry;
+import org.apache.commons.lang3.ArrayUtils;
+
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
+import com.google.common.base.Throwables;
+import com.google.common.collect.Lists;
 
 public class ReflectionHelper {
 
-	public static void setProperty(Class<?> klazz, Object instance, Object value, String... fields) {
-		Field field = getField(klazz == null? instance.getClass() : klazz, fields);
-		if (field != null) {
-			try {
-				field.set(instance, TypeConversionRegistry.fromLua(value, field.getType()));
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+	private static class NullMarker {
+		public final Class<?> cls;
+
+		private NullMarker(Class<?> cls) {
+			this.cls = cls;
 		}
 	}
 
-	public static void setProperty(String className, Object instance, Object value, String... fields) {
-		setProperty(getClass(className), instance, value, fields);
+	public Object nullValue(Class<?> cls) {
+		return new NullMarker(cls);
 	}
 
 	public static Object getProperty(Class<?> klazz, Object instance, String... fields) {
 		Field field = getField(klazz == null? instance.getClass() : klazz, fields);
-		if (field != null) {
-			try {
-				return field.get(instance);
-			} catch (Exception e) {}
+		Preconditions.checkNotNull(field, "Fields %s not found", Arrays.toString(fields));
+		try {
+			return field.get(instance);
+		} catch (Exception e) {
+			throw Throwables.propagate(e);
 		}
-		return null;
 	}
 
 	public static Object getProperty(String className, Object instance, String... fields) {
 		return getProperty(getClass(className), instance, fields);
 	}
 
-	public static Object callMethod(boolean replace, String className, Object instance, String[] methodNames, Object... args) throws Exception {
-		return callMethod(replace, getClass(className), instance, methodNames, args);
+	public static <T> T callStatic(Class<?> klazz, String methodName, Object... args) {
+		return call(klazz, null, ArrayUtils.toArray(methodName), args);
 	}
 
-	public static Object callMethod(String className, Object instance, String[] methodNames, Object... args) throws Exception {
-		return callMethod(getClass(className), instance, methodNames, args);
+	public static <T> T call(Object instance, String methodName, Object... args) {
+		return call(instance.getClass(), instance, ArrayUtils.toArray(methodName), args);
 	}
 
-	public static Object callMethod(boolean replace, Class<?> klazz, Object instance, String[] methodNames, Object... args) throws Exception {
-		Method m = getMethod(klazz == null? instance.getClass() : klazz, methodNames, args.length);
-		if (m != null) {
-			Class<?>[] types = m.getParameterTypes();
-			List<Object> argumentList = Arrays.asList(args);
-			if (replace) {
-				for (int i = 0; i < argumentList.size(); i++) {
-					Object newType = TypeConversionRegistry.fromLua(argumentList.get(i), types[i]);
-					argumentList.set(i, newType);
-				}
-			}
-			Object response = m.invoke(instance, argumentList.toArray(new Object[args.length]));
-			return response;
+	@SuppressWarnings("unchecked")
+	private static <T> T call(Class<?> klazz, Object instance, String[] methodNames, Object... args) {
+		Method m = getMethod(klazz, methodNames, args);
+		Preconditions.checkNotNull(m, "Method %s not found", Arrays.toString(methodNames));
+
+		for (int i = 0; i < args.length; i++) {
+			final Object arg = args[i];
+			if (arg instanceof NullMarker) args[i] = null;
+		}
+
+		try {
+			return (T)m.invoke(instance, args.length);
+		} catch (Exception e) {
+			throw Throwables.propagate(e);
+		}
+	}
+
+	public static Method getMethod(Class<?> klazz, String[] methodNames, Object... args) {
+		if (klazz == null) return null;
+		Class<?> argTypes[] = new Class<?>[args.length];
+		for (int i = 0; i < args.length; i++) {
+			final Object arg = args[i];
+			argTypes[i] = (arg instanceof NullMarker)? ((NullMarker)arg).cls : arg.getClass();
+		}
+
+		for (String name : methodNames) {
+			Method result = getDeclaredMethod(klazz, name, argTypes);
+			if (result != null) return result;
 		}
 		return null;
 	}
 
-	public static Object callMethod(Class<?> klazz, Object instance, String[] methodNames, Object... args) throws Exception {
-		return callMethod(true, klazz, instance, methodNames, args);
-	}
-
-	public static Method getMethod(Class<?> klazz, String[] methodNames, int argCount) {
-		if (klazz == null) { return null; }
-		for (String method : methodNames) {
-			try {
-				for (Method m : getAllMethods(klazz)) {
-					if (m.getName().equals(method) && (argCount == -1 || m.getParameterTypes().length == argCount)) {
-						m.setAccessible(true);
-						return m;
-					}
-				}
-			} catch (Exception e) {}
-		}
-		return null;
-	}
-
-	public static Method[] getAllMethods(Class<?> clazz) {
-		ArrayList<Method> methods = new ArrayList<Method>();
+	public static Method getDeclaredMethod(Class<?> clazz, String name, Class<?>[] argsTypes) {
 		while (clazz != null) {
-			for (Method m : clazz.getDeclaredMethods()) {
-				methods.add(m);
+			try {
+				return clazz.getDeclaredMethod(name, argsTypes);
+			} catch (NoSuchMethodException e) {} catch (Exception e) {
+				throw Throwables.propagate(e);
 			}
 			clazz = clazz.getSuperclass();
 		}
-		return methods.toArray(new Method[methods.size()]);
+		return null;
+	}
+
+	public static List<Method> getAllMethods(Class<?> clazz) {
+		List<Method> methods = Lists.newArrayList();
+		while (clazz != null) {
+			for (Method m : clazz.getDeclaredMethods())
+				methods.add(m);
+			clazz = clazz.getSuperclass();
+		}
+		return methods;
 
 	}
 
@@ -103,7 +111,9 @@ public class ReflectionHelper {
 					Field f = current.getDeclaredField(field);
 					f.setAccessible(true);
 					return f;
-				} catch (Exception e) {}
+				} catch (NoSuchFieldException e) {} catch (Exception e) {
+					throw Throwables.propagate(e);
+				}
 				current = current.getSuperclass();
 			}
 		}
@@ -111,11 +121,12 @@ public class ReflectionHelper {
 	}
 
 	public static Class<?> getClass(String className) {
-		if (className == null || className.isEmpty()) { return null; }
+		if (Strings.isNullOrEmpty(className)) return null;
 		try {
 			return Class.forName(className);
-		} catch (Exception e) {}
-		return null;
+		} catch (Exception e) {
+			throw Throwables.propagate(e);
+		}
 	}
 
 }

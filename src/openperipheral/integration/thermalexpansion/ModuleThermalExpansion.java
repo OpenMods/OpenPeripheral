@@ -7,7 +7,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Vec3;
 import openmods.Mods;
-import openperipheral.AdapterManager;
+import openperipheral.adapter.AdapterManager;
 import openperipheral.api.IIntegrationModule;
 import cofh.api.energy.IEnergyContainerItem;
 import cofh.api.item.IInventoryContainerItem;

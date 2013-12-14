@@ -69,7 +69,7 @@ public class AdapterFrequencyOwner implements IPeripheralAdapter {
 
 	private void setFreq(TileEntity frequencyOwner, int frequency) throws Exception {
 		if (frequency < 0 || frequency > 4095) { throw new Exception("Frequency out of bounds. Should be 0-4095"); }
-		ReflectionHelper.callMethod(getTargetClass(), frequencyOwner, new String[] { "setFreq" }, frequency);
+		ReflectionHelper.call(frequencyOwner, "setFreq", frequency);
 	}
 
 	private static int parseComputerCraftColor(int color) throws Exception {

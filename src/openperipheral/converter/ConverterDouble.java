@@ -6,21 +6,30 @@ public class ConverterDouble implements ITypeConverter {
 
 	@Override
 	public Object fromLua(Object o, Class<?> required) {
-		if ((required == Integer.class || required == int.class || required == short.class || required == Short.class || required == byte.class || required == Byte.class || required == float.class || required == Float.class)
-				&& o instanceof Double) {
-			Integer v = ((Double)o).intValue();
-			if (required == byte.class) { return v.byteValue(); }
-			if (required == short.class || required == Short.class) { return v.shortValue(); }
-			if (required == float.class || required == Float.class) { return ((Double)o).floatValue(); }
-			return (int)v;
+		if (o instanceof Double) {
+			final Double d = (Double)o;
+
+			if (required == Integer.class || required == int.class) return d.intValue();
+
+			if (required == Double.class || required == double.class) return d;
+
+			if (required == Float.class || required == float.class) return d.floatValue();
+
+			if (required == Long.class || required == long.class) return d.longValue();
+
+			if (required == Short.class || required == short.class) return d.shortValue();
+
+			if (required == Byte.class || required == byte.class) return d.byteValue();
+
+			if (required == Boolean.class || required == boolean.class) return d != 0;
 		}
+
 		return null;
 	}
 
 	@Override
 	public Object toLua(Object o) {
-		if (o instanceof Double || o instanceof Integer || o instanceof Short) { return o; }
-		return null;
+		return (o instanceof Number)? ((Number)o).doubleValue() : null;
 	}
 
 }

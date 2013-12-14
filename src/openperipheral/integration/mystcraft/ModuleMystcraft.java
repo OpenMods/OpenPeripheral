@@ -11,7 +11,7 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Vec3;
 import openmods.Mods;
-import openperipheral.AdapterManager;
+import openperipheral.adapter.AdapterManager;
 import openperipheral.api.IIntegrationModule;
 
 public class ModuleMystcraft implements IIntegrationModule {

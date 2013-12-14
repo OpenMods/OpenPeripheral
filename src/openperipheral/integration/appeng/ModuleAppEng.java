@@ -6,8 +6,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Vec3;
 import openmods.Mods;
-import openperipheral.AdapterManager;
 import openperipheral.TypeConversionRegistry;
+import openperipheral.adapter.AdapterManager;
 import openperipheral.api.IIntegrationModule;
 import openperipheral.converter.ConverterIItemList;
 

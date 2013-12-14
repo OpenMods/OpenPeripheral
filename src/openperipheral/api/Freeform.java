@@ -6,13 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.METHOD, ElementType.PARAMETER })
-public @interface Arg {
-	public static final String DEFAULT_NAME = "[none set]";
-
-	String name() default DEFAULT_NAME;
-
-	String description() default "";
-
-	LuaType type();
+@Target({ ElementType.METHOD, ElementType.TYPE })
+public @interface Freeform {
+	boolean value() default true;
 }
