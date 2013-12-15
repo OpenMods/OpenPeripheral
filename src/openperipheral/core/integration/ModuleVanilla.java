@@ -26,6 +26,8 @@ import openperipheral.core.AdapterManager;
 import openperipheral.core.adapter.vanilla.AdapterBeacon;
 import openperipheral.core.adapter.vanilla.AdapterBrewingStand;
 import openperipheral.core.adapter.vanilla.AdapterComparator;
+import openperipheral.core.adapter.vanilla.AdapterFluidHandler;
+import openperipheral.core.adapter.vanilla.AdapterFluidTank;
 import openperipheral.core.adapter.vanilla.AdapterFurnace;
 import openperipheral.core.adapter.vanilla.AdapterInventory;
 import openperipheral.core.adapter.vanilla.AdapterMobSpawner;
@@ -37,14 +39,16 @@ import openperipheral.core.util.ReflectionHelper;
 
 public class ModuleVanilla {
 	public static void init() {
-		AdapterManager.addPeripheralAdapter(new AdapterInventory());
-		AdapterManager.addPeripheralAdapter(new AdapterNoteBlock());
-		AdapterManager.addPeripheralAdapter(new AdapterComparator());
-		AdapterManager.addPeripheralAdapter(new AdapterBrewingStand());
-		AdapterManager.addPeripheralAdapter(new AdapterFurnace());
-		AdapterManager.addPeripheralAdapter(new AdapterRecordPlayer());
 		AdapterManager.addPeripheralAdapter(new AdapterBeacon());
+		AdapterManager.addPeripheralAdapter(new AdapterBrewingStand());
+		AdapterManager.addPeripheralAdapter(new AdapterComparator());
+		AdapterManager.addPeripheralAdapter(new AdapterFluidHandler());
+		AdapterManager.addPeripheralAdapter(new AdapterFluidTank());
+		AdapterManager.addPeripheralAdapter(new AdapterFurnace());
+		AdapterManager.addPeripheralAdapter(new AdapterInventory());
 		AdapterManager.addPeripheralAdapter(new AdapterMobSpawner());
+		AdapterManager.addPeripheralAdapter(new AdapterNoteBlock());
+		AdapterManager.addPeripheralAdapter(new AdapterRecordPlayer());
 		AdapterManager.addPeripheralAdapter(new AdapterSign());
 	}
 	

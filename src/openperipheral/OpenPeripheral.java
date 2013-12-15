@@ -37,6 +37,7 @@ import openperipheral.core.integration.ModuleMystcraft;
 import openperipheral.core.integration.ModuleProjectRed;
 import openperipheral.core.integration.ModuleRailcraft;
 import openperipheral.core.integration.ModuleSgCraft;
+import openperipheral.core.integration.ModuleTConstruct;
 import openperipheral.core.integration.ModuleThaumcraft;
 import openperipheral.core.integration.ModuleThermalExpansion;
 import openperipheral.core.integration.ModuleVanilla;
@@ -135,7 +136,6 @@ public class OpenPeripheral {
 		TypeConversionRegistry.registerTypeConverter(new ConverterFluidTankInfo());
 		
 		AdapterManager.addPeripheralAdapter(new AdapterObject());
-		AdapterManager.addPeripheralAdapter(new AdapterFluidHandler());
 		AdapterManager.addPeripheralAdapter(new AdapterGlassesBridge());
 		AdapterManager.addPeripheralAdapter(new AdapterSensor());
 		AdapterManager.addPeripheralAdapter(new AdapterPlayerInventory());
@@ -180,7 +180,9 @@ public class OpenPeripheral {
 		if (ModLoader.isModLoaded(Mods.RAILCRAFT)) {
 			ModuleRailcraft.init();
 		}
-		
+		if (ModLoader.isModLoaded(Mods.TCONSTRUCT)) {
+			ModuleTConstruct.init();
+		}
 		if (ModLoader.isModLoaded(Mods.THAUMCRAFT)) {
 			ModuleThaumcraft.init();
 		}
