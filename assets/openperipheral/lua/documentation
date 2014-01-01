@@ -1,0 +1,35 @@
+args = {...}
+if #args == 0 then
+  print("usage: documentation <side> (function)")
+  return
+elseif #args == 1 then
+  p = peripheral.wrap(args[1])
+  info = p.getAdvancedMethodsData()
+  for k,v in pairs(info) do
+    msg = v.name.."("
+    for k,arg in pairs(v.args) do
+      msg = msg..arg.name..","
+    end
+    if #v.args > 0 then
+      msg = string.sub(msg, 0, #msg - 1)
+    end
+    print(msg..")")
+  end
+else --must be 2 or more
+  p = peripheral.wrap(args[1])
+  info = p.getAdvancedMethodsData()
+  for k,v in pairs(info) do
+   -- print(textutils.serialize(v))
+    if string.lower(args[2]) == string.lower(v.name) then
+      print(v.name..": "..v.description)
+      print("returns: "..string.lower(v.returnType))
+      if #v.args > 0 then
+        print("args: ")
+        for _,arg in pairs(v.args) do
+          print(" - ("..string.lower(arg.type)..")"..arg.name..": "..arg.description)   
+        end
+      end
+     -- print(textutils.serialize(v))
+    end
+  end
+end
