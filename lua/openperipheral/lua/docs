@@ -1,6 +1,6 @@
 args = {...}
 if #args == 0 then
-  print("usage: documentation <side> (function)")
+  print("usage: docs <side> (function)")
   return
 end
 
