@@ -1,32 +1,27 @@
 package openperipheral.adapter.peripheral;
 
 import java.util.Arrays;
-import java.util.Set;
 import java.util.logging.Level;
 
 import net.minecraft.nbt.NBTTagCompound;
 import openmods.Log;
 import openperipheral.adapter.AdaptedClass;
 import openperipheral.api.IAttachable;
-import openperipheral.util.BasicMount;
 import openperipheral.util.PeripheralUtils;
-
-import com.google.common.collect.Sets;
-
+import openperipheral.util.ResourceMount;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IHostedPeripheral;
 import dan200.computer.api.ILuaContext;
+import dan200.computer.api.IMount;
 
 public class HostedPeripheral implements IHostedPeripheral {
 
 	private static final String MOUNT_NAME = "openp";
-	private static final BasicMount MOUNT = new BasicMount();
+	private static final IMount MOUNT = new ResourceMount();
 
 	protected final String type;
 	protected final Object targetObject;
 	protected final AdaptedClass<IPeripheralMethodExecutor> wrapped;
-
-	private final Set<IComputerAccess> attachedComputers = Sets.newIdentityHashSet();
 
 	public HostedPeripheral(AdaptedClass<IPeripheralMethodExecutor> wrapper, Object targetObject) {
 		this.targetObject = targetObject;
@@ -62,19 +57,12 @@ public class HostedPeripheral implements IHostedPeripheral {
 
 	@Override
 	public void attach(IComputerAccess computer) {
-		String actualPath = computer.mount(MOUNT_NAME, HostedPeripheral.MOUNT);
-		if (!actualPath.equals(MOUNT_NAME)) computer.unmount(actualPath);
-		attachedComputers.add(computer);
-
+		computer.mount(MOUNT_NAME, HostedPeripheral.MOUNT);
 		if (targetObject instanceof IAttachable) ((IAttachable)targetObject).addComputer(computer);
 	}
 
 	@Override
-	public void detach(IComputerAccess computer) {
-		computer.unmount(MOUNT_NAME);
-		attachedComputers.remove(computer);
-
-	}
+	public void detach(IComputerAccess computer) {}
 
 	@Override
 	public void update() {}

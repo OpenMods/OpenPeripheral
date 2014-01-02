@@ -29,6 +29,9 @@
 			<fileset dir=".">
 				<include name="assets/**/*" />
 			</fileset>
+			<fileset dir="lua">
+				<include name="**/*" />
+			</fileset>
 		</copy>
 	</target>
 
