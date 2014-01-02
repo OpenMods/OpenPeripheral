@@ -62,7 +62,9 @@ public class HostedPeripheral implements IHostedPeripheral {
 	}
 
 	@Override
-	public void detach(IComputerAccess computer) {}
+	public void detach(IComputerAccess computer) {
+		if (targetObject instanceof IAttachable) ((IAttachable)targetObject).removeComputer(computer);
+	}
 
 	@Override
 	public void update() {}
