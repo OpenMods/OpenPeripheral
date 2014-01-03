@@ -15,4 +15,6 @@ public @interface Arg {
 	String description() default "";
 
 	LuaType type();
+
+	boolean isNullable() default false;
 }

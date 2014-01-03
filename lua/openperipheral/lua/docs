@@ -19,15 +19,21 @@ end
 
 info = p.getAdvancedMethodsData()
 
+function argName(arg)
+  if arg.vararg then
+    return arg.name.."..."
+  elseif arg.optional then
+    return arg.name.."?"
+  else
+    return arg.name
+  end
+end
+
 if #args == 1 then
   for k,v in pairs(info) do
     args = {}
     for _,arg in pairs(v.args) do
-      if arg.vararg then
-        table.insert(args, arg.name.."...")
-      else
-        table.insert(args, arg.name)
-      end
+      table.insert(args, argName(arg))
     end
     print(v.name.."("..table.concat(args,",")..")")
   end
@@ -40,10 +46,7 @@ else --must be 2 or more
         print("args: ")
         for _,arg in pairs(v.args) do
           argType = string.lower(arg.type)
-          if arg.vararg then
-            argType = argType .. "..."
-          end
-          print(" - ("..argType..")"..arg.name..": "..arg.description)   
+          print(" - ("..argType..")"..argName(arg)..": "..arg.description)   
         end
       end
     end

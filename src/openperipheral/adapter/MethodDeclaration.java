@@ -11,6 +11,7 @@ import java.util.concurrent.Callable;
 import java.util.logging.Level;
 
 import openmods.Log;
+import openmods.utils.AnnotationMap;
 import openperipheral.TypeConversionRegistry;
 import openperipheral.api.*;
 
@@ -28,15 +29,19 @@ public class MethodDeclaration {
 		public final LuaType luaType;
 		public final Class<?> javaClass;
 		public final boolean isVarArg;
+		private final boolean isNullable;
+		private final boolean isOptional;
 		private final int javaArgIndex;
 
-		private ConvertedArgument(Arg arg, Class<?> javaClass, int javaArgIndex, boolean isVarArg) {
+		private ConvertedArgument(Arg arg, Class<?> javaClass, int javaArgIndex, boolean isVarArg, boolean isOptional) {
 			this.name = arg.name();
 			this.description = arg.description();
 			this.luaType = arg.type();
 			if (isVarArg) this.javaClass = javaClass.getComponentType();
 			else this.javaClass = javaClass;
 			this.isVarArg = isVarArg;
+			this.isOptional = isOptional;
+			this.isNullable = arg.isNullable() || isOptional;
 			this.javaArgIndex = javaArgIndex;
 		}
 
@@ -51,6 +56,8 @@ public class MethodDeclaration {
 			result.put("name", name);
 			result.put("description", description);
 			result.put("vararg", isVarArg);
+			result.put("optional", isOptional);
+			result.put("nullable", isNullable);
 			return result;
 		}
 
@@ -71,6 +78,20 @@ public class MethodDeclaration {
 	private final List<Class<?>> javaArgs;
 	private final List<ConvertedArgument> luaArgs;
 
+	private ConvertedArgument createLuaArg(AnnotationMap annotations, Class<?> javaArgType, int index, boolean forceOptional, boolean isVarArg) {
+		Arg arg = annotations.get(Arg.class);
+		Preconditions.checkNotNull(arg);
+
+		boolean isOptional = forceOptional || annotations.get(Optionals.class) != null;
+
+		final boolean needsReference = (arg.isNullable() || isOptional) && !isVarArg;
+		Preconditions.checkArgument(!(javaArgType.isPrimitive() && needsReference),
+				"In method %s arg %s has primitive type %s, but is marked nullable or optional",
+				method, index, javaArgType);
+
+		return new ConvertedArgument(arg, javaArgType, index, isVarArg, isOptional);
+	}
+
 	public MethodDeclaration(Method method, LuaMethod luaMethod) {
 		this.method = method;
 
@@ -80,22 +101,37 @@ public class MethodDeclaration {
 		this.returnTypes = new LuaType[] { luaMethod.returnType() };
 		this.validateReturn = false;
 
-		Class<?> methodArgs[] = method.getParameterTypes();
-
+		final Class<?> methodArgs[] = method.getParameterTypes();
 		final Arg declaredLuaArgs[] = luaMethod.args();
-
+		final Annotation[][] argsAnnotations = method.getParameterAnnotations();
 		final int luaArgsStart = methodArgs.length - declaredLuaArgs.length;
+		final boolean isVarArg = method.isVarArgs();
+
 		Preconditions.checkArgument(luaArgsStart >= 0, "Method %s has less arguments than declared", method);
 
-		ImmutableList.Builder<ConvertedArgument> luaArgs = ImmutableList.builder();
+		boolean isOptional = false;
 
+		ImmutableList.Builder<ConvertedArgument> luaArgs = ImmutableList.builder();
 		for (int arg = 0; arg < declaredLuaArgs.length; arg++) {
+			boolean isLastArg = arg == (declaredLuaArgs.length - 1);
+
+			AnnotationMap annotations = new AnnotationMap(argsAnnotations[arg]);
+			annotations.put(declaredLuaArgs[arg]);
 			int javaArgIndex = luaArgsStart + arg;
-			luaArgs.add(new ConvertedArgument(declaredLuaArgs[arg], methodArgs[javaArgIndex], javaArgIndex, false));
+			ConvertedArgument luaArg = createLuaArg(annotations, methodArgs[javaArgIndex], javaArgIndex, isOptional, isLastArg && isVarArg);
+			luaArgs.add(luaArg);
+			isOptional |= luaArg.isOptional;
 		}
 
 		this.luaArgs = luaArgs.build();
 		this.javaArgs = ImmutableList.copyOf(Arrays.copyOf(methodArgs, luaArgsStart));
+
+		for (int arg = 0; arg < luaArgsStart; arg++) {
+			AnnotationMap annotations = new AnnotationMap(argsAnnotations[arg]);
+			Named named = annotations.get(Named.class);
+			if (named != null) namedArgs.put(named.value(), arg);
+			Preconditions.checkState(annotations.get(Optionals.class) == null, "@Optionals does not work for java arguments (method %s)", method);
+		}
 	}
 
 	public MethodDeclaration(Method method, LuaCallable meta) {
@@ -107,38 +143,41 @@ public class MethodDeclaration {
 		this.returnTypes = meta.returnTypes();
 		this.validateReturn = meta.validateReturn();
 
-		Class<?> methodArgs[] = method.getParameterTypes();
-		Annotation[][] argAnnotations = method.getParameterAnnotations();
+		final Class<?> methodArgs[] = method.getParameterTypes();
+		final Annotation[][] argsAnnotations = method.getParameterAnnotations();
+		final boolean isVarArg = method.isVarArgs();
 
 		ImmutableList.Builder<ConvertedArgument> luaArgs = ImmutableList.builder();
 		ImmutableList.Builder<Class<?>> javaArgs = ImmutableList.builder();
 		boolean isInLuaArgs = false;
-		boolean isVarArg = method.isVarArgs();
+		boolean isOptional = false;
 
 		for (int i = 0; i < methodArgs.length; i++) {
 			boolean isLastArg = i == (methodArgs.length - 1);
 			final Class<?> cls = methodArgs[i];
-			Map<Class<? extends Annotation>, Annotation> annotations = Maps.newIdentityHashMap();
 
-			for (Annotation a : argAnnotations[i])
-				annotations.put(a.annotationType(), a);
+			AnnotationMap annotations = new AnnotationMap(argsAnnotations[i]);
 
 			boolean isLuaArg = false;
 
-			Annotation tmp = annotations.get(Arg.class);
+			Arg tmp = annotations.get(Arg.class);
 			if (tmp != null) {
-				luaArgs.add(new ConvertedArgument((Arg)tmp, cls, i, isLastArg && isVarArg));
+				ConvertedArgument luaArg = createLuaArg(annotations, cls, i, isOptional, isLastArg && isVarArg);
+				luaArgs.add(luaArg);
+				isOptional |= luaArg.isOptional;
 				isLuaArg = true;
 				isInLuaArgs = true;
 			}
 
 			Preconditions.checkState(!isInLuaArgs || isLuaArg, "Argument %s in method %s look like Java arg, but is in Lua part (perhaps missing Arg annotation?)", i, method);
 
-			tmp = annotations.get(Named.class);
-			if (tmp != null) {
+			Named named = annotations.get(Named.class);
+			if (named != null) {
 				Preconditions.checkState(!isInLuaArgs, "Argument %s in method %s is Lua arg, but has Named annotation", i, method);
-				namedArgs.put(((Named)tmp).value(), i);
+				namedArgs.put(named.value(), i);
 			}
+
+			Preconditions.checkState(isInLuaArgs || annotations.get(Optionals.class) == null, "@Optionals does not work for java arguments (method %s)", method);
 
 			if (!isLuaArg) javaArgs.add(cls);
 		}
@@ -156,7 +195,7 @@ public class MethodDeclaration {
 			for (int i = 0; i < result.length; i++) {
 				LuaType expected = returnTypes[i];
 				Object got = result[i];
-				Preconditions.checkArgument(expected.getJavaType().isInstance(got), "Invalid type of return value %s: expected %s, got %s", i, expected, got);
+				Preconditions.checkArgument(got == null || expected.getJavaType().isInstance(got), "Invalid type of return value %s: expected %s, got %s", i, expected, got);
 			}
 		}
 
@@ -165,6 +204,7 @@ public class MethodDeclaration {
 
 	public class CallWrap implements Callable<Object[]> {
 		private final Object[] args = new Object[javaArgs.size() + luaArgs.size()];
+		private final Set<Integer> isSet = Sets.newHashSet();
 		private final Object target;
 
 		public CallWrap(Object target) {
@@ -172,7 +212,8 @@ public class MethodDeclaration {
 		}
 
 		private CallWrap setArg(int position, Object value) {
-			Preconditions.checkState(args[position] == null, "Trying to set already defined argument %s in method %s", position, method);
+			boolean newlyAdded = isSet.add(position);
+			Preconditions.checkState(newlyAdded, "Trying to set already defined argument %s in method %s", position, method);
 			args[position] = value;
 			return this;
 		}
@@ -188,7 +229,7 @@ public class MethodDeclaration {
 			try {
 				for (ConvertedArgument arg : luaArgs) {
 					if (arg.isVarArg) {
-						int varargSize = luaValues.length - argIndex;
+						int varargSize = Math.max(0, luaValues.length - argIndex);
 						Object vararg = Array.newInstance(arg.javaClass, varargSize);
 
 						for (int i = 0; i < varargSize; i++) {
@@ -197,12 +238,20 @@ public class MethodDeclaration {
 							Array.set(vararg, i, converted);
 						}
 
-						args[arg.javaArgIndex] = vararg;
+						setArg(arg.javaArgIndex, vararg);
 					} else {
-						Object value = luaValues[argIndex++];
-						args[arg.javaArgIndex] = arg.convert(value);
+						int i = argIndex++;
+						if (i >= luaValues.length) {
+							Preconditions.checkState(arg.isOptional, "Parameter '%s' is missing", arg.name);
+							setArg(arg.javaArgIndex, null);
+						} else {
+							Object value = luaValues[i];
+							Preconditions.checkArgument(arg.isNullable || value != null, "Parameter '%s' has null value, but is not marked as nullable", arg.name);
+							setArg(arg.javaArgIndex, arg.convert(value));
+						}
 					}
 				}
+				Preconditions.checkState(argIndex >= luaValues.length, "Not all lua values used, last index: %s", argIndex - 1);
 			} catch (ArrayIndexOutOfBoundsException e) {
 				Log.log(Level.FINE, e, "Trying to access arg index, args = %s", Arrays.toString(luaValues));
 				throw new IllegalArgumentException(String.format("Invalid Lua parameter count, needs %s, got %s", luaArgs.size(), luaValues.length));
@@ -214,7 +263,7 @@ public class MethodDeclaration {
 		@Override
 		public Object[] call() throws Exception {
 			for (int i = 0; i < args.length; i++)
-				Preconditions.checkNotNull(args[i], "Parameter %s value not set", i);
+				Preconditions.checkState(isSet.contains(i), "Parameter %s value not set", i);
 
 			Object result = method.invoke(target, args);
 
@@ -230,7 +279,9 @@ public class MethodDeclaration {
 	}
 
 	public void nameJavaArg(int index, String name) {
-		Preconditions.checkElementIndex(index, javaArgs.size(), "java argument index");
+		Preconditions.checkArgument(index < javaArgs.size(),
+				"Can't assign name '%s' to argument %s in method '%s'. Possible missing argument or @Freeform?",
+				name, index, method);
 		Integer prev = namedArgs.put(name, index);
 		Preconditions.checkArgument(prev == null || prev == index, "Trying to replace '%s' mapping from  %s, got %s", name, prev, index);
 	}
