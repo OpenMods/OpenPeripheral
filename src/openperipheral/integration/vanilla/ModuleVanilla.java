@@ -40,11 +40,13 @@ public class ModuleVanilla implements IIntegrationModule {
 		AdapterManager.addPeripheralAdapter(new AdapterInventory());
 		AdapterManager.addPeripheralAdapter(new AdapterNoteBlock());
 		AdapterManager.addPeripheralAdapter(new AdapterComparator());
-		AdapterManager.addPeripheralAdapter(new AdapterBrewingStand());
-		AdapterManager.addPeripheralAdapter(new AdapterFurnace());
-		AdapterManager.addPeripheralAdapter(new AdapterRecordPlayer());
 		AdapterManager.addPeripheralAdapter(new AdapterBeacon());
+		AdapterManager.addPeripheralAdapter(new AdapterBrewingStand());
+		AdapterManager.addPeripheralAdapter(new AdapterFluidHandler());
+		AdapterManager.addPeripheralAdapter(new AdapterFluidTank());
+		AdapterManager.addPeripheralAdapter(new AdapterFurnace());
 		AdapterManager.addPeripheralAdapter(new AdapterMobSpawner());
+		AdapterManager.addPeripheralAdapter(new AdapterRecordPlayer());
 		AdapterManager.addPeripheralAdapter(new AdapterSign());
 	}
 

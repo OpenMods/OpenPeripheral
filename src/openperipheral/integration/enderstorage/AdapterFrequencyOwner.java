@@ -32,11 +32,16 @@ public class AdapterFrequencyOwner implements IPeripheralAdapter {
 		return colors;
 	}
 
-	@LuaMethod(returnType = LuaType.VOID, onTick = false, description = "Set the frequency of this chest or tank",
-			args = {
-					@Arg(name = "color_left", type = LuaType.NUMBER, description = "The first color"),
-					@Arg(name = "color_middle", type = LuaType.NUMBER, description = "The second color"),
-					@Arg(name = "color_right", type = LuaType.NUMBER, description = "The third color") })
+	@LuaMethod(returnType = LuaType.TABLE, onTick = false, description = "Get the colours active on this chest or tank")
+	public HashMap<Integer, Double> getColours(IComputerAccess computer, TileEntity frequencyOwner) {
+		return getColors(computer, frequencyOwner);
+	}
+
+	@LuaMethod(returnType = LuaType.VOID, onTick = false, description = "Set the frequency of this chest or tank", args = {
+			@Arg(name = "color_left", type = LuaType.NUMBER, description = "The first color"),
+			@Arg(name = "color_middle", type = LuaType.NUMBER, description = "The second color"),
+			@Arg(name = "color_right", type = LuaType.NUMBER, description = "The third color")
+	})
 	public void setColors(IComputerAccess computer, TileEntity frequencyOwner, int color_left, int color_middle, int color_right) throws Exception {
 		// transform the ComputerCraft colours (2^n) into the range 0-15 And
 		// validate they're within this range
@@ -49,7 +54,17 @@ public class AdapterFrequencyOwner implements IPeripheralAdapter {
 		setFreq(frequencyOwner, frequency);
 	}
 
-	@LuaMethod(returnType = LuaType.TABLE, onTick = false, description = "Get the frequency of this chest or tank")
+	@LuaMethod(returnType = LuaType.VOID, onTick = false, description = "Set the frequency of this chest or tank", args = {
+			@Arg(name = "color_left", type = LuaType.NUMBER, description = "The first color"),
+			@Arg(name = "color_middle", type = LuaType.NUMBER, description = "The second color"),
+			@Arg(name = "color_right", type = LuaType.NUMBER, description = "The third color")
+	})
+	public void setColours(IComputerAccess computer, TileEntity frequencyOwner, int colour_left, int colour_middle, int colour_right) throws Exception {
+		setColors(computer, frequencyOwner, colour_left, colour_middle, colour_right);
+	}
+
+	@LuaMethod(
+			returnType = LuaType.TABLE, onTick = false, description = "Get the frequency of this chest or tank")
 	public int getFrequency(IComputerAccess computer, TileEntity frequencyOwner) {
 		return getFreq(frequencyOwner);
 	}

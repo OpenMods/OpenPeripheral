@@ -145,7 +145,7 @@ public class AdapterStargate implements IPeripheralAdapter {
 
 	private void checkGateComplete(TileEntity tile) throws Exception {
 		boolean ringComplete = (Boolean)ReflectionHelper.getProperty(getTargetClass(), tile, new String[] { "isMerged" });
-		if (!ringComplete) throw new Exception("Stargate damaged or incompelte");
+		if (!ringComplete) throw new Exception("Stargate damaged or incomplete");
 	}
 
 	private void validateAddress(TileEntity tile, String address) throws Exception {

@@ -21,6 +21,7 @@ public class ModuleBuildCraft implements IIntegrationModule {
 
 	@Override
 	public void init() {
+		AdapterManager.addPeripheralAdapter(new AdapterMachine());
 		AdapterManager.addPeripheralAdapter(new AdapterPowerReceptor());
 		AdapterManager.addPeripheralAdapter(new AdapterPipe());
 	}

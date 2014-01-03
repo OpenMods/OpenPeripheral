@@ -10,6 +10,7 @@ import openperipheral.integration.mystcraft.ModuleMystcraft;
 import openperipheral.integration.projectred.ModuleProjectRed;
 import openperipheral.integration.railcraft.ModuleRailcraft;
 import openperipheral.integration.sgcraft.ModuleSgCraft;
+import openperipheral.integration.tconstruct.ModuleTConstruct;
 import openperipheral.integration.thaumcraft.ModuleThaumcraft;
 import openperipheral.integration.thermalexpansion.ModuleThermalExpansion;
 import openperipheral.integration.vanilla.AdapterFluidHandler;
@@ -43,6 +44,7 @@ public class OpenPeripheralCore {
 		IntegrationModuleRegistry.registerModule(new ModuleThaumcraft());
 		IntegrationModuleRegistry.registerModule(new ModuleThermalExpansion());
 		IntegrationModuleRegistry.registerModule(new ModuleSgCraft());
+		IntegrationModuleRegistry.registerModule(new ModuleTConstruct());
 
 		IntegrationModuleRegistry.selectLoadedModules();
 		IntegrationModuleRegistry.initAllModules();
