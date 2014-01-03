@@ -27,7 +27,7 @@ public class MethodDeclaration {
 		public final String name;
 		public final String description;
 		public final LuaType luaType;
-		public final Class<?> javaClass;
+		public final Class<?> javaType;
 		public final boolean isVarArg;
 		private final boolean isNullable;
 		private final boolean isOptional;
@@ -37,8 +37,8 @@ public class MethodDeclaration {
 			this.name = arg.name();
 			this.description = arg.description();
 			this.luaType = arg.type();
-			if (isVarArg) this.javaClass = javaClass.getComponentType();
-			else this.javaClass = javaClass;
+			if (isVarArg) this.javaType = javaClass.getComponentType();
+			else this.javaType = javaClass;
 			this.isVarArg = isVarArg;
 			this.isOptional = isOptional;
 			this.isNullable = arg.isNullable() || isOptional;
@@ -47,7 +47,7 @@ public class MethodDeclaration {
 
 		public Object convert(Object o) {
 			if (o == null) return null;
-			return TypeConversionRegistry.fromLua(o, javaClass);
+			return TypeConversionRegistry.fromLua(o, javaType);
 		}
 
 		public Map<String, Object> describe() {
@@ -82,14 +82,15 @@ public class MethodDeclaration {
 		Arg arg = annotations.get(Arg.class);
 		Preconditions.checkNotNull(arg);
 
-		boolean isOptional = forceOptional || annotations.get(Optionals.class) != null;
+		final boolean isOptional = forceOptional || annotations.get(Optionals.class) != null;
 
-		final boolean needsReference = (arg.isNullable() || isOptional) && !isVarArg;
-		Preconditions.checkArgument(!(javaArgType.isPrimitive() && needsReference),
+		ConvertedArgument result = new ConvertedArgument(arg, javaArgType, index, isVarArg, isOptional);
+
+		Preconditions.checkArgument(!(result.javaType.isPrimitive() && result.isNullable),
 				"In method %s arg %s has primitive type %s, but is marked nullable or optional",
-				method, index, javaArgType);
+				method, index, result.javaType);
 
-		return new ConvertedArgument(arg, javaArgType, index, isVarArg, isOptional);
+		return result;
 	}
 
 	public MethodDeclaration(Method method, LuaMethod luaMethod) {
@@ -230,10 +231,11 @@ public class MethodDeclaration {
 				for (ConvertedArgument arg : luaArgs) {
 					if (arg.isVarArg) {
 						int varargSize = Math.max(0, luaValues.length - argIndex);
-						Object vararg = Array.newInstance(arg.javaClass, varargSize);
+						Object vararg = Array.newInstance(arg.javaType, varargSize);
 
 						for (int i = 0; i < varargSize; i++) {
 							Object value = luaValues[argIndex++];
+							Preconditions.checkArgument(arg.isNullable || value != null, "Vararg parameter '%s' has null value, but is not marked as nullable", arg.name);
 							Object converted = arg.convert(value);
 							Array.set(vararg, i, converted);
 						}
