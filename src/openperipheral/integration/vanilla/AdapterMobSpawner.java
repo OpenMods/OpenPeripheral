@@ -7,6 +7,7 @@ import openperipheral.api.LuaType;
 import dan200.computer.api.IComputerAccess;
 
 public class AdapterMobSpawner implements IPeripheralAdapter {
+
 	@Override
 	public Class<?> getTargetClass() {
 		return TileEntityMobSpawner.class;

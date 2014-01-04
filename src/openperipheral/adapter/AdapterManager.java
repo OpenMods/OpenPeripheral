@@ -4,27 +4,15 @@ import java.util.*;
 
 import net.minecraft.tileentity.TileEntity;
 import openmods.Log;
-import openperipheral.adapter.object.IObjectMethodExecutor;
-import openperipheral.adapter.object.LuaObjectWrapper;
-import openperipheral.adapter.object.ObjectAdaptedClass;
-import openperipheral.adapter.object.ObjectAdapterWrapper;
+import openperipheral.adapter.object.*;
 import openperipheral.adapter.peripheral.*;
-import openperipheral.api.IAdapterBase;
-import openperipheral.api.IObjectAdapter;
-import openperipheral.api.IPeripheralAdapter;
-import openperipheral.api.IPeripheralProvider;
+import openperipheral.api.*;
 import openperipheral.util.PeripheralUtils;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Sets;
+import com.google.common.collect.*;
 
-import dan200.computer.api.ComputerCraftAPI;
-import dan200.computer.api.IHostedPeripheral;
-import dan200.computer.api.ILuaObject;
-import dan200.computer.api.IPeripheralHandler;
+import dan200.computer.api.*;
 
 public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodExecutor> {
 

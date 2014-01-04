@@ -5,7 +5,6 @@ import openperipheral.api.*;
 import buildcraft.api.power.IPowerReceptor;
 import dan200.computer.api.IComputerAccess;
 
-@OnTickSafe
 public class AdapterPowerReceptor implements IPeripheralAdapter {
 
 	@Override

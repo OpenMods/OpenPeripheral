@@ -3,10 +3,7 @@ package openperipheral.integration.vanilla;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
-import openperipheral.api.Arg;
-import openperipheral.api.IPeripheralAdapter;
-import openperipheral.api.LuaMethod;
-import openperipheral.api.LuaType;
+import openperipheral.api.*;
 import dan200.computer.api.IComputerAccess;
 
 public class AdapterFluidHandler implements IPeripheralAdapter {

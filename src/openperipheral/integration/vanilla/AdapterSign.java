@@ -1,10 +1,7 @@
 package openperipheral.integration.vanilla;
 
 import net.minecraft.tileentity.TileEntitySign;
-import openperipheral.api.Arg;
-import openperipheral.api.IPeripheralAdapter;
-import openperipheral.api.LuaMethod;
-import openperipheral.api.LuaType;
+import openperipheral.api.*;
 
 import org.apache.commons.lang3.StringUtils;
 

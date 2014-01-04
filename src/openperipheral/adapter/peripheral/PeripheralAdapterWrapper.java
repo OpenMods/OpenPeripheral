@@ -6,15 +6,9 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 import openmods.Log;
-import openperipheral.adapter.AdaptedClass;
-import openperipheral.adapter.AdapterManager;
-import openperipheral.adapter.AdapterWrapper;
-import openperipheral.adapter.MethodDeclaration;
+import openperipheral.adapter.*;
 import openperipheral.adapter.object.IObjectMethodExecutor;
-import openperipheral.api.Include;
-import openperipheral.api.LuaMethod;
-import openperipheral.api.OnTick;
-import openperipheral.api.OnTickSafe;
+import openperipheral.api.*;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
@@ -33,6 +27,7 @@ public abstract class PeripheralAdapterWrapper extends AdapterWrapper<IPeriphera
 	static final String ARG_CONTEXT = "context";
 
 	protected static boolean isIgnoringWarnings(AnnotatedElement element, boolean defaultValue) {
+		if (element == null) return defaultValue;
 		OnTickSafe ignore = element.getAnnotation(OnTickSafe.class);
 		return ignore != null? ignore.value() : defaultValue;
 	}
@@ -72,9 +67,10 @@ public abstract class PeripheralAdapterWrapper extends AdapterWrapper<IPeriphera
 
 	@Override
 	protected Map<String, IPeripheralMethodExecutor> buildMethodMap() {
-
 		final boolean defaultOnTick = isOnTick(adapterClass, false);
-		final boolean defaultIsIgnoringWarnings = isIgnoringWarnings(adapterClass, false);
+
+		final boolean packageIsIgnoringWarnings = isIgnoringWarnings(adapterClass.getPackage(), false);
+		final boolean classIsIgnoringWarnings = isIgnoringWarnings(adapterClass, packageIsIgnoringWarnings);
 
 		Map<String, IPeripheralMethodExecutor> peripheralMethods = buildMethodMap(false, new MethodExecutorFactory<IPeripheralMethodExecutor>() {
 			@Override
@@ -84,7 +80,7 @@ public abstract class PeripheralAdapterWrapper extends AdapterWrapper<IPeriphera
 
 				ExecutionStrategy strategy = onTick? ExecutionStrategy.createOnTickStrategy(targetCls) : ExecutionStrategy.ASYNCHRONOUS;
 
-				if (!(isIgnoringWarnings(method, defaultIsIgnoringWarnings) || strategy.isAlwaysSafe())) {
+				if (!strategy.isAlwaysSafe() && !isIgnoringWarnings(method, classIsIgnoringWarnings)) {
 					Log.warn("Method '%s' is synchronous, but type %s does not provide world instance. Possible runtime crash!", method, targetCls);
 				}
 

@@ -9,10 +9,7 @@ import openperipheral.adapter.AdaptedClass;
 import openperipheral.api.IAttachable;
 import openperipheral.util.PeripheralUtils;
 import openperipheral.util.ResourceMount;
-import dan200.computer.api.IComputerAccess;
-import dan200.computer.api.IHostedPeripheral;
-import dan200.computer.api.ILuaContext;
-import dan200.computer.api.IMount;
+import dan200.computer.api.*;
 
 public class HostedPeripheral implements IHostedPeripheral {
 

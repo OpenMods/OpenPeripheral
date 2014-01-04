@@ -10,7 +10,6 @@ import openmods.utils.InventoryUtils;
 import openperipheral.api.*;
 import dan200.computer.api.IComputerAccess;
 
-@OnTickSafe
 public class AdapterInventory implements IPeripheralAdapter {
 
 	public AdapterInventory() {}

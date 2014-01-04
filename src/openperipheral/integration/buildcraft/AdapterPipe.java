@@ -4,7 +4,6 @@ import openperipheral.api.*;
 import buildcraft.api.transport.IPipe;
 import dan200.computer.api.IComputerAccess;
 
-@OnTickSafe
 public class AdapterPipe implements IPeripheralAdapter {
 
 	@Override

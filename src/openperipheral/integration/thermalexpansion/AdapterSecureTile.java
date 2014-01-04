@@ -2,10 +2,7 @@ package openperipheral.integration.thermalexpansion;
 
 import java.util.Locale;
 
-import openperipheral.api.Arg;
-import openperipheral.api.IPeripheralAdapter;
-import openperipheral.api.LuaMethod;
-import openperipheral.api.LuaType;
+import openperipheral.api.*;
 import cofh.api.tileentity.ISecureTile;
 import cofh.api.tileentity.ISecureTile.AccessMode;
 import dan200.computer.api.IComputerAccess;

@@ -1,10 +1,7 @@
 package openperipheral.integration.thermalexpansion;
 
 import net.minecraftforge.common.ForgeDirection;
-import openperipheral.api.Arg;
-import openperipheral.api.IPeripheralAdapter;
-import openperipheral.api.LuaMethod;
-import openperipheral.api.LuaType;
+import openperipheral.api.*;
 import cofh.api.energy.IEnergyHandler;
 import dan200.computer.api.IComputerAccess;
 

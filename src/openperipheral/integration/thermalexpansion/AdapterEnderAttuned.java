@@ -1,9 +1,6 @@
 package openperipheral.integration.thermalexpansion;
 
-import openperipheral.api.Arg;
-import openperipheral.api.IPeripheralAdapter;
-import openperipheral.api.LuaMethod;
-import openperipheral.api.LuaType;
+import openperipheral.api.*;
 import cofh.api.transport.IEnderAttuned;
 import dan200.computer.api.IComputerAccess;
 

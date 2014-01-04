@@ -5,14 +5,12 @@ import java.util.Map;
 
 import net.minecraft.item.ItemStack;
 import openperipheral.TypeConversionRegistry;
-import openperipheral.api.Arg;
-import openperipheral.api.IPeripheralAdapter;
-import openperipheral.api.LuaMethod;
-import openperipheral.api.LuaType;
+import openperipheral.api.*;
 import dan200.computer.api.IComputerAccess;
 import forestry.api.apiculture.IBeeHousing;
 import forestry.api.genetics.*;
 
+@OnTickSafe
 public class AdapterBeeHousing implements IPeripheralAdapter {
 
 	@Override

@@ -1,11 +1,10 @@
 package openperipheral.integration.tconstruct;
 
-import openperipheral.api.IPeripheralAdapter;
-import openperipheral.api.LuaMethod;
-import openperipheral.api.LuaType;
+import openperipheral.api.*;
 import tconstruct.library.blocks.IDrawbridgeLogicBase;
 import dan200.computer.api.IComputerAccess;
 
+@OnTickSafe
 public class AdapterDrawbridgeLogicBase implements IPeripheralAdapter {
 
 	@Override

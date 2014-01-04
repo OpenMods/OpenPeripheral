@@ -3,10 +3,7 @@ package openperipheral.integration.sgcraft;
 import java.lang.reflect.Field;
 
 import net.minecraft.tileentity.TileEntity;
-import openperipheral.api.Arg;
-import openperipheral.api.IPeripheralAdapter;
-import openperipheral.api.LuaMethod;
-import openperipheral.api.LuaType;
+import openperipheral.api.*;
 import openperipheral.util.ReflectionHelper;
 import dan200.computer.api.IComputerAccess;
 

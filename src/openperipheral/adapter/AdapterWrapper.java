@@ -4,10 +4,7 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import openperipheral.api.Freeform;
-import openperipheral.api.LuaCallable;
-import openperipheral.api.LuaMethod;
-import openperipheral.api.Prefixed;
+import openperipheral.api.*;
 
 import com.google.common.collect.ImmutableMap;
 
