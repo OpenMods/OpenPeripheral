@@ -1,35 +1,61 @@
 args = {...}
+errorLevel = 0
+ 
+function methodDataToString(data, num)
+  local numArgs = #data.args
+  local argString = ""
+  local methodString = "METHOD: "..num.."\n\t"
+  methodString = methodString.."NAME: "..data.name.."\n\t"
+  methodString = methodString.."DESCRIPTION: "..data.description.."\n\t"
+  methodString = methodString.."RETURN TYPE: "..data.returnType.."\n\t"
+  if numArgs > 0 then
+    for j = 1, numArgs do
+      argString = argString.."ARGUMENT: "..j.."\n\t\t\t"
+      argString = argString.."NAME: "..data.args[j].name.."\n\t\t\t"
+      argString = argString.."DESCRIPTION: "..data.args[j].description.."\n\t\t\t"
+      argString = argString.."TYPE: "..data.args[j].type.."\n\t\t"
+    end
+    methodString = methodString.."ARGUMENTS: "..numArgs.."\n\t\t"..argString.."\n"
+  else
+    methodString = methodString.."ARGUMENTS: 0\n\n"
+  end
+  return methodString
+end
+ 
 if #args == 0 then
-  print("usage: documentation <side> (function)")
-  return
+  errorLevel = 1
 elseif #args == 1 then
-  p = peripheral.wrap(args[1])
-  info = p.getAdvancedMethodsData()
-  for k,v in pairs(info) do
-    msg = v.name.."("
-    for k,arg in pairs(v.args) do
-      msg = msg..arg.name..","
-    end
-    if #v.args > 0 then
-      msg = string.sub(msg, 0, #msg - 1)
-    end
-    print(msg..")")
+  p=peripheral.wrap(args[1])
+  methods = p.getAdvancedMethodsData()
+  methodCount = #methods
+  peripheralData = "Peripheral Info\n"
+  for i = 1, methodCount do
+    peripheralData = peripheralData..methodDataToString(methods[i], i)
   end
-else --must be 2 or more
-  p = peripheral.wrap(args[1])
-  info = p.getAdvancedMethodsData()
-  for k,v in pairs(info) do
-   -- print(textutils.serialize(v))
-    if string.lower(args[2]) == string.lower(v.name) then
-      print(v.name..": "..v.description)
-      print("returns: "..string.lower(v.returnType))
-      if #v.args > 0 then
-        print("args: ")
-        for _,arg in pairs(v.args) do
-          print(" - ("..string.lower(arg.type)..")"..arg.name..": "..arg.description)   
-        end
-      end
-     -- print(textutils.serialize(v))
+else --Must be 2 or higher
+  p=peripheral.wrap(args[1])
+  methods = p.getAdvancedMethodsData()
+  methodCount = #methods
+  peripheralData = args[2].." Info\n"
+  isValid = false
+  for i = 1, methodCount do
+    if methods[i].name == args[2] then
+      isValid = true
+      peripheralData = peripheralData..methodDataToString(methods[i], i)
     end
   end
+  if isValid == false then
+    errorLevel = 2
+  end
+end
+ 
+if errorLevel == 2 then
+  print("Invalid Function Name")
+elseif errorLevel == 1 then
+  print("Use \"documentation <side>\" or \"documentation <side> \(function\)\"")
+else -- No error
+  file = fs.open("methods","w")
+  file.writeLine(peripheralData)
+  file.close()
+  print("Method Data was saved to file \"methods\"")
 end
