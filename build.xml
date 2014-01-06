@@ -1,150 +1,44 @@
-<!-- nallar's BuildCraft ant build script edited for OpenPeripheral -->
-<project name="OpenPeripheral" default="main">
-	<property environment="env"/>
-	<!-- Properties -->
-	
-	<property name="env.BUILD_NUMBER"    value="0"/>
+<project name="OpenPeripheralCore" default="build">
+	<property environment="env" />
 
-	<property name="build.dir"           value="build"/>
-	<property name="src.dir"             value="src"/>
+	<import file="openmodslib/common.xml" />
 
-	<property name="download.dir"        value="download"/>
-
-	<property name="classes.dir"         value="${build.dir}/classes"/>
-	<property name="jar.dir"             value="${build.dir}/dist"/>
-
-	<property name="forge.dir"           value="${build.dir}/forge"/>
-	<property name="mcp.dir"             value="${forge.dir}/mcp"/>
-
-	<property name="mcpsrc.dir"          value="${mcp.dir}/src/minecraft"/>
-
-	<property name="mc.version"          value="1.6.4"/>
-	<property name="forge.version"       value="9.11.1.953"/>
-	<property name="mod.version"         value="0.2.1"/>
-	<property name="mod.name"	     value="OpenPeripheral"/>
-	
-	<property name="forge.name"          value="forge-${mc.version}-${forge.version}-src.zip"/>
-
-	<available property="forge-exists" file="${download.dir}/${forge.name}"/>
-
-	<condition property="out-of-date">
-		<not>
-			<and>
-				<available file="${download.dir}/${forge.name}"/>
-				<available file="${mcpsrc.dir}"/>
-			</and>
-		</not>
-	</condition>
-
-	<mkdir dir="${download.dir}"/>
-
-	<!-- Targets -->
-
-	<!-- Clear build directory -->
-	<target name="clean">
-		<delete dir="${build.dir}"/>
+	<target name="set-env">
+		<property name="env.BUILD_NUMBER" value="0" />
+		<property name="env.JOB_NAME" value="OpenPeripheralCore" />
+		<property name="mod.version" value="0.2.1" />
+		<property name="mod.name" value="OpenPeripheralCore" />
+		<property name="mod.dir" value="openperipheral" />
+		<echo message="Starting build for ${mod.name} v${mod.version}" />
 	</target>
 
-	<!-- Set full version -->
-	<target name="initialize-version">
-		<echo message="Starting build for ${mod.name} v${mod.version}"/>
-	</target>
-
-	<!-- Download necessary files -->
-	<target name="download-files" depends="download-forge"/>
-	
-	<!-- Download forge (if it doesn't exist) -->
-	<target name="download-forge" unless="forge-exists" >
-		<get src="http://files.minecraftforge.net/maven/net/minecraftforge/forge/${mc.version}-${forge.version}/${forge.name}" dest="${download.dir}" usetimestamp="True"/>
-	</target>
-
-	<!-- Setup mcp and forge -->
-	<target name="setup" depends="download-files" if="out-of-date">
-	
-		<delete dir="${mcp.dir}"/>
-		<delete dir="${forge.dir}"/>
-
-		<!-- Unzip them -->
-		<unzip dest="${build.dir}" src="${download.dir}/${forge.name}"/>
-
-		<!-- Install forge -->
-		<exec dir="${forge.dir}" executable="cmd" osfamily="windows">
-			<arg line="/c install.cmd"/>
-		</exec>
-
-		<exec dir="${forge.dir}" executable="sh" osfamily="unix">
-			<arg value="install.sh"/>
-		</exec>
-
-	</target>
-
-	<target name="compile" depends="initialize-version,setup">
-
-		<delete dir="${classes.dir}"/>
-		<mkdir dir="${classes.dir}"/>
-		
+	<target name="copy-source" depends="set-env">
 		<copy todir="${mcpsrc.dir}">
-			<fileset dir="${src.dir}"/>
+			<fileset dir="openmodslib/src" />
+			<fileset dir="openmodslib/integration" />
+			<fileset dir="src/" />
+			<fileset dir="integration/" />
 			<filterset>
-				<filter token="VERSION" value="${mod.version}"/>
+				<filter token="VERSION" value="${mod.version}" />
 			</filterset>
 		</copy>
-
-		<!-- Recompile -->
-		<exec dir="${mcp.dir}" executable="cmd" osfamily="windows" failonerror="true" failifexecutionfails="true">
-			<arg line="/c recompile.bat"/>
-		</exec>
-
-		<exec dir="${mcp.dir}" executable="sh" osfamily="unix" failonerror="true" failifexecutionfails="true">
-			<arg value="recompile.sh"/>
-		</exec>
-
-		<!-- Reobfuscate -->
-		<exec dir="${mcp.dir}" executable="cmd" osfamily="windows">
-			<arg line="/c reobfuscate_srg.bat"/>
-		</exec>
-
-		<exec dir="${mcp.dir}" executable="sh" osfamily="unix">
-			<arg value="reobfuscate_srg.sh"/>
-		</exec>
-
-		<!-- Copy classes -->
-		<copy todir="${classes.dir}/openperipheral">
-			<fileset dir="${mcp.dir}/reobf/minecraft/openperipheral" />
-		</copy>
-		
-		<!-- Copy resources -->
-		<copy todir="${classes.dir}/assets/openperipheral">
-			<fileset dir="assets/openperipheral" />
-		</copy>
-
-		<!-- Copy resources -->
-		<copy todir="${classes.dir}">
-			<fileset dir="." includes="mcmod.info" />
-			<filterset>
-				<filter token="VERSION" value="${mod.version}"/>
-			</filterset>
-		</copy>
-
-		<!-- Reset src dir to post-forge-install state -->
-		<delete dir="${mcpsrc.dir}/openperipheral"/>
-
 	</target>
 
-	<!-- Package the compiled files -->
-	<target name="package" depends="compile">
-
-		<delete dir="${jar.dir}"/>
-		<mkdir dir="${jar.dir}"/>
-		<jar destfile="${jar.dir}/${mod.name}-${mod.version}-snapshot-${env.BUILD_NUMBER}-forge${forge.version}.jar" basedir="${classes.dir}"/>
-
-	</target>
-
-	<!-- Default target to run -->
-	<target name="main" depends="package">
-		<copy todir="bin">
-			<fileset dir="${jar.dir}"/>
+	<target name="copy-assets">
+		<copy todir="${classes.dir}/">
+			<fileset dir=".">
+				<include name="assets/**/*" />
+			</fileset>
+			<fileset dir="lua">
+				<include name="**/*" />
+			</fileset>
 		</copy>
 	</target>
 
+	<target name="create-manifest">
+		<mkdir dir="${classes.dir}/META-INF" />
+		<manifest file="${classes.dir}/META-INF/MANIFEST.MF">
+			<attribute name="Manifest-Version" value="1.0" />
+		</manifest>
+	</target>
 </project>

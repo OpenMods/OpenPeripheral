@@ -1,0 +1,57 @@
+--[
+  Made by SinZ and boq
+--]
+args = {...}
+if #args == 0 then
+  print("usage: docs <side> (function)")
+  return
+end
+
+side = args[1]
+p = peripheral.wrap(side)
+
+if not p then
+  print("No peripheral on '" .. side .. "'")
+  return
+end
+
+if not p.getAdvancedMethodsData then
+ print("Peripheral '" .. peripheral.getType(side) .. "' is not OpenPeripheral(TM)")
+ return
+end
+
+info = p.getAdvancedMethodsData()
+
+function argName(arg)
+  if arg.vararg then
+    return arg.name.."..."
+  elseif arg.optional then
+    return arg.name.."?"
+  else
+    return arg.name
+  end
+end
+
+if #args == 1 then
+  for k,v in pairs(info) do
+    args = {}
+    for _,arg in pairs(v.args) do
+      table.insert(args, argName(arg))
+    end
+    print(v.name.."("..table.concat(args,",")..")")
+  end
+else --must be 2 or more
+  for k,v in pairs(info) do
+    if string.lower(args[2]) == string.lower(v.name) then
+      print(v.name..": "..v.description)
+      print("returns: "..string.lower(table.concat(v.returnTypes,',')))
+      if #v.args > 0 then
+        print("args: ")
+        for _,arg in pairs(v.args) do
+          argType = string.lower(arg.type)
+          print(" - ("..argType..")"..argName(arg)..": "..arg.description)   
+        end
+      end
+    end
+  end
+end

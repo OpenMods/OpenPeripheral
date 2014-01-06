@@ -25,5 +25,5 @@ package openperipheral.api;
  */
 
 public interface IPeripheralAdapter extends IAdapterBase {
-	public Class getTargetClass();
+	public Class<?> getTargetClass();
 }

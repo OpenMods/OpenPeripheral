@@ -27,7 +27,7 @@ public interface ITypeConverter {
 	 * @param expected
 	 * @return either null if you're not handling this object, or a valid object
 	 */
-	public Object fromLua(Object obj, Class expected);
+	public Object fromLua(Object obj, Class<?> expected);
 
 	/**
 	 * Convert to a lua friendly format. You can pass most primitives back,

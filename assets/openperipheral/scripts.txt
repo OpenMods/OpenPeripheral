@@ -1,4 +1,0 @@
-twitter
-multiperipheral
-github
-documentation
