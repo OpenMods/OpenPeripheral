@@ -1,6 +1,6 @@
---[
+--[[
   Made by SinZ and boq
---]
+--]]
 args = {...}
 if #args == 0 then
   print("usage: docs <side> (function)")
