@@ -1,4 +1,4 @@
-package openperipheral.integration.tconstruct;
+package openperipheral.integration.tmechworks;
 
 import java.util.Map;
 
@@ -9,7 +9,7 @@ import openmods.Mods;
 import openperipheral.adapter.AdapterManager;
 import openperipheral.api.IIntegrationModule;
 
-public class ModuleTConstruct implements IIntegrationModule {
+public class ModuleTMechworks implements IIntegrationModule {
 
 	@Override
 	public void init() {
@@ -18,7 +18,7 @@ public class ModuleTConstruct implements IIntegrationModule {
 
 	@Override
 	public String getModId() {
-		return Mods.TINKERSCONSTRUCT;
+		return Mods.TINKERSMECHWORKS;
 	}
 
 	@Override

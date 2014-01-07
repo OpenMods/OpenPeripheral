@@ -1,7 +1,7 @@
-package openperipheral.integration.tconstruct;
+package openperipheral.integration.tmechworks;
 
 import openperipheral.api.*;
-import tconstruct.library.blocks.IDrawbridgeLogicBase;
+import tmechworks.lib.blocks.IDrawbridgeLogicBase;
 import dan200.computer.api.IComputerAccess;
 
 @OnTickSafe
