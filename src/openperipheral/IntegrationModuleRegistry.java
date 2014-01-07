@@ -45,8 +45,13 @@ public class IntegrationModuleRegistry {
 	}
 
 	public static void initAllModules() {
-		for (IIntegrationModule mod : IntegrationModuleRegistry.loadedModules())
-			mod.init();
+		for (IIntegrationModule mod : IntegrationModuleRegistry.loadedModules()) {
+			try {
+				mod.init();
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public static void appendEntityInfo(Map<String, Object> map, Entity entity, Vec3 relativePos) {
