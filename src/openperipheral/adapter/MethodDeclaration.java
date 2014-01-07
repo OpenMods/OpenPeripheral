@@ -139,6 +139,8 @@ public class MethodDeclaration {
 		this.returnTypes = meta.returnTypes();
 		this.validateReturn = meta.validateReturn();
 
+		if (validateReturn) validateResultCount();
+
 		final Class<?> methodArgs[] = method.getParameterTypes();
 		final Annotation[][] argsAnnotations = method.getParameterAnnotations();
 		final boolean isVarArg = method.isVarArgs();
@@ -180,6 +182,27 @@ public class MethodDeclaration {
 
 		this.luaArgs = luaArgs.build();
 		this.javaArgs = javaArgs.build();
+	}
+
+	private void validateResultCount() {
+		Class<?> javaReturn = method.getReturnType();
+
+		final int returnLength = returnTypes.length;
+
+		for (LuaType t : returnTypes)
+			Preconditions.checkArgument(t != LuaType.VOID, "Method '%s' declares Void as return type. Use empty list instead.", method);
+
+		if (javaReturn == void.class) {
+			Preconditions.checkArgument(returnLength == 0, "Method '%s' returns nothing, but declares at least one Lua result", method);
+		}
+
+		if (returnLength == 0) {
+			Preconditions.checkArgument(javaReturn == void.class, "Method '%s' returns '%s', but declares no Lua results", method, javaReturn);
+		}
+
+		if (returnLength > 1) {
+			Preconditions.checkArgument(javaReturn == IMultiReturn.class, "Method '%s' declared more than one Lua result, but returns single '%s' instead of '%s'", method, javaReturn, IMultiReturn.class);
+		}
 	}
 
 	private Object[] validateResult(Object... result) {
