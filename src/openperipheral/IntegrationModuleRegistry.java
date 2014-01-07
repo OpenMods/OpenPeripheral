@@ -25,7 +25,6 @@ public class IntegrationModuleRegistry {
 	}
 
 	public static void selectLoadedModules() {
-
 		selectedModules.put("vanilla", new ModuleVanilla());
 
 		for (IIntegrationModule module : registeredModules) {

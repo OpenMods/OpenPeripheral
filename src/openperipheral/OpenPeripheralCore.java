@@ -13,7 +13,6 @@ import openperipheral.integration.sgcraft.ModuleSgCraft;
 import openperipheral.integration.tconstruct.ModuleTConstruct;
 import openperipheral.integration.thaumcraft.ModuleThaumcraft;
 import openperipheral.integration.thermalexpansion.ModuleThermalExpansion;
-import openperipheral.integration.vanilla.AdapterFluidHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -31,8 +30,6 @@ public class OpenPeripheralCore {
 
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent evt) {
-		AdapterManager.addPeripheralAdapter(new AdapterFluidHandler());
-
 		IntegrationModuleRegistry.registerModule(new ModuleAppEng());
 		IntegrationModuleRegistry.registerModule(new ModuleIC2());
 		IntegrationModuleRegistry.registerModule(new ModuleEnderStorage());
