@@ -51,6 +51,7 @@ public class PeripheralExternalAdapterWrapper extends PeripheralAdapterWrapper {
 
 	@Override
 	protected void validateArgTypes(MethodDeclaration decl) {
+		decl.checkJavaArgNames(ARG_COMPUTER, ARG_CONTEXT, ARG_TARGET);
 		decl.checkJavaArgType(ARG_COMPUTER, IComputerAccess.class);
 		decl.checkJavaArgType(ARG_CONTEXT, ILuaContext.class);
 		decl.checkJavaArgType(ARG_TARGET, targetCls);

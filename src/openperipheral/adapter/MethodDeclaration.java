@@ -14,9 +14,7 @@ import openperipheral.api.*;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
+import com.google.common.collect.*;
 
 public class MethodDeclaration {
 
@@ -285,11 +283,17 @@ public class MethodDeclaration {
 		Preconditions.checkArgument(prev == null || prev == index, "Trying to replace '%s' mapping from  %s, got %s", name, prev, index);
 	}
 
+	public void checkJavaArgNames(String... allowedNames) {
+		Set<String> allowed = ImmutableSet.copyOf(allowedNames);
+		Set<String> unknown = Sets.difference(namedArgs.keySet(), allowed);
+		Preconditions.checkState(unknown.isEmpty(), "Unknown named arg(s) %s in method '%s'. Allowed args: %s", unknown, method, allowed);
+	}
+
 	public void checkJavaArgType(String name, Class<?> cls) {
 		Integer index = namedArgs.get(name);
 		if (index != null) {
 			final Class<?> expected = javaArgs.get(index);
-			Preconditions.checkArgument(expected.isAssignableFrom(cls), "Invalid argument type, was %s, got %s", expected, cls);
+			Preconditions.checkArgument(expected.isAssignableFrom(cls), "Invalid argument type in method %s, was %s, got %s", method, expected, cls);
 		}
 	}
 

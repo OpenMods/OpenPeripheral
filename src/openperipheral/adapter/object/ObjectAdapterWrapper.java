@@ -64,6 +64,7 @@ public abstract class ObjectAdapterWrapper extends AdapterWrapper<IObjectMethodE
 
 		@Override
 		protected void validateArgTypes(MethodDeclaration decl) {
+			decl.checkJavaArgNames(ARG_CONTEXT, ARG_TARGET);
 			decl.checkJavaArgType(ARG_CONTEXT, ILuaContext.class);
 			decl.checkJavaArgType(ARG_TARGET, targetCls);
 		}
@@ -91,6 +92,7 @@ public abstract class ObjectAdapterWrapper extends AdapterWrapper<IObjectMethodE
 
 		@Override
 		protected void validateArgTypes(MethodDeclaration decl) {
+			decl.checkJavaArgNames(ARG_CONTEXT);
 			decl.checkJavaArgType(ARG_CONTEXT, ILuaContext.class);
 		}
 
