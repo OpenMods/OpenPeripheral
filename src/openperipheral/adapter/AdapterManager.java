@@ -125,7 +125,13 @@ public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodEx
 	}
 
 	public void addAdapter(A adapter) {
-		final AdapterWrapper<E> wrapper = wrapExternalAdapter(adapter);
+		final AdapterWrapper<E> wrapper;
+		try {
+			wrapper = wrapExternalAdapter(adapter);
+		} catch (Throwable e) {
+			Log.warn(e, "Something went terribly wrong while adding adapter '%s'. It will be disabled", adapter.getClass());
+			return;
+		}
 		final Class<?> targetCls = wrapper.targetCls;
 		Preconditions.checkArgument(!Object.class.equals(wrapper.targetCls), "Can't add adapter for Object class");
 
