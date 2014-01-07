@@ -12,7 +12,7 @@ import openperipheral.api.IIntegrationModule;
 public class ModuleTConstruct implements IIntegrationModule {
 	@Override
 	public void init() {
-		AdapterManager.addPeripheralAdapter(new AdapterDrawbridgeLogicBase());
+		//AdapterManager.addPeripheralAdapter(new AdapterDrawbridgeLogicBase());
 	}
 
 	@Override
