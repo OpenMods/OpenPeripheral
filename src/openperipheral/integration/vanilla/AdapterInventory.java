@@ -184,4 +184,5 @@ public class AdapterInventory implements IPeripheralAdapter {
 		if (slot < 0 || slot >= invent.getSizeInventory()) { throw new Exception("Invalid slot number"); }
 		invent.setInventorySlotContents(slot, null);
 	}
+
 }

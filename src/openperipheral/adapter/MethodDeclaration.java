@@ -42,7 +42,9 @@ public class MethodDeclaration {
 
 		public Object convert(Object o) {
 			if (o == null) return null;
-			return TypeConversionRegistry.fromLua(o, javaType);
+			Object converted = TypeConversionRegistry.fromLua(o, javaType);
+			Preconditions.checkNotNull(converted, "Failed to convert arg '%s' value '%s' to '%s'", name, o, javaType.getSimpleName());
+			return converted;
 		}
 
 		public Map<String, Object> describe() {

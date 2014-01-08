@@ -1,7 +1,6 @@
 package openperipheral;
 
-import java.util.List;
-import java.util.Map;
+import java.util.Deque;
 import java.util.Set;
 
 import openperipheral.api.ITypeConverter;
@@ -14,20 +13,24 @@ import dan200.computer.api.ILuaObject;
 
 public class TypeConversionRegistry {
 
-	private static final List<ITypeConverter> CONVENTERS = Lists.newArrayList();
+	private static final Deque<ITypeConverter> CONVENTERS = Lists.newLinkedList();
 
 	static {
-		CONVENTERS.add(new ConverterArray());
-		CONVENTERS.add(new ConverterList());
-		CONVENTERS.add(new ConverterDouble());
-		CONVENTERS.add(new ConverterItemStack());
-		CONVENTERS.add(new ConverterFluidTankInfo());
 		CONVENTERS.add(new ConverterForgeDirection());
 		CONVENTERS.add(new ConverterFluidTankInfo());
+		CONVENTERS.add(new ConverterFluidTankInfo());
+		CONVENTERS.add(new ConverterItemStack());
+
+		// DO NOT REORDER ANYTHING BELOW (unless you have good reason)
+		CONVENTERS.add(new ConverterArray());
+		CONVENTERS.add(new ConverterList());
+		CONVENTERS.add(new ConverterMap());
+		CONVENTERS.add(new ConverterNumber());
+		CONVENTERS.add(new ConventerString());
 	}
 
 	public static void registerTypeConverter(ITypeConverter converter) {
-		CONVENTERS.add(converter);
+		CONVENTERS.addFirst(converter);
 	}
 
 	private static final Set<Class<?>> WRAPPER_TYPES = Sets.newHashSet();
@@ -49,13 +52,13 @@ public class TypeConversionRegistry {
 		return WRAPPER_TYPES.contains(clazz);
 	}
 
-	public static Object fromLua(Object obj, Class<?> type) {
+	public static Object fromLua(Object obj, Class<?> expected) {
 		for (ITypeConverter converter : CONVENTERS) {
-			Object response = converter.fromLua(obj, type);
-			if (response != null) { return response; }
+			Object response = converter.fromLua(obj, expected);
+			if (response != null) return response;
 		}
 
-		return obj;
+		return null;
 	}
 
 	public static Object toLua(Object obj) {
@@ -66,11 +69,8 @@ public class TypeConversionRegistry {
 			if (response != null) return response;
 		}
 
-		if (obj instanceof Map ||
-				obj.getClass().isPrimitive() ||
-				isWrapperType(obj.getClass())) return obj;
-
-		return (obj instanceof Number)? ((Number)obj).doubleValue() : obj.toString();
+		// should never get here, since ConverterString is catch-all
+		throw new IllegalStateException("Conversion failed on value " + obj);
 	}
 
 }
