@@ -5,11 +5,10 @@ import java.util.concurrent.Callable;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import openmods.Log;
 import openperipheral.TickHandler;
 import openperipheral.api.IWorldProvider;
 import openperipheral.util.PrettyPrint;
-
-import org.apache.commons.lang3.ArrayUtils;
 
 import com.google.common.base.Preconditions;
 
@@ -22,6 +21,35 @@ public abstract class ExecutionStrategy {
 	public boolean isAlwaysSafe() {
 		return true;
 	}
+	
+	public static Object[] wrap(Object... args) {
+		return args;
+	}
+
+	private static class Responder {
+		private final IComputerAccess access;
+		private boolean nobodyLovesMe;
+
+		private Responder(IComputerAccess access) {
+			this.access = access;
+		}
+
+		public synchronized void tooLate() {
+			nobodyLovesMe = true;
+		}
+
+		public synchronized void queueEvent(String event, Object... args) {
+			if (nobodyLovesMe) {
+				Log.warn("Ignoring event '%s', args='%s'. (sob)", event, Arrays.toString(args));
+			} else {
+				try {
+					access.queueEvent(event, args);
+				} catch (Exception e) {
+					Log.warn(e, "Failed to queue response '%s', args='%s'", event, Arrays.toString(args));
+				}
+			}
+		}
+	}
 
 	private abstract static class OnTick<T> extends ExecutionStrategy {
 
@@ -31,10 +59,12 @@ public abstract class ExecutionStrategy {
 		public abstract World getWorld(T target);
 
 		@Override
-		public Object[] execute(Object target, final IComputerAccess computer, ILuaContext context, final Callable<Object[]> callable) throws Exception {
+		public Object[] execute(Object target, IComputerAccess computer, ILuaContext context, final Callable<Object[]> callable) throws Exception {
 			@SuppressWarnings("unchecked")
 			World world = getWorld((T)target);
 			Preconditions.checkNotNull(world, "Trying to execute OnTick method, but no available world");
+
+			final Responder responder = new Responder(computer);
 			TickHandler.addTickCallback(world, new Runnable() {
 				@Override
 				public void run() {
@@ -42,19 +72,24 @@ public abstract class ExecutionStrategy {
 					// then stick it into an event
 					try {
 						Object[] response = callable.call();
-						computer.queueEvent(EVENT_SUCCESS, response);
+						responder.queueEvent(EVENT_SUCCESS, response);
 					} catch (Throwable e) {
-						computer.queueEvent(EVENT_ERROR, ArrayUtils.toArray(PrettyPrint.getMessageForThrowable(e)));
+						responder.queueEvent(EVENT_ERROR, wrap(PrettyPrint.getMessageForThrowable(e)));
 					}
 				}
 			});
 
 			// while we don't have an OpenPeripheral event
 			while (true) {
-				Object[] event = context.pullEvent(null);
-				String eventName = (String)event[0];
-				if (eventName.equals(EVENT_ERROR)) throw new RuntimeException((String)event[1]);
-				else if (eventName.equals(EVENT_SUCCESS)) return Arrays.copyOfRange(event, 1, event.length);
+				try {
+					Object[] event = context.pullEvent(null);
+					String eventName = (String)event[0];
+					if (eventName.equals(EVENT_ERROR)) throw new RuntimeException((String)event[1]);
+					else if (eventName.equals(EVENT_SUCCESS)) return Arrays.copyOfRange(event, 1, event.length);
+				} catch (InterruptedException e) {
+					responder.tooLate();
+					throw e;
+				}
 			}
 		}
 	}
