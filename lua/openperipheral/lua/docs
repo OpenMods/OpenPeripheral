@@ -1,14 +1,14 @@
 --[[
   Made by SinZ and boq
 --]]
-args = {...}
+local args = {...}
 if #args == 0 then
   print("usage: docs <side> (function)")
   return
 end
 
-side = args[1]
-p = peripheral.wrap(side)
+local side = args[1]
+local p = peripheral.wrap(side)
 
 if not p then
   print("No peripheral on '" .. side .. "'")
@@ -20,7 +20,7 @@ if not p.getAdvancedMethodsData then
  return
 end
 
-info = p.getAdvancedMethodsData()
+local info = p.getAdvancedMethodsData()
 
 function argName(arg)
   if arg.vararg then
@@ -42,14 +42,13 @@ if #args == 1 then
   end
 else --must be 2 or more
   for k,v in pairs(info) do
-    if string.lower(args[2]) == string.lower(v.name) then
+    if args[2]:lower() == v.name:lower() then
       print(v.name..": "..v.description)
       print("returns: "..string.lower(table.concat(v.returnTypes,',')))
       if #v.args > 0 then
         print("args: ")
         for _,arg in pairs(v.args) do
-          argType = string.lower(arg.type)
-          print(" - ("..argType..")"..argName(arg)..": "..arg.description)   
+          print(" - ("..arg.type:lower()..")"..argName(arg)..": "..arg.description)   
         end
       end
     end
