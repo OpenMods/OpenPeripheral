@@ -22,8 +22,30 @@ public class ReflectionHelper {
 		}
 	}
 
-	public Object nullValue(Class<?> cls) {
+	private static class TypeMarker {
+		public final Class<?> cls;
+		public final Object value;
+
+		private TypeMarker(Class<?> cls, Object value) {
+			this.cls = cls;
+			this.value = value;
+		}
+	}
+
+	public static Object nullValue(Class<?> cls) {
 		return new NullMarker(cls);
+	}
+
+	public static Object typed(Object value, Class<?> cls) {
+		return new TypeMarker(cls, value);
+	}
+
+	public static Object primitive(int value) {
+		return new TypeMarker(int.class, value);
+	}
+
+	public static Object primitive(boolean value) {
+		return new TypeMarker(boolean.class, value);
 	}
 
 	public static Object getProperty(Class<?> klazz, Object instance, String... fields) {
@@ -49,17 +71,19 @@ public class ReflectionHelper {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static <T> T call(Class<?> klazz, Object instance, String[] methodNames, Object... args) {
+	public static <T> T call(Class<?> klazz, Object instance, String[] methodNames, Object... args) {
 		Method m = getMethod(klazz, methodNames, args);
 		Preconditions.checkNotNull(m, "Method %s not found", Arrays.toString(methodNames));
 
 		for (int i = 0; i < args.length; i++) {
 			final Object arg = args[i];
 			if (arg instanceof NullMarker) args[i] = null;
+			if (arg instanceof TypeMarker) args[i] = ((TypeMarker)arg).value;
 		}
 
+		m.setAccessible(true);
 		try {
-			return (T)m.invoke(instance, args.length);
+			return (T)m.invoke(instance, args);
 		} catch (Exception e) {
 			throw Throwables.propagate(e);
 		}
@@ -70,11 +94,22 @@ public class ReflectionHelper {
 		Class<?> argTypes[] = new Class<?>[args.length];
 		for (int i = 0; i < args.length; i++) {
 			final Object arg = args[i];
-			argTypes[i] = (arg instanceof NullMarker)? ((NullMarker)arg).cls : arg.getClass();
+			if (arg instanceof NullMarker) argTypes[i] = ((NullMarker)arg).cls;
+			else if (arg instanceof TypeMarker) argTypes[i] = ((TypeMarker)arg).cls;
+			else argTypes[i] = arg.getClass();
 		}
 
 		for (String name : methodNames) {
 			Method result = getDeclaredMethod(klazz, name, argTypes);
+			if (result != null) return result;
+		}
+		return null;
+	}
+
+	public static Method getMethod(Class<?> klazz, String[] methodNames, Class<?>... types) {
+		if (klazz == null) return null;
+		for (String name : methodNames) {
+			Method result = getDeclaredMethod(klazz, name, types);
 			if (result != null) return result;
 		}
 		return null;
@@ -128,5 +163,4 @@ public class ReflectionHelper {
 			throw Throwables.propagate(e);
 		}
 	}
-
 }

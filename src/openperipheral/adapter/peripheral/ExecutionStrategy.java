@@ -2,6 +2,7 @@ package openperipheral.adapter.peripheral;
 
 import java.util.Arrays;
 import java.util.concurrent.Callable;
+import java.util.logging.Level;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -21,7 +22,7 @@ public abstract class ExecutionStrategy {
 	public boolean isAlwaysSafe() {
 		return true;
 	}
-	
+
 	public static Object[] wrap(Object... args) {
 		return args;
 	}
@@ -74,6 +75,7 @@ public abstract class ExecutionStrategy {
 						Object[] response = callable.call();
 						responder.queueEvent(EVENT_SUCCESS, response);
 					} catch (Throwable e) {
+						Log.log(Level.FINE, e, "Error during Lua call execution");
 						responder.queueEvent(EVENT_ERROR, wrap(PrettyPrint.getMessageForThrowable(e)));
 					}
 				}

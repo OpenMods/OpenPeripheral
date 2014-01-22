@@ -19,7 +19,7 @@ public class AdapterTileLamp implements IPeripheralAdapter {
 	})
 	public boolean setColor(IComputerAccess computer, TileEntity tile, int colour) {
 		try {
-			return ReflectionHelper.<Boolean> call(tile, "setColor", colour);
+			return ReflectionHelper.<Boolean> call(tile, "setColor", ReflectionHelper.primitive(colour));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
