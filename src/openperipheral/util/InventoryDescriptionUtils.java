@@ -4,15 +4,11 @@ import java.util.Map;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import openperipheral.IntegrationModuleRegistry;
 
 import com.google.common.collect.Maps;
 
 public class InventoryDescriptionUtils {
-
-	public static final String FACTORIZATION_BARREL_CLASS = "factorization.common.TileEntityBarrel";
 
 	public static String getNameForItemStack(ItemStack is) {
 		String name = "Unknown";
@@ -52,17 +48,6 @@ public class InventoryDescriptionUtils {
 		Map<Integer, Map<String, Object>> map = Maps.newHashMap();
 		for (int i = 0; i < inventory.getSizeInventory(); i++) {
 			map.put((i + 1), itemstackToMap(inventory.getStackInSlot(i)));
-		}
-
-		if (inventory.getClass().getName() == FACTORIZATION_BARREL_CLASS) {
-			try {
-				TileEntity barrel = (TileEntity)inventory;
-				NBTTagCompound compound = new NBTTagCompound();
-				barrel.writeToNBT(compound);
-				Map<String, Object> firstStack = map.get(1);
-				firstStack.put("size", compound.getInteger("item_count"));
-				firstStack.put("maxStack", compound.getInteger("upgrade") == 1? 65536 : 4096);
-			} catch (Exception e) {}
 		}
 		return map;
 	}

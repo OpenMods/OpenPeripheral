@@ -4,11 +4,10 @@ import java.util.List;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import openmods.utils.ReflectionHelper;
 import openperipheral.api.IPeripheralAdapter;
 import openperipheral.api.LuaMethod;
 import openperipheral.api.LuaType;
-import openperipheral.util.CallWrapper;
-import openperipheral.util.ReflectionHelper;
 import dan200.computer.api.IComputerAccess;
 
 public class AdapterTileController implements IPeripheralAdapter {
@@ -21,7 +20,7 @@ public class AdapterTileController implements IPeripheralAdapter {
 
 	@LuaMethod(description = "Get the current job list", returnType = LuaType.TABLE)
 	public List<ItemStack> getJobList(IComputerAccess computer, TileEntity controller) {
-		return new CallWrapper<List<ItemStack>>().call(controller, "getJobList");
+		return ReflectionHelper.call(controller, "getJobList");
 	}
 
 }

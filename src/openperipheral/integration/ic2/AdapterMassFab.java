@@ -1,9 +1,9 @@
 package openperipheral.integration.ic2;
 
+import openmods.utils.ReflectionHelper;
 import openperipheral.api.IPeripheralAdapter;
 import openperipheral.api.LuaMethod;
 import openperipheral.api.LuaType;
-import openperipheral.util.ReflectionHelper;
 import dan200.computer.api.IComputerAccess;
 
 public class AdapterMassFab implements IPeripheralAdapter {
@@ -16,7 +16,7 @@ public class AdapterMassFab implements IPeripheralAdapter {
 
 	@LuaMethod(onTick = false, description = "Get the current progress as a percentage", returnType = LuaType.NUMBER)
 	public double getProgress(IComputerAccess computer, Object massfab) {
-		int energy = (Integer)ReflectionHelper.getProperty("", massfab, "energy");
+		double energy = (Double)ReflectionHelper.getProperty(CLAZZ, massfab, "energy");
 		return Math.min(energy / 10000, 100);
 	}
 

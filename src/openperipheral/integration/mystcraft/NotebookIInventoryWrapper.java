@@ -3,111 +3,98 @@ package openperipheral.integration.mystcraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import openperipheral.util.CallWrapper;
-import cpw.mods.fml.common.FMLLog;
+import openmods.utils.ReflectionHelper;
+
+import org.apache.commons.lang3.ArrayUtils;
+
+import com.google.common.base.Preconditions;
 
 public class NotebookIInventoryWrapper implements IInventory {
 
-	private static final String QUALIFIED_NAME_INVENTORY_NOTEBOOK = "com.xcompwiz.mystcraft.inventory.InventoryNotebook";
+	private static final Class<?> INVENTORY_CLASS = ReflectionHelper.getClass("com.xcompwiz.mystcraft.inventory.InventoryNotebook");
 
-	private Object notebook;
-	public Class<?> inventoryNotebookClass;
+	private ItemStack notebook;
 
-	public NotebookIInventoryWrapper(ItemStack notebook) throws ClassNotFoundException {
+	public NotebookIInventoryWrapper(ItemStack notebook) {
+		Preconditions.checkNotNull(notebook, "No notebook");
 		this.notebook = notebook;
-		this.inventoryNotebookClass = Class.forName(QUALIFIED_NAME_INVENTORY_NOTEBOOK);
+	}
+
+	public <T> T callOnNotebook(String method, Object... extras) {
+		Object args[] = new Object[] { notebook };
+		if (extras.length > 0) args = ArrayUtils.addAll(args, extras);
+		return ReflectionHelper.callStatic(INVENTORY_CLASS, method, args);
 	}
 
 	@Override
 	public int getSizeInventory() {
-		FMLLog.warning("NotebookIInventoryWrapper.getSizeInventory");
-		return new CallWrapper<Integer>().call(inventoryNotebookClass, "getLargestSlotId", notebook) + 2;
+		Integer slotId = callOnNotebook("getLargestSlotId");
+		return slotId + 1;
 	}
 
 	@Override
 	public ItemStack getStackInSlot(int i) {
-		FMLLog.warning("NotebookIInventoryWrapper.getStackInSlot(%d)", i);
-		return new CallWrapper<ItemStack>().call(inventoryNotebookClass, "getItem", notebook, i);
+		return callOnNotebook("getItem", ReflectionHelper.primitive(i));
 	}
 
 	@Override
-	public ItemStack decrStackSize(int i, int j) {
-		FMLLog.warning("NotebookIInventoryWrapper.decrStackSize(%d,%d)", i, j);
-		ItemStack stack = getStackInSlot(i);
-		if (stack != null) {
-			ItemStack returning = stack.copy();
-			stack = stack.copy();
-			stack.stackSize -= Math.min(j, stack.stackSize);
-			returning.stackSize = returning.stackSize - stack.stackSize;
-			if (stack.stackSize <= 0) {
-				stack = null;
-			}
-			setInventorySlotContents(i, stack);
-			return returning;
-		}
-		return null;
+	public ItemStack decrStackSize(int slot, int amount) {
+		ItemStack stack = getStackInSlot(slot);
+		if (stack == null) return null;
+		if (stack.stackSize < amount) amount = stack.stackSize;
+
+		ItemStack returning = stack.copy();
+		returning.stackSize = amount;
+
+		stack.stackSize -= amount;
+		if (stack.stackSize <= 0) setInventorySlotContents(slot, stack);
+
+		return returning;
+	}
+
+	@Override
+	public void setInventorySlotContents(int slot, ItemStack pageStack) {
+		callOnNotebook("setItem", ReflectionHelper.primitive(slot), ReflectionHelper.typed(pageStack, ItemStack.class));
 	}
 
 	@Override
 	public ItemStack getStackInSlotOnClosing(int i) {
-		FMLLog.warning("NotebookIInventoryWrapper.getStackInSlotOnClosing(%d)", i);
-		ItemStack stack = getStackInSlot(i);
-		setInventorySlotContents(i, null);
-		return stack;
-	}
-
-	@Override
-	public void setInventorySlotContents(int slot, ItemStack itemStack) {
-		FMLLog.warning("NotebookIInventoryWrapper.setInventorySlotContents(%d,%s)", slot, itemStack == null? "null" : itemStack.toString());
-		new CallWrapper<Void>().call(inventoryNotebookClass, "setItem", notebook, slot, itemStack);
+		throw new UnsupportedOperationException("Not implemented");
 	}
 
 	@Override
 	public String getInvName() {
-		FMLLog.warning("NotebookIInventoryWrapper.getInvName()");
-		return new CallWrapper<String>().call(inventoryNotebookClass, "getName", notebook);
+		return callOnNotebook("getName");
 	}
 
 	@Override
 	public boolean isInvNameLocalized() {
-		FMLLog.warning("NotebookIInventoryWrapper.isInvNameLocalized()");
-		return true;
+		return false;
 	}
 
 	@Override
 	public int getInventoryStackLimit() {
-		FMLLog.warning("NotebookIInventoryWrapper.getInventoryStackLimit()");
 		return Integer.MAX_VALUE; // I don't believe there is any limit to the
 									// storage of a notebook
 	}
 
 	@Override
-	public void onInventoryChanged() {
-		FMLLog.warning("NotebookIInventoryWrapper.onInventoryChanged()");
-
-	}
+	public void onInventoryChanged() {}
 
 	@Override
 	public boolean isUseableByPlayer(EntityPlayer entityplayer) {
-		FMLLog.warning("NotebookIInventoryWrapper.isUseableByPlayer(%s)", entityplayer.toString());
 		return true;
 	}
 
 	@Override
-	public void openChest() {
-		FMLLog.warning("NotebookIInventoryWrapper.openChest()");
-
-	}
+	public void openChest() {}
 
 	@Override
-	public void closeChest() {
-		FMLLog.warning("NotebookIInventoryWrapper.closeChest()");
-	}
+	public void closeChest() {}
 
 	@Override
-	public boolean isItemValidForSlot(int i, ItemStack itemstack) {
-		FMLLog.warning("NotebookIInventoryWrapper.isItemValidForSlot(%d,%s)", i, itemstack.toString());
-		return new CallWrapper<Boolean>().call(inventoryNotebookClass, "isItemValid", itemstack);
+	public boolean isItemValidForSlot(int slot, ItemStack itemstack) {
+		return callOnNotebook("isItemValid");
 	}
 
 }

@@ -6,6 +6,7 @@ import java.util.Map;
 
 import openperipheral.api.*;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 
 public abstract class AdapterWrapper<E extends IMethodExecutor> {
@@ -54,7 +55,7 @@ public abstract class AdapterWrapper<E extends IMethodExecutor> {
 		ImmutableMap.Builder<String, E> methods = ImmutableMap.builder();
 
 		final boolean clsIsFreeform = isFreeform(adapterClass, defaultIsFreeform);
-		final Prefixed prefixes = adapterClass.getAnnotation(Prefixed.class);
+		final Prefixed classPrefixes = adapterClass.getAnnotation(Prefixed.class);
 
 		for (Method method : adapterClass.getMethods()) {
 			MethodDeclaration decl = createDeclaration(method);
@@ -62,10 +63,12 @@ public abstract class AdapterWrapper<E extends IMethodExecutor> {
 			if (decl != null) {
 				E exec = factory.createExecutor(method, decl);
 
+				final Prefixed methodPrefixes = method.getAnnotation(Prefixed.class);
+				final Prefixed actualPrefixes = methodPrefixes != null? methodPrefixes : classPrefixes;
 				if (!isFreeform(method, clsIsFreeform)) {
-					if (prefixes == null) nameDefaultParameters(decl);
-					else namesFromAnnotation(prefixes, decl);
-				}
+					if (actualPrefixes == null) nameDefaultParameters(decl);
+					else namesFromAnnotation(actualPrefixes, decl);
+				} else Preconditions.checkState(methodPrefixes == null, "Method '%s' has mutually exclusive annotations @Prefixed and @Freeform");
 
 				decl.validate();
 				validateArgTypes(decl);

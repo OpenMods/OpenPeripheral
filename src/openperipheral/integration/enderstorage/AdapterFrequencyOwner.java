@@ -1,11 +1,13 @@
 package openperipheral.integration.enderstorage;
 
-import java.util.HashMap;
-
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import openmods.utils.ColorUtils;
+import openmods.utils.ReflectionHelper;
+import openmods.utils.ColorUtils.ColorMeta;
 import openperipheral.api.*;
-import openperipheral.util.ReflectionHelper;
+
+import com.google.common.base.Preconditions;
+
 import dan200.computer.api.IComputerAccess;
 
 public class AdapterFrequencyOwner implements IPeripheralAdapter {
@@ -16,21 +18,31 @@ public class AdapterFrequencyOwner implements IPeripheralAdapter {
 		return CLAZZ;
 	}
 
-	@LuaMethod(returnType = LuaType.TABLE, onTick = false, description = "Get the colours active on this chest or tank")
-	public HashMap<Integer, Double> getColors(IComputerAccess computer, TileEntity frequencyOwner) {
+	@LuaCallable(returnTypes = { LuaType.NUMBER, LuaType.NUMBER, LuaType.NUMBER },
+			description = "Get the colours active on this chest or tank")
+	public IMultiReturn getColors(IComputerAccess computer, TileEntity frequencyOwner) {
 		// get the current frequency
 		int frequency = getFreq(frequencyOwner);
 		// return a map of the frequency in ComputerCraft colour format
-		HashMap<Integer, Double> colors = new HashMap<Integer, Double>(3);
-		// convert to ComputerCraft color format by applying 2^n
-		colors.put(1, Math.pow(2, (frequency >> 8 & 0xF)));
-		colors.put(2, Math.pow(2, (frequency >> 4 & 0xF)));
-		colors.put(3, Math.pow(2, (frequency & 0xF)));
-		return colors;
+		return OpenPeripheralAPI.wrap(
+				1 << (frequency >> 8 & 0xF),
+				1 << (frequency >> 4 & 0xF),
+				1 << (frequency >> 0 & 0xF));
 	}
 
-	@LuaMethod(returnType = LuaType.TABLE, onTick = false, description = "Get the colours active on this chest or tank")
-	public HashMap<Integer, Double> getColours(IComputerAccess computer, TileEntity frequencyOwner) {
+	@LuaCallable(returnTypes = { LuaType.STRING, LuaType.STRING, LuaType.STRING },
+			description = "Get the colours active on this chest or tank")
+	public IMultiReturn getColorNames(IComputerAccess computer, TileEntity frequencyOwner) {
+		int frequency = getFreq(frequencyOwner);
+		return OpenPeripheralAPI.wrap(
+				colorToName(frequency >> 8 & 0xF),
+				colorToName(frequency >> 4 & 0xF),
+				colorToName(frequency >> 0 & 0xF));
+	}
+
+	@LuaCallable(returnTypes = { LuaType.NUMBER, LuaType.NUMBER, LuaType.NUMBER },
+			description = "Get the colours active on this chest or tank")
+	public IMultiReturn getColours(IComputerAccess computer, TileEntity frequencyOwner) {
 		return getColors(computer, frequencyOwner);
 	}
 
@@ -39,12 +51,27 @@ public class AdapterFrequencyOwner implements IPeripheralAdapter {
 			@Arg(name = "color_middle", type = LuaType.NUMBER, description = "The second color"),
 			@Arg(name = "color_right", type = LuaType.NUMBER, description = "The third color")
 	})
-	public void setColors(IComputerAccess computer, TileEntity frequencyOwner, int color_left, int color_middle, int color_right) throws Exception {
+	public void setColors(IComputerAccess computer, TileEntity frequencyOwner, int colorLeft, int colorMiddle, int colorRight) {
 		// transform the ComputerCraft colours (2^n) into the range 0-15 And
 		// validate they're within this range
-		int high = parseComputerCraftColor(color_left);
-		int med = parseComputerCraftColor(color_middle);
-		int low = parseComputerCraftColor(color_right);
+		int high = parseComputerCraftColor(colorLeft);
+		int med = parseComputerCraftColor(colorMiddle);
+		int low = parseComputerCraftColor(colorRight);
+
+		int frequency = ((high & 0xF) << 8) + ((med & 0xF) << 4) + (low & 0xF);
+		setFreq(frequencyOwner, frequency);
+	}
+
+	@Prefixed("target")
+	@LuaCallable(description = "Set the frequency of this chest or tank")
+	public void setColorNames(TileEntity frequencyOwner,
+			@Arg(name = "color_left", type = LuaType.STRING) String colorLeft,
+			@Arg(name = "color_middle", type = LuaType.STRING) String colorMiddle,
+			@Arg(name = "color_right", type = LuaType.STRING) String colorRight) {
+
+		int high = parseColorName(colorLeft);
+		int med = parseColorName(colorMiddle);
+		int low = parseColorName(colorRight);
 		// convert the three colours into a single colour
 		int frequency = ((high & 0xF) << 8) + ((med & 0xF) << 4) + (low & 0xF);
 		// set the TE's frequency to the new colours
@@ -56,7 +83,7 @@ public class AdapterFrequencyOwner implements IPeripheralAdapter {
 			@Arg(name = "color_middle", type = LuaType.NUMBER, description = "The second color"),
 			@Arg(name = "color_right", type = LuaType.NUMBER, description = "The third color")
 	})
-	public void setColours(IComputerAccess computer, TileEntity frequencyOwner, int colour_left, int colour_middle, int colour_right) throws Exception {
+	public void setColours(IComputerAccess computer, TileEntity frequencyOwner, int colour_left, int colour_middle, int colour_right) {
 		setColors(computer, frequencyOwner, colour_left, colour_middle, colour_right);
 	}
 
@@ -69,25 +96,34 @@ public class AdapterFrequencyOwner implements IPeripheralAdapter {
 	@LuaMethod(returnType = LuaType.VOID, onTick = false, description = "Set the frequency of this chest or tank",
 			args = {
 					@Arg(name = "frequency", type = LuaType.NUMBER, description = "A single color that represents all three colours on this chest or tank") })
-	public void setFrequency(IComputerAccess computer, TileEntity frequencyOwner, int frequency) throws Exception {
+	public void setFrequency(IComputerAccess computer, TileEntity frequencyOwner, int frequency) {
 		setFreq(frequencyOwner, frequency);
 	}
 
 	private static int getFreq(TileEntity frequencyOwner) {
-		NBTTagCompound nbt = new NBTTagCompound();
-		frequencyOwner.writeToNBT(nbt);
-		return nbt.getInteger("freq");
+		return (Integer)ReflectionHelper.getProperty(CLAZZ, frequencyOwner, "freq");
 	}
 
-	private void setFreq(TileEntity frequencyOwner, int frequency) throws Exception {
-		if (frequency < 0 || frequency > 4095) { throw new Exception("Frequency out of bounds. Should be 0-4095"); }
-		ReflectionHelper.call(frequencyOwner, "setFreq", frequency);
+	private static void setFreq(TileEntity frequencyOwner, int frequency) {
+		Preconditions.checkElementIndex(frequency, 4096, "frequency");
+		ReflectionHelper.call(frequencyOwner, "setFreq", ReflectionHelper.primitive(frequency));
 	}
 
-	private static int parseComputerCraftColor(int color) throws Exception {
-		if (color < 0 || color > 32768) { throw new Exception("Invalid color supplied"); }
-		double val = Math.log(color) / Math.log(2);
-		if (val < 0 || val > 15 || val % 1 != 0) { throw new Exception("Invalid color supplied."); }
-		return (int)val;
+	private static int parseComputerCraftColor(int bitmask) {
+		ColorMeta meta = ColorUtils.bitmaskToColor(bitmask);
+		Preconditions.checkNotNull(meta, "Invalid color %sb", Integer.toBinaryString(bitmask));
+		return meta.vanillaId;
+	}
+
+	private static int parseColorName(String name) {
+		ColorMeta meta = ColorUtils.nameToColor(name);
+		Preconditions.checkNotNull(meta, "Invalid color name %s", name);
+		return (~meta.vanillaId) & 0xF;
+	}
+
+	private static String colorToName(int color) {
+		ColorMeta meta = ColorUtils.vanillaToColor((~color) & 0xF);
+		Preconditions.checkNotNull(meta, "Invalid color id %s", color);
+		return meta.name;
 	}
 }

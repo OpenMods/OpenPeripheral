@@ -4,8 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraft.item.ItemStack;
-import openperipheral.TypeConversionRegistry;
 import openperipheral.api.*;
+
+import com.google.common.collect.Maps;
+
 import dan200.computer.api.IComputerAccess;
 import forestry.api.apiculture.IBeeHousing;
 import forestry.api.genetics.*;
@@ -47,10 +49,10 @@ public class AdapterBeeHousing implements IPeripheralAdapter {
 	 * @return
 	 */
 	@LuaMethod(returnType = LuaType.TABLE, description = "Get the full breeding list thingy. Experimental!")
-	public Map<?, HashMap<String, Object>> getBeeBreedingData(IComputerAccess computer, IBeeHousing housing) {
+	public Map<Integer, Map<String, Object>> getBeeBreedingData(IComputerAccess computer, IBeeHousing housing) {
 		ISpeciesRoot beeRoot = AlleleManager.alleleRegistry.getSpeciesRoot("rootBees");
 		if (beeRoot == null) { return null; }
-		HashMap<Object, HashMap<String, Object>> result = new HashMap<Object, HashMap<String, Object>>();
+		Map<Integer, Map<String, Object>> result = Maps.newHashMap();
 		int j = 1;
 		for (IMutation mutation : beeRoot.getMutations(false)) {
 			HashMap<String, Object> mutationMap = new HashMap<String, Object>();
@@ -63,7 +65,7 @@ public class AdapterBeeHousing implements IPeripheralAdapter {
 				mutationMap.put("allele2", allele2.getName());
 			}
 			mutationMap.put("chance", mutation.getBaseChance());
-			mutationMap.put("specialConditions", TypeConversionRegistry.toLua(mutation.getSpecialConditions().toArray()));
+			mutationMap.put("specialConditions", mutation.getSpecialConditions().toArray());
 			IAllele[] template = mutation.getTemplate();
 			if (template != null && template.length > 0) {
 				mutationMap.put("result", template[0].getName());
@@ -79,11 +81,11 @@ public class AdapterBeeHousing implements IPeripheralAdapter {
 			args = {
 					@Arg(name = "childType", description = "The type of bee you want the parents for", type = LuaType.STRING)
 			})
-	public Map<Object, HashMap<String, Object>> getBeeParents(IComputerAccess computer, IBeeHousing housing, String childType) {
+	public Map<Integer, Map<String, Object>> getBeeParents(IComputerAccess computer, IBeeHousing housing, String childType) {
 		ISpeciesRoot beeRoot = AlleleManager.alleleRegistry.getSpeciesRoot("rootBees");
 		if (beeRoot == null) { return null; }
 		int i = 1;
-		HashMap<Object, HashMap<String, Object>> result = new HashMap<Object, HashMap<String, Object>>();
+		Map<Integer, Map<String, Object>> result = Maps.newHashMap();
 		for (IMutation mutation : beeRoot.getMutations(false)) {
 			IAllele[] template = mutation.getTemplate();
 			if (template == null || template.length < 1) {
@@ -100,7 +102,7 @@ public class AdapterBeeHousing implements IPeripheralAdapter {
 					parentMap.put("allele2", allele2.getName());
 				}
 				parentMap.put("chance", mutation.getBaseChance());
-				parentMap.put("specialConditions", TypeConversionRegistry.toLua(mutation.getSpecialConditions().toArray()));
+				parentMap.put("specialConditions", mutation.getSpecialConditions());
 				result.put(i++, parentMap);
 			}
 		}

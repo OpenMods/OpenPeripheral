@@ -1,8 +1,8 @@
 package openperipheral.integration.thermalexpansion;
 
 import net.minecraft.tileentity.TileEntity;
+import openmods.utils.ReflectionHelper;
 import openperipheral.api.*;
-import openperipheral.util.ReflectionHelper;
 import dan200.computer.api.IComputerAccess;
 
 public class AdapterTileLamp implements IPeripheralAdapter {
@@ -18,12 +18,7 @@ public class AdapterTileLamp implements IPeripheralAdapter {
 			@Arg(description = "The colour you want to set to (in RGB hexadecimal 0xRRGGBB)", type = LuaType.NUMBER)
 	})
 	public boolean setColor(IComputerAccess computer, TileEntity tile, int colour) {
-		try {
-			return ReflectionHelper.<Boolean> call(tile, "setColor", ReflectionHelper.primitive(colour));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return false;
+		return ReflectionHelper.<Boolean> call(tile, "setColor", ReflectionHelper.primitive(colour));
 	}
 
 	@LuaMethod(description = "Sets the colour of the lamp.", returnType = LuaType.BOOLEAN, onTick = false, args = {

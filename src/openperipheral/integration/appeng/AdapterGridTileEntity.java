@@ -9,42 +9,36 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import openmods.utils.InventoryUtils;
 import openperipheral.api.*;
-import openperipheral.util.CallWrapper;
-import openperipheral.util.ReflectionHelper;
 import appeng.api.IAEItemStack;
 import appeng.api.IItemList;
 import appeng.api.Util;
 import appeng.api.exceptions.AppEngTileMissingException;
+import appeng.api.me.tiles.IGridTileEntity;
 import appeng.api.me.util.IGridInterface;
 import appeng.api.me.util.IMEInventoryHandler;
 import dan200.computer.api.IComputerAccess;
 
 public class AdapterGridTileEntity implements IPeripheralAdapter {
-	private static final Class<?> CLAZZ = ReflectionHelper.getClass("appeng.api.me.tiles.IGridTileEntity");
 
 	@Override
 	public Class<?> getTargetClass() {
-		return CLAZZ;
-	}
-
-	private static IGridInterface getGrid(Object tile) {
-		return new CallWrapper<IGridInterface>().call(tile, "getGrid");
+		return IGridTileEntity.class;
 	}
 
 	@LuaMethod(description = "Request crafting of a specific item", returnType = LuaType.VOID,
 			args = {
 					@Arg(type = LuaType.TABLE, name = "stack", description = "A table representing the item stack") })
-	public void requestCrafting(IComputerAccess computer, Object te, ItemStack stack) throws AppEngTileMissingException {
-		getGrid(te).craftingRequest(stack);
+	public void requestCrafting(IComputerAccess computer, IGridTileEntity te, ItemStack stack) throws AppEngTileMissingException {
+		te.getGrid().craftingRequest(stack);
 	}
 
 	@LuaMethod(description = "Extract an item", returnType = LuaType.NUMBER,
 			args = {
 					@Arg(type = LuaType.TABLE, name = "stack", description = "A table representing the item stack"),
 					@Arg(type = LuaType.STRING, name = "direction", description = "The direction of the chest relative to the wrapped peripheral") })
-	public int extractItem(IComputerAccess computer, Object te, ItemStack stack, ForgeDirection direction) {
+	public int extractItem(IComputerAccess computer, IGridTileEntity te, ItemStack stack, ForgeDirection direction) {
 		if (stack == null) { return 0; }
-		IGridInterface grid = getGrid(te);
+		IGridInterface grid = te.getGrid();
 		if (grid == null) { return 0; }
 		IAEItemStack request = Util.createItemStack(stack);
 		if (request == null) { return 0; }
@@ -74,9 +68,9 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 					@Arg(type = LuaType.NUMBER, name = "slot", description = "The slot you wish to send"),
 					@Arg(type = LuaType.NUMBER, name = "amount", description = "The amount you want to send"),
 					@Arg(type = LuaType.STRING, name = "direction", description = "The direction of the chest relative to the wrapped peripheral") })
-	public int insertItem(IComputerAccess computer, Object te, int slot, int amount, ForgeDirection direction) throws Exception {
+	public int insertItem(IComputerAccess computer, IGridTileEntity te, int slot, int amount, ForgeDirection direction) throws Exception {
 		TileEntity tile = (TileEntity)te;
-		IGridInterface grid = getGrid(te);
+		IGridInterface grid = te.getGrid();
 		if (grid == null) { return 0; }
 		IInventory inventory = InventoryUtils.getInventory(tile.worldObj, tile.xCoord, tile.yCoord, tile.zCoord, direction);
 		if (inventory == null) { return 0; }
@@ -111,8 +105,8 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(description = "Get the total total item types stored", returnType = LuaType.NUMBER)
-	public long getTotalItemTypes(IComputerAccess computer, Object te) {
-		IGridInterface grid = getGrid(te);
+	public long getTotalItemTypes(IComputerAccess computer, IGridTileEntity te) {
+		IGridInterface grid = te.getGrid();
 		if (grid != null) {
 			IMEInventoryHandler cell = grid.getCellArray();
 			if (cell != null) { return cell.getTotalItemTypes(); }
@@ -121,8 +115,8 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(description = "Get the priority of this machine", returnType = LuaType.NUMBER)
-	public int getPriority(IComputerAccess computer, Object te) {
-		IGridInterface grid = getGrid(te);
+	public int getPriority(IComputerAccess computer, IGridTileEntity te) {
+		IGridInterface grid = te.getGrid();
 		if (grid != null) {
 			IMEInventoryHandler cell = grid.getCellArray();
 			if (cell != null) { return cell.getPriority(); }
@@ -131,8 +125,8 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(description = "Can this machine hold any new items?", returnType = LuaType.NUMBER)
-	public boolean canHoldNewItem(IComputerAccess computer, Object te) {
-		IGridInterface grid = getGrid(te);
+	public boolean canHoldNewItem(IComputerAccess computer, IGridTileEntity te) {
+		IGridInterface grid = te.getGrid();
 		if (grid != null) {
 			IMEInventoryHandler cell = grid.getCellArray();
 			if (cell != null) { return cell.canHoldNewItem(); }
@@ -141,8 +135,8 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(description = "Get the amount of free bytes", returnType = LuaType.NUMBER)
-	public long getFreeBytes(IComputerAccess computer, Object te) {
-		IGridInterface grid = getGrid(te);
+	public long getFreeBytes(IComputerAccess computer, IGridTileEntity te) {
+		IGridInterface grid = te.getGrid();
 		if (grid != null) {
 			IMEInventoryHandler cell = grid.getCellArray();
 			if (cell != null) { return cell.freeBytes(); }
@@ -151,8 +145,8 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(description = "Get a list of the available items", returnType = LuaType.TABLE)
-	public IItemList getAvailableItems(IComputerAccess computer, Object te) {
-		IGridInterface grid = getGrid(te);
+	public IItemList getAvailableItems(IComputerAccess computer, IGridTileEntity te) {
+		IGridInterface grid = te.getGrid();
 		if (grid != null) {
 			IMEInventoryHandler cell = grid.getCellArray();
 			if (cell != null) { return cell.getAvailableItems(); }
@@ -166,7 +160,7 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 			args = {
 					@Arg(type = LuaType.NUMBER, name = "itemId", description = "The item id"),
 					@Arg(type = LuaType.NUMBER, name = "dmgValue", description = "The item dmg value") })
-	public boolean containsItemType(IComputerAccess computer, Object te, int itemId, int dmgValue) {
+	public boolean containsItemType(IComputerAccess computer, IGridTileEntity te, int itemId, int dmgValue) {
 		return countOfItemType(computer, te, itemId, dmgValue) > 0;
 	}
 
@@ -174,8 +168,8 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 			args = {
 					@Arg(type = LuaType.NUMBER, name = "itemId", description = "The item id"),
 					@Arg(type = LuaType.NUMBER, name = "dmgValue", description = "The item dmg value") })
-	public long countOfItemType(IComputerAccess computer, Object te, int itemId, int dmgValue) {
-		IGridInterface grid = getGrid(te);
+	public long countOfItemType(IComputerAccess computer, IGridTileEntity te, int itemId, int dmgValue) {
+		IGridInterface grid = te.getGrid();
 		if (grid == null) { return 0; }
 		IMEInventoryHandler cell = grid.getCellArray();
 		if (cell == null) { return 0; }
@@ -191,8 +185,8 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(description = "Get a list of the preformatted items", returnType = LuaType.TABLE)
-	public List<ItemStack> getPreformattedItems(IComputerAccess computer, Object te) {
-		IGridInterface grid = getGrid(te);
+	public List<ItemStack> getPreformattedItems(IComputerAccess computer, IGridTileEntity te) {
+		IGridInterface grid = te.getGrid();
 		if (grid != null) {
 			IMEInventoryHandler cell = grid.getCellArray();
 			if (cell != null) { return cell.getPreformattedItems(); }
@@ -201,8 +195,8 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(description = "Is fuzzy preformatted", returnType = LuaType.BOOLEAN)
-	public boolean isFuzzyPreformatted(IComputerAccess computer, Object te) {
-		IGridInterface grid = getGrid(te);
+	public boolean isFuzzyPreformatted(IComputerAccess computer, IGridTileEntity te) {
+		IGridInterface grid = te.getGrid();
 		if (grid != null) {
 			IMEInventoryHandler cell = grid.getCellArray();
 			if (cell != null) { return cell.isFuzzyPreformatted(); }
@@ -211,8 +205,8 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(description = "Is preformatted", returnType = LuaType.BOOLEAN)
-	public boolean isPreformatted(IComputerAccess computer, Object te) {
-		IGridInterface grid = getGrid(te);
+	public boolean isPreformatted(IComputerAccess computer, IGridTileEntity te) {
+		IGridInterface grid = te.getGrid();
 		if (grid != null) {
 			IMEInventoryHandler cell = grid.getCellArray();
 			if (cell != null) { return cell.isPreformatted(); }
@@ -221,8 +215,8 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(description = "Get the remaining item count", returnType = LuaType.NUMBER)
-	public long getRemainingItemCount(IComputerAccess computer, Object te) {
-		IGridInterface grid = getGrid(te);
+	public long getRemainingItemCount(IComputerAccess computer, IGridTileEntity te) {
+		IGridInterface grid = te.getGrid();
 		if (grid != null) {
 			IMEInventoryHandler cell = grid.getCellArray();
 			if (cell != null) { return cell.remainingItemCount(); }
@@ -231,8 +225,8 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(description = "Get the remaining item type count", returnType = LuaType.NUMBER)
-	public long getRemainingItemTypes(IComputerAccess computer, Object te) {
-		IGridInterface grid = getGrid(te);
+	public long getRemainingItemTypes(IComputerAccess computer, IGridTileEntity te) {
+		IGridInterface grid = te.getGrid();
 		if (grid != null) {
 			IMEInventoryHandler cell = grid.getCellArray();
 			if (cell != null) { return cell.remainingItemTypes(); }
@@ -241,8 +235,8 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(description = "Get the amount of stored items", returnType = LuaType.NUMBER)
-	public long getStoredItemCount(IComputerAccess computer, Object te) {
-		IGridInterface grid = getGrid(te);
+	public long getStoredItemCount(IComputerAccess computer, IGridTileEntity te) {
+		IGridInterface grid = te.getGrid();
 		if (grid != null) {
 			IMEInventoryHandler cell = grid.getCellArray();
 			if (cell != null) { return cell.storedItemCount(); }
@@ -251,8 +245,8 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(description = "Get the amount of stored item types", returnType = LuaType.NUMBER)
-	public long getStoredItemTypes(IComputerAccess computer, Object te) {
-		IGridInterface grid = getGrid(te);
+	public long getStoredItemTypes(IComputerAccess computer, IGridTileEntity te) {
+		IGridInterface grid = te.getGrid();
 		if (grid != null) {
 			IMEInventoryHandler cell = grid.getCellArray();
 			if (cell != null) { return cell.storedItemTypes(); }
@@ -261,8 +255,8 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(description = "Get the total bytes", returnType = LuaType.NUMBER)
-	public long getTotalBytes(IComputerAccess computer, Object te) {
-		IGridInterface grid = getGrid(te);
+	public long getTotalBytes(IComputerAccess computer, IGridTileEntity te) {
+		IGridInterface grid = te.getGrid();
 		if (grid != null) {
 			IMEInventoryHandler cell = grid.getCellArray();
 			if (cell != null) { return cell.totalBytes(); }
@@ -271,8 +265,8 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(description = "Get the unused item count", returnType = LuaType.NUMBER)
-	public long getUnusedItemCount(IComputerAccess computer, Object te) {
-		IGridInterface grid = getGrid(te);
+	public long getUnusedItemCount(IComputerAccess computer, IGridTileEntity te) {
+		IGridInterface grid = te.getGrid();
 		if (grid != null) {
 			IMEInventoryHandler cell = grid.getCellArray();
 			if (cell != null) { return cell.unusedItemCount(); }
@@ -281,8 +275,8 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(description = "Get the unused bytes", returnType = LuaType.NUMBER)
-	public long getUnusedBytes(IComputerAccess computer, Object te) {
-		IGridInterface grid = getGrid(te);
+	public long getUnusedBytes(IComputerAccess computer, IGridTileEntity te) {
+		IGridInterface grid = te.getGrid();
 		if (grid != null) {
 			IMEInventoryHandler cell = grid.getCellArray();
 			if (cell != null) { return cell.usedBytes(); }

@@ -8,6 +8,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import openmods.utils.InventoryUtils;
 import openperipheral.api.*;
+
+import com.google.common.base.Preconditions;
+
 import dan200.computer.api.IComputerAccess;
 
 public class AdapterInventory implements IPeripheralAdapter {
@@ -40,7 +43,7 @@ public class AdapterInventory implements IPeripheralAdapter {
 					@Arg(type = LuaType.NUMBER, name = "maxAmount", description = "The maximum amount of items you want to pull"),
 					@Arg(type = LuaType.NUMBER, name = "intoSlot", description = "The slot in the current inventory that you want to pull into")
 			})
-	public int pullItemIntoSlot(IComputerAccess computer, IInventory target, ForgeDirection direction, int slot, int maxAmount, int intoSlot) throws Exception {
+	public int pullItemIntoSlot(IComputerAccess computer, IInventory target, ForgeDirection direction, int slot, int maxAmount, int intoSlot) {
 		int merged = 0;
 		TileEntity te = (TileEntity)target;
 		IInventory otherInventory = InventoryUtils.getInventory(te.worldObj, te.xCoord, te.yCoord, te.zCoord, direction);
@@ -61,7 +64,7 @@ public class AdapterInventory implements IPeripheralAdapter {
 					@Arg(type = LuaType.NUMBER, name = "maxAmount", description = "The maximum amount of items you want to push"),
 					@Arg(type = LuaType.NUMBER, name = "intoSlot", description = "The slot in the other inventory that you want to push into")
 			})
-	public int pushItemIntoSlot(IComputerAccess computer, IInventory target, ForgeDirection direction, int slot, int maxAmount, int intoSlot) throws Exception {
+	public int pushItemIntoSlot(IComputerAccess computer, IInventory target, ForgeDirection direction, int slot, int maxAmount, int intoSlot) {
 		int merged = 0;
 		TileEntity te = (TileEntity)target;
 		IInventory otherInventory = InventoryUtils.getInventory(te.worldObj, te.xCoord, te.yCoord, te.zCoord, direction);
@@ -76,7 +79,7 @@ public class AdapterInventory implements IPeripheralAdapter {
 					@Arg(type = LuaType.NUMBER, name = "slot", description = "The slot in the current inventory that you're pushing from"),
 					@Arg(type = LuaType.NUMBER, name = "maxAmount", description = "The maximum amount of items you want to push")
 			})
-	public int pushItem(IComputerAccess computer, IInventory target, ForgeDirection direction, int slot, int maxAmount) throws Exception {
+	public int pushItem(IComputerAccess computer, IInventory target, ForgeDirection direction, int slot, int maxAmount) {
 		int merged = 0;
 		TileEntity te = (TileEntity)target;
 		IInventory otherInventory = InventoryUtils.getInventory(te.worldObj, te.xCoord, te.yCoord, te.zCoord, direction);
@@ -91,7 +94,7 @@ public class AdapterInventory implements IPeripheralAdapter {
 					@Arg(type = LuaType.NUMBER, name = "slot", description = "The slot in the other inventory that you're pulling from"),
 					@Arg(type = LuaType.NUMBER, name = "maxAmount", description = "The maximum amount of items you want to pull")
 			})
-	public int pullItem(IComputerAccess computer, IInventory target, ForgeDirection direction, int slot, int maxAmount) throws Exception {
+	public int pullItem(IComputerAccess computer, IInventory target, ForgeDirection direction, int slot, int maxAmount) {
 		int merged = 0;
 		TileEntity te = (TileEntity)target;
 		IInventory otherInventory = InventoryUtils.getInventory(te.worldObj, te.xCoord, te.yCoord, te.zCoord, direction);
@@ -101,7 +104,7 @@ public class AdapterInventory implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(returnType = LuaType.VOID, description = "Condense and tidy the stacks in an inventory")
-	public void condenseItems(IComputerAccess computer, IInventory target) throws Exception {
+	public void condenseItems(IComputerAccess computer, IInventory target) {
 		IInventory inventory = InventoryUtils.getInventory(target);
 		if (inventory == null && target != null) {
 			// I hope to never see this ever. -NC
@@ -126,25 +129,20 @@ public class AdapterInventory implements IPeripheralAdapter {
 					@Arg(type = LuaType.NUMBER, name = "from", description = "The first slot"),
 					@Arg(type = LuaType.NUMBER, name = "to", description = "The other slot")
 			})
-	public boolean swapStacks(IComputerAccess computer, IInventory target, int from, int to) throws Exception {
-		from--;
-		to--;
+	public boolean swapStacks(IComputerAccess computer, IInventory target, int from, int to) {
+		return swapStacks(target, from - 1, to - 1);
+	}
+
+	public static boolean swapStacks(IInventory target, int from, int to) {
 		IInventory inventory = InventoryUtils.getInventory(target);
-		if (inventory == null && target != null) {
-			System.out.println("OpenPeripheral Warning: (swapStacks) getInventory for the same inventory failed hard. That's a bug!!!");
-			inventory = target;
-		}
+		Preconditions.checkNotNull(inventory, "Invalid target!");
 		if (from >= 0 && from < inventory.getSizeInventory() && to >= 0 && to < inventory.getSizeInventory()) {
 
 			ItemStack stack1 = inventory.getStackInSlot(from);
 			ItemStack stack2 = inventory.getStackInSlot(to);
 
-			if (stack1 != null) {
-				stack1 = stack1.copy();
-			}
-			if (stack2 != null) {
-				stack2 = stack2.copy();
-			}
+			if (stack1 != null) stack1 = stack1.copy();
+			if (stack2 != null) stack2 = stack2.copy();
 
 			inventory.setInventorySlotContents(from, stack2);
 			inventory.setInventorySlotContents(to, stack1);

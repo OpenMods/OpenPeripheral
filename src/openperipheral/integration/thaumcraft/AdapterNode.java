@@ -17,13 +17,13 @@ public class AdapterNode implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(returnType = LuaType.STRING, description = "Get the type of the node")
-	public String getNodeType(IComputerAccess computer, INode node) throws Exception {
+	public String getNodeType(IComputerAccess computer, INode node) {
 		NodeType nodeType = node.getNodeType();
 		return (nodeType != null? nodeType.name() : NONE);
 	}
 
 	@LuaMethod(returnType = LuaType.STRING, description = "Get the modifier of the node")
-	public String getNodeModifier(IComputerAccess computer, INode node) throws Exception {
+	public String getNodeModifier(IComputerAccess computer, INode node) {
 		NodeModifier nodeModifier = node.getNodeModifier();
 		return (nodeModifier != null? nodeModifier.name() : NONE);
 	}
