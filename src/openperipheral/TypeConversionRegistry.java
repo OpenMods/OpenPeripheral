@@ -25,6 +25,7 @@ public class TypeConversionRegistry {
 		CONVENTERS.add(new ConverterArray());
 		CONVENTERS.add(new ConverterList());
 		CONVENTERS.add(new ConverterMap());
+		CONVENTERS.add(new ConverterSet());
 		CONVENTERS.add(new ConverterNumber());
 		CONVENTERS.add(new ConventerString());
 	}

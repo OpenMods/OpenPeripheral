@@ -9,7 +9,6 @@ import openmods.Mods;
 import openperipheral.TypeConversionRegistry;
 import openperipheral.adapter.AdapterManager;
 import openperipheral.api.IIntegrationModule;
-import openperipheral.converter.ConverterIIndividual;
 import forestry.api.genetics.AlleleManager;
 
 public class ModuleForestry implements IIntegrationModule {
@@ -32,8 +31,7 @@ public class ModuleForestry implements IIntegrationModule {
 
 	@Override
 	public void appendItemInfo(Map<String, Object> map, ItemStack itemstack) {
-		@SuppressWarnings("rawtypes")
-		Map beeMap = (Map)TypeConversionRegistry.toLua(AlleleManager.alleleRegistry.getIndividual(itemstack));
+		Object beeMap = TypeConversionRegistry.toLua(AlleleManager.alleleRegistry.getIndividual(itemstack));
 		if (beeMap != null) {
 			map.put("beeInfo", beeMap);
 		}

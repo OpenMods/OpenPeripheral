@@ -54,10 +54,10 @@ public class ConverterArray implements ITypeConverter {
 	public Object toLua(Object o) {
 		if (o.getClass().isArray()) {
 			Map<Object, Object> ret = Maps.newHashMap();
-			int index = 1;
-			Object[] objArray = (Object[])o;
-			for (Object element : objArray) {
-				ret.put(index++, TypeConversionRegistry.toLua(element));
+			int length = Array.getLength(o);
+			for (int i = 0; i < length; i++) {
+				Object value = Array.get(o, i);
+				ret.put(i + 1, TypeConversionRegistry.toLua(value));
 			}
 			return ret;
 		}

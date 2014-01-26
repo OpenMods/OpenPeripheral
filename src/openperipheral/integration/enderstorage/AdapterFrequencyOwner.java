@@ -2,8 +2,8 @@ package openperipheral.integration.enderstorage;
 
 import net.minecraft.tileentity.TileEntity;
 import openmods.utils.ColorUtils;
-import openmods.utils.ReflectionHelper;
 import openmods.utils.ColorUtils.ColorMeta;
+import openmods.utils.ReflectionHelper;
 import openperipheral.api.*;
 
 import com.google.common.base.Preconditions;
