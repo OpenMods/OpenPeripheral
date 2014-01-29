@@ -4,6 +4,7 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.Map;
 
+import openmods.Log;
 import openperipheral.api.*;
 
 import com.google.common.base.Preconditions;
@@ -57,7 +58,16 @@ public abstract class AdapterWrapper<E extends IMethodExecutor> {
 		final boolean clsIsFreeform = isFreeform(adapterClass, defaultIsFreeform);
 		final Prefixed classPrefixes = adapterClass.getAnnotation(Prefixed.class);
 
-		for (Method method : adapterClass.getMethods()) {
+		Method[] clsMethods;
+		try {
+			clsMethods = adapterClass.getMethods();
+		} catch (Throwable t) {
+			// Trust no one. We got report about ClassNotFound from this place
+			Log.severe(t, "Can't get adapter %s methods (possible sideness fail), bailing out", adapterClass);
+			return ImmutableMap.of();
+		}
+
+		for (Method method : clsMethods) {
 			MethodDeclaration decl = createDeclaration(method);
 
 			if (decl != null) {
