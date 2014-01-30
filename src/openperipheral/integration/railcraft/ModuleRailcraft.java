@@ -6,12 +6,16 @@ import mods.railcraft.api.carts.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Vec3;
 import openmods.Mods;
 import openperipheral.adapter.AdapterManager;
 import openperipheral.api.IIntegrationModule;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 public class ModuleRailcraft implements IIntegrationModule {
+
+	private ItemStack ticketStack;
 
 	@Override
 	public String getModId() {
@@ -21,6 +25,7 @@ public class ModuleRailcraft implements IIntegrationModule {
 	@Override
 	public void init() {
 		AdapterManager.addPeripheralAdapter(new AdapterTileSteamTurbine());
+		ticketStack = GameRegistry.findItemStack("Railcraft", "routing.ticket", 1);
 	}
 
 	@Override
@@ -80,5 +85,11 @@ public class ModuleRailcraft implements IIntegrationModule {
 	}
 
 	@Override
-	public void appendItemInfo(Map<String, Object> map, ItemStack itemstack) {}
+	public void appendItemInfo(Map<String, Object> map, ItemStack itemstack) {
+		if (itemstack.hasTagCompound() && ticketStack != null && itemstack.isItemEqual(ticketStack)) {
+			NBTTagCompound tag = itemstack.stackTagCompound;
+			map.put("owner", tag.getString("owner"));
+			map.put("dest", tag.getString("dest"));
+		}
+	}
 }

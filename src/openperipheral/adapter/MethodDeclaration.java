@@ -9,6 +9,7 @@ import java.util.logging.Level;
 
 import openmods.Log;
 import openmods.utils.AnnotationMap;
+import openmods.utils.ReflectionHelper;
 import openperipheral.TypeConversionRegistry;
 import openperipheral.api.*;
 
@@ -216,7 +217,7 @@ public class MethodDeclaration {
 			for (int i = 0; i < result.length; i++) {
 				LuaType expected = returnTypes[i];
 				Object got = result[i];
-				Preconditions.checkArgument(got == null || expected.getJavaType().isInstance(got), "Invalid type of return value %s: expected %s, got %s", i, expected, got);
+				Preconditions.checkArgument(got == null || ReflectionHelper.compareTypes(expected.getJavaType(), got.getClass()), "Invalid type of return value %s: expected %s, got %s", i, expected, got);
 			}
 		}
 

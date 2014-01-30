@@ -2,7 +2,7 @@ package openperipheral.converter;
 
 import openperipheral.api.ITypeConverter;
 
-public class ConventerString implements ITypeConverter {
+public class ConverterString implements ITypeConverter {
 
 	@Override
 	public Object fromLua(Object obj, Class<?> expected) {
