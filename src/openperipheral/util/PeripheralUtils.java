@@ -6,6 +6,7 @@ import net.minecraft.block.Block;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import openmods.Log;
 
 import com.google.common.base.Strings;
 
@@ -27,29 +28,51 @@ public class PeripheralUtils {
 	}
 
 	public static String getNameForTarget(Object target) {
-		String name = "";
+		final String name = tryGetName(target);
+		return Strings.isNullOrEmpty(name)? "peripheral" : name.replaceAll("[^a-zA-Z0-9]", "_").toLowerCase();
+	}
+
+	private static String tryGetName(Object target) {
+		if (target == null) return "";
+
 		if (target instanceof IInventory) {
-			name = ((IInventory)target).getInvName();
-		} else if (target instanceof TileEntity) {
-			TileEntity te = (TileEntity)target;
-			name = getClassToNameMap().get(te.getClass());
-			if (Strings.isNullOrEmpty(name)) {
-				Block block = te.getBlockType();
-				int dmg = te.getBlockMetadata();
-
-				ItemStack is = new ItemStack(block, 1, dmg);
-				try {
-					name = is.getDisplayName();
-				} catch (Exception e) {
-					try {
-						name = is.getUnlocalizedName();
-					} catch (Exception e2) {}
-				}
-
-				if (Strings.isNullOrEmpty(name)) name = te.getClass().getSimpleName();
+			try {
+				return ((IInventory)target).getInvName();
+			} catch (Throwable t) {
+				Log.warn(t, "Can't get inventory name for %s", target.getClass());
 			}
 		}
 
-		return Strings.isNullOrEmpty(name)? "peripheral" : name.replaceAll("[^a-zA-Z0-9]", "_").toLowerCase();
+		if (target instanceof TileEntity) {
+			TileEntity te = (TileEntity)target;
+			String name = getClassToNameMap().get(te.getClass());
+			if (!Strings.isNullOrEmpty(name)) return name;
+
+			try {
+				Block block = te.getBlockType();
+				if (block != null) {
+					int dmg = te.getBlockMetadata();
+
+					ItemStack is = new ItemStack(block, 1, dmg);
+					try {
+						return is.getDisplayName();
+					} catch (Throwable t) {
+						Log.warn(t, "Can't get display name for %s", target.getClass());
+					}
+
+					try {
+						return is.getUnlocalizedName();
+					} catch (Throwable t) {
+						Log.warn(t, "Can't get unlocalized name for %s", target.getClass());
+					}
+				}
+			} catch (Throwable t) {
+				Log.warn(t, "Exception while getting name from item for %s", target.getClass());
+			}
+
+			if (Strings.isNullOrEmpty(name)) name = te.getClass().getSimpleName();
+		}
+
+		return "";
 	}
 }

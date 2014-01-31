@@ -2,6 +2,7 @@ package openperipheral.adapter;
 
 import java.util.*;
 
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import openmods.Log;
 import openperipheral.adapter.object.*;
@@ -9,12 +10,70 @@ import openperipheral.adapter.peripheral.*;
 import openperipheral.api.*;
 import openperipheral.util.PeripheralUtils;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import com.google.common.base.Preconditions;
 import com.google.common.collect.*;
 
 import dan200.computer.api.*;
 
 public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodExecutor> {
+
+	private static final Random RANDOM = new Random();
+
+	private static final String[] BOGUS_METODS = new String[] {
+			"help",
+			"whats_going_on",
+			"wtf",
+			"lol_nope",
+			"derp",
+			"guru_meditation",
+			"woof",
+			"nothing_to_see_here",
+			"kernel_panic",
+			"hello_segfault",
+			"i_see_dead_bytes",
+			"xyzzy",
+			"abort_retry_fail_continue"
+	};
+
+	private static final IHostedPeripheral PLACEHOLDER = new IHostedPeripheral() {
+
+		@Override
+		public String getType() {
+			return "broken_peripheral";
+		}
+
+		@Override
+		public String[] getMethodNames() {
+			return ArrayUtils.toArray(BOGUS_METODS[RANDOM.nextInt(BOGUS_METODS.length)]);
+		}
+
+		@Override
+		public void detach(IComputerAccess computer) {}
+
+		@Override
+		public boolean canAttachToSide(int side) {
+			return true;
+		}
+
+		@Override
+		public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception {
+			return ArrayUtils.toArray("This peripheral is broken. You can show your log in #OpenMods");
+		}
+
+		@Override
+		public void attach(IComputerAccess computer) {}
+
+		@Override
+		public void writeToNBT(NBTTagCompound nbttagcompound) {}
+
+		@Override
+		public void update() {}
+
+		@Override
+		public void readFromNBT(NBTTagCompound nbttagcompound) {}
+	};
 
 	private static final IPeripheralHandler peripheralHandler = new IPeripheralHandler() {
 
@@ -27,12 +86,18 @@ public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodEx
 			IHostedPeripheral peripheral = created.get(tile);
 
 			if (peripheral == null) {
+				try {
+					if (tile instanceof IPeripheralProvider) {
+						peripheral = ((IPeripheralProvider)tile).providePeripheral(tile.worldObj);
+					} else {
+						AdaptedClass<IPeripheralMethodExecutor> adapter = peripherals.adaptClass(tile.getClass());
+						peripheral = new HostedPeripheral(adapter, tile);
+					}
+				} catch (Throwable t) {
+					Log.severe(t, "Can't create peripheral for TE %s @ (%d,%d,%d) in world %s",
+							tile.getClass(), tile.xCoord, tile.yCoord, tile.zCoord, tile.worldObj.provider.dimensionId);
+					peripheral = PLACEHOLDER;
 
-				if (tile instanceof IPeripheralProvider) {
-					peripheral = ((IPeripheralProvider)tile).providePeripheral(tile.worldObj);
-				} else {
-					AdaptedClass<IPeripheralMethodExecutor> adapter = peripherals.adaptClass(tile.getClass());
-					peripheral = new HostedPeripheral(adapter, tile);
 				}
 
 				created.put(tile, peripheral);
@@ -129,7 +194,7 @@ public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodEx
 		try {
 			wrapper = wrapExternalAdapter(adapter);
 		} catch (Throwable e) {
-			Log.warn(e, "Something went terribly wrong while adding adapter '%s'. It will be disabled", adapter.getClass());
+			Log.warn(e, "Something went terribly wrong while adding internal adapter '%s'. It will be disabled", adapter.getClass());
 			return;
 		}
 		final Class<?> targetCls = wrapper.targetCls;
