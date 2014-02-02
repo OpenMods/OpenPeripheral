@@ -29,7 +29,7 @@ public class NotebookIInventoryWrapper implements IInventory {
 	@Override
 	public int getSizeInventory() {
 		Integer slotId = callOnNotebook("getLargestSlotId");
-		return slotId + 1;
+		return slotId + 2;
 	}
 
 	@Override
@@ -94,7 +94,7 @@ public class NotebookIInventoryWrapper implements IInventory {
 
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack itemstack) {
-		return callOnNotebook("isItemValid");
+		return ReflectionHelper.callStatic(INVENTORY_CLASS, "isItemValid", itemstack);
 	}
 
 }

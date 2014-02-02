@@ -85,25 +85,23 @@ public class AdapterWritingDesk implements IPeripheralAdapter {
 			@Arg(type = LuaType.NUMBER, name = "deskSlot", description = "The notebook slot you are interested in") int deskSlot,
 			@Arg(type = LuaType.STRING, name = "direction", description = "The direction of the other inventory. (north, south, east, west, up or down)") ForgeDirection direction,
 			@Arg(type = LuaType.NUMBER, name = "fromSlot", description = "The page slot in inventory that you're pushing from") int fromSlot,
-			@Optionals @Arg(type = LuaType.NUMBER, name = "maxAmount", description = "The slot in the other inventory that you want to push into") Integer intoSlot,
-			@Arg(type = LuaType.NUMBER, name = "maxAmount", description = "The maximum amount of items you want to push") Integer maxAmount) {
+			@Optionals @Arg(type = LuaType.NUMBER, name = "intoSlot", description = "The slot in the other inventory that you want to push into") Integer intoSlot) {
 		IInventory source = createInventoryWrapper(desk, deskSlot);
 		IInventory target = getTargetTile(desk, direction);
 
-		return InventoryUtils.moveItemInto(source, fromSlot - 1, target, Objects.firstNonNull(intoSlot, 0) - 1, Objects.firstNonNull(maxAmount, 64), direction.getOpposite(), true);
+		return InventoryUtils.moveItemInto(source, fromSlot - 1, target, Objects.firstNonNull(intoSlot, 0) - 1, 64, direction.getOpposite(), true);
 	}
 
 	@LuaMethod(returnType = LuaType.NUMBER, description = "Pull an item from the target inventory into any slot in the current one. Returns the amount of items moved",
 			args = {
 					@Arg(type = LuaType.NUMBER, name = "deskSlot", description = "The writing desk slot you are interested in"),
 					@Arg(type = LuaType.STRING, name = "direction", description = "The direction of the other inventory. (north, south, east, west, up or down)"),
-					@Arg(type = LuaType.NUMBER, name = "notebookSlot", description = "The slot in the other inventory that you're pulling from"),
-					@Arg(type = LuaType.NUMBER, name = "maxAmount", description = "The maximum amount of items you want to pull")
+					@Arg(type = LuaType.NUMBER, name = "fromSlot", description = "The slot in the other inventory that you're pulling from")
 			})
-	public int pullNotebookPage(IComputerAccess computer, Object desk, int deskSlot, ForgeDirection direction, int notebookSlot, int maxAmount) {
+	public int pullNotebookPage(IComputerAccess computer, Object desk, int deskSlot, ForgeDirection direction, int notebookSlot) {
 		IInventory source = getTargetTile(desk, direction);
 		IInventory target = createInventoryWrapper(desk, deskSlot);
-		return InventoryUtils.moveItemInto(source, notebookSlot - 1, target, -1, maxAmount, direction.getOpposite(), true);
+		return InventoryUtils.moveItemInto(source, notebookSlot - 1, target, -1, 1, direction.getOpposite(), true, false);
 	}
 
 	private static IInventory getTargetTile(Object target, ForgeDirection direction) {
