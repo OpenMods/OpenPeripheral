@@ -30,9 +30,11 @@ import openperipheral.util.InventoryDescriptionUtils;
 import com.google.common.collect.Maps;
 
 public class ModuleVanilla implements IIntegrationModule {
+	public static String DUMMY_VANILLA_MODID = "vanilla";
+
 	@Override
 	public String getModId() {
-		return "";
+		return DUMMY_VANILLA_MODID;
 	}
 
 	@Override

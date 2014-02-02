@@ -1,5 +1,7 @@
 package openperipheral;
 
+import net.minecraftforge.common.Configuration;
+import openmods.config.ConfigProcessing;
 import openperipheral.adapter.AdapterManager;
 import openperipheral.integration.appeng.ModuleAppEng;
 import openperipheral.integration.buildcraft.ModuleBuildCraft;
@@ -17,6 +19,7 @@ import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -27,6 +30,13 @@ public class OpenPeripheralCore {
 
 	@Instance(value = ModInfo.ID)
 	public static OpenPeripheralCore instance;
+
+	@Mod.EventHandler
+	public void preInit(FMLPreInitializationEvent evt) {
+		Configuration configFile = new Configuration(evt.getSuggestedConfigurationFile());
+		ConfigProcessing.processAnnotations(configFile, Config.class);
+		if (configFile.hasChanged()) configFile.save();
+	}
 
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent evt) {

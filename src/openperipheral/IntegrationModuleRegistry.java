@@ -11,6 +11,7 @@ import openperipheral.integration.vanilla.ModuleVanilla;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 import cpw.mods.fml.common.Loader;
 
@@ -25,12 +26,22 @@ public class IntegrationModuleRegistry {
 	}
 
 	public static void selectLoadedModules() {
-		selectedModules.put("vanilla", new ModuleVanilla());
+		Set<String> blacklist = Sets.newHashSet();
+		for (String modId : Config.blacklist)
+			blacklist.add(modId.toLowerCase());
+
+		if (!blacklist.contains(ModuleVanilla.DUMMY_VANILLA_MODID)) selectedModules.put(ModuleVanilla.DUMMY_VANILLA_MODID, new ModuleVanilla());
 
 		for (IIntegrationModule module : registeredModules) {
 			String modId = module.getModId();
-			Log.info("Enabling module %s for %s ", module, modId);
-			if (Loader.isModLoaded(modId)) selectedModules.put(modId, module);
+			if (Loader.isModLoaded(modId)) {
+				if (blacklist.contains(modId.toLowerCase())) {
+					Log.info("Mod %s is loaded, but integration not enabled due to blacklist", modId);
+				} else {
+					Log.info("Enabling module %s for %s ", module, modId);
+					selectedModules.put(modId, module);
+				}
+			}
 		}
 	}
 
