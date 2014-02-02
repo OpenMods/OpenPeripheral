@@ -293,7 +293,6 @@ public class MethodDeclaration {
 			if (result instanceof IMultiReturn) return validateResult(((IMultiReturn)result).getObjects());
 			else if (result == null) return validateResult();
 			else return validateResult(result);
-
 		}
 	}
 
