@@ -5,11 +5,15 @@ import java.lang.reflect.Field;
 import net.minecraft.tileentity.TileEntity;
 import openmods.utils.ReflectionHelper;
 import openperipheral.api.*;
+
+import com.google.common.base.Preconditions;
+import com.google.common.base.Throwables;
+
 import dan200.computer.api.IComputerAccess;
 
 public class AdapterStargate implements IPeripheralAdapter {
-	private final Class<?> STARGATE_TILE_CLASS = ReflectionHelper.getClass("gcewing.sg.SGBaseTE");
-	private final Class<?> SG_ADDRESSING_CLASS = ReflectionHelper.getClass("gcewing.sg.SGAddressing");
+	private static final Class<?> STARGATE_TILE_CLASS = ReflectionHelper.getClass("gcewing.sg.SGBaseTE");
+	private static final Class<?> SG_ADDRESSING_CLASS = ReflectionHelper.getClass("gcewing.sg.SGAddressing");
 
 	@Override
 	public Class<?> getTargetClass() {
@@ -17,9 +21,9 @@ public class AdapterStargate implements IPeripheralAdapter {
 	}
 
 	@OnTick
-	@LuaCallable(description = "connects the stargate to the supplied address")
+	@LuaCallable(description = "Connects the stargate to the supplied address")
 	public void connect(IComputerAccess computer, TileEntity tile,
-			@Arg(name = "targetAddress", type = LuaType.STRING, description = "the address of the gate to connect to") String targetAddress) throws Exception {
+			@Arg(name = "targetAddress", type = LuaType.STRING, description = "the address of the gate to connect to") String targetAddress) {
 		// make sure the gate is built
 		checkGateComplete(tile);
 
@@ -30,56 +34,74 @@ public class AdapterStargate implements IPeripheralAdapter {
 		TileEntity targetStargate = ReflectionHelper.<TileEntity> callStatic(SG_ADDRESSING_CLASS, "findAddressedStargate", targetAddress);
 
 		boolean targetBusy = ReflectionHelper.<Boolean> call(targetStargate, "isConnected");
-		if (targetBusy) throw new Exception("Stargate at address " + targetAddress + " is busy");
+		Preconditions.checkState(!targetBusy, "Stargate at address %s is busy", targetAddress);
 
 		int requiredFuel = (Integer)ReflectionHelper.getProperty(STARGATE_TILE_CLASS, tile, new String[] { "fuelToOpen" });
 		boolean fuelReloaded = ReflectionHelper.<Boolean> call(tile, "reloadFuel", ReflectionHelper.primitive(requiredFuel));
-		if (!fuelReloaded) throw new Exception("Stargate has insufficient fuel");
+		Preconditions.checkState(fuelReloaded, "Stargate has insufficient fuel");
 
 		ReflectionHelper.call(tile, "startDiallingStargate", targetAddress, targetStargate, ReflectionHelper.primitive(true));
 		ReflectionHelper.call(targetStargate, "startDiallingStargate", homeAddress, tile, ReflectionHelper.primitive(false));
 	}
 
-	@LuaMethod(returnType = LuaType.STRING, description = "gets state of the stargate", onTick = false)
-	public String getState(IComputerAccess computer, TileEntity tile) throws Exception {
-		// you know it
+	@LuaMethod(returnType = LuaType.STRING, description = "Gets state of the stargate")
+	public String getState(IComputerAccess computer, TileEntity tile) {
 		checkGateComplete(tile);
 
 		Field field = ReflectionHelper.getField(STARGATE_TILE_CLASS, "state");
-		return field.get(tile).toString();
+		try {
+			return field.get(tile).toString();
+		} catch (Throwable t) {
+			throw Throwables.propagate(t);
+		}
 	}
 
-	@LuaMethod(returnType = LuaType.NUMBER, description = "gets the number of locked chevrons", onTick = false)
-	public int getLockedChevronCount(IComputerAccess computer, TileEntity tile) throws Exception {
+	@LuaMethod(returnType = LuaType.NUMBER, description = "Gets the number of locked chevrons")
+	public int getLockedChevronCount(IComputerAccess computer, TileEntity tile) {
 		checkGateComplete(tile);
 		Field field = ReflectionHelper.getField(STARGATE_TILE_CLASS, "numEngagedChevrons");
-		return field.getInt(tile);
+		try {
+			return field.getInt(tile);
+		} catch (Throwable t) {
+			throw Throwables.propagate(t);
+		}
 	}
 
-	@LuaMethod(returnType = LuaType.NUMBER, description = "gets the amount of buffered fuel", onTick = false)
-	public int getFuelLevel(IComputerAccess computer, TileEntity tile) throws Exception {
+	@LuaMethod(returnType = LuaType.NUMBER, description = "Gets the amount of buffered fuel")
+	public int getFuelLevel(IComputerAccess computer, TileEntity tile) {
 		checkGateComplete(tile);
 		Field field = ReflectionHelper.getField(STARGATE_TILE_CLASS, "fuelBuffer");
-		return field.getInt(tile);
+		try {
+			return field.getInt(tile);
+		} catch (Throwable t) {
+			throw Throwables.propagate(t);
+		}
 	}
 
-	@LuaMethod(returnType = LuaType.NUMBER, description = "gets maximum amount of buffered fuel", onTick = false)
-	public int getMaxFuelLevel(IComputerAccess computer, TileEntity tile) throws Exception {
+	@LuaMethod(returnType = LuaType.NUMBER, description = "Gets maximum amount of buffered fuel")
+	public int getMaxFuelLevel(IComputerAccess computer, TileEntity tile) {
 		checkGateComplete(tile);
 		Field field = ReflectionHelper.getField(STARGATE_TILE_CLASS, "maxFuelBuffer");
-		return field.getInt(tile);
+		try {
+			return field.getInt(tile);
+		} catch (Throwable t) {
+			throw Throwables.propagate(t);
+		}
 	}
 
-	@LuaMethod(returnType = LuaType.NUMBER, description = "is the stargate connected to a controller", onTick = false)
-	public boolean isDHDConnected(IComputerAccess computer, TileEntity tile) throws Exception {
+	@LuaMethod(returnType = LuaType.NUMBER, description = "Is the stargate connected to a controller")
+	public boolean isDHDConnected(IComputerAccess computer, TileEntity tile) {
 		checkGateComplete(tile);
 		Field field = ReflectionHelper.getField(STARGATE_TILE_CLASS, "isLinkedToController");
-		return field.getBoolean(tile);
+		try {
+			return field.getBoolean(tile);
+		} catch (Throwable t) {
+			throw Throwables.propagate(t);
+		}
 	}
 
-	@LuaMethod(returnType = LuaType.VOID, description = "disconnects the stargate")
-	public void disconnect(IComputerAccess computer, TileEntity tile) throws Exception {
-		// make sure the gate is built
+	@LuaMethod(returnType = LuaType.VOID, description = "Disconnects the stargate")
+	public void disconnect(IComputerAccess computer, TileEntity tile) {
 		checkGateComplete(tile);
 
 		Object connectedLocation = ReflectionHelper.getProperty(STARGATE_TILE_CLASS, tile, new String[] { "connectedLocation" });
@@ -88,50 +110,48 @@ public class AdapterStargate implements IPeripheralAdapter {
 		ReflectionHelper.call(tile, "clearConnection");
 	}
 
-	@LuaMethod(returnType = LuaType.BOOLEAN, description = "whether or not the supplied address is a valid address",
-			args = { @Arg(type = LuaType.STRING, description = "the address of the gate to validate") }, onTick = false)
+	@LuaMethod(returnType = LuaType.BOOLEAN, description = "Whether or not the supplied address is a valid address",
+			args = { @Arg(type = LuaType.STRING, description = "the address of the gate to validate") })
 	public boolean isValidAddress(IComputerAccess computer, TileEntity tile, String address) {
 		try {
 			validateAddress(tile, address.toUpperCase());
 			return true;
-		} catch (Exception e) {
+		} catch (Throwable t) {
 			return false;
 		}
 	}
 
-	@LuaMethod(returnType = LuaType.BOOLEAN, description = "whether or not the stargate currently has a connection", onTick = false)
-	public boolean isConnected(IComputerAccess computer, TileEntity tile) throws Exception {
-		// make sure the gate is built
+	@LuaMethod(returnType = LuaType.BOOLEAN, description = "Whether or not the stargate currently has a connection")
+	public boolean isConnected(IComputerAccess computer, TileEntity tile) {
 		checkGateComplete(tile);
-
 		return (Boolean)ReflectionHelper.call(tile, "isConnected");
 	}
 
-	@LuaMethod(returnType = LuaType.BOOLEAN, description = "whether or not the stargate created the connection", onTick = false)
-	public boolean isInitiator(IComputerAccess computer, TileEntity tile) throws Exception {
-		// make sure the gate is built
+	@LuaMethod(returnType = LuaType.BOOLEAN, description = "Whether or not the stargate created the connection")
+	public boolean isInitiator(IComputerAccess computer, TileEntity tile) {
 		checkGateComplete(tile);
-
 		return (Boolean)ReflectionHelper.getProperty(STARGATE_TILE_CLASS, tile, new String[] { "isInitiator" });
 	}
 
-	@LuaMethod(returnType = LuaType.BOOLEAN, description = "whether or not the connection is travelable from this side", onTick = false)
-	public boolean canTravelFromThisEnd(IComputerAccess computer, TileEntity tile) throws Exception {
-		// make sure the gate is built
+	@LuaMethod(returnType = LuaType.BOOLEAN, description = "Whether or not the connection is travelable from this side")
+	public boolean canTravelFromThisEnd(IComputerAccess computer, TileEntity tile) {
 		checkGateComplete(tile);
-
 		return (Boolean)ReflectionHelper.call(tile, "canTravelFromThisEnd");
 	}
 
-	@LuaMethod(returnType = LuaType.STRING, description = "the address of the stargate the connection is linked", onTick = false)
-	public String getDialledAddress(IComputerAccess computer, TileEntity tile) throws Exception {
-		// make sure the gate is built
+	@LuaMethod(returnType = LuaType.STRING, description = "The address of the stargate the connection is linked")
+	public String getDialledAddress(IComputerAccess computer, TileEntity tile) {
 		checkGateComplete(tile);
-
 		return (String)ReflectionHelper.getProperty(STARGATE_TILE_CLASS, tile, new String[] { "dialledAddress" });
 	}
 
-	@LuaMethod(returnType = LuaType.BOOLEAN, description = "whether or not the Stargate is completed", onTick = false)
+	@LuaMethod(returnType = LuaType.STRING, description = "The address of the this stargate")
+	public String getHomeAddress(IComputerAccess computer, TileEntity tile) {
+		checkGateComplete(tile);
+		return (String)ReflectionHelper.call(tile, "findHomeAddress");
+	}
+
+	@LuaMethod(returnType = LuaType.BOOLEAN, description = "Whether or not the Stargate is completed")
 	public boolean isCompleteGate(IComputerAccess computer, TileEntity tile) {
 		try {
 			checkGateComplete(tile);
@@ -141,17 +161,15 @@ public class AdapterStargate implements IPeripheralAdapter {
 		}
 	}
 
-	private void checkGateComplete(TileEntity tile) throws Exception {
+	private static void checkGateComplete(TileEntity tile) {
 		boolean ringComplete = (Boolean)ReflectionHelper.getProperty(STARGATE_TILE_CLASS, tile, new String[] { "isMerged" });
-		if (!ringComplete) throw new Exception("Stargate damaged or incomplete");
+		Preconditions.checkState(ringComplete, "Stargate damaged or incomplete");
 	}
 
-	private void validateAddress(TileEntity tile, String address) throws Exception {
-		if (address.length() != 7) throw new Exception("Stargate addresses must be 7 letters");
-
+	private static void validateAddress(TileEntity tile, String address) {
+		Preconditions.checkArgument(address.length() == 7, "Stargate addresses must be 7 letters");
 		TileEntity targetStargate = (TileEntity)ReflectionHelper.callStatic(SG_ADDRESSING_CLASS, "findAddressedStargate", address);
-
-		if (targetStargate == null) throw new Exception("No Stargate at address " + address);
-		if (targetStargate == tile) throw new Exception("Stargate cannot connect to itself");
+		Preconditions.checkNotNull(targetStargate, "No Stargate at address %s", address);
+		Preconditions.checkArgument(targetStargate != tile, "Stargate cannot connect to itself");
 	}
 }
