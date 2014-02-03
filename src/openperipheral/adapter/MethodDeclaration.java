@@ -215,9 +215,10 @@ public class MethodDeclaration {
 		if (validateReturn) {
 			Preconditions.checkArgument(result.length == returnTypes.length, "Returning invalid number of values from method %s, expected %s, got %s", method, returnTypes.length, result.length);
 			for (int i = 0; i < result.length; i++) {
-				LuaType expected = returnTypes[i];
-				Object got = result[i];
-				Preconditions.checkArgument(got == null || ReflectionHelper.compareTypes(expected.getJavaType(), got.getClass()), "Invalid type of return value %s: expected %s, got %s", i, expected, got);
+				final LuaType expected = returnTypes[i];
+				final Class<?> expectedType = expected.getJavaType();
+				final Object got = result[i];
+				Preconditions.checkArgument(got == null || expectedType.isInstance(got) || ReflectionHelper.compareTypes(expectedType, got.getClass()), "Invalid type of return value %s: expected %s, got %s", i, expected, got);
 			}
 		}
 
