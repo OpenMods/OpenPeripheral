@@ -47,7 +47,7 @@ else --must be 2 or more
       print("returns: "..string.lower(table.concat(v.returnTypes,',')))
       if #v.args > 0 then
         print("args: ")
-        for _,arg in pairs(v.args) do
+        for _,arg in ipairs(v.args) do
           print(" - ("..arg.type:lower()..")"..argName(arg)..": "..arg.description)   
         end
       end
