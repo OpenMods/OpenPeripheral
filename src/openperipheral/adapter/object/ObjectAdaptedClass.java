@@ -21,7 +21,7 @@ public class ObjectAdaptedClass extends AdaptedClass<IObjectMethodExecutor> {
 
 			@Override
 			public Object[] execute(ILuaContext context, Object target, Object[] args) throws Exception {
-				return method.createWrapper(lister).setLuaArgs(args).call();
+				return method.createWrapper(lister).setJavaArg(ARG_TARGET, target).setLuaArgs(args).call();
 			}
 
 			@Override

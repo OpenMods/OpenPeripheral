@@ -22,7 +22,7 @@ public class PeripheralAdaptedClass extends AdaptedClass<IPeripheralMethodExecut
 
 			@Override
 			public Object[] execute(IComputerAccess computer, ILuaContext context, Object target, Object[] args) throws Exception {
-				return method.createWrapper(lister).setLuaArgs(args).call();
+				return method.createWrapper(lister).setJavaArg(ARG_TARGET, target).setLuaArgs(args).call();
 			}
 
 			@Override

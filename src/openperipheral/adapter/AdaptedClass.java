@@ -1,16 +1,21 @@
 package openperipheral.adapter;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.*;
 
 import openmods.Log;
+import openperipheral.Config;
 import openperipheral.api.LuaCallable;
 import openperipheral.api.LuaType;
+import openperipheral.api.Named;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.*;
 
 public abstract class AdaptedClass<E extends IMethodExecutor> {
+
+	public static final String ARG_TARGET = "target";
 
 	private final Map<String, E> methodsByName;
 	private final Map<Integer, E> methodsByIndex;
@@ -46,16 +51,20 @@ public abstract class AdaptedClass<E extends IMethodExecutor> {
 			addInlineAdapter(manager, result, c);
 		}
 
-		AdditionalHelperMethods helper = new AdditionalHelperMethods();
-		for (Method method : AdditionalHelperMethods.class.getMethods()) {
+		tryAddHelperMethods(result, new AdditionalHelperMethods());
+		if (Config.devMethods) tryAddHelperMethods(result, new ModHelperMethods());
+
+		return ImmutableMap.copyOf(result);
+	}
+
+	private void tryAddHelperMethods(Map<String, E> result, Object helper) {
+		for (Method method : helper.getClass().getMethods()) {
 			LuaCallable callableMeta = method.getAnnotation(LuaCallable.class);
 			if (callableMeta != null) {
 				MethodDeclaration decl = new MethodDeclaration(method, callableMeta);
 				result.put(decl.name, createDummyWrapper(helper, decl));
 			}
 		}
-
-		return ImmutableMap.copyOf(result);
 	}
 
 	private static <E extends IMethodExecutor> void addExternalAdapters(AdapterManager<?, E> manager, Map<String, E> result, Class<?> cls) {
@@ -129,6 +138,60 @@ public abstract class AdaptedClass<E extends IMethodExecutor> {
 				info.put(m.name, m.describe());
 			}
 			return info;
+		}
+	}
+
+	private static Map<String, Object> describe(Method m) {
+		Map<String, Object> desc = Maps.newHashMap();
+
+		List<String> args = Lists.newArrayList();
+		for (Class<?> arg : m.getParameterTypes())
+			args.add(arg.toString());
+
+		desc.put("modifiers", Modifier.toString(m.getModifiers()));
+		desc.put("from", m.getDeclaringClass().toString());
+
+		desc.put("args", args);
+		return desc;
+	}
+
+	private class ModHelperMethods {
+		@LuaCallable(returnTypes = LuaType.STRING)
+		public String getClass(@Named("target") Object owner) {
+			return owner.getClass().toString();
+		}
+
+		@LuaCallable(returnTypes = LuaType.STRING)
+		public String getSuperclass(@Named("target") Object owner) {
+			return owner.getClass().getSuperclass().toString();
+		}
+
+		@LuaCallable(returnTypes = LuaType.TABLE)
+		public List<String> getInterfaces(@Named("target") Object owner) {
+			List<String> results = Lists.newArrayList();
+			for (Class<?> cls : owner.getClass().getInterfaces())
+				results.add(cls.toString());
+			return results;
+		}
+
+		@LuaCallable(returnTypes = LuaType.TABLE)
+		public Map<String, Map<String, Object>> getMethods(@Named("target") Object owner) {
+			Map<String, Map<String, Object>> results = Maps.newHashMap();
+			for (Method m : owner.getClass().getMethods()) {
+				results.put(m.getName(), describe(m));
+
+			}
+			return results;
+		}
+
+		@LuaCallable(returnTypes = LuaType.TABLE)
+		public Map<String, Map<String, Object>> getDeclaredMethods(@Named("target") Object owner) {
+			Map<String, Map<String, Object>> results = Maps.newHashMap();
+			for (Method m : owner.getClass().getDeclaredMethods()) {
+				results.put(m.getName(), describe(m));
+
+			}
+			return results;
 		}
 	}
 

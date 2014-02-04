@@ -8,6 +8,7 @@ import openperipheral.integration.buildcraft.ModuleBuildCraft;
 import openperipheral.integration.enderstorage.ModuleEnderStorage;
 import openperipheral.integration.forestry.ModuleForestry;
 import openperipheral.integration.ic2.ModuleIC2;
+import openperipheral.integration.multiparts.ModuleMultiparts;
 import openperipheral.integration.mystcraft.ModuleMystcraft;
 import openperipheral.integration.projectred.ModuleProjectRed;
 import openperipheral.integration.railcraft.ModuleRailcraft;
@@ -52,6 +53,7 @@ public class OpenPeripheralCore {
 		IntegrationModuleRegistry.registerModule(new ModuleThermalExpansion());
 		IntegrationModuleRegistry.registerModule(new ModuleSgCraft());
 		IntegrationModuleRegistry.registerModule(new ModuleTMechworks());
+		IntegrationModuleRegistry.registerModule(new ModuleMultiparts());
 
 		IntegrationModuleRegistry.selectLoadedModules();
 		IntegrationModuleRegistry.initAllModules();

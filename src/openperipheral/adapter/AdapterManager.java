@@ -154,28 +154,44 @@ public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodEx
 		peripherals.addInlineAdapter(cls);
 	}
 
+	@SuppressWarnings("unchecked")
 	public static void registerPeripherals() {
 		Map<Class<? extends TileEntity>, String> classToNameMap = PeripheralUtils.getClassToNameMap();
-		Set<Class<?>> classesWithAdapters = peripherals.getAllClasses();
+
+		Set<Class<? extends TileEntity>> candidates = Sets.newHashSet();
 
 		for (Map.Entry<Class<? extends TileEntity>, String> e : classToNameMap.entrySet()) {
 			Class<? extends TileEntity> teClass = e.getKey();
+
 			if (teClass == null) {
 				Log.warn("TE with id %s has null key", e.getValue());
+			} else if (!IPeripheral.class.isAssignableFrom(teClass)) {
+				candidates.add(teClass);
+			}
+		}
+
+		Set<Class<?>> classesWithAdapters = peripherals.getAllClasses();
+		Set<Class<? extends TileEntity>> classesToRegister = Sets.newHashSet();
+
+		for (Class<?> adaptableClass : classesWithAdapters) {
+			if (TileEntity.class.isAssignableFrom(adaptableClass)) {
+				// no need to continue, since CC does .isAssignableFrom when
+				// searching for peripheral
+				classesToRegister.add((Class<? extends TileEntity>)adaptableClass);
 				continue;
 			}
 
-			if (IPeripheralProvider.class.isAssignableFrom(teClass)) {
-				ComputerCraftAPI.registerExternalPeripheral(teClass, peripheralHandler);
-				continue;
-			}
-
-			for (Class<?> adaptableClass : classesWithAdapters) {
-				if (adaptableClass.isAssignableFrom(teClass)) {
-					ComputerCraftAPI.registerExternalPeripheral(teClass, peripheralHandler);
-					break;
+			for (Class<? extends TileEntity> teClass : candidates) {
+				if (IPeripheralProvider.class.isAssignableFrom(teClass) || adaptableClass.isAssignableFrom(teClass)) {
+					classesToRegister.add(teClass);
 				}
 			}
+		}
+
+		Log.info("Registering peripheral handler for %d classes", classesToRegister.size());
+		for (Class<? extends TileEntity> teClass : classesToRegister) {
+			Log.finer("Adding integration for %s", teClass);
+			ComputerCraftAPI.registerExternalPeripheral(teClass, peripheralHandler);
 		}
 	}
 

@@ -9,7 +9,7 @@ import openmods.Log;
 import openperipheral.api.IIntegrationModule;
 import openperipheral.integration.vanilla.ModuleVanilla;
 
-import com.google.common.collect.Lists;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
@@ -17,12 +17,14 @@ import cpw.mods.fml.common.Loader;
 
 public class IntegrationModuleRegistry {
 
-	private static List<IIntegrationModule> registeredModules = Lists.newArrayList();
+	private static Map<String, IIntegrationModule> registeredModules = Maps.newHashMap();
 
 	private static Map<String, IIntegrationModule> selectedModules = Maps.newHashMap();
 
 	public static void registerModule(IIntegrationModule module) {
-		registeredModules.add(module);
+		final String modId = module.getModId();
+		IIntegrationModule prev = registeredModules.put(modId, module);
+		Preconditions.checkState(prev == null, "Conflicting adapters for mod '%s': %s, %s", module, prev);
 	}
 
 	public static void selectLoadedModules() {
@@ -32,12 +34,13 @@ public class IntegrationModuleRegistry {
 
 		if (!blacklist.contains(ModuleVanilla.DUMMY_VANILLA_MODID)) selectedModules.put(ModuleVanilla.DUMMY_VANILLA_MODID, new ModuleVanilla());
 
-		for (IIntegrationModule module : registeredModules) {
-			String modId = module.getModId();
+		for (Map.Entry<String, IIntegrationModule> e : registeredModules.entrySet()) {
+			String modId = e.getKey();
 			if (Loader.isModLoaded(modId)) {
 				if (blacklist.contains(modId.toLowerCase())) {
 					Log.info("Mod %s is loaded, but integration not enabled due to blacklist", modId);
 				} else {
+					IIntegrationModule module = e.getValue();
 					Log.info("Enabling module %s for %s ", module, modId);
 					selectedModules.put(modId, module);
 				}
