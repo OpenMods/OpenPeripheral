@@ -36,71 +36,41 @@ public class AdapterInventory implements IPeripheralAdapter {
 		return inventory.getSizeInventory();
 	}
 
-	@LuaMethod(returnType = LuaType.NUMBER, description = "Pull an item from a slot in another inventory into a specific slot in this one. Returns the amount of items moved",
-			args = {
-					@Arg(type = LuaType.STRING, name = "direction", description = "The direction of the other inventory. (north, south, east, west, up or down)"),
-					@Arg(type = LuaType.NUMBER, name = "slot", description = "The slot in the OTHER inventory that you're pulling from"),
-					@Arg(type = LuaType.NUMBER, name = "maxAmount", description = "The maximum amount of items you want to pull"),
-					@Arg(type = LuaType.NUMBER, name = "intoSlot", description = "The slot in the current inventory that you want to pull into")
-			})
-	public int pullItemIntoSlot(IComputerAccess computer, IInventory target, ForgeDirection direction, int slot, int maxAmount, int intoSlot) {
-		int merged = 0;
-		TileEntity te = (TileEntity)target;
-		IInventory otherInventory = InventoryUtils.getInventory(te.worldObj, te.xCoord, te.yCoord, te.zCoord, direction);
-		if (otherInventory == null || otherInventory == target) return 0; // Invalid
-																			// direction
-																			// or
-																			// target
-		merged = InventoryUtils.moveItemInto(otherInventory, slot - 1, InventoryUtils.getInventory(target), intoSlot - 1, maxAmount, direction.getOpposite(), true);
-		return merged;
-	}
+	@OnTick
+	@Freeform
+	@Alias("pullItemIntoSlot")
+	@LuaCallable(returnTypes = LuaType.NUMBER, description = "Pull an item from a slot in another inventory into a slot in this one. Returns the amount of items moved")
+	public int pullItem(@Named("target") IInventory target,
+			@Arg(type = LuaType.STRING, name = "direction", description = "The direction of the other inventory. (north, south, east, west, up or down)") ForgeDirection direction,
+			@Arg(type = LuaType.NUMBER, name = "slot", description = "The slot in the OTHER inventory that you're pulling from") int slot,
+			@Optionals @Arg(type = LuaType.NUMBER, name = "maxAmount", description = "The maximum amount of items you want to pull") Integer maxAmount,
+			@Arg(type = LuaType.NUMBER, name = "intoSlot", description = "The slot in the current inventory that you want to pull into") Integer intoSlot) {
 
-	@LuaMethod(
-			returnType = LuaType.NUMBER,
-			description = "Push an item from the current inventory into a specific slot in the other one. Returns the amount of items moved",
-			args = {
-					@Arg(type = LuaType.STRING, name = "direction", description = "The direction of the other inventory. (north, south, east, west, up or down)"),
-					@Arg(type = LuaType.NUMBER, name = "slot", description = "The slot in the current inventory that you're pushing from"),
-					@Arg(type = LuaType.NUMBER, name = "maxAmount", description = "The maximum amount of items you want to push"),
-					@Arg(type = LuaType.NUMBER, name = "intoSlot", description = "The slot in the other inventory that you want to push into")
-			})
-	public int pushItemIntoSlot(IComputerAccess computer, IInventory target, ForgeDirection direction, int slot, int maxAmount, int intoSlot) {
-		int merged = 0;
+		Preconditions.checkArgument(direction != null && direction != ForgeDirection.UNKNOWN, "Invalid direction");
 		TileEntity te = (TileEntity)target;
 		IInventory otherInventory = InventoryUtils.getInventory(te.worldObj, te.xCoord, te.yCoord, te.zCoord, direction);
 		if (otherInventory == null || otherInventory == target) return 0;
-		merged = InventoryUtils.moveItemInto(InventoryUtils.getInventory(target), slot - 1, otherInventory, intoSlot - 1, maxAmount, direction.getOpposite(), true);
-		return merged;
+		if (maxAmount == null) maxAmount = 64;
+		if (intoSlot == null) intoSlot = 1;
+		return InventoryUtils.moveItemInto(otherInventory, slot - 1, InventoryUtils.getInventory(target), intoSlot - 1, maxAmount, direction.getOpposite(), true);
 	}
 
-	@LuaMethod(returnType = LuaType.NUMBER, description = "Push an item from the current inventory into any slot on the other one. Returns the amount of items moved",
-			args = {
-					@Arg(type = LuaType.STRING, name = "direction", description = "The direction of the other inventory. (north, south, east, west, up or down)"),
-					@Arg(type = LuaType.NUMBER, name = "slot", description = "The slot in the current inventory that you're pushing from"),
-					@Arg(type = LuaType.NUMBER, name = "maxAmount", description = "The maximum amount of items you want to push")
-			})
-	public int pushItem(IComputerAccess computer, IInventory target, ForgeDirection direction, int slot, int maxAmount) {
-		int merged = 0;
+	@OnTick
+	@Freeform
+	@Alias("pushItemIntoSlot")
+	@LuaCallable(returnTypes = LuaType.NUMBER, description = "Push an item from the current inventory into slot on the other one. Returns the amount of items moved")
+	public int pushItem(@Named("target") IInventory target,
+			@Arg(type = LuaType.STRING, name = "direction", description = "The direction of the other inventory. (north, south, east, west, up or down)") ForgeDirection direction,
+			@Arg(type = LuaType.NUMBER, name = "slot", description = "The slot in the current inventory that you're pushing from") int slot,
+			@Optionals @Arg(type = LuaType.NUMBER, name = "maxAmount", description = "The maximum amount of items you want to push") Integer maxAmount,
+			@Arg(type = LuaType.NUMBER, name = "intoSlot", description = "The slot in the other inventory that you want to push into") Integer intoSlot) {
+		Preconditions.checkArgument(direction != null && direction != ForgeDirection.UNKNOWN, "Invalid direction");
 		TileEntity te = (TileEntity)target;
 		IInventory otherInventory = InventoryUtils.getInventory(te.worldObj, te.xCoord, te.yCoord, te.zCoord, direction);
 		if (otherInventory == null || otherInventory == target) return 0;
-		merged = InventoryUtils.moveItemInto(InventoryUtils.getInventory(target), slot - 1, otherInventory, -1, maxAmount, direction.getOpposite(), true);
-		return merged;
-	}
-
-	@LuaMethod(returnType = LuaType.NUMBER, description = "Pull an item from the target inventory into any slot in the current one. Returns the amount of items moved",
-			args = {
-					@Arg(type = LuaType.STRING, name = "direction", description = "The direction of the other inventory. (north, south, east, west, up or down)"),
-					@Arg(type = LuaType.NUMBER, name = "slot", description = "The slot in the other inventory that you're pulling from"),
-					@Arg(type = LuaType.NUMBER, name = "maxAmount", description = "The maximum amount of items you want to pull")
-			})
-	public int pullItem(IComputerAccess computer, IInventory target, ForgeDirection direction, int slot, int maxAmount) {
-		int merged = 0;
-		TileEntity te = (TileEntity)target;
-		IInventory otherInventory = InventoryUtils.getInventory(te.worldObj, te.xCoord, te.yCoord, te.zCoord, direction);
-		if (otherInventory == null || otherInventory == target) return 0;
-		merged = InventoryUtils.moveItemInto(otherInventory, slot - 1, InventoryUtils.getInventory(target), -1, maxAmount, direction.getOpposite(), true);
-		return merged;
+		if (maxAmount == null) maxAmount = 64;
+		if (intoSlot == null) intoSlot = 1;
+		return InventoryUtils.moveItemInto(InventoryUtils.getInventory(target), slot - 1, otherInventory, intoSlot - 1, maxAmount, direction, true);
 	}
 
 	@LuaMethod(returnType = LuaType.VOID, description = "Condense and tidy the stacks in an inventory")

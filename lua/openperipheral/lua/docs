@@ -33,21 +33,21 @@ function argName(arg)
 end
 
 if #args == 1 then
-  for k,v in pairs(info) do
+  for name,data in pairs(info) do
     args = {}
-    for _,arg in pairs(v.args) do
+    for _,arg in pairs(data.args) do
       table.insert(args, argName(arg))
     end
-    print(v.name.."("..table.concat(args,",")..")")
+    print(name.."("..table.concat(args,",")..")")
   end
 else --must be 2 or more
-  for k,v in pairs(info) do
-    if args[2]:lower() == v.name:lower() then
-      print(v.name..": "..v.description)
-      print("returns: "..string.lower(table.concat(v.returnTypes,',')))
-      if #v.args > 0 then
+  for name,data in pairs(info) do
+    if args[2]:lower() == name:lower() then
+      print(name..": "..data.description)
+      print("returns: "..string.lower(table.concat(data.returnTypes,',')))
+      if #data.args > 0 then
         print("args: ")
-        for _,arg in ipairs(v.args) do
+        for _,arg in ipairs(data.args) do
           print(" - ("..arg.type:lower()..")"..argName(arg)..": "..arg.description)   
         end
       end

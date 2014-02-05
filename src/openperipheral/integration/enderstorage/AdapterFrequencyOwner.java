@@ -18,6 +18,7 @@ public class AdapterFrequencyOwner implements IPeripheralAdapter {
 		return CLAZZ;
 	}
 
+	@Alias("getColours")
 	@LuaCallable(returnTypes = { LuaType.NUMBER, LuaType.NUMBER, LuaType.NUMBER },
 			description = "Get the colours active on this chest or tank")
 	public IMultiReturn getColors(IComputerAccess computer, TileEntity frequencyOwner) {
@@ -40,12 +41,7 @@ public class AdapterFrequencyOwner implements IPeripheralAdapter {
 				colorToName(frequency >> 0 & 0xF));
 	}
 
-	@LuaCallable(returnTypes = { LuaType.NUMBER, LuaType.NUMBER, LuaType.NUMBER },
-			description = "Get the colours active on this chest or tank")
-	public IMultiReturn getColours(IComputerAccess computer, TileEntity frequencyOwner) {
-		return getColors(computer, frequencyOwner);
-	}
-
+	@Alias("setColours")
 	@LuaMethod(returnType = LuaType.VOID, onTick = false, description = "Set the frequency of this chest or tank", args = {
 			@Arg(name = "color_left", type = LuaType.NUMBER, description = "The first color"),
 			@Arg(name = "color_middle", type = LuaType.NUMBER, description = "The second color"),
@@ -76,15 +72,6 @@ public class AdapterFrequencyOwner implements IPeripheralAdapter {
 		int frequency = ((high & 0xF) << 8) + ((med & 0xF) << 4) + (low & 0xF);
 		// set the TE's frequency to the new colours
 		setFreq(frequencyOwner, frequency);
-	}
-
-	@LuaMethod(returnType = LuaType.VOID, onTick = false, description = "Set the frequency of this chest or tank", args = {
-			@Arg(name = "color_left", type = LuaType.NUMBER, description = "The first color"),
-			@Arg(name = "color_middle", type = LuaType.NUMBER, description = "The second color"),
-			@Arg(name = "color_right", type = LuaType.NUMBER, description = "The third color")
-	})
-	public void setColours(IComputerAccess computer, TileEntity frequencyOwner, int colour_left, int colour_middle, int colour_right) {
-		setColors(computer, frequencyOwner, colour_left, colour_middle, colour_right);
 	}
 
 	@LuaMethod(

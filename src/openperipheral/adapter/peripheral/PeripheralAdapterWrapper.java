@@ -108,7 +108,9 @@ public abstract class PeripheralAdapterWrapper extends AdapterWrapper<IPeriphera
 		for (IObjectMethodExecutor objectExecutor : toInclude.getMethods()) {
 			if (!objectExecutor.isSynthetic()) {
 				IPeripheralMethodExecutor peripheralExecutor = adaptObjectExecutor(targetProvider, objectExecutor);
-				result.put(peripheralExecutor.getWrappedMethod().name, peripheralExecutor);
+				MethodDeclaration decl = peripheralExecutor.getWrappedMethod();
+				for (String name : decl.names)
+					result.put(name, peripheralExecutor);
 			}
 		}
 	}

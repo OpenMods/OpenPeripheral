@@ -109,7 +109,7 @@ public abstract class ExecutionStrategy {
 
 			if (responder.error != null) {
 				String description = PrettyPrint.getMessageForThrowable(responder.error);
-				throw new RuntimeException(description);
+				throw new RuntimeException(description, responder.error);
 			}
 
 			return responder.result;

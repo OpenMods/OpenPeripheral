@@ -83,7 +83,8 @@ public abstract class AdapterWrapper<E extends IMethodExecutor> {
 				decl.validate();
 				validateArgTypes(decl);
 
-				methods.put(decl.name, exec);
+				for (String name : decl.names)
+					methods.put(name, exec);
 			}
 		}
 

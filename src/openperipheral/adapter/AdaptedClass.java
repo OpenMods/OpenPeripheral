@@ -62,7 +62,8 @@ public abstract class AdaptedClass<E extends IMethodExecutor> {
 			LuaCallable callableMeta = method.getAnnotation(LuaCallable.class);
 			if (callableMeta != null) {
 				MethodDeclaration decl = new MethodDeclaration(method, callableMeta);
-				result.put(decl.name, createDummyWrapper(helper, decl));
+				for (String name : decl.names)
+					result.put(name, createDummyWrapper(helper, decl));
 			}
 		}
 	}
@@ -123,9 +124,9 @@ public abstract class AdaptedClass<E extends IMethodExecutor> {
 		@LuaCallable(returnTypes = LuaType.STRING, description = "List all the methods available")
 		public String listMethods() {
 			List<String> info = Lists.newArrayList();
-			for (IMethodExecutor e : methodsByName.values()) {
-				final MethodDeclaration m = e.getWrappedMethod();
-				info.add(m.signature());
+			for (Map.Entry<String, E> e : methodsByName.entrySet()) {
+				final MethodDeclaration m = e.getValue().getWrappedMethod();
+				info.add(e.getKey() + m.signature());
 			}
 			return Joiner.on(", ").join(info);
 		}
@@ -133,9 +134,9 @@ public abstract class AdaptedClass<E extends IMethodExecutor> {
 		@LuaCallable(returnTypes = LuaType.TABLE, description = "Get a complete table of information about all available methods")
 		public Map<?, ?> getAdvancedMethodsData() {
 			Map<String, Object> info = Maps.newHashMap();
-			for (IMethodExecutor e : methodsByName.values()) {
-				final MethodDeclaration m = e.getWrappedMethod();
-				info.put(m.name, m.describe());
+			for (Map.Entry<String, E> e : methodsByName.entrySet()) {
+				final MethodDeclaration m = e.getValue().getWrappedMethod();
+				info.put(e.getKey(), m.describe());
 			}
 			return info;
 		}

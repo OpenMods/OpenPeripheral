@@ -178,12 +178,13 @@ public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodEx
 				// no need to continue, since CC does .isAssignableFrom when
 				// searching for peripheral
 				classesToRegister.add((Class<? extends TileEntity>)adaptableClass);
-				continue;
-			}
-
-			for (Class<? extends TileEntity> teClass : candidates) {
-				if (IPeripheralProvider.class.isAssignableFrom(teClass) || adaptableClass.isAssignableFrom(teClass)) {
-					classesToRegister.add(teClass);
+			} else if (!adaptableClass.isInterface()) {
+				Log.warn("Class %s is neither interface nor TileEntity. Skipping peripheral registration.", adaptableClass);
+			} else {
+				for (Class<? extends TileEntity> teClass : candidates) {
+					if (IPeripheralProvider.class.isAssignableFrom(teClass) || adaptableClass.isAssignableFrom(teClass)) {
+						classesToRegister.add(teClass);
+					}
 				}
 			}
 		}

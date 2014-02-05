@@ -2,6 +2,7 @@ package openperipheral.adapter;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.Callable;
@@ -15,6 +16,7 @@ import openperipheral.api.*;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Throwables;
 import com.google.common.collect.*;
 
 public class MethodDeclaration {
@@ -65,7 +67,7 @@ public class MethodDeclaration {
 		}
 	}
 
-	public final String name;
+	public final List<String> names;
 	private final Method method;
 	private final String description;
 	private final LuaType[] returnTypes;
@@ -91,11 +93,21 @@ public class MethodDeclaration {
 		return result;
 	}
 
+	private static List<String> getNames(Method method, String mainName) {
+		ImmutableList.Builder<String> names = ImmutableList.builder();
+		names.add(mainName);
+
+		Alias alias = method.getAnnotation(Alias.class);
+		if (alias != null) names.add(alias.value());
+		return names.build();
+	}
+
 	public MethodDeclaration(Method method, LuaMethod luaMethod) {
 		this.method = method;
 
 		String luaName = luaMethod.name();
-		this.name = (LuaMethod.USE_METHOD_NAME.equals(luaName))? method.getName() : luaName;
+		names = getNames(method, (LuaMethod.USE_METHOD_NAME.equals(luaName))? method.getName() : luaName);
+
 		this.description = luaMethod.description();
 		this.returnTypes = new LuaType[] { luaMethod.returnType() };
 		this.validateReturn = false;
@@ -137,7 +149,8 @@ public class MethodDeclaration {
 		this.method = method;
 
 		String luaName = meta.name();
-		this.name = (LuaCallable.USE_METHOD_NAME.equals(luaName))? method.getName() : luaName;
+		this.names = getNames(method, (LuaCallable.USE_METHOD_NAME.equals(luaName))? method.getName() : luaName);
+
 		this.description = meta.description();
 		this.returnTypes = meta.returnTypes();
 		this.validateReturn = meta.validateReturn();
@@ -289,7 +302,13 @@ public class MethodDeclaration {
 			for (int i = 0; i < args.length; i++)
 				Preconditions.checkState(isSet.contains(i), "Parameter %s value not set", i);
 
-			Object result = method.invoke(target, args);
+			Object result;
+			try {
+				result = method.invoke(target, args);
+			} catch (InvocationTargetException e) {
+				Throwable wrapper = e.getCause();
+				throw Throwables.propagate(wrapper != null? wrapper : e);
+			}
 
 			if (result instanceof IMultiReturn) return validateResult(((IMultiReturn)result).getObjects());
 			else if (result == null) return validateResult();
@@ -338,7 +357,6 @@ public class MethodDeclaration {
 
 	public Map<String, Object> describe() {
 		Map<String, Object> result = Maps.newHashMap();
-		result.put("name", name);
 		result.put("description", description);
 
 		{
@@ -360,6 +378,6 @@ public class MethodDeclaration {
 	}
 
 	public String signature() {
-		return name + "(" + Joiner.on(",").join(luaArgs) + ")";
+		return "(" + Joiner.on(",").join(luaArgs) + ")";
 	}
 }
