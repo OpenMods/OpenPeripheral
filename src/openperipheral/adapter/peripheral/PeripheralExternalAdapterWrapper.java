@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.concurrent.Callable;
 
+import openperipheral.adapter.IDescriptable;
 import openperipheral.adapter.MethodDeclaration;
 import openperipheral.adapter.object.IObjectMethodExecutor;
 import openperipheral.api.IPeripheralAdapter;
@@ -68,7 +69,7 @@ public class PeripheralExternalAdapterWrapper extends PeripheralAdapterWrapper {
 			}
 
 			@Override
-			public MethodDeclaration getWrappedMethod() {
+			public IDescriptable getWrappedMethod() {
 				return executor.getWrappedMethod();
 			}
 

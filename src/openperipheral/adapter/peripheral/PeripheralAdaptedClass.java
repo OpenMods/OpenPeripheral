@@ -1,8 +1,6 @@
 package openperipheral.adapter.peripheral;
 
-import openperipheral.adapter.AdaptedClass;
-import openperipheral.adapter.AdapterManager;
-import openperipheral.adapter.MethodDeclaration;
+import openperipheral.adapter.*;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.ILuaContext;
 
@@ -16,7 +14,7 @@ public class PeripheralAdaptedClass extends AdaptedClass<IPeripheralMethodExecut
 	public IPeripheralMethodExecutor createDummyWrapper(final Object lister, final MethodDeclaration method) {
 		return new IPeripheralMethodExecutor() {
 			@Override
-			public MethodDeclaration getWrappedMethod() {
+			public IDescriptable getWrappedMethod() {
 				return method;
 			}
 

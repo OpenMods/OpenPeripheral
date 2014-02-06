@@ -2,7 +2,7 @@ package openperipheral.adapter;
 
 public interface IMethodExecutor {
 
-	public MethodDeclaration getWrappedMethod();
+	public IDescriptable getWrappedMethod();
 
 	public boolean isSynthetic();
 }

@@ -74,5 +74,4 @@ public class TypeConversionRegistry {
 		// should never get here, since ConverterString is catch-all
 		throw new IllegalStateException("Conversion failed on value " + obj);
 	}
-
 }

@@ -1,8 +1,6 @@
 package openperipheral.adapter.object;
 
-import openperipheral.adapter.AdaptedClass;
-import openperipheral.adapter.AdapterManager;
-import openperipheral.adapter.MethodDeclaration;
+import openperipheral.adapter.*;
 import dan200.computer.api.ILuaContext;
 
 public class ObjectAdaptedClass extends AdaptedClass<IObjectMethodExecutor> {
@@ -15,7 +13,7 @@ public class ObjectAdaptedClass extends AdaptedClass<IObjectMethodExecutor> {
 	public IObjectMethodExecutor createDummyWrapper(final Object lister, final MethodDeclaration method) {
 		return new IObjectMethodExecutor() {
 			@Override
-			public MethodDeclaration getWrappedMethod() {
+			public IDescriptable getWrappedMethod() {
 				return method;
 			}
 

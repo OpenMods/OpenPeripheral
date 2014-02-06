@@ -62,7 +62,7 @@ public abstract class AdaptedClass<E extends IMethodExecutor> {
 			LuaCallable callableMeta = method.getAnnotation(LuaCallable.class);
 			if (callableMeta != null) {
 				MethodDeclaration decl = new MethodDeclaration(method, callableMeta);
-				for (String name : decl.names)
+				for (String name : decl.getNames())
 					result.put(name, createDummyWrapper(helper, decl));
 			}
 		}
@@ -79,10 +79,11 @@ public abstract class AdaptedClass<E extends IMethodExecutor> {
 	}
 
 	private static <E extends IMethodExecutor> void addAdapterMethods(Map<String, E> result, AdapterWrapper<E> wrapper) {
-		for (Map.Entry<String, E> e : wrapper.methods.entrySet()) {
-			final String name = e.getKey();
-			final E previous = result.put(name, e.getValue());
-			if (previous != null) Log.info("Previous defininition of Lua method '%s' overwritten by adapter %s", name, wrapper.adapterClass);
+		for (E executor : wrapper.methods) {
+			for (String name : executor.getWrappedMethod().getNames()) {
+				final E previous = result.put(name, executor);
+				if (previous != null) Log.info("Previous defininition of Lua method '%s' overwritten by adapter %s", name, wrapper.adapterClass);
+			}
 		}
 
 	}
@@ -125,7 +126,7 @@ public abstract class AdaptedClass<E extends IMethodExecutor> {
 		public String listMethods() {
 			List<String> info = Lists.newArrayList();
 			for (Map.Entry<String, E> e : methodsByName.entrySet()) {
-				final MethodDeclaration m = e.getValue().getWrappedMethod();
+				final IDescriptable m = e.getValue().getWrappedMethod();
 				info.add(e.getKey() + m.signature());
 			}
 			return Joiner.on(", ").join(info);
@@ -135,7 +136,7 @@ public abstract class AdaptedClass<E extends IMethodExecutor> {
 		public Map<?, ?> getAdvancedMethodsData() {
 			Map<String, Object> info = Maps.newHashMap();
 			for (Map.Entry<String, E> e : methodsByName.entrySet()) {
-				final MethodDeclaration m = e.getValue().getWrappedMethod();
+				final IDescriptable m = e.getValue().getWrappedMethod();
 				info.put(e.getKey(), m.describe());
 			}
 			return info;

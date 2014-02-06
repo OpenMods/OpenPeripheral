@@ -19,7 +19,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 import com.google.common.collect.*;
 
-public class MethodDeclaration {
+public class MethodDeclaration implements IDescriptable {
 
 	public static class ConvertedArgument {
 		public final String name;
@@ -52,9 +52,9 @@ public class MethodDeclaration {
 
 		public Map<String, Object> describe() {
 			Map<String, Object> result = Maps.newHashMap();
-			result.put("type", luaType.toString());
-			result.put("name", name);
-			result.put("description", description);
+			result.put(IDescriptable.TYPE, luaType.toString());
+			result.put(IDescriptable.NAME, name);
+			result.put(IDescriptable.DESCRIPTION, description);
 			result.put("vararg", isVarArg);
 			result.put("optional", isOptional);
 			result.put("nullable", isNullable);
@@ -67,7 +67,7 @@ public class MethodDeclaration {
 		}
 	}
 
-	public final List<String> names;
+	private final List<String> names;
 	private final Method method;
 	private final String description;
 	private final LuaType[] returnTypes;
@@ -355,29 +355,34 @@ public class MethodDeclaration {
 		Preconditions.checkState(missing.isEmpty(), "Lua arguments %s from method %s are named", extra, method);
 	}
 
+	@Override
 	public Map<String, Object> describe() {
 		Map<String, Object> result = Maps.newHashMap();
-		result.put("description", description);
+		result.put(IDescriptable.DESCRIPTION, description);
 
 		{
-			Map<Integer, String> tmp = Maps.newHashMap();
-			int i = 1;
+			List<String> returns = Lists.newArrayList();
 			for (LuaType t : returnTypes)
-				tmp.put(i++, t.toString());
-			result.put("returnTypes", tmp);
+				returns.add(t.toString());
+			result.put(IDescriptable.RETURN_TYPES, returns);
 		}
 
 		{
-			Map<Integer, Object> tmp = Maps.newHashMap();
-			int i = 1;
+			List<Map<String, Object>> args = Lists.newArrayList();
 			for (ConvertedArgument arg : luaArgs)
-				tmp.put(i++, arg.describe());
-			result.put("args", tmp);
+				args.add(arg.describe());
+			result.put(IDescriptable.ARGS, args);
 		}
 		return result;
 	}
 
+	@Override
 	public String signature() {
 		return "(" + Joiner.on(",").join(luaArgs) + ")";
+	}
+
+	@Override
+	public List<String> getNames() {
+		return names;
 	}
 }

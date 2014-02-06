@@ -2,7 +2,7 @@ package openperipheral.adapter.peripheral;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
-import java.util.Map;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import openmods.Log;
@@ -11,7 +11,6 @@ import openperipheral.adapter.object.IObjectMethodExecutor;
 import openperipheral.api.*;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
 
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.ILuaContext;
@@ -49,7 +48,7 @@ public abstract class PeripheralAdapterWrapper extends AdapterWrapper<IPeriphera
 		}
 
 		@Override
-		public MethodDeclaration getWrappedMethod() {
+		public IDescriptable getWrappedMethod() {
 			return method;
 		}
 
@@ -66,13 +65,13 @@ public abstract class PeripheralAdapterWrapper extends AdapterWrapper<IPeriphera
 	}
 
 	@Override
-	protected Map<String, IPeripheralMethodExecutor> buildMethodMap() {
+	protected List<IPeripheralMethodExecutor> buildMethodList() {
 		final boolean defaultOnTick = isOnTick(adapterClass, false);
 
 		final boolean packageIsIgnoringWarnings = isIgnoringWarnings(adapterClass.getPackage(), false);
 		final boolean classIsIgnoringWarnings = isIgnoringWarnings(adapterClass, packageIsIgnoringWarnings);
 
-		Map<String, IPeripheralMethodExecutor> peripheralMethods = buildMethodMap(false, new MethodExecutorFactory<IPeripheralMethodExecutor>() {
+		List<IPeripheralMethodExecutor> peripheralMethods = buildMethodList(false, new MethodExecutorFactory<IPeripheralMethodExecutor>() {
 			@Override
 			public IPeripheralMethodExecutor createExecutor(Method method, MethodDeclaration decl) {
 				LuaMethod methodAnn = method.getAnnotation(LuaMethod.class);
@@ -88,30 +87,20 @@ public abstract class PeripheralAdapterWrapper extends AdapterWrapper<IPeriphera
 			}
 		});
 
-		ImmutableMap.Builder<String, IPeripheralMethodExecutor> builder = ImmutableMap.builder();
-		builder.putAll(peripheralMethods);
-
 		for (Method m : adapterClass.getMethods()) {
 			Include marker = m.getAnnotation(Include.class);
-			if (marker != null) {
-				includeClass(builder, m);
-			}
+			if (marker != null) includeClass(peripheralMethods, m);
 		}
 
-		return builder.build();
+		return peripheralMethods;
 	}
 
-	private void includeClass(ImmutableMap.Builder<String, IPeripheralMethodExecutor> result, Method targetProvider) {
+	private void includeClass(List<IPeripheralMethodExecutor> result, Method targetProvider) {
 		Class<?> target = targetProvider.getReturnType();
 		Preconditions.checkArgument(!target.isPrimitive(), "Method %s is marked with annotation 'Include', but returns primitive type", targetProvider);
 		AdaptedClass<IObjectMethodExecutor> toInclude = AdapterManager.objects.getAdapterClass(target);
 		for (IObjectMethodExecutor objectExecutor : toInclude.getMethods()) {
-			if (!objectExecutor.isSynthetic()) {
-				IPeripheralMethodExecutor peripheralExecutor = adaptObjectExecutor(targetProvider, objectExecutor);
-				MethodDeclaration decl = peripheralExecutor.getWrappedMethod();
-				for (String name : decl.names)
-					result.put(name, peripheralExecutor);
-			}
+			if (!objectExecutor.isSynthetic()) result.add(adaptObjectExecutor(targetProvider, objectExecutor));
 		}
 	}
 
