@@ -23,26 +23,28 @@ import com.google.common.collect.Maps;
 
 public class PropertyListBuilder {
 
-	private static final IPropertyCallback DEFAULT_CALLBACK = new IPropertyCallback() {
+	private static IPropertyCallback createDefaultCallback(final Object owner) {
+		return new IPropertyCallback() {
 
-		@Override
-		public void setField(Object target, Field field, Object value) {
-			try {
-				field.set(target, value);
-			} catch (Throwable t) {
-				throw Throwables.propagate(t);
+			@Override
+			public void setField(Field field, Object value) {
+				try {
+					field.set(owner, value);
+				} catch (Throwable t) {
+					throw Throwables.propagate(t);
+				}
 			}
-		}
 
-		@Override
-		public Object getField(Object target, Field field) {
-			try {
-				return field.get(target);
-			} catch (Throwable t) {
-				throw Throwables.propagate(t);
+			@Override
+			public Object getField(Field field) {
+				try {
+					return field.get(owner);
+				} catch (Throwable t) {
+					throw Throwables.propagate(t);
+				}
 			}
-		}
-	};
+		};
+	}
 
 	public static class PropertyExecutor implements IMethodExecutor {
 		private final FieldContext context;
@@ -108,7 +110,7 @@ public class PropertyListBuilder {
 		@Override
 		public Object call(Object target, Object... args) {
 			Preconditions.checkArgument(args.length == 0, "Getter has no arguments");
-			Object result = getCallback(target).getField(target, field);
+			Object result = getCallback(target).getField(field);
 			return TypeConversionRegistry.toLua(result);
 		}
 
@@ -138,7 +140,7 @@ public class PropertyListBuilder {
 			Object arg = args[0];
 			Object converted = TypeConversionRegistry.fromLua(arg, field.getType());
 			Preconditions.checkNotNull(converted, "Invalid value type");
-			getCallback(target).setField(target, field, converted);
+			getCallback(target).setField(field, converted);
 
 			return null;
 		}
@@ -169,7 +171,7 @@ public class PropertyListBuilder {
 
 		@Override
 		protected IPropertyCallback getCallback(Object target) {
-			return DEFAULT_CALLBACK;
+			return createDefaultCallback(target);
 		}
 	}
 
@@ -180,7 +182,7 @@ public class PropertyListBuilder {
 
 		@Override
 		protected IPropertyCallback getCallback(Object target) {
-			return DEFAULT_CALLBACK;
+			return createDefaultCallback(target);
 		}
 	}
 
@@ -216,7 +218,7 @@ public class PropertyListBuilder {
 
 	private static ImmutablePair<GetterContext, SetterContext> createContexts(Field field, String name, LuaType type, String getterDescription, String setterDescription, boolean isDelegating, boolean readOnly) {
 		int modifiers = field.getModifiers();
-		Preconditions.checkArgument(!Modifier.isFinal(modifiers) && !Modifier.isStatic(modifiers), "Field marked with @Property can't be either final or static");
+		Preconditions.checkArgument((readOnly || !Modifier.isFinal(modifiers)) && !Modifier.isStatic(modifiers), "Field marked with @Property can't be either final or static");
 		field.setAccessible(true);
 
 		if (Strings.isNullOrEmpty(name)) name = field.getName();
@@ -248,7 +250,7 @@ public class PropertyListBuilder {
 	}
 
 	public static <E extends IMethodExecutor> void buildPropertyList(Class<?> targetCls, IPropertyExecutorFactory<E> factory, List<E> output) {
-		for (Field f : targetCls.getFields()) {
+		for (Field f : targetCls.getDeclaredFields()) {
 			{
 				Property p = f.getAnnotation(Property.class);
 				if (p != null) {

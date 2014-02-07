@@ -226,12 +226,16 @@ public class MethodDeclaration implements IDescriptable {
 			result[i] = TypeConversionRegistry.toLua(result[i]);
 
 		if (validateReturn) {
-			Preconditions.checkArgument(result.length == returnTypes.length, "Returning invalid number of values from method %s, expected %s, got %s", method, returnTypes.length, result.length);
-			for (int i = 0; i < result.length; i++) {
-				final LuaType expected = returnTypes[i];
-				final Class<?> expectedType = expected.getJavaType();
-				final Object got = result[i];
-				Preconditions.checkArgument(got == null || expectedType.isInstance(got) || ReflectionHelper.compareTypes(expectedType, got.getClass()), "Invalid type of return value %s: expected %s, got %s", i, expected, got);
+			if (returnTypes.length == 0) {
+				Preconditions.checkArgument(result.length == 1 && result[0] == null, "Returning value from null method");
+			} else {
+				Preconditions.checkArgument(result.length == returnTypes.length, "Returning invalid number of values from method %s, expected %s, got %s", method, returnTypes.length, result.length);
+				for (int i = 0; i < result.length; i++) {
+					final LuaType expected = returnTypes[i];
+					final Class<?> expectedType = expected.getJavaType();
+					final Object got = result[i];
+					Preconditions.checkArgument(got == null || expectedType.isInstance(got) || ReflectionHelper.compareTypes(expectedType, got.getClass()), "Invalid type of return value %s: expected %s, got %s", i, expected, got);
+				}
 			}
 		}
 
@@ -311,7 +315,6 @@ public class MethodDeclaration implements IDescriptable {
 			}
 
 			if (result instanceof IMultiReturn) return validateResult(((IMultiReturn)result).getObjects());
-			else if (result == null) return validateResult();
 			else return validateResult(result);
 		}
 	}

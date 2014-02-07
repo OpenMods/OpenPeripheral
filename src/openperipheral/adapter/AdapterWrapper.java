@@ -60,7 +60,7 @@ public abstract class AdapterWrapper<E extends IMethodExecutor> {
 
 		Method[] clsMethods;
 		try {
-			clsMethods = adapterClass.getMethods();
+			clsMethods = adapterClass.getDeclaredMethods();
 		} catch (Throwable t) {
 			// Trust no one. We got report about ClassNotFound from this place
 			Log.severe(t, "Can't get adapter %s methods (possible sideness fail), bailing out", adapterClass);
