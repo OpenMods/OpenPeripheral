@@ -2,15 +2,12 @@ package openperipheral.adapter;
 
 import java.util.*;
 
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import openmods.Log;
 import openperipheral.adapter.object.*;
 import openperipheral.adapter.peripheral.*;
 import openperipheral.api.*;
 import openperipheral.util.PeripheralUtils;
-
-import org.apache.commons.lang3.ArrayUtils;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.*;
@@ -19,91 +16,18 @@ import dan200.computer.api.*;
 
 public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodExecutor> {
 
-	private static final Random RANDOM = new Random();
-
-	private static final String[] BOGUS_METODS = new String[] {
-			"help",
-			"whats_going_on",
-			"wtf",
-			"lol_nope",
-			"derp",
-			"guru_meditation",
-			"woof",
-			"nothing_to_see_here",
-			"kernel_panic",
-			"hello_segfault",
-			"i_see_dead_bytes",
-			"xyzzy",
-			"abort_retry_fail_continue"
+	private static final IPeripheralHandler ADAPTER_HANDLER = new SafePeripheralHandler() {
+		@Override
+		protected IHostedPeripheral createPeripheral(TileEntity tile) {
+			AdaptedClass<IPeripheralMethodExecutor> adapter = peripherals.adaptClass(tile.getClass());
+			return new HostedPeripheral(adapter, tile);
+		}
 	};
 
-	private static final IHostedPeripheral PLACEHOLDER = new IHostedPeripheral() {
-
+	private static final IPeripheralHandler PROVIDER_HANDLER = new SafePeripheralHandler() {
 		@Override
-		public String getType() {
-			return "broken_peripheral";
-		}
-
-		@Override
-		public String[] getMethodNames() {
-			return ArrayUtils.toArray(BOGUS_METODS[RANDOM.nextInt(BOGUS_METODS.length)]);
-		}
-
-		@Override
-		public void detach(IComputerAccess computer) {}
-
-		@Override
-		public boolean canAttachToSide(int side) {
-			return true;
-		}
-
-		@Override
-		public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception {
-			return ArrayUtils.toArray("This peripheral is broken. You can show your log in #OpenMods");
-		}
-
-		@Override
-		public void attach(IComputerAccess computer) {}
-
-		@Override
-		public void writeToNBT(NBTTagCompound nbttagcompound) {}
-
-		@Override
-		public void update() {}
-
-		@Override
-		public void readFromNBT(NBTTagCompound nbttagcompound) {}
-	};
-
-	private static final IPeripheralHandler peripheralHandler = new IPeripheralHandler() {
-
-		private Map<TileEntity, IHostedPeripheral> created = new WeakHashMap<TileEntity, IHostedPeripheral>();
-
-		@Override
-		public IHostedPeripheral getPeripheral(TileEntity tile) {
-			if (tile == null) return null;
-
-			IHostedPeripheral peripheral = created.get(tile);
-
-			if (peripheral == null) {
-				try {
-					if (tile instanceof IPeripheralProvider) {
-						peripheral = ((IPeripheralProvider)tile).providePeripheral(tile.worldObj);
-					} else {
-						AdaptedClass<IPeripheralMethodExecutor> adapter = peripherals.adaptClass(tile.getClass());
-						peripheral = new HostedPeripheral(adapter, tile);
-					}
-				} catch (Throwable t) {
-					Log.severe(t, "Can't create peripheral for TE %s @ (%d,%d,%d) in world %s",
-							tile.getClass(), tile.xCoord, tile.yCoord, tile.zCoord, tile.worldObj.provider.dimensionId);
-					peripheral = PLACEHOLDER;
-
-				}
-
-				created.put(tile, peripheral);
-			}
-
-			return peripheral;
+		protected IHostedPeripheral createPeripheral(TileEntity tile) {
+			return (tile instanceof IPeripheralProvider)? ((IPeripheralProvider)tile).providePeripheral(tile.worldObj) : null;
 		}
 	};
 
@@ -159,40 +83,48 @@ public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodEx
 		Map<Class<? extends TileEntity>, String> classToNameMap = PeripheralUtils.getClassToNameMap();
 
 		Set<Class<? extends TileEntity>> candidates = Sets.newHashSet();
+		Set<Class<? extends TileEntity>> adaptedClasses = Sets.newHashSet();
+		Set<Class<? extends TileEntity>> providerClasses = Sets.newHashSet();
 
 		for (Map.Entry<Class<? extends TileEntity>, String> e : classToNameMap.entrySet()) {
 			Class<? extends TileEntity> teClass = e.getKey();
 
-			if (teClass == null) {
-				Log.warn("TE with id %s has null key", e.getValue());
-			} else if (!IPeripheral.class.isAssignableFrom(teClass)) {
-				candidates.add(teClass);
-			}
+			if (teClass == null) Log.warn("TE with id %s has null key", e.getValue());
+			else if (IPeripheralProvider.class.isAssignableFrom(teClass)) providerClasses.add(teClass);
+			else if (!IPeripheral.class.isAssignableFrom(teClass)) candidates.add(teClass);
 		}
 
-		Set<Class<?>> classesWithAdapters = peripherals.getAllClasses();
-		Set<Class<? extends TileEntity>> classesToRegister = Sets.newHashSet();
-
-		for (Class<?> adaptableClass : classesWithAdapters) {
+		for (Class<?> adaptableClass : peripherals.getAllClasses()) {
 			if (TileEntity.class.isAssignableFrom(adaptableClass)) {
 				// no need to continue, since CC does .isAssignableFrom when
 				// searching for peripheral
-				classesToRegister.add((Class<? extends TileEntity>)adaptableClass);
+				adaptedClasses.add((Class<? extends TileEntity>)adaptableClass);
 			} else if (!adaptableClass.isInterface()) {
 				Log.warn("Class %s is neither interface nor TileEntity. Skipping peripheral registration.", adaptableClass);
 			} else {
-				for (Class<? extends TileEntity> teClass : candidates) {
-					if (IPeripheralProvider.class.isAssignableFrom(teClass) || adaptableClass.isAssignableFrom(teClass)) {
-						classesToRegister.add(teClass);
+				Iterator<Class<? extends TileEntity>> it = candidates.iterator();
+				while (it.hasNext()) {
+					Class<? extends TileEntity> teClass = it.next();
+					if (adaptableClass.isAssignableFrom(teClass)) {
+						adaptedClasses.add(teClass);
+						it.remove();
 					}
 				}
 			}
 		}
 
-		Log.info("Registering peripheral handler for %d classes", classesToRegister.size());
-		for (Class<? extends TileEntity> teClass : classesToRegister) {
-			Log.finer("Adding integration for %s", teClass);
-			ComputerCraftAPI.registerExternalPeripheral(teClass, peripheralHandler);
+		final int providerCount = providerClasses.size();
+		final int adapterCount = adaptedClasses.size();
+		Log.info("Registering peripheral handler for %d classes (providers: %d, adapters: %d))", providerCount + adapterCount, providerCount, adapterCount);
+
+		for (Class<? extends TileEntity> teClass : adaptedClasses) {
+			Log.fine("Adding adapter handler for %s", teClass);
+			ComputerCraftAPI.registerExternalPeripheral(teClass, ADAPTER_HANDLER);
+		}
+
+		for (Class<? extends TileEntity> teClass : providerClasses) {
+			Log.fine("Adding provider handler for %s", teClass);
+			ComputerCraftAPI.registerExternalPeripheral(teClass, PROVIDER_HANDLER);
 		}
 	}
 
