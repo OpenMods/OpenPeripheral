@@ -50,6 +50,7 @@ public class ModuleVanilla implements IIntegrationModule {
 		AdapterManager.addPeripheralAdapter(new AdapterMobSpawner());
 		AdapterManager.addPeripheralAdapter(new AdapterRecordPlayer());
 		AdapterManager.addPeripheralAdapter(new AdapterSign());
+		AdapterManager.addPeripheralAdapter(new AdapterDaylightSensor());
 	}
 
 	@Override
