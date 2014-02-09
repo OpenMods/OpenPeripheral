@@ -1,5 +1,7 @@
 package openperipheral;
 
+import java.io.File;
+
 import net.minecraftforge.common.Configuration;
 import openmods.config.ConfigProcessing;
 import openperipheral.adapter.AdapterManager;
@@ -34,9 +36,10 @@ public class OpenPeripheralCore {
 
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent evt) {
-		Configuration configFile = new Configuration(evt.getSuggestedConfigurationFile());
-		ConfigProcessing.processAnnotations(configFile, Config.class);
-		if (configFile.hasChanged()) configFile.save();
+		final File configFile = evt.getSuggestedConfigurationFile();
+		Configuration config = new Configuration(configFile);
+		ConfigProcessing.processAnnotations(configFile, ModInfo.ID, config, Config.class);
+		if (config.hasChanged()) config.save();
 	}
 
 	@Mod.EventHandler
