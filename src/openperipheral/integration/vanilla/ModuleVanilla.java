@@ -2,6 +2,7 @@ package openperipheral.integration.vanilla;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import net.minecraft.enchantment.Enchantment;
@@ -16,8 +17,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemEnchantedBook;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.*;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.EnumMovingObjectType;
 import net.minecraft.util.MovingObjectPosition;
@@ -219,6 +219,83 @@ public class ModuleVanilla implements IIntegrationModule {
 	public void appendItemInfo(Map<String, Object> map, ItemStack itemstack) {
 		Map<Integer, Object> ench = getBookEnchantments(itemstack);
 		if (ench != null) map.put("ench", ench);
+		
+		Map<String, Object> tag = getNBTTag(itemstack);
+		map.put("tag", tag);
+		
+		map.put("maxDmg", itemstack.getMaxDamage());
+		map.put("maxStackSize", itemstack.getMaxStackSize());
+		map.put("isStackable", itemstack.isStackable());
+	}
+
+	private static Map<String, Object> getNBTTag(ItemStack stack) {
+		if (stack.hasTagCompound()) {
+			NBTTagCompound tagCompound = stack.getTagCompound();
+			return getTagCompound(tagCompound);
+		} else {
+			return Maps.newHashMap();
+		}		
+	}
+	
+	private static Object getTagValue(NBTBase tag) {
+		switch(tag.getId()) {
+			default:
+			case 0: // end
+				return null;
+			case 1: // byte
+				return ((NBTTagByte)tag).data;
+			case 2: // short
+				return ((NBTTagShort)tag).data;
+			case 3: // int
+				return ((NBTTagInt)tag).data;
+			case 4: // long
+				return ((NBTTagLong)tag).data;
+			case 5: // float
+				return ((NBTTagFloat)tag).data;
+			case 6: // double
+				return ((NBTTagDouble)tag).data;
+			case 7: // byte array
+				return ((NBTTagByteArray)tag).byteArray;
+			case 8: // string
+				return ((NBTTagString)tag).data;
+			case 9: // list
+				return getTagList((NBTTagList)tag);
+			case 10: // compound
+				return getTagCompound((NBTTagCompound)tag);
+			case 11: // int array
+				return ((NBTTagIntArray)tag).intArray;
+		}
+	}
+	
+	@SuppressWarnings("rawtypes")
+	private static Map<String, Object> getTagCompound(NBTTagCompound tagCompound) {
+		Map<String, Object> response = Maps.newHashMap();
+		
+		Iterator iterator = tagCompound.getTags().iterator();
+		
+		while(iterator.hasNext()) {
+			NBTBase tag = (NBTBase)iterator.next();
+			String tagName = tag.getName();
+			Object tagValue = getTagValue(tag);
+
+			response.put(tagName, tagValue);
+		}
+		
+		return response;
+	}
+	
+	private static Map<Integer, Object> getTagList(NBTTagList tagList) {
+		Map<Integer, Object> response = Maps.newHashMap();
+		
+		int offset = 1;
+		if(tagList != null) {
+			for (int i = 0; i < tagList.tagCount(); ++i) {
+				response.put(offset, getTagValue(tagList.tagAt(i)));
+				offset++;
+			}
+		}
+		
+		return response;
 	}
 
 	private static Map<Integer, Object> getBookEnchantments(ItemStack stack) {
