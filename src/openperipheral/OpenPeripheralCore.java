@@ -7,6 +7,7 @@ import openmods.config.ConfigProcessing;
 import openperipheral.adapter.AdapterManager;
 import openperipheral.integration.appeng.ModuleAppEng;
 import openperipheral.integration.buildcraft.ModuleBuildCraft;
+import openperipheral.integration.computercraft.ModuleComputerCraft;
 import openperipheral.integration.enderstorage.ModuleEnderStorage;
 import openperipheral.integration.forestry.ModuleForestry;
 import openperipheral.integration.ic2.ModuleIC2;
@@ -57,6 +58,7 @@ public class OpenPeripheralCore {
 		IntegrationModuleRegistry.registerModule(new ModuleSgCraft());
 		IntegrationModuleRegistry.registerModule(new ModuleTMechworks());
 		IntegrationModuleRegistry.registerModule(new ModuleMultiparts());
+		IntegrationModuleRegistry.registerModule(new ModuleComputerCraft());
 
 		IntegrationModuleRegistry.selectLoadedModules();
 		IntegrationModuleRegistry.initAllModules();
