@@ -78,12 +78,15 @@ public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodEx
 		peripherals.addInlineAdapter(cls);
 	}
 
+	private Set<Class<?>> getAllClasses() {
+		return Sets.union(externalAdapters.keySet(), internalAdapters.keySet());
+	}
+
 	@SuppressWarnings("unchecked")
 	public static void registerPeripherals() {
 		Map<Class<? extends TileEntity>, String> classToNameMap = PeripheralUtils.getClassToNameMap();
 
 		Set<Class<? extends TileEntity>> candidates = Sets.newHashSet();
-		Set<Class<? extends TileEntity>> adaptedClasses = Sets.newHashSet();
 		Set<Class<? extends TileEntity>> providerClasses = Sets.newHashSet();
 
 		for (Map.Entry<Class<? extends TileEntity>, String> e : classToNameMap.entrySet()) {
@@ -93,6 +96,8 @@ public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodEx
 			else if (IPeripheralProvider.class.isAssignableFrom(teClass)) providerClasses.add(teClass);
 			else if (!IPeripheral.class.isAssignableFrom(teClass)) candidates.add(teClass);
 		}
+
+		adaptedClasses.clear();
 
 		for (Class<?> adaptableClass : peripherals.getAllClasses()) {
 			if (TileEntity.class.isAssignableFrom(adaptableClass)) {
@@ -128,15 +133,17 @@ public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodEx
 		}
 	}
 
+	public static Collection<Class<? extends TileEntity>> getAllAdaptedClasses() {
+		return Collections.unmodifiableCollection(adaptedClasses);
+	}
+
 	private final Multimap<Class<?>, AdapterWrapper<E>> externalAdapters = HashMultimap.create();
 
 	private final Map<Class<?>, AdapterWrapper<E>> internalAdapters = Maps.newHashMap();
 
 	private final Map<Class<?>, AdaptedClass<E>> classes = Maps.newHashMap();
 
-	private Set<Class<?>> getAllClasses() {
-		return Sets.union(externalAdapters.keySet(), internalAdapters.keySet());
-	}
+	private static final Set<Class<? extends TileEntity>> adaptedClasses = Sets.newHashSet();
 
 	public void addAdapter(A adapter) {
 		final AdapterWrapper<E> wrapper;

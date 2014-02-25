@@ -2,6 +2,7 @@ package openperipheral;
 
 import java.io.File;
 
+import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.Configuration;
 import openmods.config.ConfigProcessing;
 import openperipheral.adapter.AdapterManager;
@@ -64,6 +65,9 @@ public class OpenPeripheralCore {
 		IntegrationModuleRegistry.initAllModules();
 
 		TickRegistry.registerTickHandler(new TickHandler(), Side.SERVER);
+
+		// not side only, so no proxy needed
+		ClientCommandHandler.instance.registerCommand(new CommandDump());
 
 	}
 
