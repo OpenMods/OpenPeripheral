@@ -3,3 +3,8 @@ bin/
 download/
 Thumbs.db
 .DS_Store
+## idea
+*.iml
+*.ipr
+*.iws
+.idea/
