@@ -4,6 +4,7 @@ import java.util.*;
 
 import net.minecraft.tileentity.TileEntity;
 import openmods.Log;
+import openperipheral.Config;
 import openperipheral.adapter.object.*;
 import openperipheral.adapter.peripheral.*;
 import openperipheral.api.*;
@@ -88,18 +89,28 @@ public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodEx
 
 		Set<Class<? extends TileEntity>> candidates = Sets.newHashSet();
 		Set<Class<? extends TileEntity>> providerClasses = Sets.newHashSet();
+		Set<String> blacklist = ImmutableSet.copyOf(Config.teBlacklist);
 
 		for (Map.Entry<Class<? extends TileEntity>, String> e : classToNameMap.entrySet()) {
-			Class<? extends TileEntity> teClass = e.getKey();
+			final Class<? extends TileEntity> teClass = e.getKey();
+			final String name = e.getValue();
 
-			if (teClass == null) Log.warn("TE with id %s has null key", e.getValue());
-			else if (IPeripheralProvider.class.isAssignableFrom(teClass)) providerClasses.add(teClass);
-			else if (!IPeripheral.class.isAssignableFrom(teClass)) candidates.add(teClass);
+			if (teClass == null) {
+				Log.warn("TE with id %s has null key", name);
+			} else if (blacklist.contains(teClass.getName()) || blacklist.contains(name.toLowerCase())) {
+				Log.warn("Ignoring blacklisted TE %s = %s", name, teClass);
+			} else if (IPeripheralProvider.class.isAssignableFrom(teClass)) {
+				providerClasses.add(teClass);
+			} else if (!IPeripheral.class.isAssignableFrom(teClass)) {
+				candidates.add(teClass);
+			}
+
 		}
 
 		adaptedClasses.clear();
 
 		for (Class<?> adaptableClass : peripherals.getAllClasses()) {
+			if (blacklist.contains(adaptableClass.getName())) continue;
 			if (TileEntity.class.isAssignableFrom(adaptableClass)) {
 				// no need to continue, since CC does .isAssignableFrom when
 				// searching for peripheral

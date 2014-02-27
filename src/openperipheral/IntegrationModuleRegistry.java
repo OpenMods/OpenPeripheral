@@ -29,7 +29,7 @@ public class IntegrationModuleRegistry {
 
 	public static void selectLoadedModules() {
 		Set<String> blacklist = Sets.newHashSet();
-		for (String modId : Config.blacklist)
+		for (String modId : Config.modBlacklist)
 			blacklist.add(modId.toLowerCase());
 
 		if (!blacklist.contains(ModuleVanilla.DUMMY_VANILLA_MODID)) selectedModules.put(ModuleVanilla.DUMMY_VANILLA_MODID, new ModuleVanilla());
