@@ -82,7 +82,7 @@ public abstract class AdaptedClass<E extends IMethodExecutor> {
 		for (E executor : wrapper.methods) {
 			for (String name : executor.getWrappedMethod().getNames()) {
 				final E previous = result.put(name, executor);
-				if (previous != null) Log.info("Previous defininition of Lua method '%s' overwritten by adapter %s", name, wrapper.adapterClass);
+				if (previous != null) Log.fine("Previous defininition of Lua method '%s' overwritten by adapter %s", name, wrapper.adapterClass);
 			}
 		}
 

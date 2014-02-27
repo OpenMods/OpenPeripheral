@@ -20,6 +20,7 @@ public class ModuleThaumcraft implements IIntegrationModule {
 	public void init() {
 		AdapterManager.addPeripheralAdapter(new AdapterAspectContainer());
 		AdapterManager.addPeripheralAdapter(new AdapterNode());
+		AdapterManager.addPeripheralAdapter(new AdapterJar());
 	}
 
 	@Override
