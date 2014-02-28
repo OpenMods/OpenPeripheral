@@ -2,6 +2,8 @@ package openperipheral.api;
 
 import java.lang.reflect.Method;
 
+import openmods.Log;
+
 import net.minecraft.tileentity.TileEntity;
 
 public class OpenPeripheralAPI {
@@ -34,7 +36,9 @@ public class OpenPeripheralAPI {
 				method.invoke(null, obj);
 				return true;
 			}
-		} catch (Exception e) {}
+		} catch (Exception e) {
+			Log.warn(e, "Exception while calling API method '%s'", methodName);
+		}
 		return false;
 	}
 
