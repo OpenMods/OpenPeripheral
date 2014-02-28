@@ -51,7 +51,7 @@ public class AdapterInventory implements IPeripheralAdapter {
 		IInventory otherInventory = InventoryUtils.getInventory(te.worldObj, te.xCoord, te.yCoord, te.zCoord, direction);
 		if (otherInventory == null || otherInventory == target) return 0;
 		if (maxAmount == null) maxAmount = 64;
-		if (intoSlot == null) intoSlot = 1;
+		if (intoSlot == null) intoSlot = 0;
 		return InventoryUtils.moveItemInto(otherInventory, slot - 1, InventoryUtils.getInventory(target), intoSlot - 1, maxAmount, direction.getOpposite(), true);
 	}
 
@@ -69,7 +69,7 @@ public class AdapterInventory implements IPeripheralAdapter {
 		IInventory otherInventory = InventoryUtils.getInventory(te.worldObj, te.xCoord, te.yCoord, te.zCoord, direction);
 		if (otherInventory == null || otherInventory == target) return 0;
 		if (maxAmount == null) maxAmount = 64;
-		if (intoSlot == null) intoSlot = 1;
+		if (intoSlot == null) intoSlot = 0;
 		return InventoryUtils.moveItemInto(InventoryUtils.getInventory(target), slot - 1, otherInventory, intoSlot - 1, maxAmount, direction, true);
 	}
 
