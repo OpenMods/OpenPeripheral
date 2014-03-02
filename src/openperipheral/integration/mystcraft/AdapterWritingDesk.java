@@ -8,7 +8,6 @@ import openmods.utils.BlockUtils;
 import openmods.utils.InventoryUtils;
 import openmods.utils.ReflectionHelper;
 import openperipheral.api.*;
-import openperipheral.integration.vanilla.AdapterInventory;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
@@ -65,15 +64,15 @@ public class AdapterWritingDesk implements IPeripheralAdapter {
 		return createInventoryWrapper(desk, deskSlot).getSizeInventory() - 1;
 	}
 
-	@LuaMethod(description = "Swap notebook slots", returnType = LuaType.BOOLEAN,
+	@LuaMethod(description = "Swap notebook slots", returnType = LuaType.VOID,
 			args = {
 					@Arg(name = "deskSlot", type = LuaType.NUMBER, description = "The writing desk slot you are interested in"),
 					@Arg(type = LuaType.NUMBER, name = "from", description = "The first slot"),
 					@Arg(type = LuaType.NUMBER, name = "to", description = "The other slot")
 			}
 			)
-			public boolean swapNotebookPages(IComputerAccess computer, Object desk, int deskSlot, int from, int to) {
-		return AdapterInventory.swapStacks(createInventoryWrapper(desk, deskSlot), from - 1, to - 1);
+			public void swapNotebookPages(IComputerAccess computer, Object desk, int deskSlot, int from, int to) {
+		InventoryUtils.swapStacks(createInventoryWrapper(desk, deskSlot), from - 1, to - 1);
 	}
 
 	@Freeform
