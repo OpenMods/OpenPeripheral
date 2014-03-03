@@ -3,12 +3,14 @@ package openperipheral.integration.vanilla;
 import java.util.ArrayList;
 
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import openmods.utils.InventoryUtils;
 import openperipheral.api.*;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
 @OnTick
@@ -110,15 +112,20 @@ public class AdapterInventory implements IPeripheralAdapter {
 		}
 	}
 
-	@LuaMethod(returnType = LuaType.VOID, description = "Swap two slots in the inventory",
-			args = {
-					@Arg(type = LuaType.NUMBER, name = "from", description = "The first slot"),
-					@Arg(type = LuaType.NUMBER, name = "to", description = "The other slot")
-			})
-	public void swapStacks(IInventory target, int fromSlot, int intoSlot) {
+	@LuaCallable(description = "Swap two slots in the inventory")
+	public void swapStacks(IInventory target,
+			@Arg(type = LuaType.NUMBER, name = "from", description = "The first slot") int fromSlot,
+			@Arg(type = LuaType.NUMBER, name = "to", description = "The other slot") int intoSlot,
+			@Optionals @Arg(type = LuaType.STRING, name = "fromDirection") ForgeDirection fromDirection,
+			@Arg(type = LuaType.STRING, name = "fromDirection") ForgeDirection toDirection) {
 		IInventory inventory = InventoryUtils.getInventory(target);
 		Preconditions.checkNotNull(inventory, "Invalid target!");
-		InventoryUtils.swapStacks(inventory, fromSlot - 1, intoSlot - 1);
+		if (inventory instanceof ISidedInventory) {
+			InventoryUtils.swapStacks((ISidedInventory)inventory,
+					fromSlot - 1, Objects.firstNonNull(fromDirection, ForgeDirection.UNKNOWN),
+					intoSlot - 1, Objects.firstNonNull(toDirection, ForgeDirection.UNKNOWN));
+		}
+		else InventoryUtils.swapStacks(inventory, fromSlot - 1, intoSlot - 1);
 	}
 
 	@LuaMethod(returnType = LuaType.TABLE, description = "Get details of an item in a particular slot",
