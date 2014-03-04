@@ -21,6 +21,11 @@ public class ModuleThaumcraft implements IIntegrationModule {
 		AdapterManager.addPeripheralAdapter(new AdapterAspectContainer());
 		AdapterManager.addPeripheralAdapter(new AdapterNode());
 		AdapterManager.addPeripheralAdapter(new AdapterJar());
+		AdapterManager.addPeripheralAdapter(new AdapterBrainJar());
+		AdapterManager.addPeripheralAdapter(new AdapterArcaneBore());
+		AdapterManager.addPeripheralAdapter(new AdapterArcaneEar());
+		AdapterManager.addPeripheralAdapter(new AdapterDeconstructor());
+		AdapterManager.addPeripheralAdapter(new AdapterEssentiaTransport());
 	}
 
 	@Override
