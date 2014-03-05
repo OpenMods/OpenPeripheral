@@ -1,11 +1,8 @@
 package openperipheral.integration.thaumcraft;
 
-import java.lang.reflect.Field;
-
 import openmods.utils.ReflectionHelper;
 import openperipheral.api.*;
-
-import com.google.common.base.Preconditions;
+import openperipheral.util.FieldAccessHelpers;
 
 @Prefixed("target")
 public class AdapterBrainJar implements IPeripheralAdapter {
@@ -17,13 +14,7 @@ public class AdapterBrainJar implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(returnType = LuaType.NUMBER, description = "Returns the amount of XP stored in the Brain in a Jar")
-	public int getXP(Object target) throws Exception
-	{
-		Field f = ReflectionHelper.getField(TILE_JAR_BRAIN_CLASS, "xp");
-		Object o = f.get(target);
-
-		if (o == null) return -1;
-		Preconditions.checkState(o instanceof Integer, "Invalid XP in jar");
-		return (Integer)o;
+	public int getXP(Object target) {
+		return FieldAccessHelpers.getIntField(TILE_JAR_BRAIN_CLASS, target, "xp");
 	}
 }

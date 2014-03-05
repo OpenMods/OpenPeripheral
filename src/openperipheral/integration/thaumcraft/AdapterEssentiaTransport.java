@@ -14,35 +14,25 @@ public class AdapterEssentiaTransport implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(returnType = LuaType.NUMBER, description = "Returns the amount of suction in the tube", args = { @Arg(type = LuaType.STRING, description = "Direction suction coming from", name = "direction") })
-	public int getSuctionAmount(Object target, ForgeDirection direction)
-	{
-		IEssentiaTransport pipe = (IEssentiaTransport)target;
+	public int getSuctionAmount(IEssentiaTransport pipe, ForgeDirection direction) {
 		return pipe.getSuctionAmount(direction);
 	}
 
 	@LuaMethod(returnType = LuaType.STRING, description = "Returns the type of essentia wished in the tube", args = { @Arg(type = LuaType.STRING, description = "Direction suction coming from", name = "direction") })
-	public String getSuctionType(Object target, ForgeDirection direction)
-	{
-		IEssentiaTransport pipe = (IEssentiaTransport)target;
+	public String getSuctionType(IEssentiaTransport pipe, ForgeDirection direction) {
 		Aspect asp = pipe.getSuctionType(direction);
-		if (asp == null) return "";
-		return asp.getTag();
+		return (asp != null)? asp.getTag() : "";
 	}
 
 	@LuaMethod(returnType = LuaType.NUMBER, description = "Returns the amount of essentia in the tube", args = { @Arg(type = LuaType.STRING, description = "Direction suction coming from", name = "direction") })
-	public int getEssentiaAmount(Object target, ForgeDirection direction)
-	{
-		IEssentiaTransport pipe = (IEssentiaTransport)target;
+	public int getEssentiaAmount(IEssentiaTransport pipe, ForgeDirection direction) {
 		return pipe.getEssentiaAmount(direction);
 	}
 
 	@LuaMethod(returnType = LuaType.STRING, description = "Returns the type of essentia in the tube", args = { @Arg(type = LuaType.STRING, description = "Direction suction coming from", name = "direction") })
-	public String getEssentiaType(Object target, ForgeDirection direction)
-	{
-		IEssentiaTransport pipe = (IEssentiaTransport)target;
+	public String getEssentiaType(IEssentiaTransport pipe, ForgeDirection direction) {
 		Aspect asp = pipe.getEssentiaType(direction);
-		if (asp == null) return "";
-		return asp.getTag();
+		return (asp != null)? asp.getTag() : "";
 	}
 
 }
