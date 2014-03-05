@@ -17,6 +17,8 @@ import com.google.common.base.Preconditions;
 @Prefixed("target")
 public class AdapterInventory implements IPeripheralAdapter {
 
+	private static final int ANY_SLOT = -1;
+
 	public AdapterInventory() {}
 
 	@Override
@@ -36,6 +38,11 @@ public class AdapterInventory implements IPeripheralAdapter {
 		IInventory inventory = InventoryUtils.getInventory(target);
 		if (inventory == null) return 0;
 		return inventory.getSizeInventory();
+	}
+
+	private static void checkSlotId(IInventory inventory, int slot, String name) {
+		Preconditions.checkNotNull(inventory, "Invalid inventory");
+		if (slot != ANY_SLOT) Preconditions.checkElementIndex(slot, inventory.getSizeInventory(), name + " slot id");
 	}
 
 	@Alias("pullItemIntoSlot")
@@ -59,8 +66,8 @@ public class AdapterInventory implements IPeripheralAdapter {
 		fromSlot -= 1;
 		intoSlot -= 1;
 
-		Preconditions.checkElementIndex(fromSlot, thisInventory.getSizeInventory(), "input slot id");
-		Preconditions.checkElementIndex(intoSlot, thisInventory.getSizeInventory(), "output slot id");
+		checkSlotId(otherInventory, fromSlot, "input");
+		checkSlotId(thisInventory, intoSlot, "output");
 
 		return InventoryUtils.moveItemInto(otherInventory, fromSlot, thisInventory, intoSlot, maxAmount, direction.getOpposite(), true);
 	}
@@ -85,8 +92,8 @@ public class AdapterInventory implements IPeripheralAdapter {
 		fromSlot -= 1;
 		intoSlot -= 1;
 
-		Preconditions.checkElementIndex(fromSlot, thisInventory.getSizeInventory(), "input slot id");
-		Preconditions.checkElementIndex(intoSlot, thisInventory.getSizeInventory(), "output slot id");
+		checkSlotId(thisInventory, fromSlot, "input");
+		checkSlotId(otherInventory, intoSlot, "output");
 
 		return InventoryUtils.moveItemInto(thisInventory, fromSlot, otherInventory, intoSlot, maxAmount, direction, true);
 	}
@@ -108,7 +115,7 @@ public class AdapterInventory implements IPeripheralAdapter {
 			inventory.setInventorySlotContents(i, null);
 		}
 		for (ItemStack stack : stacks) {
-			InventoryUtils.insertItemIntoInventory(inventory, stack, ForgeDirection.UNKNOWN, -1);
+			InventoryUtils.insertItemIntoInventory(inventory, stack, ForgeDirection.UNKNOWN, ANY_SLOT);
 		}
 	}
 
