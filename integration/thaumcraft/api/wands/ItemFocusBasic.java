@@ -26,6 +26,7 @@ public class ItemFocusBasic extends Item  implements IWandFocus {
         super(i);
         maxStackSize = 1;
         canRepair=false;
+        this.setMaxDamage(0);
     }
 	
 	public Icon icon;
@@ -40,7 +41,12 @@ public class ItemFocusBasic extends Item  implements IWandFocus {
 	public boolean isItemTool(ItemStack par1ItemStack)
     {
         return true;
-    }
+    }	
+
+	@Override
+	public boolean isDamageable() {
+		return true;
+	}
 
 	@Override
 	public void addInformation(ItemStack stack,EntityPlayer player, List list, boolean par4) {
@@ -142,10 +148,10 @@ public class ItemFocusBasic extends Item  implements IWandFocus {
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/** 
 	 * @see thaumcraft.api.wands.IWandFocus#acceptsEnchant(int)
 	 * By default fortune is off for all wands
-	 */
+	 **/
 	@Override
 	public boolean acceptsEnchant(int id) {
 		if (id==ThaumcraftApi.enchantFrugal||

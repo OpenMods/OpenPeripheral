@@ -1,11 +1,17 @@
 package thaumcraft.api;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.oredict.OreDictionary;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
+import thaumcraft.api.aspects.IEssentiaTransport;
 import cpw.mods.fml.common.FMLLog;
 
 public class ThaumcraftApiHelper {
@@ -133,5 +139,47 @@ public class ThaumcraftApiHelper {
             return false;
         }
         return (target.itemID == input.itemID && ((target.getItemDamage() == OreDictionary.WILDCARD_VALUE && !strict) || target.getItemDamage() == input.getItemDamage()));
+    }
+    
+    
+    public static TileEntity getConnectableTile(World world, int x, int y, int z, ForgeDirection face) {
+		TileEntity te = world.getBlockTileEntity(x+face.offsetX, y+face.offsetY, z+face.offsetZ);
+		if (te instanceof IEssentiaTransport && ((IEssentiaTransport)te).isConnectable(face.getOpposite())) 
+			return te;
+		else
+			return null;
+	}
+    
+    public static TileEntity getConnectableTile(IBlockAccess world, int x, int y, int z, ForgeDirection face) {
+		TileEntity te = world.getBlockTileEntity(x+face.offsetX, y+face.offsetY, z+face.offsetZ);
+		if (te instanceof IEssentiaTransport && ((IEssentiaTransport)te).isConnectable(face.getOpposite())) 
+			return te;
+		else
+			return null;
+	}
+    
+    private static HashMap<Integer, AspectList> allAspects= new HashMap<Integer, AspectList>();
+    private static HashMap<Integer, AspectList> allCompoundAspects= new HashMap<Integer, AspectList>();
+    
+    public static AspectList getAllAspects(int amount) {
+    	if (allAspects.get(amount)==null) {
+    		AspectList al = new AspectList();
+    		for (Aspect aspect:Aspect.aspects.values()) {
+    			al.add(aspect, amount);
+    		}
+    		allAspects.put(amount, al);
+    	} 
+    	return allAspects.get(amount);
+    }
+    
+    public static AspectList getAllCompoundAspects(int amount) {
+    	if (allCompoundAspects.get(amount)==null) {
+    		AspectList al = new AspectList();
+    		for (Aspect aspect:Aspect.getCompoundAspects()) {
+    			al.add(aspect, amount);
+    		}
+    		allCompoundAspects.put(amount, al);
+    	} 
+    	return allCompoundAspects.get(amount);
     }
 }
