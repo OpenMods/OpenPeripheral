@@ -1,6 +1,5 @@
 package openperipheral.integration.mystcraft;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -11,14 +10,7 @@ import net.minecraftforge.common.ForgeDirection;
 import openmods.utils.BlockUtils;
 import openmods.utils.InventoryUtils;
 import openmods.utils.ReflectionHelper;
-import openperipheral.api.Arg;
-import openperipheral.api.Freeform;
-import openperipheral.api.IPeripheralAdapter;
-import openperipheral.api.LuaCallable;
-import openperipheral.api.LuaMethod;
-import openperipheral.api.LuaType;
-import openperipheral.api.Named;
-import openperipheral.api.Optionals;
+import openperipheral.api.*;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
@@ -41,18 +33,16 @@ public class AdapterWritingDesk implements IPeripheralAdapter {
 	@LuaMethod(description = "Get the name of a notebook", returnType = LuaType.STRING,
 			args = {
 					@Arg(name = "slot", type = LuaType.NUMBER, description = "The writing desk slot you are interested in")
-			}
-			)
-			public String getNotebookName(IComputerAccess computer, Object desk, int deskSlot) {
+			})
+	public String getNotebookName(IComputerAccess computer, Object desk, int deskSlot) {
 		return createInventoryWrapper(desk, deskSlot).getInvName();
 	}
 
 	@LuaMethod(description = "Get the number of pages in a notebook", returnType = LuaType.NUMBER,
 			args = {
 					@Arg(name = "slot", type = LuaType.NUMBER, description = "The writing desk slot you are interested in")
-			}
-			)
-			public Integer getNotebookSize(IComputerAccess computer, Object desk, int deskSlot) {
+			})
+	public Integer getNotebookSize(IComputerAccess computer, Object desk, int deskSlot) {
 		return createInventoryWrapper(desk, deskSlot).callOnNotebook("getItemCount");
 	}
 
@@ -60,18 +50,16 @@ public class AdapterWritingDesk implements IPeripheralAdapter {
 			args = {
 					@Arg(name = "deskSlot", type = LuaType.NUMBER, description = "The writing desk slot you are interested in"),
 					@Arg(name = "notebookSlot", type = LuaType.NUMBER, description = "The notebook slot you are interested in")
-			}
-			)
-			public ItemStack getNotebookStackInSlot(IComputerAccess computer, Object desk, int deskSlot, int notebookSlot) {
+			})
+	public ItemStack getNotebookStackInSlot(IComputerAccess computer, Object desk, int deskSlot, int notebookSlot) {
 		return createInventoryWrapper(desk, deskSlot).getStackInSlot(notebookSlot - 1);
 	}
 
 	@LuaMethod(description = "Get the last slot index in a notebook", returnType = LuaType.NUMBER,
 			args = {
 					@Arg(name = "slot", type = LuaType.NUMBER, description = "The writing desk slot you are interested in")
-			}
-			)
-			public Integer getLastNotebookSlot(IComputerAccess computer, Object desk, int deskSlot) {
+			})
+	public Integer getLastNotebookSlot(IComputerAccess computer, Object desk, int deskSlot) {
 		return createInventoryWrapper(desk, deskSlot).getSizeInventory() - 1;
 	}
 
@@ -80,8 +68,7 @@ public class AdapterWritingDesk implements IPeripheralAdapter {
 					@Arg(name = "deskSlot", type = LuaType.NUMBER, description = "The writing desk slot you are interested in"),
 					@Arg(type = LuaType.NUMBER, name = "from", description = "The first slot"),
 					@Arg(type = LuaType.NUMBER, name = "to", description = "The other slot")
-			}
-			)
+			})
 	public void swapNotebookPages(IComputerAccess computer, Object desk, int deskSlot, int from, int to) {
 		InventoryUtils.swapStacks(createInventoryWrapper(desk, deskSlot), from - 1, to - 1);
 	}
@@ -113,35 +100,27 @@ public class AdapterWritingDesk implements IPeripheralAdapter {
 		IInventory target = createInventoryWrapper(desk, deskSlot);
 		return InventoryUtils.moveItemInto(source, notebookSlot - 1, target, -1, 1, direction.getOpposite(), true, false);
 	}
-	
+
 	@LuaMethod(description = "Create a symbol page from the target symbol", returnType = LuaType.VOID,
 			args = {
 					@Arg(name = "deskSlot", type = LuaType.NUMBER, description = "The writing desk slot you are interested in"),
 					@Arg(type = LuaType.NUMBER, name = "notebookSlot", description = "The source symbol to copy"),
-			}
-			)
+			})
 	public void writeSymbol(IComputerAccess computer, TileEntity desk, int deskSlot, int notebookSlot) {
-		String symbol = getSymbolFromPage(getNotebookStackInSlot(computer,desk,deskSlot,notebookSlot));
-		if(symbol != null){
+		String symbol = getSymbolFromPage(getNotebookStackInSlot(computer, desk, deskSlot, notebookSlot));
+		if (symbol != null) {
 			FakePlayer fakePlayer = new FakePlayer(desk.getWorldObj(), "OpenPeripheral");
-			ReflectionHelper.call(DESK_CLASS, desk, "writeSymbol", 
-					ReflectionHelper.typed(fakePlayer,EntityPlayer.class), 
-					ReflectionHelper.typed(symbol,String.class)
-			);
+			ReflectionHelper.call(DESK_CLASS, desk, "writeSymbol", fakePlayer, symbol);
 		}
 
 	}
 
-	
-
-	private String getSymbolFromPage(ItemStack info) {
-		if(info != null && info.hasTagCompound()){
+	private static String getSymbolFromPage(ItemStack info) {
+		if (info != null && info.hasTagCompound()) {
 			Item item = info.getItem();
-			if(item != null && "item.myst.page".equals(item.getUnlocalizedName())){
+			if (item != null && "item.myst.page".equals(item.getUnlocalizedName())) {
 				NBTTagCompound tag = info.getTagCompound();
-				if(tag != null){
-					return tag.getString("symbol");
-				}
+				if (tag != null) { return tag.getString("symbol"); }
 			}
 		}
 		return null;

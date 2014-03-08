@@ -18,9 +18,7 @@ public class AdapterPowerReceptor implements IPeripheralAdapter {
 					@Arg(name = "direction", type = LuaType.STRING, description = "The side of the block that you're interested in") })
 	public Float getActivationEnergy(IComputerAccess computer, IPowerReceptor powerReceptor, ForgeDirection direction) {
 		PowerReceiver powerReceiver = powerReceptor.getPowerReceiver(direction);
-		if (powerReceiver == null) {
-			return null;
-		}
+		if (powerReceiver == null) { return null; }
 		return powerReceiver.getActivationEnergy();
 	}
 
@@ -29,9 +27,7 @@ public class AdapterPowerReceptor implements IPeripheralAdapter {
 					@Arg(name = "direction", type = LuaType.STRING, description = "The side of the block that you're interested in") })
 	public Float getMJStored(IComputerAccess computer, IPowerReceptor powerReceptor, ForgeDirection direction) {
 		PowerReceiver powerReceiver = powerReceptor.getPowerReceiver(direction);
-		if (powerReceiver == null) {
-			return null;
-		}
+		if (powerReceiver == null) { return null; }
 		return powerReceiver.getEnergyStored();
 	}
 
@@ -40,9 +36,7 @@ public class AdapterPowerReceptor implements IPeripheralAdapter {
 					@Arg(name = "direction", type = LuaType.STRING, description = "The side of the block that you're interested in") })
 	public Float getMaxMJReceived(IComputerAccess computer, IPowerReceptor powerReceptor, ForgeDirection direction) {
 		PowerReceiver powerReceiver = powerReceptor.getPowerReceiver(direction);
-		if (powerReceiver == null) {
-			return null;
-		}
+		if (powerReceiver == null) { return null; }
 		return powerReceiver.getMaxEnergyReceived();
 	}
 
@@ -51,9 +45,7 @@ public class AdapterPowerReceptor implements IPeripheralAdapter {
 					@Arg(name = "direction", type = LuaType.STRING, description = "The side of the block that you're interested in") })
 	public Float getMaxMJStored(IComputerAccess computer, IPowerReceptor powerReceptor, ForgeDirection direction) {
 		PowerReceiver powerReceiver = powerReceptor.getPowerReceiver(direction);
-		if (powerReceiver == null) {
-			return null;
-		}
+		if (powerReceiver == null) { return null; }
 		return powerReceiver.getMaxEnergyStored();
 	}
 
@@ -62,9 +54,7 @@ public class AdapterPowerReceptor implements IPeripheralAdapter {
 					@Arg(name = "direction", type = LuaType.STRING, description = "The side of the block that you're interested in") })
 	public Float getMinMJReceived(IComputerAccess computer, IPowerReceptor powerReceptor, ForgeDirection direction) {
 		PowerReceiver powerReceiver = powerReceptor.getPowerReceiver(direction);
-		if (powerReceiver == null) {
-			return null;
-		}
+		if (powerReceiver == null) { return null; }
 		return powerReceiver.getMinEnergyReceived();
 	}
 
