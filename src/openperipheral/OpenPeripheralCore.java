@@ -12,6 +12,7 @@ import openperipheral.integration.computercraft.ModuleComputerCraft;
 import openperipheral.integration.enderstorage.ModuleEnderStorage;
 import openperipheral.integration.forestry.ModuleForestry;
 import openperipheral.integration.ic2.ModuleIC2;
+import openperipheral.integration.minefactoryreloaded.ModuleMinefactoryReloaded;
 import openperipheral.integration.multiparts.ModuleMultiparts;
 import openperipheral.integration.mystcraft.ModuleMystcraft;
 import openperipheral.integration.projectred.ModuleProjectRed;
@@ -60,6 +61,7 @@ public class OpenPeripheralCore {
 		IntegrationModuleRegistry.registerModule(new ModuleTMechworks());
 		IntegrationModuleRegistry.registerModule(new ModuleMultiparts());
 		IntegrationModuleRegistry.registerModule(new ModuleComputerCraft());
+		IntegrationModuleRegistry.registerModule(new ModuleMinefactoryReloaded());
 
 		IntegrationModuleRegistry.selectLoadedModules();
 		IntegrationModuleRegistry.initAllModules();
