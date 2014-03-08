@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 
 import net.minecraft.tileentity.TileEntity;
 import cpw.mods.fml.common.FMLLog;
+import dan200.computer.api.IHostedPeripheral;
 
 public class OpenPeripheralAPI {
 
@@ -17,38 +18,63 @@ public class OpenPeripheralAPI {
 	}
 
 	public static boolean register(IPeripheralAdapter adapter) {
-		return register(IPeripheralAdapter.class, adapter, "openperipheral.adapter.AdapterManager", "addPeripheralAdapter");
+		return callWithoutReturn("openperipheral.adapter.AdapterManager", "addPeripheralAdapter", IPeripheralAdapter.class, adapter);
 	}
 
 	public static boolean register(IObjectAdapter adapter) {
-		return register(IPeripheralAdapter.class, adapter, "openperipheral.adapter.AdapterManager", "addObjectAdapter");
-	}
-
-	public static boolean createAdapter(Class<? extends TileEntity> cls) {
-		return register(Class.class, cls, "openperipheral.adapter.AdapterManager", "addInlinePeripheralAdapter");
+		return callWithoutReturn("openperipheral.adapter.AdapterManager", "addObjectAdapter", IPeripheralAdapter.class, adapter);
 	}
 
 	public static boolean register(ITypeConverter converter) {
-		return register(ITypeConverter.class, converter, "openperipheral.TypeConversionRegistry", "registerTypeConverter");
+		return callWithoutReturn("openperipheral.TypeConversionRegistry", "registerTypeConverter", ITypeConverter.class, converter);
 	}
 
 	public static boolean register(IIntegrationModule module) {
-		return register(IIntegrationModule.class, module, "openperipheral.IntegrationModuleRegistry", "registerModule");
+		return callWithoutReturn("openperipheral.IntegrationModuleRegistry", "registerModule", IIntegrationModule.class, module);
 	}
 
-	private static boolean register(Class<?> type, Object obj, String klazzName, String methodName) {
+	public static boolean createAdapter(Class<? extends TileEntity> cls) {
+		return callWithoutReturn("openperipheral.adapter.AdapterManager", "addInlinePeripheralAdapter", Class.class, cls);
+	}
+
+	public static IHostedPeripheral createHostedPeripheral(Object target) {
+		return callWithReturn("openperipheral.adapter.AdapterManager", "createHostedPeripheral", Object.class, target, IHostedPeripheral.class);
+	}
+
+	private static Method getMethod(String klazzName, String methodName, Class<?> argType) throws Exception {
+		Class<?> klazz = Class.forName(klazzName);
+		return klazz.getMethod(methodName, new Class[] { argType });
+	}
+
+	private static <A> boolean callWithoutReturn(String klazzName, String methodName, Class<? extends A> argType, A argValue) {
 		try {
-			Class<?> klazz = Class.forName(klazzName);
-			if (klazz != null) {
-				Method method = klazz.getMethod(methodName, new Class[] { type });
-				method.invoke(null, obj);
-				return true;
-			}
+			Method method = getMethod(klazzName, methodName, argType);
+			method.invoke(null, argValue);
+			return true;
 		} catch (Throwable t) {
 			logger.log(Level.WARNING, String.format("Exception while calling method '%s'", methodName), t);
 		}
 
 		return false;
+	}
+
+	@SuppressWarnings("unchecked")
+	private static <A, T> T callWithReturn(String klazzName, String methodName, Class<? extends A> argType, A argValue, Class<? extends T> returnType) {
+		T result;
+		try {
+			Method method = getMethod(klazzName, methodName, argType);
+			result = (T)method.invoke(null, argValue);
+		} catch (Throwable t) {
+			logger.log(Level.WARNING, String.format("Exception while calling method '%s'", methodName), t);
+			return null;
+		}
+
+		if (result == null || returnType.isInstance(result)) {
+			return result;
+		} else {
+			logger.log(Level.WARNING, String.format("Method '%s' return type '%s' cannot be cast to '%s'", methodName, result.getClass(), returnType));
+			return null;
+		}
 	}
 
 	public static IMultiReturn wrap(final Object... args) {
