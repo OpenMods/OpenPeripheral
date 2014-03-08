@@ -212,8 +212,9 @@ public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodEx
 		return LuaObjectWrapper.wrap(objects, o);
 	}
 
-	public static HostedPeripheral createHostedPeripheral(Object target) {
+	public static IHostedPeripheral createHostedPeripheral(Object target) {
 		AdaptedClass<IPeripheralMethodExecutor> adapter = peripherals.adaptClass(target.getClass());
+		if (target instanceof IUpdateHandler) return new TickingHostedPeripheral(adapter, (IUpdateHandler)target);
 		return new HostedPeripheral(adapter, target);
 	}
 }
