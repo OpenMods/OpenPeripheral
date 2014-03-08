@@ -1,13 +1,24 @@
 package openperipheral.integration.mystcraft;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.FakePlayer;
 import net.minecraftforge.common.ForgeDirection;
 import openmods.utils.BlockUtils;
 import openmods.utils.InventoryUtils;
 import openmods.utils.ReflectionHelper;
-import openperipheral.api.*;
+import openperipheral.api.Arg;
+import openperipheral.api.Freeform;
+import openperipheral.api.IPeripheralAdapter;
+import openperipheral.api.LuaCallable;
+import openperipheral.api.LuaMethod;
+import openperipheral.api.LuaType;
+import openperipheral.api.Named;
+import openperipheral.api.Optionals;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
@@ -71,7 +82,7 @@ public class AdapterWritingDesk implements IPeripheralAdapter {
 					@Arg(type = LuaType.NUMBER, name = "to", description = "The other slot")
 			}
 			)
-			public void swapNotebookPages(IComputerAccess computer, Object desk, int deskSlot, int from, int to) {
+	public void swapNotebookPages(IComputerAccess computer, Object desk, int deskSlot, int from, int to) {
 		InventoryUtils.swapStacks(createInventoryWrapper(desk, deskSlot), from - 1, to - 1);
 	}
 
@@ -101,6 +112,39 @@ public class AdapterWritingDesk implements IPeripheralAdapter {
 		IInventory source = getTargetTile(desk, direction);
 		IInventory target = createInventoryWrapper(desk, deskSlot);
 		return InventoryUtils.moveItemInto(source, notebookSlot - 1, target, -1, 1, direction.getOpposite(), true, false);
+	}
+	
+	@LuaMethod(description = "Create a symbol page from the target symbol", returnType = LuaType.VOID,
+			args = {
+					@Arg(name = "deskSlot", type = LuaType.NUMBER, description = "The writing desk slot you are interested in"),
+					@Arg(type = LuaType.NUMBER, name = "notebookSlot", description = "The source symbol to copy"),
+			}
+			)
+	public void writeSymbol(IComputerAccess computer, TileEntity desk, int deskSlot, int notebookSlot) {
+		String symbol = getSymbolFromPage(getNotebookStackInSlot(computer,desk,deskSlot,notebookSlot));
+		if(symbol != null){
+			FakePlayer fakePlayer = new FakePlayer(desk.getWorldObj(), "OpenPeripheral");
+			ReflectionHelper.call(DESK_CLASS, desk, "writeSymbol", 
+					ReflectionHelper.typed(fakePlayer,EntityPlayer.class), 
+					ReflectionHelper.typed(symbol,String.class)
+			);
+		}
+
+	}
+
+	
+
+	private String getSymbolFromPage(ItemStack info) {
+		if(info != null && info.hasTagCompound()){
+			Item item = info.getItem();
+			if(item != null && "item.myst.page".equals(item.getUnlocalizedName())){
+				NBTTagCompound tag = info.getTagCompound();
+				if(tag != null){
+					return tag.getString("symbol");
+				}
+			}
+		}
+		return null;
 	}
 
 	private static IInventory getTargetTile(Object target, ForgeDirection direction) {

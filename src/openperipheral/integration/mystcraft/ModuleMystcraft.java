@@ -75,7 +75,7 @@ public class ModuleMystcraft implements IIntegrationModule {
 
 	private static void addStringFromNBT(Map<String, Object> map, ItemStack stack, String outputName, String nbtTagName) {
 		NBTTagCompound tag = stack.getTagCompound();
-		if (tag.hasKey(nbtTagName)) {
+		if (tag != null && tag.hasKey(nbtTagName)) {
 			map.put(outputName, tag.getString(nbtTagName));
 		}
 	}
