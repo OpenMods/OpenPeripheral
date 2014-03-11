@@ -2,10 +2,11 @@ package openperipheral.adapter.peripheral;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.concurrent.Callable;
+import java.util.Map;
 
 import openperipheral.adapter.IDescriptable;
 import openperipheral.adapter.MethodDeclaration;
+import openperipheral.adapter.MethodDeclaration.CallWrap;
 import openperipheral.adapter.object.IObjectMethodExecutor;
 import openperipheral.api.IPeripheralAdapter;
 
@@ -18,12 +19,12 @@ public class PeripheralExternalAdapterWrapper extends PeripheralAdapterWrapper {
 
 	private class NormalMethodExecutor extends PeripheralMethodExecutor {
 
-		public NormalMethodExecutor(MethodDeclaration method, ExecutionStrategy strategy) {
-			super(method, strategy);
+		public NormalMethodExecutor(MethodDeclaration method, ExecutionStrategy strategy, Map<String, Method> proxyArgs) {
+			super(method, strategy, proxyArgs);
 		}
 
 		@Override
-		protected Callable<Object[]> createWrapper(IComputerAccess computer, ILuaContext context, Object target, Object[] luaArgs) {
+		protected CallWrap createWrapper(IComputerAccess computer, ILuaContext context, Object target, Object[] luaArgs) {
 			return method.createWrapper(adapter)
 					.setJavaArg(ARG_COMPUTER, computer)
 					.setJavaArg(ARG_TARGET, target)
@@ -40,8 +41,8 @@ public class PeripheralExternalAdapterWrapper extends PeripheralAdapterWrapper {
 	}
 
 	@Override
-	protected IPeripheralMethodExecutor createDirectExecutor(MethodDeclaration method, ExecutionStrategy strategy) {
-		return new NormalMethodExecutor(method, strategy);
+	protected IPeripheralMethodExecutor createDirectExecutor(MethodDeclaration method, ExecutionStrategy strategy, Map<String, Method> proxyArgs) {
+		return new NormalMethodExecutor(method, strategy, proxyArgs);
 	}
 
 	@Override
@@ -52,10 +53,9 @@ public class PeripheralExternalAdapterWrapper extends PeripheralAdapterWrapper {
 
 	@Override
 	protected void validateArgTypes(MethodDeclaration decl) {
-		decl.checkJavaArgNames(ARG_COMPUTER, ARG_CONTEXT, ARG_TARGET);
-		decl.checkJavaArgType(ARG_COMPUTER, IComputerAccess.class);
-		decl.checkJavaArgType(ARG_CONTEXT, ILuaContext.class);
-		decl.checkJavaArgType(ARG_TARGET, targetCls);
+		decl.declareJavaArgType(ARG_COMPUTER, IComputerAccess.class);
+		decl.declareJavaArgType(ARG_CONTEXT, ILuaContext.class);
+		decl.declareJavaArgType(ARG_TARGET, targetCls);
 	}
 
 	@Override

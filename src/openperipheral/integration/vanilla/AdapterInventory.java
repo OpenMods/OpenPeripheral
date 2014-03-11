@@ -166,5 +166,4 @@ public class AdapterInventory implements IPeripheralAdapter {
 		Preconditions.checkElementIndex(slot, target.getSizeInventory(), "slot id");
 		invent.setInventorySlotContents(slot, null);
 	}
-
 }

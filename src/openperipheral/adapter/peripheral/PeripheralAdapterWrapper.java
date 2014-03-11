@@ -3,10 +3,12 @@ package openperipheral.adapter.peripheral;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import openmods.Log;
 import openperipheral.adapter.*;
+import openperipheral.adapter.MethodDeclaration.CallWrap;
 import openperipheral.adapter.object.IObjectMethodExecutor;
 import openperipheral.api.*;
 
@@ -39,12 +41,14 @@ public abstract class PeripheralAdapterWrapper extends AdapterWrapper<IPeriphera
 	protected static abstract class PeripheralMethodExecutor implements IPeripheralMethodExecutor {
 		public final MethodDeclaration method;
 		public final ExecutionStrategy strategy;
+		public final Map<String, Method> proxyArgs;
 
-		protected abstract Callable<Object[]> createWrapper(IComputerAccess computer, ILuaContext context, Object target, Object[] luaArgs);
+		protected abstract CallWrap createWrapper(IComputerAccess computer, ILuaContext context, Object target, Object[] luaArgs);
 
-		public PeripheralMethodExecutor(MethodDeclaration method, ExecutionStrategy strategy) {
+		public PeripheralMethodExecutor(MethodDeclaration method, ExecutionStrategy strategy, Map<String, Method> proxyArgs) {
 			this.method = method;
 			this.strategy = strategy;
+			this.proxyArgs = proxyArgs;
 		}
 
 		@Override
@@ -59,7 +63,7 @@ public abstract class PeripheralAdapterWrapper extends AdapterWrapper<IPeriphera
 
 		@Override
 		public Object[] execute(IComputerAccess computer, ILuaContext context, Object target, Object[] args) throws Exception {
-			Callable<Object[]> callable = createWrapper(computer, context, target, args);
+			Callable<Object[]> callable = nameAdapterMethods(target, proxyArgs, createWrapper(computer, context, target, args));
 			return strategy.execute(target, computer, context, callable);
 		}
 	}
@@ -73,7 +77,7 @@ public abstract class PeripheralAdapterWrapper extends AdapterWrapper<IPeriphera
 
 		List<IPeripheralMethodExecutor> peripheralMethods = buildMethodList(false, new MethodExecutorFactory<IPeripheralMethodExecutor>() {
 			@Override
-			public IPeripheralMethodExecutor createExecutor(Method method, MethodDeclaration decl) {
+			public IPeripheralMethodExecutor createExecutor(Method method, MethodDeclaration decl, Map<String, Method> proxyArgs) {
 				LuaMethod methodAnn = method.getAnnotation(LuaMethod.class);
 				boolean onTick = (methodAnn != null)? methodAnn.onTick() : isOnTick(method, defaultOnTick);
 
@@ -83,7 +87,7 @@ public abstract class PeripheralAdapterWrapper extends AdapterWrapper<IPeriphera
 					Log.warn("Method '%s' is synchronous, but type %s does not provide world instance. Possible runtime crash!", method, targetCls);
 				}
 
-				return PeripheralAdapterWrapper.this.createDirectExecutor(decl, strategy);
+				return PeripheralAdapterWrapper.this.createDirectExecutor(decl, strategy, proxyArgs);
 			}
 		});
 
@@ -104,7 +108,7 @@ public abstract class PeripheralAdapterWrapper extends AdapterWrapper<IPeriphera
 		}
 	}
 
-	protected abstract IPeripheralMethodExecutor createDirectExecutor(MethodDeclaration method, ExecutionStrategy strategy);
+	protected abstract IPeripheralMethodExecutor createDirectExecutor(MethodDeclaration method, ExecutionStrategy strategy, Map<String, Method> proxyArgs);
 
 	protected abstract IPeripheralMethodExecutor adaptObjectExecutor(Method targetProvider, IObjectMethodExecutor executor);
 }
