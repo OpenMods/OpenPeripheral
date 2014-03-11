@@ -14,6 +14,8 @@ public class AdapterHarvester implements IPeripheralAdapter {
 	private static final Class<?> HARVESTER_CLASS = ReflectionHelper.getClass(
 			"powercrystals.minefactoryreloaded.tile.machine.TileEntityHarvester"
 		);
+	
+	private Map<String, Boolean> allSettings;
 
 	@Override
 	public Class<?> getTargetClass() {
@@ -22,39 +24,37 @@ public class AdapterHarvester implements IPeripheralAdapter {
 	
 	@LuaMethod(description = "Get value of shear leaves", returnType = LuaType.BOOLEAN)
 	public Boolean getShearLeaves(IComputerAccess computer, Object tileEntityHarvester){
-		return getSetting(tileEntityHarvester, "silkTouch");
+		getSettings(tileEntityHarvester);
+		return allSettings.get("silkTouch");
 	}
 	
 	@LuaMethod(description = "Get value of harvest small mushrooms", returnType = LuaType.BOOLEAN)
 	public Boolean getHarvestShrooms(IComputerAccess computer, Object tileEntityHarvester){
-		return getSetting(tileEntityHarvester, "harvestSmallMushrooms");
+		getSettings(tileEntityHarvester);
+		return allSettings.get("harvestSmallMushrooms");
 	}
 	
-	@LuaMethod(description = "Set value of shear leaves", returnType = LuaType.STRING, 
+	@LuaMethod(description = "Set value of shear leaves", returnType = LuaType.VOID, 
 		args = {
 			@Arg(name = "shearLeaves", type = LuaType.BOOLEAN, description = "boolean: Shear leaves?")
 		})
-	public String setShearLeaves(IComputerAccess computer, Object tileEntityHarvester, boolean shearLeaves){
-		// TODO:
-		// Waiting on Skyboy... Property is not currently exposed.
-		return "Not implemented yet, sorry :(";
+	public void setShearLeaves(IComputerAccess computer, Object tileEntityHarvester, boolean shearLeaves){
+		getSettings(tileEntityHarvester);
+		allSettings.put("silkTouch", shearLeaves);
 	}
 	
-	@LuaMethod(description = "Set value of harvest small mushrooms", returnType = LuaType.STRING,
+	@LuaMethod(description = "Set value of harvest small mushrooms", returnType = LuaType.VOID,
 		args = {
 			@Arg(name = "harvestShrooms", type = LuaType.BOOLEAN, description = "boolean: Harvest shrooms?")
 		})
-	public String setHarvestShrooms(IComputerAccess computer, Object tileEntityHarvester, boolean harvestShrooms){
-		// TODO:
-		// Waiting on Skyboy... Property is not currently exposed.
-		return "Not implemented yet, sorry :(";
+	public void setHarvestShrooms(IComputerAccess computer, Object tileEntityHarvester, boolean harvestShrooms){
+		getSettings(tileEntityHarvester);
+		allSettings.put("harvestSmallMushrooms", harvestShrooms);
 	}
 	
 	
-	private Boolean getSetting(Object tileEntityHarvester, String key) {
-		Map<String, Boolean> allSettings = ReflectionHelper.call(tileEntityHarvester, "getSettings");
-		Boolean setting = allSettings.get(key);
-		return setting;
+	private void getSettings(Object tileEntityHarvester) {
+		allSettings = ReflectionHelper.call(tileEntityHarvester, "getSettings");
 	}
 
 }

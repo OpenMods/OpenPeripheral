@@ -37,6 +37,7 @@ public class ModuleMinefactoryReloaded implements IIntegrationModule {
 		AdapterManager.addPeripheralAdapter(new AdapterAutoSpawner());
 		AdapterManager.addPeripheralAdapter(new AdapterChronotyper());
 		AdapterManager.addPeripheralAdapter(new AdapterChunkLoader());
+		AdapterManager.addPeripheralAdapter(new AdapterEjector());
 		AdapterManager.addPeripheralAdapter(new AdapterHarvester());
 	}
 
