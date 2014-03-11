@@ -9,6 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Vec3;
 import openmods.Mods;
+import openperipheral.adapter.AdapterManager;
 import openperipheral.api.IIntegrationModule;
 
 import com.google.common.base.Preconditions;
@@ -23,11 +24,21 @@ public class ModuleMinefactoryReloaded implements IIntegrationModule {
 
 	private static final Set<String> safariNets = ImmutableSet.of(
 			"item.mfr.safarinet.reusable",
-			"item.mfr.safarinet.singleuse"
+			"item.mfr.safarinet.singleuse",
+			"item.mfr.safarinet.jailer"
 			);
 
 	@Override
-	public void init() {}
+	public void init() {
+		AdapterManager.addPeripheralAdapter(new AdapterAutoAnvil());
+		AdapterManager.addPeripheralAdapter(new AdapterAutoDisenchanter());
+		AdapterManager.addPeripheralAdapter(new AdapterAutoEnchanter());
+		AdapterManager.addPeripheralAdapter(new AdapterAutoJukebox());
+		AdapterManager.addPeripheralAdapter(new AdapterAutoSpawner());
+		AdapterManager.addPeripheralAdapter(new AdapterChronotyper());
+		AdapterManager.addPeripheralAdapter(new AdapterChunkLoader());
+		AdapterManager.addPeripheralAdapter(new AdapterHarvester());
+	}
 
 	@Override
 	public void appendItemInfo(Map<String, Object> map, ItemStack stack) {
