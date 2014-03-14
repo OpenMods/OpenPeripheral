@@ -75,7 +75,7 @@ public abstract class ExecutionStrategy {
 				} catch (Exception e) {
 					// computer got restarted, but we get here due to race
 					// condition
-					Log.warn(e, "Failed to signal response to transaction '%d'");
+					Log.warn(e, "Failed to signal response to transaction '%d'", transactionId);
 				}
 			}
 		}
