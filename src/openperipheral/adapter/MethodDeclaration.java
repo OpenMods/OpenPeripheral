@@ -75,6 +75,8 @@ public class MethodDeclaration implements IDescriptable {
 	private final boolean validateReturn;
 
 	private final Map<String, Integer> namedArgs = Maps.newHashMap();
+	private final Set<String> allowedNames = Sets.newHashSet();
+
 	private final List<Class<?>> javaArgs;
 	private final List<ConvertedArgument> luaArgs;
 
@@ -331,13 +333,8 @@ public class MethodDeclaration implements IDescriptable {
 		Preconditions.checkArgument(prev == null || prev == index, "Trying to replace '%s' mapping from  %s, got %s", name, prev, index);
 	}
 
-	public void checkJavaArgNames(String... allowedNames) {
-		Set<String> allowed = ImmutableSet.copyOf(allowedNames);
-		Set<String> unknown = Sets.difference(namedArgs.keySet(), allowed);
-		Preconditions.checkState(unknown.isEmpty(), "Unknown named arg(s) %s in method '%s'. Allowed args: %s", unknown, method, allowed);
-	}
-
-	public void checkJavaArgType(String name, Class<?> cls) {
+	public void declareJavaArgType(String name, Class<?> cls) {
+		allowedNames.add(name);
 		Integer index = namedArgs.get(name);
 		if (index != null) {
 			final Class<?> expected = javaArgs.get(index);
@@ -346,6 +343,9 @@ public class MethodDeclaration implements IDescriptable {
 	}
 
 	public void validate() {
+		Set<String> unknown = Sets.difference(namedArgs.keySet(), allowedNames);
+		Preconditions.checkState(unknown.isEmpty(), "Unknown named arg(s) %s in method '%s'. Allowed args: %s", unknown, method, allowedNames);
+
 		Set<Integer> needed = Sets.newHashSet();
 		for (int i = 0; i < javaArgs.size(); i++)
 			needed.add(i);
@@ -387,5 +387,15 @@ public class MethodDeclaration implements IDescriptable {
 	@Override
 	public List<String> getNames() {
 		return names;
+	}
+
+	public Class<?>[] getLuaArgTypes() {
+		Class<?>[] result = new Class<?>[luaArgs.size()];
+
+		int index = 0;
+		for (ConvertedArgument arg : luaArgs)
+			result[index++] = arg.javaType;
+
+		return result;
 	}
 }

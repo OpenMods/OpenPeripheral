@@ -2,14 +2,18 @@ package openperipheral.adapter;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import openmods.Log;
+import openmods.utils.ReflectionHelper;
+import openperipheral.adapter.MethodDeclaration.CallWrap;
 import openperipheral.api.*;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
+import com.google.common.base.Throwables;
+import com.google.common.collect.*;
 
 public abstract class AdapterWrapper<E extends IMethodExecutor> {
 	protected static boolean isFreeform(AnnotatedElement element, boolean defaultValue) {
@@ -40,7 +44,7 @@ public abstract class AdapterWrapper<E extends IMethodExecutor> {
 	protected abstract void nameDefaultParameters(MethodDeclaration decl);
 
 	protected interface MethodExecutorFactory<E extends IMethodExecutor> {
-		public E createExecutor(Method method, MethodDeclaration decl);
+		public E createExecutor(Method method, MethodDeclaration decl, Map<String, Method> proxyArgs);
 	}
 
 	protected MethodDeclaration createDeclaration(Method method) {
@@ -51,6 +55,44 @@ public abstract class AdapterWrapper<E extends IMethodExecutor> {
 		if (callableAnn != null) return new MethodDeclaration(method, callableAnn);
 
 		return null;
+	}
+
+	private void addProxyArgs(Map<String, Method> result, String defaultName, Class<?>[] defaultArgs, ProxyArg arg) {
+		String name = arg.argName();
+
+		String[] names = arg.methodNames();
+		if (names.length == 0) names = new String[] { defaultName };
+
+		Class<?> args[] = arg.args();
+		if (args.length == 1 && args[0] == void.class) args = defaultArgs;
+
+		Method proxiedMethod = ReflectionHelper.getMethod(targetCls, names, args);
+		Preconditions.checkState(proxiedMethod != null, "Can find proxy argument '%s' for method %s %s in class (adapter: %s)",
+				name, targetCls, Arrays.toString(names), Arrays.toString(args), targetCls, adapterClass);
+		proxiedMethod.setAccessible(true);
+		Method prev = result.put(name, proxiedMethod);
+		Preconditions.checkState(prev == null, "Duplicated proxy arg name '%s' in adapter '%s'", name, adapterClass);
+	}
+
+	protected static IMethodProxy createProxy(final Object target, final Method method) {
+		return new IMethodProxy() {
+			@SuppressWarnings("unchecked")
+			@Override
+			public <T> T call(Object... args) {
+				try {
+					return (T)method.invoke(target, args);
+				} catch (Throwable t) {
+					throw Throwables.propagate(t);
+				}
+			}
+		};
+	}
+
+	protected static CallWrap nameAdapterMethods(Object target, Map<String, Method> proxyArgs, CallWrap wrap) {
+		for (Map.Entry<String, Method> e : proxyArgs.entrySet())
+			wrap.setJavaArg(e.getKey(), createProxy(target, e.getValue()));
+
+		return wrap;
 	}
 
 	protected List<E> buildMethodList(boolean defaultIsFreeform, MethodExecutorFactory<E> factory) {
@@ -72,7 +114,17 @@ public abstract class AdapterWrapper<E extends IMethodExecutor> {
 
 			if (decl == null) continue;
 
-			E exec = factory.createExecutor(method, decl);
+			Map<String, Method> allProxyArgs = Maps.newHashMap();
+
+			Class<?>[] luaArgs = decl.getLuaArgTypes();
+			final ProxyArg proxyArg = method.getAnnotation(ProxyArg.class);
+			if (proxyArg != null) addProxyArgs(allProxyArgs, method.getName(), luaArgs, proxyArg);
+
+			final ProxyArgs proxyArgs = method.getAnnotation(ProxyArgs.class);
+			if (proxyArgs != null) for (ProxyArg arg : proxyArgs.value())
+				addProxyArgs(allProxyArgs, method.getName(), luaArgs, arg);
+
+			E exec = factory.createExecutor(method, decl, ImmutableMap.copyOf(allProxyArgs));
 
 			final Prefixed methodPrefixes = method.getAnnotation(Prefixed.class);
 			final Prefixed actualPrefixes = methodPrefixes != null? methodPrefixes : classPrefixes;
@@ -81,8 +133,11 @@ public abstract class AdapterWrapper<E extends IMethodExecutor> {
 				else namesFromAnnotation(actualPrefixes, decl);
 			} else Preconditions.checkState(methodPrefixes == null, "Method '%s' has mutually exclusive annotations @Prefixed and @Freeform");
 
-			decl.validate();
 			validateArgTypes(decl);
+			for (String proxyArgName : allProxyArgs.keySet())
+				decl.declareJavaArgType(proxyArgName, IMethodProxy.class);
+
+			decl.validate();
 
 			result.add(exec);
 		}

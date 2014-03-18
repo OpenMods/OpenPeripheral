@@ -1,8 +1,6 @@
 package openperipheral.adapter;
 
-import java.util.Map;
 import java.util.Random;
-import java.util.WeakHashMap;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -69,28 +67,17 @@ abstract class SafePeripheralHandler implements IPeripheralHandler {
 		public void readFromNBT(NBTTagCompound nbttagcompound) {}
 	};
 
-	private Map<TileEntity, IHostedPeripheral> created = new WeakHashMap<TileEntity, IHostedPeripheral>();
-
 	@Override
 	public IHostedPeripheral getPeripheral(TileEntity tile) {
 		if (tile == null) return null;
 
-		IHostedPeripheral peripheral = created.get(tile);
-
-		if (peripheral == null) {
-			try {
-				peripheral = createPeripheral(tile);
-			} catch (Throwable t) {
-				Log.severe(t, "Can't create peripheral for TE %s @ (%d,%d,%d) in world %s",
-						tile.getClass(), tile.xCoord, tile.yCoord, tile.zCoord, tile.worldObj.provider.dimensionId);
-				peripheral = PLACEHOLDER;
-
-			}
-
-			created.put(tile, peripheral);
+		try {
+			return createPeripheral(tile);
+		} catch (Throwable t) {
+			Log.severe(t, "Can't create peripheral for TE %s @ (%d,%d,%d) in world %s",
+					tile.getClass(), tile.xCoord, tile.yCoord, tile.zCoord, tile.worldObj.provider.dimensionId);
+			return PLACEHOLDER;
 		}
-
-		return peripheral;
 	}
 
 	protected abstract IHostedPeripheral createPeripheral(TileEntity tile);

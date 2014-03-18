@@ -17,7 +17,15 @@ import dan200.computer.api.*;
 
 public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodExecutor> {
 
-	private static final IPeripheralHandler ADAPTER_HANDLER = new SafePeripheralHandler() {
+	private static final IPeripheralHandler ADAPTER_HANDLER = new CachingPeripheralHandler() {
+		@Override
+		protected IHostedPeripheral createPeripheral(TileEntity tile) {
+			AdaptedClass<IPeripheralMethodExecutor> adapter = peripherals.adaptClass(tile.getClass());
+			return new HostedPeripheral(adapter, tile);
+		}
+	};
+
+	private static final IPeripheralHandler ADAPTER_CACHING_HANDLER = new CachingPeripheralHandler() {
 		@Override
 		protected IHostedPeripheral createPeripheral(TileEntity tile) {
 			AdaptedClass<IPeripheralMethodExecutor> adapter = peripherals.adaptClass(tile.getClass());
@@ -26,6 +34,13 @@ public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodEx
 	};
 
 	private static final IPeripheralHandler PROVIDER_HANDLER = new SafePeripheralHandler() {
+		@Override
+		protected IHostedPeripheral createPeripheral(TileEntity tile) {
+			return (tile instanceof IPeripheralProvider)? ((IPeripheralProvider)tile).providePeripheral(tile.worldObj) : null;
+		}
+	};
+
+	private static final IPeripheralHandler PROVIDER_CACHING_HANDLER = new CachingPeripheralHandler() {
 		@Override
 		protected IHostedPeripheral createPeripheral(TileEntity tile) {
 			return (tile instanceof IPeripheralProvider)? ((IPeripheralProvider)tile).providePeripheral(tile.worldObj) : null;
@@ -134,13 +149,23 @@ public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodEx
 		Log.info("Registering peripheral handler for %d classes (providers: %d, adapters: %d))", providerCount + adapterCount, providerCount, adapterCount);
 
 		for (Class<? extends TileEntity> teClass : adaptedClasses) {
-			Log.fine("Adding adapter handler for %s", teClass);
-			ComputerCraftAPI.registerExternalPeripheral(teClass, ADAPTER_HANDLER);
+			if (teClass.isAnnotationPresent(Volatile.class)) {
+				Log.fine("Adding non-caching adapter handler for %s", teClass);
+				ComputerCraftAPI.registerExternalPeripheral(teClass, ADAPTER_HANDLER);
+			} else {
+				Log.fine("Adding caching adapter handler for %s", teClass);
+				ComputerCraftAPI.registerExternalPeripheral(teClass, ADAPTER_CACHING_HANDLER);
+			}
 		}
 
 		for (Class<? extends TileEntity> teClass : providerClasses) {
-			Log.fine("Adding provider handler for %s", teClass);
-			ComputerCraftAPI.registerExternalPeripheral(teClass, PROVIDER_HANDLER);
+			if (teClass.isAnnotationPresent(Volatile.class)) {
+				Log.fine("Adding non-caching provider handler for %s", teClass);
+				ComputerCraftAPI.registerExternalPeripheral(teClass, PROVIDER_HANDLER);
+			} else {
+				Log.fine("Adding caching provider handler for %s", teClass);
+				ComputerCraftAPI.registerExternalPeripheral(teClass, PROVIDER_CACHING_HANDLER);
+			}
 		}
 	}
 

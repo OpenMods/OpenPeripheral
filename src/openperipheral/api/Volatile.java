@@ -2,8 +2,8 @@ package openperipheral.api;
 
 import java.lang.annotation.*;
 
-@Target(ElementType.METHOD)
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Alias {
-	public String[] value();
+public @interface Volatile {
+
 }
