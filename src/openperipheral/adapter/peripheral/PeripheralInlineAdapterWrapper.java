@@ -6,10 +6,11 @@ import java.util.List;
 import java.util.Map;
 
 import openperipheral.adapter.*;
-import openperipheral.adapter.MethodDeclaration.CallWrap;
 import openperipheral.adapter.PropertyListBuilder.FieldContext;
 import openperipheral.adapter.PropertyListBuilder.IPropertyExecutorFactory;
 import openperipheral.adapter.PropertyListBuilder.PropertyExecutor;
+import openperipheral.adapter.method.MethodDeclaration;
+import openperipheral.adapter.method.MethodDeclaration.CallWrap;
 import openperipheral.adapter.object.IObjectMethodExecutor;
 
 import com.google.common.base.Preconditions;

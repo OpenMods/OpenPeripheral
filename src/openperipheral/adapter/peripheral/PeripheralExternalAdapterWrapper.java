@@ -5,8 +5,8 @@ import java.util.Arrays;
 import java.util.Map;
 
 import openperipheral.adapter.IDescriptable;
-import openperipheral.adapter.MethodDeclaration;
-import openperipheral.adapter.MethodDeclaration.CallWrap;
+import openperipheral.adapter.method.MethodDeclaration;
+import openperipheral.adapter.method.MethodDeclaration.CallWrap;
 import openperipheral.adapter.object.IObjectMethodExecutor;
 import openperipheral.api.IPeripheralAdapter;
 

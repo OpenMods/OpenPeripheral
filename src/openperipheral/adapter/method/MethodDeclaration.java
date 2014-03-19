@@ -1,7 +1,6 @@
-package openperipheral.adapter;
+package openperipheral.adapter.method;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -12,6 +11,7 @@ import openmods.Log;
 import openmods.utils.AnnotationMap;
 import openmods.utils.ReflectionHelper;
 import openperipheral.TypeConversionRegistry;
+import openperipheral.adapter.IDescriptable;
 import openperipheral.api.*;
 
 import com.google.common.base.Joiner;
@@ -20,52 +20,6 @@ import com.google.common.base.Throwables;
 import com.google.common.collect.*;
 
 public class MethodDeclaration implements IDescriptable {
-
-	public static class ConvertedArgument {
-		public final String name;
-		public final String description;
-		public final LuaType luaType;
-		public final Class<?> javaType;
-		public final boolean isVarArg;
-		private final boolean isNullable;
-		private final boolean isOptional;
-		private final int javaArgIndex;
-
-		private ConvertedArgument(Arg arg, Class<?> javaClass, int javaArgIndex, boolean isVarArg, boolean isOptional) {
-			this.name = arg.name();
-			this.description = arg.description();
-			this.luaType = arg.type();
-			if (isVarArg) this.javaType = javaClass.getComponentType();
-			else this.javaType = javaClass;
-			this.isVarArg = isVarArg;
-			this.isOptional = isOptional;
-			this.isNullable = arg.isNullable() || isOptional;
-			this.javaArgIndex = javaArgIndex;
-		}
-
-		public Object convert(Object o) {
-			if (o == null) return null;
-			Object converted = TypeConversionRegistry.fromLua(o, javaType);
-			Preconditions.checkNotNull(converted, "Failed to convert arg '%s' value '%s' to '%s'", name, o, javaType.getSimpleName());
-			return converted;
-		}
-
-		public Map<String, Object> describe() {
-			Map<String, Object> result = Maps.newHashMap();
-			result.put(IDescriptable.TYPE, luaType.toString());
-			result.put(IDescriptable.NAME, name);
-			result.put(IDescriptable.DESCRIPTION, description);
-			result.put("vararg", isVarArg);
-			result.put("optional", isOptional);
-			result.put("nullable", isNullable);
-			return result;
-		}
-
-		@Override
-		public String toString() {
-			return isVarArg? (name + "...") : name;
-		}
-	}
 
 	private final List<String> names;
 	private final Method method;
@@ -78,21 +32,20 @@ public class MethodDeclaration implements IDescriptable {
 	private final Set<String> allowedNames = Sets.newHashSet();
 
 	private final List<Class<?>> javaArgs;
-	private final List<ConvertedArgument> luaArgs;
+	private final List<Argument> luaArgs;
 
-	private ConvertedArgument createLuaArg(AnnotationMap annotations, Class<?> javaArgType, int index, boolean forceOptional, boolean isVarArg) {
+	private static boolean checkOptional(boolean currentState, AnnotationMap annotations) {
+		return currentState || annotations.get(Optionals.class) != null;
+	}
+
+	private Argument createLuaArg(ArgumentBuilder builder, AnnotationMap annotations, Class<?> javaArgType, int index) {
 		Arg arg = annotations.get(Arg.class);
-		Preconditions.checkNotNull(arg);
-
-		final boolean isOptional = forceOptional || annotations.get(Optionals.class) != null;
-
-		ConvertedArgument result = new ConvertedArgument(arg, javaArgType, index, isVarArg, isOptional);
-
-		Preconditions.checkArgument(!(result.javaType.isPrimitive() && result.isNullable),
-				"In method %s arg %s has primitive type %s, but is marked nullable or optional",
-				method, index, result.javaType);
-
-		return result;
+		Preconditions.checkNotNull(arg, "Argument %d has no annotation", index);
+		try {
+			return builder.build(arg.name(), arg.description(), arg.type(), javaArgType, index);
+		} catch (Exception e) {
+			throw new IllegalArgumentException(String.format("Argument %d from method '%s' in invalid", index, method), e);
+		}
 	}
 
 	private static List<String> getNames(Method method, String mainName) {
@@ -124,16 +77,23 @@ public class MethodDeclaration implements IDescriptable {
 
 		boolean isOptional = false;
 
-		ImmutableList.Builder<ConvertedArgument> luaArgs = ImmutableList.builder();
+		ImmutableList.Builder<Argument> luaArgs = ImmutableList.builder();
 		for (int arg = 0; arg < declaredLuaArgs.length; arg++) {
 			boolean isLastArg = arg == (declaredLuaArgs.length - 1);
 
 			AnnotationMap annotations = new AnnotationMap(argsAnnotations[arg]);
-			annotations.put(declaredLuaArgs[arg]);
+			Arg ann = declaredLuaArgs[arg];
+			annotations.put(ann);
 			int javaArgIndex = luaArgsStart + arg;
-			ConvertedArgument luaArg = createLuaArg(annotations, methodArgs[javaArgIndex], javaArgIndex, isOptional, isLastArg && isVarArg);
-			luaArgs.add(luaArg);
-			isOptional |= luaArg.isOptional;
+
+			isOptional = checkOptional(isOptional, annotations);
+
+			ArgumentBuilder builder = new ArgumentBuilder();
+			builder.setVararg(isLastArg && isVarArg);
+			builder.setOptional(isOptional);
+			builder.setNullable(ann.isNullable());
+
+			luaArgs.add(createLuaArg(builder, annotations, methodArgs[javaArgIndex], javaArgIndex));
 		}
 
 		this.luaArgs = luaArgs.build();
@@ -163,7 +123,7 @@ public class MethodDeclaration implements IDescriptable {
 		final Annotation[][] argsAnnotations = method.getParameterAnnotations();
 		final boolean isVarArg = method.isVarArgs();
 
-		ImmutableList.Builder<ConvertedArgument> luaArgs = ImmutableList.builder();
+		ImmutableList.Builder<Argument> luaArgs = ImmutableList.builder();
 		ImmutableList.Builder<Class<?>> javaArgs = ImmutableList.builder();
 		boolean isInLuaArgs = false;
 		boolean isOptional = false;
@@ -178,9 +138,15 @@ public class MethodDeclaration implements IDescriptable {
 
 			Arg tmp = annotations.get(Arg.class);
 			if (tmp != null) {
-				ConvertedArgument luaArg = createLuaArg(annotations, cls, i, isOptional, isLastArg && isVarArg);
-				luaArgs.add(luaArg);
-				isOptional |= luaArg.isOptional;
+				isOptional = checkOptional(isOptional, annotations);
+
+				ArgumentBuilder builder = new ArgumentBuilder();
+				builder.setVararg(isLastArg && isVarArg);
+				builder.setOptional(isOptional);
+				builder.setNullable(tmp.isNullable());
+
+				luaArgs.add(createLuaArg(builder, annotations, cls, i));
+
 				isLuaArg = true;
 				isInLuaArgs = true;
 			}
@@ -267,34 +233,14 @@ public class MethodDeclaration implements IDescriptable {
 		}
 
 		public CallWrap setLuaArgs(Object[] luaValues) {
-			int argIndex = 0;
+			Iterator<Object> it = Iterators.forArray(luaValues);
 			try {
-				for (ConvertedArgument arg : luaArgs) {
-					if (arg.isVarArg) {
-						int varargSize = Math.max(0, luaValues.length - argIndex);
-						Object vararg = Array.newInstance(arg.javaType, varargSize);
-
-						for (int i = 0; i < varargSize; i++) {
-							Object value = luaValues[argIndex++];
-							Preconditions.checkArgument(arg.isNullable || value != null, "Vararg parameter '%s' has null value, but is not marked as nullable", arg.name);
-							Object converted = arg.convert(value);
-							Array.set(vararg, i, converted);
-						}
-
-						setArg(arg.javaArgIndex, vararg);
-					} else {
-						int i = argIndex++;
-						if (i >= luaValues.length) {
-							Preconditions.checkState(arg.isOptional, "Parameter '%s' is missing", arg.name);
-							setArg(arg.javaArgIndex, null);
-						} else {
-							Object value = luaValues[i];
-							Preconditions.checkArgument(arg.isNullable || value != null, "Parameter '%s' has null value, but is not marked as nullable", arg.name);
-							setArg(arg.javaArgIndex, arg.convert(value));
-						}
-					}
+				for (Argument arg : luaArgs) {
+					Object value = arg.convert(it);
+					setArg(arg.javaArgIndex, value);
 				}
-				Preconditions.checkState(argIndex >= luaValues.length, "Not all lua values used, last index: %s", argIndex - 1);
+
+				Preconditions.checkState(!it.hasNext(), "Too many arguments!");
 			} catch (ArrayIndexOutOfBoundsException e) {
 				Log.log(Level.FINE, e, "Trying to access arg index, args = %s", Arrays.toString(luaValues));
 				throw new IllegalArgumentException(String.format("Invalid Lua parameter count, needs %s, got %s", luaArgs.size(), luaValues.length));
@@ -372,7 +318,7 @@ public class MethodDeclaration implements IDescriptable {
 
 		{
 			List<Map<String, Object>> args = Lists.newArrayList();
-			for (ConvertedArgument arg : luaArgs)
+			for (Argument arg : luaArgs)
 				args.add(arg.describe());
 			result.put(IDescriptable.ARGS, args);
 		}
@@ -393,7 +339,7 @@ public class MethodDeclaration implements IDescriptable {
 		Class<?>[] result = new Class<?>[luaArgs.size()];
 
 		int index = 0;
-		for (ConvertedArgument arg : luaArgs)
+		for (Argument arg : luaArgs)
 			result[index++] = arg.javaType;
 
 		return result;

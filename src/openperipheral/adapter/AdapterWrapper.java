@@ -8,27 +8,43 @@ import java.util.Map;
 
 import openmods.Log;
 import openmods.utils.ReflectionHelper;
-import openperipheral.adapter.MethodDeclaration.CallWrap;
+import openperipheral.adapter.method.MethodDeclaration;
+import openperipheral.adapter.method.MethodDeclaration.CallWrap;
 import openperipheral.api.*;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 import com.google.common.collect.*;
 
-public abstract class AdapterWrapper<E extends IMethodExecutor> {
+public abstract class AdapterWrapper<E extends IMethodExecutor> implements IMethodsList<E> {
 	protected static boolean isFreeform(AnnotatedElement element, boolean defaultValue) {
 		Freeform freeform = element.getAnnotation(Freeform.class);
 		return freeform != null? freeform.value() : defaultValue;
 	}
 
-	public final List<E> methods;
-	public final Class<?> targetCls;
-	public final Class<?> adapterClass;
+	protected final List<E> methods;
+	protected final Class<?> targetCls;
+	protected final Class<?> adapterClass;
 
 	protected AdapterWrapper(Class<?> adapterClass, Class<?> targetClass) {
 		this.adapterClass = adapterClass;
 		this.targetCls = targetClass;
 		this.methods = ImmutableList.copyOf(buildMethodList());
+	}
+
+	@Override
+	public List<E> getMethods() {
+		return methods;
+	}
+
+	@Override
+	public Class<?> getTargetClass() {
+		return targetCls;
+	}
+
+	@Override
+	public String describeType() {
+		return "generated (source: " + adapterClass.toString() + ")";
 	}
 
 	protected abstract List<E> buildMethodList();

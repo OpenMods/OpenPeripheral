@@ -8,7 +8,8 @@ import java.util.concurrent.Callable;
 
 import openmods.Log;
 import openperipheral.adapter.*;
-import openperipheral.adapter.MethodDeclaration.CallWrap;
+import openperipheral.adapter.method.MethodDeclaration;
+import openperipheral.adapter.method.MethodDeclaration.CallWrap;
 import openperipheral.adapter.object.IObjectMethodExecutor;
 import openperipheral.api.*;
 

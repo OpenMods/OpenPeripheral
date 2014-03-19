@@ -1,6 +1,9 @@
 package openperipheral.adapter.peripheral;
 
-import openperipheral.adapter.*;
+import openperipheral.adapter.AdaptedClass;
+import openperipheral.adapter.AdapterManager;
+import openperipheral.adapter.IDescriptable;
+import openperipheral.adapter.method.MethodDeclaration;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.ILuaContext;
 

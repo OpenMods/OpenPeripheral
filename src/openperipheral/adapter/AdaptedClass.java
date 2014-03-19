@@ -6,6 +6,7 @@ import java.util.*;
 
 import openmods.Log;
 import openperipheral.Config;
+import openperipheral.adapter.method.MethodDeclaration;
 import openperipheral.api.LuaCallable;
 import openperipheral.api.LuaType;
 import openperipheral.api.Named;
@@ -69,20 +70,20 @@ public abstract class AdaptedClass<E extends IMethodExecutor> {
 	}
 
 	private static <E extends IMethodExecutor> void addExternalAdapters(AdapterManager<?, E> manager, Map<String, E> result, Class<?> cls) {
-		for (AdapterWrapper<E> wrapper : manager.getExternalAdapters(cls))
+		for (IMethodsList<E> wrapper : manager.getExternalAdapters(cls))
 			addAdapterMethods(result, wrapper);
 	}
 
 	private static <E extends IMethodExecutor> void addInlineAdapter(AdapterManager<?, E> manager, Map<String, E> result, Class<?> cls) {
-		AdapterWrapper<E> wrapper = manager.getInlineAdapter(cls);
+		IMethodsList<E> wrapper = manager.getInlineAdapter(cls);
 		addAdapterMethods(result, wrapper);
 	}
 
-	private static <E extends IMethodExecutor> void addAdapterMethods(Map<String, E> result, AdapterWrapper<E> wrapper) {
-		for (E executor : wrapper.methods) {
+	private static <E extends IMethodExecutor> void addAdapterMethods(Map<String, E> result, IMethodsList<E> wrapper) {
+		for (E executor : wrapper.getMethods()) {
 			for (String name : executor.getWrappedMethod().getNames()) {
 				final E previous = result.put(name, executor);
-				if (previous != null) Log.fine("Previous defininition of Lua method '%s' overwritten by adapter %s", name, wrapper.adapterClass);
+				if (previous != null) Log.fine("Previous defininition of Lua method '%s' overwritten by %s adapter", name, wrapper.describeType());
 			}
 		}
 

@@ -9,6 +9,7 @@ import openperipheral.adapter.*;
 import openperipheral.adapter.PropertyListBuilder.FieldContext;
 import openperipheral.adapter.PropertyListBuilder.IPropertyExecutorFactory;
 import openperipheral.adapter.PropertyListBuilder.PropertyExecutor;
+import openperipheral.adapter.method.MethodDeclaration;
 import openperipheral.api.IObjectAdapter;
 import dan200.computer.api.ILuaContext;
 

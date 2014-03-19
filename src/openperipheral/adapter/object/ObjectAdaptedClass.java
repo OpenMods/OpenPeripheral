@@ -1,6 +1,9 @@
 package openperipheral.adapter.object;
 
-import openperipheral.adapter.*;
+import openperipheral.adapter.AdaptedClass;
+import openperipheral.adapter.AdapterManager;
+import openperipheral.adapter.IDescriptable;
+import openperipheral.adapter.method.MethodDeclaration;
 import dan200.computer.api.ILuaContext;
 
 public class ObjectAdaptedClass extends AdaptedClass<IObjectMethodExecutor> {
