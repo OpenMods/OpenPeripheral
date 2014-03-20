@@ -1,6 +1,6 @@
 package openperipheral.integration.vanilla;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -12,6 +12,7 @@ import openperipheral.api.*;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 
 @OnTick
 @Prefixed("target")
@@ -29,15 +30,13 @@ public class AdapterInventory implements IPeripheralAdapter {
 	@LuaMethod(returnType = LuaType.STRING, description = "Get the name of this inventory")
 	public String getInventoryName(IInventory target) {
 		IInventory inventory = InventoryUtils.getInventory(target);
-		if (inventory == null) return null;
-		return inventory.getInvName();
+		return inventory != null? inventory.getInvName() : null;
 	}
 
 	@LuaMethod(returnType = LuaType.NUMBER, description = "Get the size of this inventory")
 	public int getInventorySize(IInventory target) {
 		IInventory inventory = InventoryUtils.getInventory(target);
-		if (inventory == null) return 0;
-		return inventory.getSizeInventory();
+		return inventory != null? inventory.getSizeInventory() : 0;
 	}
 
 	private static void checkSlotId(IInventory inventory, int slot, String name) {
@@ -101,19 +100,13 @@ public class AdapterInventory implements IPeripheralAdapter {
 	@LuaMethod(returnType = LuaType.VOID, description = "Condense and tidy the stacks in an inventory")
 	public void condenseItems(IInventory target) {
 		IInventory inventory = InventoryUtils.getInventory(target);
-		if (inventory == null && target != null) {
-			// I hope to never see this ever. -NC
-			System.out.println("OpenPeripheral Warning: (condenseItems) getInventory for the same inventory failed hard. That's a bug!!!");
-			inventory = target;
-		}
-		ArrayList<ItemStack> stacks = new ArrayList<ItemStack>();
+		List<ItemStack> stacks = Lists.newArrayList();
 		for (int i = 0; i < inventory.getSizeInventory(); i++) {
 			ItemStack sta = inventory.getStackInSlot(i);
-			if (sta != null) {
-				stacks.add(sta.copy());
-			}
+			if (sta != null) stacks.add(sta.copy());
 			inventory.setInventorySlotContents(i, null);
 		}
+
 		for (ItemStack stack : stacks) {
 			InventoryUtils.insertItemIntoInventory(inventory, stack, ForgeDirection.UNKNOWN, ANY_SLOT);
 		}
@@ -142,7 +135,7 @@ public class AdapterInventory implements IPeripheralAdapter {
 	public ItemStack getStackInSlot(IInventory target, int slot) {
 		IInventory invent = InventoryUtils.getInventory(target);
 		slot -= 1;
-		Preconditions.checkElementIndex(slot, target.getSizeInventory(), "slot id");
+		Preconditions.checkElementIndex(slot, invent.getSizeInventory(), "slot id");
 		return invent.getStackInSlot(slot);
 	}
 
@@ -163,7 +156,7 @@ public class AdapterInventory implements IPeripheralAdapter {
 	public void destroyStack(IInventory target, int slot) {
 		IInventory invent = InventoryUtils.getInventory(target);
 		slot -= 1;
-		Preconditions.checkElementIndex(slot, target.getSizeInventory(), "slot id");
+		Preconditions.checkElementIndex(slot, invent.getSizeInventory(), "slot id");
 		invent.setInventorySlotContents(slot, null);
 	}
 }
