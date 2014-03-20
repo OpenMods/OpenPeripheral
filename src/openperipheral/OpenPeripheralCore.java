@@ -5,7 +5,7 @@ import java.io.File;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.Configuration;
 import openmods.config.ConfigProcessing;
-import openperipheral.adapter.AdapterManager;
+import openperipheral.adapter.PeripheralHandlers;
 import openperipheral.integration.appeng.ModuleAppEng;
 import openperipheral.integration.buildcraft.ModuleBuildCraft;
 import openperipheral.integration.computercraft.ModuleComputerCraft;
@@ -75,6 +75,6 @@ public class OpenPeripheralCore {
 
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent evt) {
-		AdapterManager.registerPeripherals();
+		PeripheralHandlers.registerPeripherals();
 	}
 }

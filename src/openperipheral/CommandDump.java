@@ -9,7 +9,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatMessageComponent;
 import openmods.Log;
 import openmods.OpenMods;
-import openperipheral.adapter.AdapterManager;
+import openperipheral.adapter.PeripheralHandlers;
 import openperipheral.util.DocBuilder;
 
 public class CommandDump implements ICommand {
@@ -50,7 +50,7 @@ public class CommandDump implements ICommand {
 
 			DocBuilder builder = new DocBuilder();
 
-			for (Class<? extends TileEntity> te : AdapterManager.getAllAdaptedClasses())
+			for (Class<? extends TileEntity> te : PeripheralHandlers.getAllAdaptedTeClasses())
 				builder.createDocForTe(te);
 
 			builder.dump(output);
