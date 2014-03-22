@@ -4,7 +4,7 @@ import net.minecraft.tileentity.TileEntityComparator;
 import openperipheral.api.IPeripheralAdapter;
 import openperipheral.api.LuaMethod;
 import openperipheral.api.LuaType;
-import dan200.computer.api.IComputerAccess;
+import dan200.computercraft.api.peripheral.IComputerAccess;
 
 public class AdapterComparator implements IPeripheralAdapter {
 

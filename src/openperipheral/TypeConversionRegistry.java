@@ -9,7 +9,7 @@ import openperipheral.converter.*;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-import dan200.computer.api.ILuaObject;
+import dan200.computercraft.api.lua.ILuaObject;
 
 public class TypeConversionRegistry {
 

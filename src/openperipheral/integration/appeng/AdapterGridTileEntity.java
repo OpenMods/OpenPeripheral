@@ -16,7 +16,7 @@ import appeng.api.exceptions.AppEngTileMissingException;
 import appeng.api.me.tiles.IGridTileEntity;
 import appeng.api.me.util.IGridInterface;
 import appeng.api.me.util.IMEInventoryHandler;
-import dan200.computer.api.IComputerAccess;
+import dan200.computercraft.api.peripheral.IComputerAccess;
 
 public class AdapterGridTileEntity implements IPeripheralAdapter {
 

@@ -4,7 +4,7 @@ import openperipheral.api.IPeripheralAdapter;
 import openperipheral.api.LuaMethod;
 import openperipheral.api.LuaType;
 import cofh.api.tileentity.IEnergyInfo;
-import dan200.computer.api.IComputerAccess;
+import dan200.computercraft.api.peripheral.IComputerAccess;
 
 public class AdapterEnergyInfo implements IPeripheralAdapter {
 

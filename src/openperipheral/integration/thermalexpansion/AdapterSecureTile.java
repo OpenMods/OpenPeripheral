@@ -5,7 +5,7 @@ import java.util.Locale;
 import openperipheral.api.*;
 import cofh.api.tileentity.ISecureTile;
 import cofh.api.tileentity.ISecureTile.AccessMode;
-import dan200.computer.api.IComputerAccess;
+import dan200.computercraft.api.peripheral.IComputerAccess;
 
 public class AdapterSecureTile implements IPeripheralAdapter {
 

@@ -4,7 +4,7 @@ import openmods.utils.ReflectionHelper;
 import openperipheral.api.IPeripheralAdapter;
 import openperipheral.api.LuaMethod;
 import openperipheral.api.LuaType;
-import dan200.computer.api.IComputerAccess;
+import dan200.computercraft.api.peripheral.IComputerAccess;
 
 public class AdapterMassFab implements IPeripheralAdapter {
 	private static final Class<?> CLAZZ = ReflectionHelper.getClass("ic2.core.block.machine.tileentity.TileEntityMatter");

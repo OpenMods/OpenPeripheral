@@ -4,7 +4,7 @@ import net.minecraftforge.common.ForgeDirection;
 import openperipheral.api.*;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerHandler.PowerReceiver;
-import dan200.computer.api.IComputerAccess;
+import dan200.computercraft.api.peripheral.IComputerAccess;
 
 public class AdapterPowerReceptor implements IPeripheralAdapter {
 

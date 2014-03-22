@@ -6,7 +6,7 @@ import openperipheral.api.LuaType;
 import thaumcraft.api.nodes.INode;
 import thaumcraft.api.nodes.NodeModifier;
 import thaumcraft.api.nodes.NodeType;
-import dan200.computer.api.IComputerAccess;
+import dan200.computercraft.api.peripheral.IComputerAccess;
 
 public class AdapterNode implements IPeripheralAdapter {
 	private static final String NONE = "NONE";

@@ -12,8 +12,9 @@ import openperipheral.api.IPeripheralAdapter;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.*;
 
-import dan200.computer.api.IHostedPeripheral;
-import dan200.computer.api.ILuaObject;
+import dan200.computercraft.api.lua.ILuaObject;
+
+
 
 public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodExecutor> {
 

@@ -3,7 +3,7 @@ package openperipheral.integration.thermalexpansion;
 import net.minecraftforge.common.ForgeDirection;
 import openperipheral.api.*;
 import cofh.api.energy.IEnergyHandler;
-import dan200.computer.api.IComputerAccess;
+import dan200.computercraft.api.peripheral.IComputerAccess;
 
 public class AdapterEnergyHandler implements IPeripheralAdapter {
 

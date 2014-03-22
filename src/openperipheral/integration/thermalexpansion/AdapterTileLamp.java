@@ -3,7 +3,7 @@ package openperipheral.integration.thermalexpansion;
 import net.minecraft.tileentity.TileEntity;
 import openmods.utils.ReflectionHelper;
 import openperipheral.api.*;
-import dan200.computer.api.IComputerAccess;
+import dan200.computercraft.api.peripheral.IComputerAccess;
 
 public class AdapterTileLamp implements IPeripheralAdapter {
 

@@ -2,7 +2,7 @@ package openperipheral.integration.thermalexpansion;
 
 import openperipheral.api.*;
 import cofh.api.transport.IEnderAttuned;
-import dan200.computer.api.IComputerAccess;
+import dan200.computercraft.api.peripheral.IComputerAccess;
 
 public class AdapterEnderAttuned implements IPeripheralAdapter {
 

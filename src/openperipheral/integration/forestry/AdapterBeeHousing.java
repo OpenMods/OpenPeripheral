@@ -8,7 +8,7 @@ import openperipheral.api.*;
 
 import com.google.common.collect.Maps;
 
-import dan200.computer.api.IComputerAccess;
+import dan200.computercraft.api.peripheral.IComputerAccess;
 import forestry.api.apiculture.IBeeHousing;
 import forestry.api.genetics.*;
 

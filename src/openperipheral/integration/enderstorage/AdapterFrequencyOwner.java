@@ -8,7 +8,7 @@ import openperipheral.api.*;
 
 import com.google.common.base.Preconditions;
 
-import dan200.computer.api.IComputerAccess;
+import dan200.computercraft.api.peripheral.IComputerAccess;
 
 public class AdapterFrequencyOwner implements IPeripheralAdapter {
 	private static final Class<?> CLAZZ = ReflectionHelper.getClass("codechicken.enderstorage.common.TileFrequencyOwner");

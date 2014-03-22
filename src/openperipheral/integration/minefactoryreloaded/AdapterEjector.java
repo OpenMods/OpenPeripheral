@@ -2,7 +2,7 @@ package openperipheral.integration.minefactoryreloaded;
 
 import openmods.utils.ReflectionHelper;
 import openperipheral.api.*;
-import dan200.computer.api.IComputerAccess;
+import dan200.computercraft.api.peripheral.IComputerAccess;
 
 public class AdapterEjector implements IPeripheralAdapter {
 

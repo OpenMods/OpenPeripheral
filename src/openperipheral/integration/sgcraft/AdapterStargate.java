@@ -9,7 +9,7 @@ import openperipheral.api.*;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 
-import dan200.computer.api.IComputerAccess;
+import dan200.computercraft.api.peripheral.IComputerAccess;
 
 public class AdapterStargate implements IPeripheralAdapter {
 	private static final Class<?> STARGATE_TILE_CLASS = ReflectionHelper.getClass("gcewing.sg.SGBaseTE");

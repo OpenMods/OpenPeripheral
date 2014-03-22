@@ -12,7 +12,7 @@ import openperipheral.api.IPeripheralAdapter;
 
 import com.google.common.base.Preconditions;
 
-import dan200.computer.api.IComputerAccess;
+import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computer.api.ILuaContext;
 
 public class PeripheralExternalAdapterWrapper extends PeripheralAdapterWrapper {

@@ -5,7 +5,7 @@ import openperipheral.api.*;
 
 import org.apache.commons.lang3.StringUtils;
 
-import dan200.computer.api.IComputerAccess;
+import dan200.computercraft.api.peripheral.IComputerAccess;
 
 public class AdapterSign implements IPeripheralAdapter {
 	@Override

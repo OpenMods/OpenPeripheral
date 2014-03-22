@@ -9,7 +9,7 @@ import appeng.api.IAEItemStack;
 import appeng.api.IItemList;
 import appeng.api.me.tiles.ICellProvider;
 import appeng.api.me.util.IMEInventoryHandler;
-import dan200.computer.api.IComputerAccess;
+import dan200.computercraft.api.peripheral.IComputerAccess;
 
 public class AdapterCellProvider implements IPeripheralAdapter {
 

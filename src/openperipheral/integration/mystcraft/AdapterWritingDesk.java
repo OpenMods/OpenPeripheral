@@ -15,7 +15,7 @@ import openperipheral.api.*;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
-import dan200.computer.api.IComputerAccess;
+import dan200.computercraft.api.peripheral.IComputerAccess;
 
 public class AdapterWritingDesk implements IPeripheralAdapter {
 	private static final Class<?> DESK_CLASS = ReflectionHelper.getClass("com.xcompwiz.mystcraft.tileentity.TileEntityDesk");

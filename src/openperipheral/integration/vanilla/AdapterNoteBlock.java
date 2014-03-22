@@ -5,7 +5,7 @@ import openperipheral.api.*;
 
 import com.google.common.base.Objects;
 
-import dan200.computer.api.IComputerAccess;
+import dan200.computercraft.api.peripheral.IComputerAccess;
 
 public class AdapterNoteBlock implements IPeripheralAdapter {
 

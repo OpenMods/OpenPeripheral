@@ -1,7 +1,7 @@
 package openperipheral.adapter.peripheral;
 
 import openperipheral.adapter.IMethodExecutor;
-import dan200.computer.api.IComputerAccess;
+import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computer.api.ILuaContext;
 
 public interface IPeripheralMethodExecutor extends IMethodExecutor {

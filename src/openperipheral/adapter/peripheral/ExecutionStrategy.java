@@ -12,7 +12,7 @@ import openperipheral.util.PrettyPrint;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 
-import dan200.computer.api.IComputerAccess;
+import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computer.api.ILuaContext;
 
 public abstract class ExecutionStrategy {

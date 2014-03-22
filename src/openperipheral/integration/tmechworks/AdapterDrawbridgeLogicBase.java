@@ -2,7 +2,7 @@ package openperipheral.integration.tmechworks;
 
 import openperipheral.api.*;
 import tmechworks.lib.blocks.IDrawbridgeLogicBase;
-import dan200.computer.api.IComputerAccess;
+import dan200.computercraft.api.peripheral.IComputerAccess;
 
 @OnTickSafe
 public class AdapterDrawbridgeLogicBase implements IPeripheralAdapter {

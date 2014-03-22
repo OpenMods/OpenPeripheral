@@ -2,7 +2,7 @@ package openperipheral.integration.buildcraft;
 
 import openperipheral.api.*;
 import buildcraft.api.transport.IPipe;
-import dan200.computer.api.IComputerAccess;
+import dan200.computercraft.api.peripheral.IComputerAccess;
 
 public class AdapterPipe implements IPeripheralAdapter {
 
