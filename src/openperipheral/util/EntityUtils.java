@@ -3,12 +3,18 @@ package openperipheral.util;
 import java.util.Map;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.Vec3;
 import openperipheral.IntegrationModuleRegistry;
 
 import com.google.common.collect.Maps;
 
 public class EntityUtils {
+
+	public static Map<String, Object> entityToMap(Entity entity, ChunkCoordinates relativePos) {
+		Vec3 vec = Vec3.createVectorHelper(relativePos.posX, relativePos.posY, relativePos.posZ);
+		return entityToMap(entity, vec);
+	}
 
 	public static Map<String, Object> entityToMap(Entity entity, Vec3 relativePos) {
 

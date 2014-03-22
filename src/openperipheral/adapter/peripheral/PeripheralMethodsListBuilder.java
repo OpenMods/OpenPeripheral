@@ -4,8 +4,8 @@ import openperipheral.adapter.AdapterManager;
 import openperipheral.adapter.IDescriptable;
 import openperipheral.adapter.composed.ClassMethodsListBuilder;
 import openperipheral.adapter.method.MethodDeclaration;
-import dan200.computer.api.IComputerAccess;
-import dan200.computer.api.ILuaContext;
+import dan200.computercraft.api.lua.ILuaContext;
+import dan200.computercraft.api.peripheral.IComputerAccess;
 
 public class PeripheralMethodsListBuilder extends ClassMethodsListBuilder<IPeripheralMethodExecutor> {
 

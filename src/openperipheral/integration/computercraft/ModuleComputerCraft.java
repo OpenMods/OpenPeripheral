@@ -14,7 +14,7 @@ import openperipheral.api.IIntegrationModule;
 
 import com.google.common.collect.Maps;
 
-import dan200.turtle.api.ITurtleUpgrade;
+import dan200.computercraft.api.turtle.ITurtleUpgrade;
 
 public class ModuleComputerCraft implements IIntegrationModule {
 

@@ -11,7 +11,7 @@ import openperipheral.adapter.PropertyListBuilder.IPropertyExecutorFactory;
 import openperipheral.adapter.PropertyListBuilder.PropertyExecutor;
 import openperipheral.adapter.method.MethodDeclaration;
 import openperipheral.api.IObjectAdapter;
-import dan200.computer.api.ILuaContext;
+import dan200.computercraft.api.lua.ILuaContext;
 
 public abstract class ObjectAdapterWrapper extends AdapterWrapper<IObjectMethodExecutor> {
 

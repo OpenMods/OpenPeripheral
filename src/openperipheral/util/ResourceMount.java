@@ -8,7 +8,7 @@ import java.util.SortedSet;
 
 import com.google.common.collect.ImmutableSortedSet;
 
-import dan200.computer.api.IMount;
+import dan200.computercraft.api.filesystem.IMount;
 
 public class ResourceMount implements IMount {
 

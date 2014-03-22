@@ -15,8 +15,7 @@ import openperipheral.api.IPeripheralAdapter;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.*;
 
-import dan200.computer.api.IHostedPeripheral;
-import dan200.computer.api.ILuaObject;
+import dan200.computercraft.api.lua.ILuaObject;
 
 public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodExecutor> {
 
@@ -144,14 +143,5 @@ public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodEx
 
 	public static ILuaObject wrapObject(Object o) {
 		return LuaObjectWrapper.wrap(objects, o);
-	}
-
-	/**
-	 * @deprecated Use one from PeripheralHandlers. This one is left here for
-	 *             API compatibility
-	 */
-	@Deprecated
-	public static IHostedPeripheral createHostedPeripheral(Object target) {
-		return PeripheralHandlers.createHostedPeripheral(target);
 	}
 }

@@ -5,8 +5,8 @@ import openperipheral.adapter.composed.ClassMethodsList;
 
 import com.google.common.base.Preconditions;
 
-import dan200.computer.api.ILuaContext;
-import dan200.computer.api.ILuaObject;
+import dan200.computercraft.api.lua.ILuaContext;
+import dan200.computercraft.api.lua.ILuaObject;
 
 public class LuaObjectWrapper {
 	public static ILuaObject wrap(AdapterManager<?, IObjectMethodExecutor> manager, Object target) {

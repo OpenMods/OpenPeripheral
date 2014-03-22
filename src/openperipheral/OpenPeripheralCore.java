@@ -29,6 +29,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
+import dan200.computercraft.api.ComputerCraftAPI;
 
 @Mod(modid = ModInfo.ID, name = ModInfo.NAME, version = ModInfo.VERSION, dependencies = ModInfo.DEPENDENCIES)
 @NetworkMod(serverSideRequired = true, clientSideRequired = false, channels = { ModInfo.ID })
@@ -43,6 +44,8 @@ public class OpenPeripheralCore {
 		Configuration config = new Configuration(configFile);
 		ConfigProcessing.processAnnotations(configFile, ModInfo.ID, config, Config.class);
 		if (config.hasChanged()) config.save();
+
+		ComputerCraftAPI.registerPeripheralProvider(new PeripheralHandlers());
 	}
 
 	@Mod.EventHandler
@@ -75,6 +78,6 @@ public class OpenPeripheralCore {
 
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent evt) {
-		PeripheralHandlers.registerPeripherals();
+		PeripheralHandlers.discoverPeripherals();
 	}
 }

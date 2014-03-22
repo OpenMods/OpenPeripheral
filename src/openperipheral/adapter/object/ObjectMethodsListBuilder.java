@@ -4,7 +4,7 @@ import openperipheral.adapter.AdapterManager;
 import openperipheral.adapter.IDescriptable;
 import openperipheral.adapter.composed.ClassMethodsListBuilder;
 import openperipheral.adapter.method.MethodDeclaration;
-import dan200.computer.api.ILuaContext;
+import dan200.computercraft.api.lua.ILuaContext;
 
 public class ObjectMethodsListBuilder extends ClassMethodsListBuilder<IObjectMethodExecutor> {
 
