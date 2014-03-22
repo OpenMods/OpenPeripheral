@@ -9,7 +9,7 @@ public class TickingHostedPeripheral extends HostedPeripheralBase<IUpdateHandler
 		super(wrapper, targetObject);
 	}
 
-	@Override
+	//@Override
 	public void update() {
 		targetObject.onPeripheralUpdate();
 	}

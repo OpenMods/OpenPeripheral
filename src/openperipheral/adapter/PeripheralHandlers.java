@@ -8,7 +8,7 @@ import openperipheral.Config;
 import openperipheral.adapter.peripheral.HostedPeripheral;
 import openperipheral.adapter.peripheral.IPeripheralMethodExecutor;
 import openperipheral.adapter.peripheral.TickingHostedPeripheral;
-import openperipheral.api.IPeripheralProvider;
+import openperipheral.api.ISelfPeripheralProvider;
 import openperipheral.api.IUpdateHandler;
 import openperipheral.api.Volatile;
 import openperipheral.util.PeripheralUtils;
@@ -20,33 +20,33 @@ import dan200.computercraft.api.*;
 import dan200.computercraft.api.peripheral.*;
 
 public class PeripheralHandlers {
-	private static final IPeripheralHandler ADAPTER_HANDLER = new CachingPeripheralHandler() {
+	private static final SafePeripheralHandler ADAPTER_HANDLER = new CachingPeripheralHandler() {
 		@Override
-		protected IHostedPeripheral createPeripheral(TileEntity tile) {
+		protected IPeripheral createPeripheral(TileEntity tile) {
 			AdaptedClass<IPeripheralMethodExecutor> adapter = AdapterManager.peripherals.adaptClass(tile.getClass());
 			return new HostedPeripheral(adapter, tile);
 		}
 	};
 
-	private static final IPeripheralHandler ADAPTER_CACHING_HANDLER = new CachingPeripheralHandler() {
+	private static final SafePeripheralHandler ADAPTER_CACHING_HANDLER = new CachingPeripheralHandler() {
 		@Override
-		protected IHostedPeripheral createPeripheral(TileEntity tile) {
+		protected IPeripheral createPeripheral(TileEntity tile) {
 			AdaptedClass<IPeripheralMethodExecutor> adapter = AdapterManager.peripherals.adaptClass(tile.getClass());
 			return new HostedPeripheral(adapter, tile);
 		}
 	};
 
-	private static final IPeripheralHandler PROVIDER_HANDLER = new SafePeripheralHandler() {
+	private static final SafePeripheralHandler PROVIDER_HANDLER = new SafePeripheralHandler() {
 		@Override
-		protected IHostedPeripheral createPeripheral(TileEntity tile) {
-			return (tile instanceof IPeripheralProvider)? ((IPeripheralProvider)tile).providePeripheral(tile.worldObj) : null;
+		protected IPeripheral createPeripheral(TileEntity tile) {
+			return (tile instanceof ISelfPeripheralProvider)? ((ISelfPeripheralProvider)tile).providePeripheral(tile.worldObj) : null;
 		}
 	};
 
-	private static final IPeripheralHandler PROVIDER_CACHING_HANDLER = new CachingPeripheralHandler() {
+	private static final SafePeripheralHandler PROVIDER_CACHING_HANDLER = new CachingPeripheralHandler() {
 		@Override
-		protected IHostedPeripheral createPeripheral(TileEntity tile) {
-			return (tile instanceof IPeripheralProvider)? ((IPeripheralProvider)tile).providePeripheral(tile.worldObj) : null;
+		protected IPeripheral createPeripheral(TileEntity tile) {
+			return (tile instanceof ISelfPeripheralProvider)? ((ISelfPeripheralProvider)tile).providePeripheral(tile.worldObj) : null;
 		}
 	};
 
@@ -72,7 +72,7 @@ public class PeripheralHandlers {
 				Log.warn("TE with id %s has null key", name);
 			} else if (blacklist.contains(teClass.getName()) || blacklist.contains(name.toLowerCase())) {
 				Log.warn("Ignoring blacklisted TE %s = %s", name, teClass);
-			} else if (IPeripheralProvider.class.isAssignableFrom(teClass)) {
+			} else if (ISelfPeripheralProvider.class.isAssignableFrom(teClass)) {
 				providerClasses.add(teClass);
 			} else if (!IPeripheral.class.isAssignableFrom(teClass)) {
 				candidates.add(teClass);
@@ -106,6 +106,10 @@ public class PeripheralHandlers {
 		final int adapterCount = adaptedClasses.size();
 		Log.info("Registering peripheral handler for %d classes (providers: %d, adapters: %d))", providerCount + adapterCount, providerCount, adapterCount);
 
+		ComputerCraftAPI.registerPeripheralProvider(ADAPTER_CACHING_HANDLER);
+		ComputerCraftAPI.registerPeripheralProvider(PROVIDER_CACHING_HANDLER);
+		
+		/*
 		for (Class<? extends TileEntity> teClass : adaptedClasses) {
 			if (teClass.isAnnotationPresent(Volatile.class)) {
 				Log.fine("Adding non-caching adapter handler for %s", teClass);
@@ -125,9 +129,10 @@ public class PeripheralHandlers {
 				ComputerCraftAPI.registerExternalPeripheral(teClass, PROVIDER_CACHING_HANDLER);
 			}
 		}
+		*/
 	}
 
-	public static IHostedPeripheral createHostedPeripheral(Object target) {
+	public static IPeripheral createHostedPeripheral(Object target) {
 		AdaptedClass<IPeripheralMethodExecutor> adapter = AdapterManager.peripherals.adaptClass(target.getClass());
 		if (target instanceof IUpdateHandler) return new TickingHostedPeripheral(adapter, (IUpdateHandler)target);
 		return new HostedPeripheral(adapter, target);

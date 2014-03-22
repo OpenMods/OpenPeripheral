@@ -5,7 +5,7 @@ import openperipheral.adapter.AdapterManager;
 import openperipheral.adapter.IDescriptable;
 import openperipheral.adapter.method.MethodDeclaration;
 import dan200.computercraft.api.peripheral.IComputerAccess;
-import dan200.computer.api.ILuaContext;
+import dan200.computercraft.api.lua.ILuaContext;
 
 public class PeripheralAdaptedClass extends AdaptedClass<IPeripheralMethodExecutor> {
 

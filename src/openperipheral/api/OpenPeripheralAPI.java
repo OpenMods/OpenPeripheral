@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 
 import net.minecraft.tileentity.TileEntity;
 import cpw.mods.fml.common.FMLLog;
-import dan200.computer.api.IHostedPeripheral;
+import dan200.computercraft.api.peripheral.IPeripheral;
 
 public class OpenPeripheralAPI {
 
@@ -37,8 +37,8 @@ public class OpenPeripheralAPI {
 		return callWithoutReturn("openperipheral.adapter.AdapterManager", "addInlinePeripheralAdapter", Class.class, cls);
 	}
 
-	public static IHostedPeripheral createHostedPeripheral(Object target) {
-		return callWithReturn("openperipheral.adapter.AdapterManager", "createHostedPeripheral", Object.class, target, IHostedPeripheral.class);
+	public static IPeripheral createHostedPeripheral(Object target) {
+		return callWithReturn("openperipheral.adapter.AdapterManager", "createHostedPeripheral", Object.class, target, IPeripheral.class);
 	}
 
 	private static Method getMethod(String klazzName, String methodName, Class<?> argType) throws Exception {

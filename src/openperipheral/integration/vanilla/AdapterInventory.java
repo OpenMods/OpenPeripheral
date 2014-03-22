@@ -14,6 +14,8 @@ import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
+import cpw.mods.fml.common.FMLLog;
+
 @OnTick
 @Prefixed("target")
 public class AdapterInventory implements IPeripheralAdapter {

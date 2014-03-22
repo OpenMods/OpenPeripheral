@@ -16,7 +16,7 @@ import openperipheral.api.*;
 import com.google.common.base.Preconditions;
 
 import dan200.computercraft.api.peripheral.IComputerAccess;
-import dan200.computer.api.ILuaContext;
+import dan200.computercraft.api.lua.ILuaContext;
 
 public abstract class PeripheralAdapterWrapper extends AdapterWrapper<IPeripheralMethodExecutor> {
 

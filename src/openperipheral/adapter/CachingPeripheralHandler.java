@@ -4,19 +4,19 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import net.minecraft.tileentity.TileEntity;
-import dan200.computer.api.IHostedPeripheral;
+import dan200.computercraft.api.peripheral.IPeripheral;
 
 public abstract class CachingPeripheralHandler extends SafePeripheralHandler {
-	private final Map<TileEntity, IHostedPeripheral> created = new WeakHashMap<TileEntity, IHostedPeripheral>();
+	private final Map<TileEntity, IPeripheral> created = new WeakHashMap<TileEntity, IPeripheral>();
 
 	@Override
-	public IHostedPeripheral getPeripheral(TileEntity tile) {
+	public IPeripheral getPeripheralFromTile(TileEntity tile) {
 		if (tile == null) return null;
 
-		IHostedPeripheral peripheral = created.get(tile);
+		IPeripheral peripheral = created.get(tile);
 
 		if (peripheral == null) {
-			peripheral = super.getPeripheral(tile);
+			peripheral = super.getPeripheralFromTile(tile);
 			created.put(tile, peripheral);
 		}
 

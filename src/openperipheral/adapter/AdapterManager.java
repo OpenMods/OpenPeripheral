@@ -13,6 +13,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.*;
 
 import dan200.computercraft.api.lua.ILuaObject;
+import dan200.computercraft.api.peripheral.IPeripheral;
 
 
 
@@ -135,7 +136,7 @@ public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodEx
 	 *             case of old API
 	 */
 	@Deprecated
-	public static IHostedPeripheral createHostedPeripheral(Object target) {
+	public static IPeripheral createHostedPeripheral(Object target) {
 		return PeripheralHandlers.createHostedPeripheral(target);
 	}
 }

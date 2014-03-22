@@ -3,15 +3,19 @@ package openperipheral.adapter.peripheral;
 import java.util.Arrays;
 import java.util.logging.Level;
 
-import net.minecraft.nbt.NBTTagCompound;
 import openmods.Log;
 import openperipheral.adapter.AdaptedClass;
 import openperipheral.api.IAttachable;
+import openperipheral.util.EqualsUtil;
 import openperipheral.util.PeripheralUtils;
 import openperipheral.util.ResourceMount;
-import dan200.computer.api.*;
+import dan200.computercraft.api.filesystem.IMount;
+import dan200.computercraft.api.lua.ILuaContext;
+import dan200.computercraft.api.peripheral.IComputerAccess;
+import dan200.computercraft.api.peripheral.IPeripheral;
 
-public class HostedPeripheralBase<T> implements IHostedPeripheral {
+
+public class HostedPeripheralBase<T> implements IPeripheral {
 
 	private static final String MOUNT_NAME = "openp";
 	private static final IMount MOUNT = new ResourceMount();
@@ -48,11 +52,6 @@ public class HostedPeripheralBase<T> implements IHostedPeripheral {
 	}
 
 	@Override
-	public boolean canAttachToSide(int side) {
-		return true;
-	}
-
-	@Override
 	public void attach(IComputerAccess computer) {
 		computer.mount(MOUNT_NAME, HostedPeripheralBase.MOUNT);
 		if (targetObject instanceof IAttachable) ((IAttachable)targetObject).addComputer(computer);
@@ -64,11 +63,14 @@ public class HostedPeripheralBase<T> implements IHostedPeripheral {
 	}
 
 	@Override
-	public void update() {}
+	public boolean equals(IPeripheral other) {
+		if(!(other instanceof HostedPeripheralBase)){
+			return false;
+		}
+		HostedPeripheralBase<?> other_hpb=(HostedPeripheralBase<?>)other;
+		return EqualsUtil.equals(this.wrapped, other_hpb.wrapped) && EqualsUtil.equals(this.targetObject, other_hpb.targetObject);
 
-	@Override
-	public void readFromNBT(NBTTagCompound nbttagcompound) {}
+	}
 
-	@Override
-	public void writeToNBT(NBTTagCompound nbttagcompound) {}
+
 }

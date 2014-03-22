@@ -14,7 +14,8 @@ import openperipheral.api.IIntegrationModule;
 
 import com.google.common.collect.Maps;
 
-import dan200.turtle.api.ITurtleUpgrade;
+import dan200.computercraft.api.turtle.ITurtleUpgrade;
+
 
 public class ModuleComputerCraft implements IIntegrationModule {
 
@@ -31,7 +32,7 @@ public class ModuleComputerCraft implements IIntegrationModule {
 
 	@Override
 	public void init() {
-		itemComputerBaseClass = ReflectionHelper.getClass("dan200.computer.shared.ItemComputerBase");
+		itemComputerBaseClass = ReflectionHelper.getClass("dan200.computercraft.shared.computer.items;.IComputerItem");
 		itemTurtleClass = ReflectionHelper.getClass("dan200.turtle.shared.ItemTurtle");
 		itemDiskClass = ReflectionHelper.getClass("dan200.computer.shared.ItemDisk");
 		itemTreasureClass = ReflectionHelper.getClass("dan200.computer.shared.ItemTreasureDisk");
@@ -85,18 +86,16 @@ public class ModuleComputerCraft implements IIntegrationModule {
 
 	private void addComputerInfo(Map<String, Object> map, ItemStack stack, Item item) {
 		Map<String, Object> computerInfo = Maps.newHashMap();
-		int computerID = ReflectionHelper.call(item, "getComputerIDFromItemStack", stack);
+		int computerID = ReflectionHelper.call(item, "getComputerID", stack);
 		if (computerID >= 0) {
 			computerInfo.put("id", computerID);
-
-			String label = ReflectionHelper.callStatic(itemComputerBaseClass, "getComputerLabelOnServer", ReflectionHelper.primitive(computerID));
-
-			if (label != null) {
-				computerInfo.put("label", label);
-			}
+		}
+		String label = ReflectionHelper.call(item, "getLabel", stack);
+		if (label != null) {
+			computerInfo.put("label", label);
 		}
 
-		computerInfo.put("isAdvanced", ReflectionHelper.call(item, "isItemAdvanced", stack));
+		computerInfo.put("family", ReflectionHelper.call(item, "getFamily", stack).toString());
 
 		if (itemTurtleClass.isInstance(item)) {
 			addTurtleInfo(computerInfo, stack, item);
