@@ -122,7 +122,7 @@ public abstract class AdaptedClass<E extends IMethodExecutor> {
 
 	protected abstract E createDummyWrapper(Object lister, MethodDeclaration method);
 
-	private class AdditionalHelperMethods {
+	public class AdditionalHelperMethods {
 		@LuaCallable(returnTypes = LuaType.STRING, description = "List all the methods available")
 		public String listMethods() {
 			List<String> info = Lists.newArrayList();
@@ -158,7 +158,7 @@ public abstract class AdaptedClass<E extends IMethodExecutor> {
 		return desc;
 	}
 
-	private class ModHelperMethods {
+	public class ModHelperMethods {
 		@LuaCallable(returnTypes = LuaType.STRING)
 		public String getClass(@Named("target") Object owner) {
 			return owner.getClass().toString();

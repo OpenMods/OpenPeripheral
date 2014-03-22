@@ -130,8 +130,8 @@ public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodEx
 	}
 
 	/**
-	 * @deprecated Use one from PeripheralHandlers. This one is left here in
-	 *             case of old API
+	 * @deprecated Use one from PeripheralHandlers. This one is left here for
+	 *             API compatibility
 	 */
 	@Deprecated
 	public static IHostedPeripheral createHostedPeripheral(Object target) {
