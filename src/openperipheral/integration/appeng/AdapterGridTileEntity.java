@@ -41,7 +41,7 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 		IGridInterface grid = te.getGrid();
 		if (grid == null) { return 0; }
 		IAEItemStack request = Util.createItemStack(stack);
-		if (request == null) { return 0; }
+		if (request == null || request.getItem() == null) { return 0; }
 		IAEItemStack returned = grid.getCellArray().extractItems(request);
 		if (returned == null) { return 0; }
 		IAEItemStack giveBack = null;
