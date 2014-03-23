@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import net.minecraft.tileentity.TileEntity;
 import cpw.mods.fml.common.FMLLog;
 import dan200.computer.api.IHostedPeripheral;
+import dan200.computer.api.ILuaObject;
 
 public class OpenPeripheralAPI {
 
@@ -35,6 +36,10 @@ public class OpenPeripheralAPI {
 
 	public static boolean createAdapter(Class<? extends TileEntity> cls) {
 		return callWithoutReturn("openperipheral.adapter.AdapterManager", "addInlinePeripheralAdapter", Class.class, cls);
+	}
+
+	public static ILuaObject createWrapper(Object obj) {
+		return callWithReturn("openperipheral.adapter.AdapterManager", "wrapObject", Object.class, obj, ILuaObject.class);
 	}
 
 	public static IHostedPeripheral createHostedPeripheral(Object target) {

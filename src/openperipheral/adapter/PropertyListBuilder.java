@@ -6,9 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import openperipheral.TypeConversionRegistry;
-import openperipheral.api.CallbackProperty;
-import openperipheral.api.LuaType;
-import openperipheral.api.Property;
+import openperipheral.api.*;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
