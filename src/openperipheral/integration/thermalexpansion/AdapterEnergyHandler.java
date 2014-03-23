@@ -3,7 +3,6 @@ package openperipheral.integration.thermalexpansion;
 import net.minecraftforge.common.ForgeDirection;
 import openperipheral.api.*;
 import cofh.api.energy.IEnergyHandler;
-import dan200.computer.api.IComputerAccess;
 
 public class AdapterEnergyHandler implements IPeripheralAdapter {
 
@@ -16,7 +15,7 @@ public class AdapterEnergyHandler implements IPeripheralAdapter {
 			args = {
 					@Arg(name = "slot", type = LuaType.STRING, description = "The direction you are interested in. (north, south, east, west, up or down)")
 			})
-	public int getEnergyStored(IComputerAccess computer, IEnergyHandler tileEntity, ForgeDirection side) {
+	public int getEnergyStored(IEnergyHandler tileEntity, ForgeDirection side) {
 		return tileEntity.getEnergyStored(side);
 	}
 
@@ -24,7 +23,7 @@ public class AdapterEnergyHandler implements IPeripheralAdapter {
 			args = {
 					@Arg(name = "slot", type = LuaType.STRING, description = "The direction you are interested in. (north, south, east, west, up or down)")
 			})
-	public int getMaxEnergyStored(IComputerAccess computer, IEnergyHandler tileEntity, ForgeDirection side) {
+	public int getMaxEnergyStored(IEnergyHandler tileEntity, ForgeDirection side) {
 		return tileEntity.getMaxEnergyStored(side);
 	}
 

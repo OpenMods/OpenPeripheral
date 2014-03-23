@@ -15,8 +15,6 @@ import openperipheral.api.*;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
-import dan200.computer.api.IComputerAccess;
-
 public class AdapterWritingDesk implements IPeripheralAdapter {
 	private static final Class<?> DESK_CLASS = ReflectionHelper.getClass("com.xcompwiz.mystcraft.tileentity.TileEntityDesk");
 
@@ -26,7 +24,7 @@ public class AdapterWritingDesk implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(description = "Get the maximum number of notebooks this desk can store", returnType = LuaType.NUMBER)
-	public int getMaxNotebookCount(IComputerAccess computer, Object tileEntityDesk) {
+	public int getMaxNotebookCount(Object tileEntityDesk) {
 		return ReflectionHelper.call(tileEntityDesk, "getMaxNotebookCount");
 	}
 
@@ -34,7 +32,7 @@ public class AdapterWritingDesk implements IPeripheralAdapter {
 			args = {
 					@Arg(name = "slot", type = LuaType.NUMBER, description = "The writing desk slot you are interested in")
 			})
-	public String getNotebookName(IComputerAccess computer, Object desk, int deskSlot) {
+	public String getNotebookName(Object desk, int deskSlot) {
 		return createInventoryWrapper(desk, deskSlot).getInvName();
 	}
 
@@ -42,7 +40,7 @@ public class AdapterWritingDesk implements IPeripheralAdapter {
 			args = {
 					@Arg(name = "slot", type = LuaType.NUMBER, description = "The writing desk slot you are interested in")
 			})
-	public Integer getNotebookSize(IComputerAccess computer, Object desk, int deskSlot) {
+	public Integer getNotebookSize(Object desk, int deskSlot) {
 		return createInventoryWrapper(desk, deskSlot).callOnNotebook("getItemCount");
 	}
 
@@ -51,7 +49,7 @@ public class AdapterWritingDesk implements IPeripheralAdapter {
 					@Arg(name = "deskSlot", type = LuaType.NUMBER, description = "The writing desk slot you are interested in"),
 					@Arg(name = "notebookSlot", type = LuaType.NUMBER, description = "The notebook slot you are interested in")
 			})
-	public ItemStack getNotebookStackInSlot(IComputerAccess computer, Object desk, int deskSlot, int notebookSlot) {
+	public ItemStack getNotebookStackInSlot(Object desk, int deskSlot, int notebookSlot) {
 		return createInventoryWrapper(desk, deskSlot).getStackInSlot(notebookSlot - 1);
 	}
 
@@ -59,7 +57,7 @@ public class AdapterWritingDesk implements IPeripheralAdapter {
 			args = {
 					@Arg(name = "slot", type = LuaType.NUMBER, description = "The writing desk slot you are interested in")
 			})
-	public Integer getLastNotebookSlot(IComputerAccess computer, Object desk, int deskSlot) {
+	public Integer getLastNotebookSlot(Object desk, int deskSlot) {
 		return createInventoryWrapper(desk, deskSlot).getSizeInventory() - 1;
 	}
 
@@ -69,16 +67,15 @@ public class AdapterWritingDesk implements IPeripheralAdapter {
 					@Arg(type = LuaType.NUMBER, name = "from", description = "The first slot"),
 					@Arg(type = LuaType.NUMBER, name = "to", description = "The other slot")
 			})
-	public void swapNotebookPages(IComputerAccess computer, Object desk, int deskSlot, int from, int to) {
+	public void swapNotebookPages(Object desk, int deskSlot, int from, int to) {
 		InventoryUtils.swapStacks(createInventoryWrapper(desk, deskSlot), from - 1, to - 1);
 	}
 
-	@Freeform
 	@LuaCallable(
 			returnTypes = LuaType.NUMBER,
 			description = "Push a page from the notebook into a specific slot in external inventory. Returns the amount of items moved")
 	public int pushNotebookPage(
-			@Named("target") Object desk,
+			Object desk,
 			@Arg(type = LuaType.NUMBER, name = "deskSlot", description = "The notebook slot you are interested in") int deskSlot,
 			@Arg(type = LuaType.STRING, name = "direction", description = "The direction of the other inventory. (north, south, east, west, up or down)") ForgeDirection direction,
 			@Arg(type = LuaType.NUMBER, name = "fromSlot", description = "The page slot in inventory that you're pushing from") int fromSlot,
@@ -95,7 +92,7 @@ public class AdapterWritingDesk implements IPeripheralAdapter {
 					@Arg(type = LuaType.STRING, name = "direction", description = "The direction of the other inventory. (north, south, east, west, up or down)"),
 					@Arg(type = LuaType.NUMBER, name = "fromSlot", description = "The slot in the other inventory that you're pulling from")
 			})
-	public int pullNotebookPage(IComputerAccess computer, Object desk, int deskSlot, ForgeDirection direction, int notebookSlot) {
+	public int pullNotebookPage(Object desk, int deskSlot, ForgeDirection direction, int notebookSlot) {
 		IInventory source = getTargetTile(desk, direction);
 		IInventory target = createInventoryWrapper(desk, deskSlot);
 		return InventoryUtils.moveItemInto(source, notebookSlot - 1, target, -1, 1, direction.getOpposite(), true, false);
@@ -106,8 +103,8 @@ public class AdapterWritingDesk implements IPeripheralAdapter {
 					@Arg(name = "deskSlot", type = LuaType.NUMBER, description = "The writing desk slot you are interested in"),
 					@Arg(type = LuaType.NUMBER, name = "notebookSlot", description = "The source symbol to copy"),
 			})
-	public void writeSymbol(IComputerAccess computer, TileEntity desk, int deskSlot, int notebookSlot) {
-		String symbol = getSymbolFromPage(getNotebookStackInSlot(computer, desk, deskSlot, notebookSlot));
+	public void writeSymbol(TileEntity desk, int deskSlot, int notebookSlot) {
+		String symbol = getSymbolFromPage(getNotebookStackInSlot(desk, deskSlot, notebookSlot));
 		if (symbol != null) {
 			FakePlayer fakePlayer = new FakePlayer(desk.getWorldObj(), "OpenPeripheral");
 			ReflectionHelper.call(DESK_CLASS, desk, "writeSymbol", fakePlayer, symbol);

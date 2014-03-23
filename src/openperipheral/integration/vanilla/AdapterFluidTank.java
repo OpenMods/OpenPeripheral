@@ -5,7 +5,6 @@ import net.minecraftforge.fluids.IFluidTank;
 import openperipheral.api.IPeripheralAdapter;
 import openperipheral.api.LuaMethod;
 import openperipheral.api.LuaType;
-import dan200.computer.api.IComputerAccess;
 
 public class AdapterFluidTank implements IPeripheralAdapter {
 
@@ -15,7 +14,7 @@ public class AdapterFluidTank implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(description = "Returns info containing the capacity of the tank and the FluidStack it holds.", returnType = LuaType.TABLE)
-	public FluidTankInfo getInfo(IComputerAccess computer, IFluidTank tank) {
+	public FluidTankInfo getInfo(IFluidTank tank) {
 		return tank.getInfo();
 	}
 }

@@ -4,7 +4,9 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import openmods.utils.ReflectionHelper;
-import openperipheral.api.*;
+import openperipheral.api.IPeripheralAdapter;
+import openperipheral.api.LuaCallable;
+import openperipheral.api.LuaType;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
@@ -20,7 +22,6 @@ public class AdapterMultipart implements IPeripheralAdapter {
 		return TARGET_CLASS;
 	}
 
-	@Prefixed("target")
 	@LuaCallable(returnTypes = LuaType.TABLE, description = "List types of parts in multipart block")
 	public List<String> getParts(Object target) {
 		try {

@@ -4,7 +4,6 @@ import net.minecraftforge.common.ForgeDirection;
 import openperipheral.api.*;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerHandler.PowerReceiver;
-import dan200.computer.api.IComputerAccess;
 
 public class AdapterPowerReceptor implements IPeripheralAdapter {
 
@@ -16,7 +15,7 @@ public class AdapterPowerReceptor implements IPeripheralAdapter {
 	@LuaMethod(returnType = LuaType.NUMBER, description = "Get the activation MJ for this block",
 			args = {
 					@Arg(name = "direction", type = LuaType.STRING, description = "The side of the block that you're interested in") })
-	public Float getActivationEnergy(IComputerAccess computer, IPowerReceptor powerReceptor, ForgeDirection direction) {
+	public Float getActivationEnergy(IPowerReceptor powerReceptor, ForgeDirection direction) {
 		PowerReceiver powerReceiver = powerReceptor.getPowerReceiver(direction);
 		if (powerReceiver == null) { return null; }
 		return powerReceiver.getActivationEnergy();
@@ -25,7 +24,7 @@ public class AdapterPowerReceptor implements IPeripheralAdapter {
 	@LuaMethod(returnType = LuaType.NUMBER, description = "Get the MJ stored for this block",
 			args = {
 					@Arg(name = "direction", type = LuaType.STRING, description = "The side of the block that you're interested in") })
-	public Float getMJStored(IComputerAccess computer, IPowerReceptor powerReceptor, ForgeDirection direction) {
+	public Float getMJStored(IPowerReceptor powerReceptor, ForgeDirection direction) {
 		PowerReceiver powerReceiver = powerReceptor.getPowerReceiver(direction);
 		if (powerReceiver == null) { return null; }
 		return powerReceiver.getEnergyStored();
@@ -34,7 +33,7 @@ public class AdapterPowerReceptor implements IPeripheralAdapter {
 	@LuaMethod(returnType = LuaType.NUMBER, description = "Get the max MJ received",
 			args = {
 					@Arg(name = "direction", type = LuaType.STRING, description = "The side of the block that you're interested in") })
-	public Float getMaxMJReceived(IComputerAccess computer, IPowerReceptor powerReceptor, ForgeDirection direction) {
+	public Float getMaxMJReceived(IPowerReceptor powerReceptor, ForgeDirection direction) {
 		PowerReceiver powerReceiver = powerReceptor.getPowerReceiver(direction);
 		if (powerReceiver == null) { return null; }
 		return powerReceiver.getMaxEnergyReceived();
@@ -43,7 +42,7 @@ public class AdapterPowerReceptor implements IPeripheralAdapter {
 	@LuaMethod(returnType = LuaType.NUMBER, description = "Get the max MJ stored",
 			args = {
 					@Arg(name = "direction", type = LuaType.STRING, description = "The side of the block that you're interested in") })
-	public Float getMaxMJStored(IComputerAccess computer, IPowerReceptor powerReceptor, ForgeDirection direction) {
+	public Float getMaxMJStored(IPowerReceptor powerReceptor, ForgeDirection direction) {
 		PowerReceiver powerReceiver = powerReceptor.getPowerReceiver(direction);
 		if (powerReceiver == null) { return null; }
 		return powerReceiver.getMaxEnergyStored();
@@ -52,7 +51,7 @@ public class AdapterPowerReceptor implements IPeripheralAdapter {
 	@LuaMethod(returnType = LuaType.NUMBER, description = "Get the min MJ received",
 			args = {
 					@Arg(name = "direction", type = LuaType.STRING, description = "The side of the block that you're interested in") })
-	public Float getMinMJReceived(IComputerAccess computer, IPowerReceptor powerReceptor, ForgeDirection direction) {
+	public Float getMinMJReceived(IPowerReceptor powerReceptor, ForgeDirection direction) {
 		PowerReceiver powerReceiver = powerReceptor.getPowerReceiver(direction);
 		if (powerReceiver == null) { return null; }
 		return powerReceiver.getMinEnergyReceived();

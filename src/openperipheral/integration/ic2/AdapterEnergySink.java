@@ -4,7 +4,6 @@ import ic2.api.energy.tile.IEnergySink;
 import openperipheral.api.IPeripheralAdapter;
 import openperipheral.api.LuaMethod;
 import openperipheral.api.LuaType;
-import dan200.computer.api.IComputerAccess;
 
 public class AdapterEnergySink implements IPeripheralAdapter {
 
@@ -14,7 +13,7 @@ public class AdapterEnergySink implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(onTick = false, description = "Get the maximum safe EU input", returnType = LuaType.NUMBER)
-	public int getMaxSafeEUInput(IComputerAccess computer, IEnergySink sink) {
+	public int getMaxSafeEUInput(IEnergySink sink) {
 		return sink.getMaxSafeInput();
 	}
 

@@ -1,10 +1,11 @@
 package openperipheral.integration.thaumcraft;
 
 import openmods.utils.ReflectionHelper;
-import openperipheral.api.*;
+import openperipheral.api.IPeripheralAdapter;
+import openperipheral.api.LuaMethod;
+import openperipheral.api.LuaType;
 import openperipheral.util.FieldAccessHelpers;
 
-@Prefixed("target")
 public class AdapterBrainJar implements IPeripheralAdapter {
 	private static final Class<?> TILE_JAR_BRAIN_CLASS = ReflectionHelper.getClass("thaumcraft.common.tiles.TileJarBrain");
 

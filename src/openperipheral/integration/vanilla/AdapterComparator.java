@@ -4,7 +4,6 @@ import net.minecraft.tileentity.TileEntityComparator;
 import openperipheral.api.IPeripheralAdapter;
 import openperipheral.api.LuaMethod;
 import openperipheral.api.LuaType;
-import dan200.computer.api.IComputerAccess;
 
 public class AdapterComparator implements IPeripheralAdapter {
 
@@ -14,7 +13,7 @@ public class AdapterComparator implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(returnType = LuaType.NUMBER, description = "Get the strength of the output signal")
-	public int getOutputSignal(IComputerAccess computer, TileEntityComparator comparator) {
+	public int getOutputSignal(TileEntityComparator comparator) {
 		return comparator.getOutputSignal();
 	}
 

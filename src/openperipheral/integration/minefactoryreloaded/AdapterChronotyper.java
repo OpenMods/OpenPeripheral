@@ -2,7 +2,6 @@ package openperipheral.integration.minefactoryreloaded;
 
 import openmods.utils.ReflectionHelper;
 import openperipheral.api.*;
-import dan200.computer.api.IComputerAccess;
 
 public class AdapterChronotyper implements IPeripheralAdapter {
 	// TileEntityChronotyper
@@ -16,7 +15,7 @@ public class AdapterChronotyper implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(description = "Should adults be moved?", returnType = LuaType.BOOLEAN)
-	public boolean getMoveAdults(IComputerAccess computer, Object tileEntityChronotyper) {
+	public boolean getMoveAdults(Object tileEntityChronotyper) {
 		return ReflectionHelper.call(tileEntityChronotyper, "getMoveOld");
 	}
 
@@ -24,7 +23,7 @@ public class AdapterChronotyper implements IPeripheralAdapter {
 			args = {
 					@Arg(name = "adults", type = LuaType.BOOLEAN, description = "boolean: Move adults?")
 			})
-	public void setMoveAdults(IComputerAccess computer, Object tileEntityChronotyper, boolean adults) {
+	public void setMoveAdults(Object tileEntityChronotyper, boolean adults) {
 		ReflectionHelper.call(tileEntityChronotyper, "setMoveOld", ReflectionHelper.primitive(adults));
 	}
 

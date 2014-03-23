@@ -4,7 +4,6 @@ import openperipheral.api.IPeripheralAdapter;
 import openperipheral.api.LuaMethod;
 import openperipheral.api.LuaType;
 import buildcraft.core.IMachine;
-import dan200.computer.api.IComputerAccess;
 
 public class AdapterMachine implements IPeripheralAdapter {
 
@@ -14,7 +13,7 @@ public class AdapterMachine implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(description = "Checks if the machine is running.", returnType = LuaType.BOOLEAN)
-	public boolean isActive(IComputerAccess computer, IMachine action) {
+	public boolean isActive(IMachine action) {
 		return action.isActive();
 	}
 }

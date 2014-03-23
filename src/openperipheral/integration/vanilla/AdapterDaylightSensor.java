@@ -3,11 +3,12 @@ package openperipheral.integration.vanilla;
 import net.minecraft.tileentity.TileEntityDaylightDetector;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
-import openperipheral.api.*;
+import openperipheral.api.IPeripheralAdapter;
+import openperipheral.api.LuaCallable;
+import openperipheral.api.LuaType;
 
 import com.google.common.base.Preconditions;
 
-@Prefixed("target")
 public class AdapterDaylightSensor implements IPeripheralAdapter {
 
 	@Override

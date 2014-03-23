@@ -4,12 +4,13 @@ import java.util.List;
 import java.util.Map;
 
 import openmods.utils.ReflectionHelper;
-import openperipheral.api.*;
+import openperipheral.api.IPeripheralAdapter;
+import openperipheral.api.LuaMethod;
+import openperipheral.api.LuaType;
 import openperipheral.util.FieldAccessHelpers;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.IAspectContainer;
 
-@Prefixed("target")
 public class AdapterJar implements IPeripheralAdapter {
 
 	private static final Class<?> TILE_JAR_FILLABLE_CLASS = ReflectionHelper.getClass("thaumcraft.common.tiles.TileJarFillable");

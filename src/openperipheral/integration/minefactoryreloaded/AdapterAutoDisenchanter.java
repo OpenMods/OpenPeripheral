@@ -2,7 +2,6 @@ package openperipheral.integration.minefactoryreloaded;
 
 import openmods.utils.ReflectionHelper;
 import openperipheral.api.*;
-import dan200.computer.api.IComputerAccess;
 
 public class AdapterAutoDisenchanter implements IPeripheralAdapter {
 
@@ -16,7 +15,7 @@ public class AdapterAutoDisenchanter implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(description = "Get value of repeat disenchant toggle", returnType = LuaType.BOOLEAN)
-	public boolean getRepeat(IComputerAccess computer, Object tileEntityAutoDisenchanter) {
+	public boolean getRepeat(Object tileEntityAutoDisenchanter) {
 		return ReflectionHelper.call(tileEntityAutoDisenchanter, "getRepeatDisenchant");
 	}
 
@@ -24,7 +23,7 @@ public class AdapterAutoDisenchanter implements IPeripheralAdapter {
 			args = {
 					@Arg(name = "repeat", type = LuaType.BOOLEAN, description = "boolean: Repeat disenchant?")
 			})
-	public void setRepeat(IComputerAccess computer, Object tileEntityAutoDisenchanter, boolean repeat) {
+	public void setRepeat(Object tileEntityAutoDisenchanter, boolean repeat) {
 		ReflectionHelper.call(tileEntityAutoDisenchanter, "setRepeatDisenchant", ReflectionHelper.primitive(repeat));
 	}
 

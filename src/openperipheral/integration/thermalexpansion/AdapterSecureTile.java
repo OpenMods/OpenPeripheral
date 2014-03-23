@@ -5,7 +5,6 @@ import java.util.Locale;
 import openperipheral.api.*;
 import cofh.api.tileentity.ISecureTile;
 import cofh.api.tileentity.ISecureTile.AccessMode;
-import dan200.computer.api.IComputerAccess;
 
 public class AdapterSecureTile implements IPeripheralAdapter {
 
@@ -15,26 +14,26 @@ public class AdapterSecureTile implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(description = "Gets the owner of the machine.", returnType = LuaType.STRING)
-	public String getOwnerName(IComputerAccess computer, ISecureTile tile) {
+	public String getOwnerName(ISecureTile tile) {
 		return tile.getOwnerName();
 	}
 
 	@LuaMethod(description = "Is this username allowed to access the machine.", returnType = LuaType.BOOLEAN, args = {
 			@Arg(name = "username", description = "The username to check for", type = LuaType.STRING)
 	})
-	public boolean canPlayerAccess(IComputerAccess computer, ISecureTile tile, String name) {
+	public boolean canPlayerAccess(ISecureTile tile, String name) {
 		return tile.canPlayerAccess(name);
 	}
 
 	@LuaMethod(description = "Gets the AccessMode of this machine.", returnType = LuaType.STRING)
-	public String getAccess(IComputerAccess computer, ISecureTile tile) {
+	public String getAccess(ISecureTile tile) {
 		return tile.getAccess().name();
 	}
 
 	@LuaMethod(description = "Sets the AccessMode of this machine.", returnType = LuaType.BOOLEAN, args = {
 			@Arg(name = "accessMode", description = "The access mode you wish to set (can be PUBLIC,RESTRICTED or PRIVATE)", type = LuaType.STRING)
 	})
-	public boolean setAccess(IComputerAccess computer, ISecureTile tile, String access) {
+	public boolean setAccess(ISecureTile tile, String access) {
 		try {
 			AccessMode mode = AccessMode.valueOf(access.toUpperCase(Locale.ENGLISH));
 			return tile.setAccess(mode);

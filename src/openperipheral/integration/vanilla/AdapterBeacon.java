@@ -5,7 +5,6 @@ import net.minecraft.tileentity.TileEntityBeacon;
 import openperipheral.api.IPeripheralAdapter;
 import openperipheral.api.LuaMethod;
 import openperipheral.api.LuaType;
-import dan200.computer.api.IComputerAccess;
 
 public class AdapterBeacon implements IPeripheralAdapter {
 	private static final String NONE = "None";
@@ -16,19 +15,19 @@ public class AdapterBeacon implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(returnType = LuaType.STRING, description = "Get the primary effect of the beacon")
-	public String getPrimaryEffect(IComputerAccess computer, TileEntityBeacon beacon) {
+	public String getPrimaryEffect(TileEntityBeacon beacon) {
 		Integer effectId = beacon.getPrimaryEffect();
 		return getEffectName(effectId);
 	}
 
 	@LuaMethod(returnType = LuaType.STRING, description = "Get the secondary effect of the beacon")
-	public String getSecondaryEffect(IComputerAccess computer, TileEntityBeacon beacon) {
+	public String getSecondaryEffect(TileEntityBeacon beacon) {
 		Integer effectId = beacon.getSecondaryEffect();
 		return getEffectName(effectId);
 	}
 
 	@LuaMethod(returnType = LuaType.NUMBER, description = "Get the height of the beacon's pyramid")
-	public int getLevels(IComputerAccess computer, TileEntityBeacon beacon) {
+	public int getLevels(TileEntityBeacon beacon) {
 		return beacon.getLevels();
 	}
 

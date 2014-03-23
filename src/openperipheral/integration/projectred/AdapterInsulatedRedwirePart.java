@@ -1,10 +1,7 @@
 package openperipheral.integration.projectred;
 
 import mrtjp.projectred.transmission.IInsulatedRedwirePart;
-import openperipheral.api.IPeripheralAdapter;
-import openperipheral.api.LuaMethod;
-import openperipheral.api.LuaType;
-import dan200.computer.api.IComputerAccess;
+import openperipheral.api.*;
 
 public class AdapterInsulatedRedwirePart implements IPeripheralAdapter {
 
@@ -13,8 +10,9 @@ public class AdapterInsulatedRedwirePart implements IPeripheralAdapter {
 		return IInsulatedRedwirePart.class;
 	}
 
+	@Alias("getInsulatedColor")
 	@LuaMethod(description = "Gets the colour of the cable.", returnType = LuaType.NUMBER)
-	public int getInsulatedColour(IComputerAccess computer, IInsulatedRedwirePart cable) {
+	public int getInsulatedColour(IInsulatedRedwirePart cable) {
 		return cable.getInsulatedColour();
 	}
 

@@ -46,6 +46,9 @@ public class IntegrationModuleRegistry {
 				}
 			}
 		}
+
+		Log.info("Module loading finished (enabled: %s, disabled: %s)", selectedModules.keySet(),
+				Sets.difference(registeredModules.keySet(), selectedModules.keySet()));
 	}
 
 	public static Collection<IIntegrationModule> loadedModules() {

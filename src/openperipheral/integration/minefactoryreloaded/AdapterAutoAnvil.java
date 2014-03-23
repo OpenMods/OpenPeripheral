@@ -2,7 +2,6 @@ package openperipheral.integration.minefactoryreloaded;
 
 import openmods.utils.ReflectionHelper;
 import openperipheral.api.*;
-import dan200.computer.api.IComputerAccess;
 
 public class AdapterAutoAnvil implements IPeripheralAdapter {
 
@@ -16,7 +15,7 @@ public class AdapterAutoAnvil implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(description = "Get value of repair only toggle", returnType = LuaType.BOOLEAN)
-	public boolean getRepairOnly(IComputerAccess computer, Object tileEntityAutoAnvil) {
+	public boolean getRepairOnly(Object tileEntityAutoAnvil) {
 		return ReflectionHelper.call(tileEntityAutoAnvil, "getRepairOnly");
 	}
 
@@ -24,7 +23,7 @@ public class AdapterAutoAnvil implements IPeripheralAdapter {
 			args = {
 					@Arg(name = "repair", type = LuaType.BOOLEAN, description = "boolean: Repair only?")
 			})
-	public void setRepairOnly(IComputerAccess computer, Object tileEntityAutoAnvil, boolean repair) {
+	public void setRepairOnly(Object tileEntityAutoAnvil, boolean repair) {
 		// NOTE: This doesn't seem to always work as expected. Consulting Skyboy
 		// about it.
 		ReflectionHelper.call(tileEntityAutoAnvil, "setRepairOnly", ReflectionHelper.primitive(repair));

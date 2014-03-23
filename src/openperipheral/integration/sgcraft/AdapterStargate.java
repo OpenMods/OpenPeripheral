@@ -9,8 +9,6 @@ import openperipheral.api.*;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 
-import dan200.computer.api.IComputerAccess;
-
 public class AdapterStargate implements IPeripheralAdapter {
 	private static final Class<?> STARGATE_TILE_CLASS = ReflectionHelper.getClass("gcewing.sg.SGBaseTE");
 	private static final Class<?> SG_ADDRESSING_CLASS = ReflectionHelper.getClass("gcewing.sg.SGAddressing");
@@ -22,7 +20,7 @@ public class AdapterStargate implements IPeripheralAdapter {
 
 	@OnTick
 	@LuaCallable(description = "Connects the stargate to the supplied address")
-	public void connect(IComputerAccess computer, TileEntity tile,
+	public void connect(TileEntity tile,
 			@Arg(name = "targetAddress", type = LuaType.STRING, description = "the address of the gate to connect to") String targetAddress) {
 		// make sure the gate is built
 		checkGateComplete(tile);
@@ -45,7 +43,7 @@ public class AdapterStargate implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(returnType = LuaType.STRING, description = "Gets state of the stargate")
-	public String getState(IComputerAccess computer, TileEntity tile) {
+	public String getState(TileEntity tile) {
 		checkGateComplete(tile);
 
 		Field field = ReflectionHelper.getField(STARGATE_TILE_CLASS, "state");
@@ -57,7 +55,7 @@ public class AdapterStargate implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(returnType = LuaType.NUMBER, description = "Gets the number of locked chevrons")
-	public int getLockedChevronCount(IComputerAccess computer, TileEntity tile) {
+	public int getLockedChevronCount(TileEntity tile) {
 		checkGateComplete(tile);
 		Field field = ReflectionHelper.getField(STARGATE_TILE_CLASS, "numEngagedChevrons");
 		try {
@@ -68,7 +66,7 @@ public class AdapterStargate implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(returnType = LuaType.NUMBER, description = "Gets the amount of buffered fuel")
-	public int getFuelLevel(IComputerAccess computer, TileEntity tile) {
+	public int getFuelLevel(TileEntity tile) {
 		checkGateComplete(tile);
 		Field field = ReflectionHelper.getField(STARGATE_TILE_CLASS, "fuelBuffer");
 		try {
@@ -79,7 +77,7 @@ public class AdapterStargate implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(returnType = LuaType.NUMBER, description = "Gets maximum amount of buffered fuel")
-	public int getMaxFuelLevel(IComputerAccess computer, TileEntity tile) {
+	public int getMaxFuelLevel(TileEntity tile) {
 		checkGateComplete(tile);
 		Field field = ReflectionHelper.getField(STARGATE_TILE_CLASS, "maxFuelBuffer");
 		try {
@@ -90,7 +88,7 @@ public class AdapterStargate implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(returnType = LuaType.NUMBER, description = "Is the stargate connected to a controller")
-	public boolean isDHDConnected(IComputerAccess computer, TileEntity tile) {
+	public boolean isDHDConnected(TileEntity tile) {
 		checkGateComplete(tile);
 		Field field = ReflectionHelper.getField(STARGATE_TILE_CLASS, "isLinkedToController");
 		try {
@@ -101,7 +99,7 @@ public class AdapterStargate implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(returnType = LuaType.VOID, description = "Disconnects the stargate")
-	public void disconnect(IComputerAccess computer, TileEntity tile) {
+	public void disconnect(TileEntity tile) {
 		checkGateComplete(tile);
 
 		Object connectedLocation = ReflectionHelper.getProperty(STARGATE_TILE_CLASS, tile, new String[] { "connectedLocation" });
@@ -112,7 +110,7 @@ public class AdapterStargate implements IPeripheralAdapter {
 
 	@LuaMethod(returnType = LuaType.BOOLEAN, description = "Whether or not the supplied address is a valid address",
 			args = { @Arg(type = LuaType.STRING, description = "the address of the gate to validate") })
-	public boolean isValidAddress(IComputerAccess computer, TileEntity tile, String address) {
+	public boolean isValidAddress(TileEntity tile, String address) {
 		try {
 			validateAddress(tile, address.toUpperCase());
 			return true;
@@ -122,37 +120,37 @@ public class AdapterStargate implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(returnType = LuaType.BOOLEAN, description = "Whether or not the stargate currently has a connection")
-	public boolean isConnected(IComputerAccess computer, TileEntity tile) {
+	public boolean isConnected(TileEntity tile) {
 		checkGateComplete(tile);
 		return (Boolean)ReflectionHelper.call(tile, "isConnected");
 	}
 
 	@LuaMethod(returnType = LuaType.BOOLEAN, description = "Whether or not the stargate created the connection")
-	public boolean isInitiator(IComputerAccess computer, TileEntity tile) {
+	public boolean isInitiator(TileEntity tile) {
 		checkGateComplete(tile);
 		return (Boolean)ReflectionHelper.getProperty(STARGATE_TILE_CLASS, tile, new String[] { "isInitiator" });
 	}
 
 	@LuaMethod(returnType = LuaType.BOOLEAN, description = "Whether or not the connection is travelable from this side")
-	public boolean canTravelFromThisEnd(IComputerAccess computer, TileEntity tile) {
+	public boolean canTravelFromThisEnd(TileEntity tile) {
 		checkGateComplete(tile);
 		return (Boolean)ReflectionHelper.call(tile, "canTravelFromThisEnd");
 	}
 
 	@LuaMethod(returnType = LuaType.STRING, description = "The address of the stargate the connection is linked")
-	public String getDialledAddress(IComputerAccess computer, TileEntity tile) {
+	public String getDialledAddress(TileEntity tile) {
 		checkGateComplete(tile);
 		return (String)ReflectionHelper.getProperty(STARGATE_TILE_CLASS, tile, new String[] { "dialledAddress" });
 	}
 
 	@LuaMethod(returnType = LuaType.STRING, description = "The address of the this stargate")
-	public String getHomeAddress(IComputerAccess computer, TileEntity tile) {
+	public String getHomeAddress(TileEntity tile) {
 		checkGateComplete(tile);
 		return (String)ReflectionHelper.call(tile, "findHomeAddress");
 	}
 
 	@LuaMethod(returnType = LuaType.BOOLEAN, description = "Whether or not the Stargate is completed")
-	public boolean isCompleteGate(IComputerAccess computer, TileEntity tile) {
+	public boolean isCompleteGate(TileEntity tile) {
 		try {
 			checkGateComplete(tile);
 			return true;

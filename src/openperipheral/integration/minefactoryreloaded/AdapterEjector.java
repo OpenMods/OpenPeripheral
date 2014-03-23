@@ -2,7 +2,6 @@ package openperipheral.integration.minefactoryreloaded;
 
 import openmods.utils.ReflectionHelper;
 import openperipheral.api.*;
-import dan200.computer.api.IComputerAccess;
 
 public class AdapterEjector implements IPeripheralAdapter {
 
@@ -16,7 +15,7 @@ public class AdapterEjector implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(description = "Is whitelist enabled?", returnType = LuaType.BOOLEAN)
-	public boolean getIsWhitelist(IComputerAccess computer, Object tileEntityEjector) {
+	public boolean getIsWhitelist(Object tileEntityEjector) {
 		return ReflectionHelper.call(tileEntityEjector, "getIsWhitelist");
 	}
 
@@ -24,12 +23,12 @@ public class AdapterEjector implements IPeripheralAdapter {
 			args = {
 					@Arg(name = "isWhitelist", type = LuaType.BOOLEAN, description = "boolean: Whitelist Only?")
 			})
-	public void setIsWhitelist(IComputerAccess computer, Object tileEntityEjector, boolean isWhitelist) {
+	public void setIsWhitelist(Object tileEntityEjector, boolean isWhitelist) {
 		ReflectionHelper.call(tileEntityEjector, "setIsWhitelist", ReflectionHelper.primitive(isWhitelist));
 	}
 
 	@LuaMethod(description = "Is NBT Match enabled?", returnType = LuaType.BOOLEAN)
-	public boolean getMatchNBT(IComputerAccess computer, Object tileEntityEjector) {
+	public boolean getMatchNBT(Object tileEntityEjector) {
 		return ReflectionHelper.call(tileEntityEjector, "getIsNBTMatch");
 	}
 
@@ -37,12 +36,12 @@ public class AdapterEjector implements IPeripheralAdapter {
 			args = {
 					@Arg(name = "matchNBT", type = LuaType.BOOLEAN, description = "boolean: Match NBT?")
 			})
-	public void setMatchNBT(IComputerAccess computer, Object tileEntityEjector, boolean matchNBT) {
+	public void setMatchNBT(Object tileEntityEjector, boolean matchNBT) {
 		ReflectionHelper.call(tileEntityEjector, "setIsNBTMatch", ReflectionHelper.primitive(matchNBT));
 	}
 
 	@LuaMethod(description = "Is Match Meta enabled?", returnType = LuaType.BOOLEAN)
-	public boolean getMatchMeta(IComputerAccess computer, Object tileEntityEjector) {
+	public boolean getMatchMeta(Object tileEntityEjector) {
 		// getIsIDMatch returns the boolean value of _ignoreDamage, so if it is
 		// true
 		// then getIsIDMatch returns false. Odd naming convention handled here
@@ -56,7 +55,7 @@ public class AdapterEjector implements IPeripheralAdapter {
 			args = {
 					@Arg(name = "matchMeta", type = LuaType.BOOLEAN, description = "boolean: Match NBT?")
 			})
-	public void setMatchMeta(IComputerAccess computer, Object tileEntityEjector, boolean matchMeta) {
+	public void setMatchMeta(Object tileEntityEjector, boolean matchMeta) {
 		ReflectionHelper.call(tileEntityEjector, "setIsIDMatch", ReflectionHelper.primitive(!matchMeta));
 	}
 

@@ -8,14 +8,15 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import openmods.utils.ReflectionHelper;
-import openperipheral.api.*;
+import openperipheral.api.IPeripheralAdapter;
+import openperipheral.api.LuaMethod;
+import openperipheral.api.LuaType;
 import openperipheral.util.FieldAccessHelpers;
 
 /**
  * @author Katrina
  * 
  */
-@Prefixed("target")
 public class AdapterArcaneBore implements IPeripheralAdapter {
 
 	private static final Class<?> TILE_ARCANE_BORE = ReflectionHelper.getClass("thaumcraft.common.tiles.TileArcaneBore");

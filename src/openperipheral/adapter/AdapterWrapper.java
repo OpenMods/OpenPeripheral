@@ -17,9 +17,17 @@ import com.google.common.base.Throwables;
 import com.google.common.collect.*;
 
 public abstract class AdapterWrapper<E extends IMethodExecutor> implements IMethodsList<E> {
-	protected static boolean isFreeform(AnnotatedElement element, boolean defaultValue) {
+
+	private static boolean isFreeform(AnnotatedElement element, boolean defaultValue) {
 		Freeform freeform = element.getAnnotation(Freeform.class);
 		return freeform != null? freeform.value() : defaultValue;
+	}
+
+	private static String[] getPrefixes(AnnotatedElement element, String[] defaultValue) {
+		if (element == null) return defaultValue; // possible for net.minecraft
+													// classes
+		Prefixed prefixed = element.getAnnotation(Prefixed.class);
+		return (prefixed != null)? prefixed.value() : defaultValue;
 	}
 
 	protected final List<E> methods;
@@ -49,9 +57,9 @@ public abstract class AdapterWrapper<E extends IMethodExecutor> implements IMeth
 
 	protected abstract List<E> buildMethodList();
 
-	protected void namesFromAnnotation(Prefixed prefixes, MethodDeclaration decl) {
+	protected void namesFromAnnotation(String[] prefixes, MethodDeclaration decl) {
 		int i = 0;
-		for (String name : prefixes.value())
+		for (String name : prefixes)
 			decl.nameJavaArg(i++, name);
 	}
 
@@ -114,7 +122,9 @@ public abstract class AdapterWrapper<E extends IMethodExecutor> implements IMeth
 	protected List<E> buildMethodList(boolean defaultIsFreeform, MethodExecutorFactory<E> factory) {
 		List<E> result = Lists.newArrayList();
 		final boolean clsIsFreeform = isFreeform(adapterClass, defaultIsFreeform);
-		final Prefixed classPrefixes = adapterClass.getAnnotation(Prefixed.class);
+
+		final String[] packagePrefixes = getPrefixes(adapterClass.getPackage(), null);
+		final String[] classPrefixes = getPrefixes(adapterClass, packagePrefixes);
 
 		Method[] clsMethods;
 		try {
@@ -142,12 +152,11 @@ public abstract class AdapterWrapper<E extends IMethodExecutor> implements IMeth
 
 			E exec = factory.createExecutor(method, decl, ImmutableMap.copyOf(allProxyArgs));
 
-			final Prefixed methodPrefixes = method.getAnnotation(Prefixed.class);
-			final Prefixed actualPrefixes = methodPrefixes != null? methodPrefixes : classPrefixes;
 			if (!isFreeform(method, clsIsFreeform)) {
-				if (actualPrefixes == null) nameDefaultParameters(decl);
-				else namesFromAnnotation(actualPrefixes, decl);
-			} else Preconditions.checkState(methodPrefixes == null, "Method '%s' has mutually exclusive annotations @Prefixed and @Freeform");
+				final String[] methodPrefixes = getPrefixes(method, classPrefixes);
+				if (methodPrefixes != null) namesFromAnnotation(methodPrefixes, decl);
+				else nameDefaultParameters(decl);
+			}
 
 			validateArgTypes(decl);
 			for (String proxyArgName : allProxyArgs.keySet())

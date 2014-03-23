@@ -4,7 +4,6 @@ import java.util.Map;
 
 import openmods.utils.ReflectionHelper;
 import openperipheral.api.*;
-import dan200.computer.api.IComputerAccess;
 
 public class AdapterHarvester implements IPeripheralAdapter {
 
@@ -18,12 +17,12 @@ public class AdapterHarvester implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(description = "Get value of shear leaves", returnType = LuaType.BOOLEAN)
-	public Boolean getShearLeaves(IComputerAccess computer, Object tileEntityHarvester) {
+	public Boolean getShearLeaves(Object tileEntityHarvester) {
 		return getSettings(tileEntityHarvester).get("silkTouch");
 	}
 
 	@LuaMethod(description = "Get value of harvest small mushrooms", returnType = LuaType.BOOLEAN)
-	public Boolean getHarvestShrooms(IComputerAccess computer, Object tileEntityHarvester) {
+	public Boolean getHarvestShrooms(Object tileEntityHarvester) {
 		return getSettings(tileEntityHarvester).get("harvestSmallMushrooms");
 	}
 
@@ -31,7 +30,7 @@ public class AdapterHarvester implements IPeripheralAdapter {
 			args = {
 					@Arg(name = "shearLeaves", type = LuaType.BOOLEAN, description = "boolean: Shear leaves?")
 			})
-	public void setShearLeaves(IComputerAccess computer, Object tileEntityHarvester, boolean shearLeaves) {
+	public void setShearLeaves(Object tileEntityHarvester, boolean shearLeaves) {
 		getSettings(tileEntityHarvester).put("silkTouch", shearLeaves);
 	}
 
@@ -39,7 +38,7 @@ public class AdapterHarvester implements IPeripheralAdapter {
 			args = {
 					@Arg(name = "harvestShrooms", type = LuaType.BOOLEAN, description = "boolean: Harvest shrooms?")
 			})
-	public void setHarvestShrooms(IComputerAccess computer, Object tileEntityHarvester, boolean harvestShrooms) {
+	public void setHarvestShrooms(Object tileEntityHarvester, boolean harvestShrooms) {
 		getSettings(tileEntityHarvester).put("harvestSmallMushrooms", harvestShrooms);
 	}
 

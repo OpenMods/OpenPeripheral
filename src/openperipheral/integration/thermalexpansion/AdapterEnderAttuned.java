@@ -2,7 +2,6 @@ package openperipheral.integration.thermalexpansion;
 
 import openperipheral.api.*;
 import cofh.api.transport.IEnderAttuned;
-import dan200.computer.api.IComputerAccess;
 
 public class AdapterEnderAttuned implements IPeripheralAdapter {
 
@@ -12,12 +11,12 @@ public class AdapterEnderAttuned implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(description = "Get the owner of the machine.", returnType = LuaType.STRING)
-	public String getOwner(IComputerAccess computer, IEnderAttuned tileEntity) {
+	public String getOwner(IEnderAttuned tileEntity) {
 		return tileEntity.getOwnerString();
 	}
 
 	@LuaMethod(description = "Get the active frequency of the machine.", returnType = LuaType.NUMBER)
-	public int getFrequency(IComputerAccess computer, IEnderAttuned tileEntity) {
+	public int getFrequency(IEnderAttuned tileEntity) {
 		return tileEntity.getFrequency();
 	}
 
@@ -25,37 +24,37 @@ public class AdapterEnderAttuned implements IPeripheralAdapter {
 			args = {
 					@Arg(name = "frequency", type = LuaType.NUMBER, description = "the frequency you want to set to.")
 			})
-	public boolean setFrequency(IComputerAccess computer, IEnderAttuned tileEntity, int frequency) {
+	public boolean setFrequency(IEnderAttuned tileEntity, int frequency) {
 		return tileEntity.setFrequency(frequency);
 	}
 
 	@LuaMethod(description = "Can the machine output items via the ender net.", returnType = LuaType.BOOLEAN)
-	public boolean canSendItems(IComputerAccess computer, IEnderAttuned tileEntity) {
+	public boolean canSendItems(IEnderAttuned tileEntity) {
 		return tileEntity.canSendItems();
 	}
 
 	@LuaMethod(description = "Can the machine output fluids via the ender net.", returnType = LuaType.BOOLEAN)
-	public boolean canSendFluid(IComputerAccess computer, IEnderAttuned tileEntity) {
+	public boolean canSendFluid(IEnderAttuned tileEntity) {
 		return tileEntity.canSendFluid();
 	}
 
 	@LuaMethod(description = "Can the machine output energy via the ender net.", returnType = LuaType.BOOLEAN)
-	public boolean canSendEnergy(IComputerAccess computer, IEnderAttuned tileEntity) {
+	public boolean canSendEnergy(IEnderAttuned tileEntity) {
 		return tileEntity.canSendEnergy();
 	}
 
 	@LuaMethod(description = "Can the machine input items via the ender net.", returnType = LuaType.BOOLEAN)
-	public boolean canReceiveItems(IComputerAccess computer, IEnderAttuned tileEntity) {
+	public boolean canReceiveItems(IEnderAttuned tileEntity) {
 		return tileEntity.canReceiveItems();
 	}
 
 	@LuaMethod(description = "Can the machine input fluids via the ender net.", returnType = LuaType.BOOLEAN)
-	public boolean canReceiveFluid(IComputerAccess computer, IEnderAttuned tileEntity) {
+	public boolean canReceiveFluid(IEnderAttuned tileEntity) {
 		return tileEntity.canReceiveFluid();
 	}
 
 	@LuaMethod(description = "Can the machine input energy via the ender net.", returnType = LuaType.BOOLEAN)
-	public boolean canReceiveEnergy(IComputerAccess computer, IEnderAttuned tileEntity) {
+	public boolean canReceiveEnergy(IEnderAttuned tileEntity) {
 		return tileEntity.canReceiveEnergy();
 	}
 }

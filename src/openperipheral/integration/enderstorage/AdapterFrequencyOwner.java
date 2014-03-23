@@ -8,8 +8,6 @@ import openperipheral.api.*;
 
 import com.google.common.base.Preconditions;
 
-import dan200.computer.api.IComputerAccess;
-
 public class AdapterFrequencyOwner implements IPeripheralAdapter {
 	private static final Class<?> CLAZZ = ReflectionHelper.getClass("codechicken.enderstorage.common.TileFrequencyOwner");
 
@@ -21,7 +19,7 @@ public class AdapterFrequencyOwner implements IPeripheralAdapter {
 	@Alias("getColours")
 	@LuaCallable(returnTypes = { LuaType.NUMBER, LuaType.NUMBER, LuaType.NUMBER },
 			description = "Get the colours active on this chest or tank")
-	public IMultiReturn getColors(IComputerAccess computer, TileEntity frequencyOwner) {
+	public IMultiReturn getColors(TileEntity frequencyOwner) {
 		// get the current frequency
 		int frequency = getFreq(frequencyOwner);
 		// return a map of the frequency in ComputerCraft colour format
@@ -33,7 +31,7 @@ public class AdapterFrequencyOwner implements IPeripheralAdapter {
 
 	@LuaCallable(returnTypes = { LuaType.STRING, LuaType.STRING, LuaType.STRING },
 			description = "Get the colours active on this chest or tank")
-	public IMultiReturn getColorNames(IComputerAccess computer, TileEntity frequencyOwner) {
+	public IMultiReturn getColorNames(TileEntity frequencyOwner) {
 		int frequency = getFreq(frequencyOwner);
 		return OpenPeripheralAPI.wrap(
 				colorToName(frequency >> 8 & 0xF),
@@ -47,7 +45,7 @@ public class AdapterFrequencyOwner implements IPeripheralAdapter {
 			@Arg(name = "color_middle", type = LuaType.NUMBER, description = "The second color"),
 			@Arg(name = "color_right", type = LuaType.NUMBER, description = "The third color")
 	})
-	public void setColors(IComputerAccess computer, TileEntity frequencyOwner, int colorLeft, int colorMiddle, int colorRight) {
+	public void setColors(TileEntity frequencyOwner, int colorLeft, int colorMiddle, int colorRight) {
 		// transform the ComputerCraft colours (2^n) into the range 0-15 And
 		// validate they're within this range
 		int high = parseComputerCraftColor(colorLeft);
@@ -58,7 +56,6 @@ public class AdapterFrequencyOwner implements IPeripheralAdapter {
 		setFreq(frequencyOwner, frequency);
 	}
 
-	@Prefixed("target")
 	@LuaCallable(description = "Set the frequency of this chest or tank")
 	public void setColorNames(TileEntity frequencyOwner,
 			@Arg(name = "color_left", type = LuaType.STRING) String colorLeft,
@@ -76,14 +73,14 @@ public class AdapterFrequencyOwner implements IPeripheralAdapter {
 
 	@LuaMethod(
 			returnType = LuaType.TABLE, onTick = false, description = "Get the frequency of this chest or tank")
-	public int getFrequency(IComputerAccess computer, TileEntity frequencyOwner) {
+	public int getFrequency(TileEntity frequencyOwner) {
 		return getFreq(frequencyOwner);
 	}
 
 	@LuaMethod(returnType = LuaType.VOID, onTick = false, description = "Set the frequency of this chest or tank",
 			args = {
 					@Arg(name = "frequency", type = LuaType.NUMBER, description = "A single color that represents all three colours on this chest or tank") })
-	public void setFrequency(IComputerAccess computer, TileEntity frequencyOwner, int frequency) {
+	public void setFrequency(TileEntity frequencyOwner, int frequency) {
 		setFreq(frequencyOwner, frequency);
 	}
 

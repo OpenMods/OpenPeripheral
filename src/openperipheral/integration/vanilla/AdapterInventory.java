@@ -15,7 +15,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
 @OnTick
-@Prefixed("target")
 public class AdapterInventory implements IPeripheralAdapter {
 
 	private static final int ANY_SLOT = -1;

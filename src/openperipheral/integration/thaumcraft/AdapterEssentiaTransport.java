@@ -5,7 +5,6 @@ import openperipheral.api.*;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.IEssentiaTransport;
 
-@Prefixed("target")
 public class AdapterEssentiaTransport implements IPeripheralAdapter {
 
 	@Override

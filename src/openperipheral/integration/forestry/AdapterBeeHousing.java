@@ -8,7 +8,6 @@ import openperipheral.api.*;
 
 import com.google.common.collect.Maps;
 
-import dan200.computer.api.IComputerAccess;
 import forestry.api.apiculture.IBeeHousing;
 import forestry.api.genetics.*;
 
@@ -21,19 +20,19 @@ public class AdapterBeeHousing implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(returnType = LuaType.BOOLEAN, description = "Can the bees breed?")
-	public boolean canBreed(IComputerAccess computer, IBeeHousing beeHousing) {
+	public boolean canBreed(IBeeHousing beeHousing) {
 		return beeHousing.canBreed();
 	}
 
 	@LuaMethod(returnType = LuaType.TABLE, description = "Get the drone")
-	public IIndividual getDrone(IComputerAccess computer, IBeeHousing beeHousing) {
+	public IIndividual getDrone(IBeeHousing beeHousing) {
 		ItemStack drone = beeHousing.getDrone();
 		if (drone != null) { return AlleleManager.alleleRegistry.getIndividual(drone); }
 		return null;
 	}
 
 	@LuaMethod(returnType = LuaType.TABLE, description = "Get the queen")
-	public IIndividual getQueen(IComputerAccess computer, IBeeHousing beeHousing) {
+	public IIndividual getQueen(IBeeHousing beeHousing) {
 		ItemStack queen = beeHousing.getQueen();
 		if (queen != null) { return AlleleManager.alleleRegistry.getIndividual(queen); }
 		return null;
@@ -49,7 +48,7 @@ public class AdapterBeeHousing implements IPeripheralAdapter {
 	 * @return
 	 */
 	@LuaMethod(returnType = LuaType.TABLE, description = "Get the full breeding list thingy. Experimental!")
-	public Map<Integer, Map<String, Object>> getBeeBreedingData(IComputerAccess computer, IBeeHousing housing) {
+	public Map<Integer, Map<String, Object>> getBeeBreedingData(IBeeHousing housing) {
 		ISpeciesRoot beeRoot = AlleleManager.alleleRegistry.getSpeciesRoot("rootBees");
 		if (beeRoot == null) { return null; }
 		Map<Integer, Map<String, Object>> result = Maps.newHashMap();
@@ -81,7 +80,7 @@ public class AdapterBeeHousing implements IPeripheralAdapter {
 			args = {
 					@Arg(name = "childType", description = "The type of bee you want the parents for", type = LuaType.STRING)
 			})
-	public Map<Integer, Map<String, Object>> getBeeParents(IComputerAccess computer, IBeeHousing housing, String childType) {
+	public Map<Integer, Map<String, Object>> getBeeParents(IBeeHousing housing, String childType) {
 		ISpeciesRoot beeRoot = AlleleManager.alleleRegistry.getSpeciesRoot("rootBees");
 		if (beeRoot == null) { return null; }
 		int i = 1;

@@ -2,7 +2,6 @@ package openperipheral.integration.minefactoryreloaded;
 
 import openmods.utils.ReflectionHelper;
 import openperipheral.api.*;
-import dan200.computer.api.IComputerAccess;
 
 public class AdapterChunkLoader implements IPeripheralAdapter {
 
@@ -16,7 +15,7 @@ public class AdapterChunkLoader implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(description = "Get chunk loader radius", returnType = LuaType.NUMBER)
-	public short getRadius(IComputerAccess computer, Object tileEntityChunkLoader) {
+	public short getRadius(Object tileEntityChunkLoader) {
 		return ReflectionHelper.call(tileEntityChunkLoader, "getRadius");
 	}
 
@@ -24,7 +23,7 @@ public class AdapterChunkLoader implements IPeripheralAdapter {
 			args = {
 					@Arg(name = "radius", type = LuaType.NUMBER, description = "number: radius, range 0 - 49")
 			})
-	public void setRadius(IComputerAccess computer, Object tileEntityChunkLoader, short radius) {
+	public void setRadius(Object tileEntityChunkLoader, short radius) {
 		ReflectionHelper.call(tileEntityChunkLoader, "setRadius", ReflectionHelper.primitive(radius));
 	}
 

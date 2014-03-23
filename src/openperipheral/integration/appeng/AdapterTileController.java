@@ -8,7 +8,6 @@ import openmods.utils.ReflectionHelper;
 import openperipheral.api.IPeripheralAdapter;
 import openperipheral.api.LuaMethod;
 import openperipheral.api.LuaType;
-import dan200.computer.api.IComputerAccess;
 
 public class AdapterTileController implements IPeripheralAdapter {
 	private static final Class<?> CLAZZ = ReflectionHelper.getClass("appeng.me.tile.TileController");
@@ -19,7 +18,7 @@ public class AdapterTileController implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(description = "Get the current job list", returnType = LuaType.TABLE)
-	public List<ItemStack> getJobList(IComputerAccess computer, TileEntity controller) {
+	public List<ItemStack> getJobList(TileEntity controller) {
 		return ReflectionHelper.call(controller, "getJobList");
 	}
 

@@ -4,7 +4,6 @@ import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import openperipheral.api.*;
-import dan200.computer.api.IComputerAccess;
 
 public class AdapterFluidHandler implements IPeripheralAdapter {
 
@@ -17,7 +16,7 @@ public class AdapterFluidHandler implements IPeripheralAdapter {
 			args = {
 					@Arg(type = LuaType.STRING, name = "direction", description = "The internal direction of the tank. If you're not sure, use 'unknown' (north, south, east, west, up, down or unknown)")
 			})
-	public FluidTankInfo[] getTankInfo(IComputerAccess computer, IFluidHandler fluidHandler, ForgeDirection direction) {
+	public FluidTankInfo[] getTankInfo(IFluidHandler fluidHandler, ForgeDirection direction) {
 		return fluidHandler.getTankInfo(direction);
 	}
 

@@ -3,7 +3,6 @@ package openperipheral.integration.vanilla;
 import net.minecraft.tileentity.TileEntityBrewingStand;
 import openperipheral.api.IPeripheralAdapter;
 import openperipheral.api.LuaMethod;
-import dan200.computer.api.IComputerAccess;
 
 public class AdapterBrewingStand implements IPeripheralAdapter {
 
@@ -13,7 +12,7 @@ public class AdapterBrewingStand implements IPeripheralAdapter {
 	}
 
 	@LuaMethod
-	public int getBrewTime(IComputerAccess computer, TileEntityBrewingStand brewingStand) {
+	public int getBrewTime(TileEntityBrewingStand brewingStand) {
 		return brewingStand.getBrewTime();
 	}
 

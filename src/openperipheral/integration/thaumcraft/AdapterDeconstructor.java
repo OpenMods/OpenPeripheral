@@ -7,7 +7,9 @@ import java.lang.reflect.Field;
 
 import net.minecraft.inventory.IInventory;
 import openmods.utils.ReflectionHelper;
-import openperipheral.api.*;
+import openperipheral.api.IPeripheralAdapter;
+import openperipheral.api.LuaMethod;
+import openperipheral.api.LuaType;
 import openperipheral.util.FieldAccessHelpers;
 import thaumcraft.api.aspects.Aspect;
 
@@ -15,7 +17,6 @@ import thaumcraft.api.aspects.Aspect;
  * @author Katrina
  * 
  */
-@Prefixed("target")
 public class AdapterDeconstructor implements IPeripheralAdapter {
 	private static final Class<?> TILE_DECONSTRUCTOR = ReflectionHelper.getClass("thaumcraft.common.tiles.TileDeconstructionTable");
 

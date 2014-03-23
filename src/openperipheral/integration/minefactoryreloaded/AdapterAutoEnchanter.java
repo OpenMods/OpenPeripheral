@@ -2,7 +2,6 @@ package openperipheral.integration.minefactoryreloaded;
 
 import openmods.utils.ReflectionHelper;
 import openperipheral.api.*;
-import dan200.computer.api.IComputerAccess;
 
 public class AdapterAutoEnchanter implements IPeripheralAdapter {
 	// TileEntityAutoEnchanter
@@ -16,7 +15,7 @@ public class AdapterAutoEnchanter implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(description = "Get target level of enchantment", returnType = LuaType.NUMBER)
-	public int getTargetLevel(IComputerAccess computer, Object tileEntityAutoEnchanter) {
+	public int getTargetLevel(Object tileEntityAutoEnchanter) {
 		return ReflectionHelper.call(tileEntityAutoEnchanter, "getTargetLevel");
 	}
 
@@ -24,7 +23,7 @@ public class AdapterAutoEnchanter implements IPeripheralAdapter {
 			args = {
 					@Arg(name = "level", type = LuaType.NUMBER, description = "number: Target enchantment level")
 			})
-	public void setTargetLevel(IComputerAccess computer, Object tileEntityAutoEnchanter, int level) {
+	public void setTargetLevel(Object tileEntityAutoEnchanter, int level) {
 		ReflectionHelper.call(tileEntityAutoEnchanter, "setTargetLevel", ReflectionHelper.primitive(level));
 	}
 

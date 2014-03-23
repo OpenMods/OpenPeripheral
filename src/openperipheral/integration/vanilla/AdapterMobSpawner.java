@@ -4,7 +4,6 @@ import net.minecraft.tileentity.TileEntityMobSpawner;
 import openperipheral.api.IPeripheralAdapter;
 import openperipheral.api.LuaMethod;
 import openperipheral.api.LuaType;
-import dan200.computer.api.IComputerAccess;
 
 public class AdapterMobSpawner implements IPeripheralAdapter {
 
@@ -14,7 +13,7 @@ public class AdapterMobSpawner implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(returnType = LuaType.STRING, description = "The name of the mob that spawns from the spawner")
-	public String getSpawningMobName(IComputerAccess computer, TileEntityMobSpawner spawner) {
+	public String getSpawningMobName(TileEntityMobSpawner spawner) {
 		return spawner.getSpawnerLogic().getEntityNameToSpawn();
 	}
 }

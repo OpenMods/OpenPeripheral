@@ -7,7 +7,6 @@ import openmods.utils.ReflectionHelper;
 import openperipheral.api.IPeripheralAdapter;
 import openperipheral.api.LuaMethod;
 import openperipheral.api.LuaType;
-import dan200.computer.api.IComputerAccess;
 
 public class AdapterTileSteamTurbine implements IPeripheralAdapter {
 
@@ -19,7 +18,7 @@ public class AdapterTileSteamTurbine implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(description = "Get the undamagedness of the rotor, from 0% (dead) to 100% (brand new)", returnType = LuaType.NUMBER)
-	public Integer getTurbineRotorStatus(IComputerAccess computer, Object tileSteamTurbine) {
+	public Integer getTurbineRotorStatus(Object tileSteamTurbine) {
 		IInventory inventory = ReflectionHelper.call(tileSteamTurbine, "getInventory");
 
 		if (inventory != null && inventory.getSizeInventory() >= 1) {
@@ -33,7 +32,7 @@ public class AdapterTileSteamTurbine implements IPeripheralAdapter {
 	}
 
 	@LuaMethod(description = "Get power output percentage", returnType = LuaType.NUMBER)
-	public float getTurbineOutput(IComputerAccess computer, Object tileSteamTurbine) {
-		return ReflectionHelper.<Float> call(tileSteamTurbine, "getOutput");
+	public float getTurbineOutput(Object tileSteamTurbine) {
+		return ReflectionHelper.call(tileSteamTurbine, "getOutput");
 	}
 }

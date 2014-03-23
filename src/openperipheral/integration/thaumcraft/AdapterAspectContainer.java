@@ -14,7 +14,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 @OnTick
-@Prefixed("target")
 public class AdapterAspectContainer implements IPeripheralAdapter {
 	@Override
 	public Class<?> getTargetClass() {

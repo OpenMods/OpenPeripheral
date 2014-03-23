@@ -6,7 +6,6 @@ import openmods.utils.ReflectionHelper;
 import openperipheral.api.*;
 import openperipheral.util.FieldAccessHelpers;
 
-@Prefixed("target")
 public class AdapterArcaneEar implements IPeripheralAdapter {
 	private static final Class<?> TILE_ARCANE_EAR = ReflectionHelper.getClass("thaumcraft.common.tiles.TileSensor");
 
