@@ -7,9 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeDirection;
 import openmods.utils.InventoryUtils;
 import openperipheral.api.*;
-import appeng.api.IAEItemStack;
-import appeng.api.IItemList;
-import appeng.api.Util;
+import appeng.api.*;
 import appeng.api.exceptions.AppEngTileMissingException;
 import appeng.api.me.tiles.IGridTileEntity;
 import appeng.api.me.util.IGridInterface;
@@ -47,26 +45,27 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 			args = {
 					@Arg(type = LuaType.TABLE, name = "stack", description = "A table representing the item stack"),
 					@Arg(type = LuaType.STRING, name = "direction", description = "The direction of the chest relative to the wrapped peripheral") })
-	public int extractItem(IGridTileEntity te, ItemStack stack, ForgeDirection direction) {
-		Preconditions.checkState(te instanceof IInventory, "Block is not inventory");
+	public long extractItem(IGridTileEntity te, ItemStack stack, ForgeDirection direction) {
 		IMEInventoryHandler cell = getCell(te);
 
+		WorldCoord coord = te.getLocation();
+		IInventory targetInventory = InventoryUtils.getInventory(te.getWorld(), coord.x, coord.y, coord.z, direction);
+		Preconditions.checkNotNull(targetInventory, "Target inventory does not exists");
+
 		IAEItemStack request = Util.createItemStack(stack);
-		Preconditions.checkState(request != null && request.getItem() != null, "Invalid stack");
+		Preconditions.checkState(request != null && request.getItem() != null, "Invalid item");
 
 		IAEItemStack returned = cell.extractItems(request);
 		Preconditions.checkState(returned != null, "No item found");
 
 		int requestAmount = stack.stackSize;
 
-		IInventory inventory = (IInventory)te;
-
 		ItemStack returnedStack = returned.getItemStack();
-		InventoryUtils.insertItemIntoInventory(inventory, returnedStack, direction.getOpposite(), -1);
+		InventoryUtils.insertItemIntoInventory(targetInventory, returnedStack, direction.getOpposite(), -1);
 		IAEItemStack giveBack = Util.createItemStack(returnedStack.copy());
 		cell.addItems(giveBack);
 
-		return requestAmount - (int)giveBack.getStackSize();
+		return requestAmount - giveBack.getStackSize();
 	}
 
 	@LuaMethod(description = "Insert an item back into the system", returnType = LuaType.NUMBER,
@@ -74,40 +73,31 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 					@Arg(type = LuaType.NUMBER, name = "slot", description = "The slot you wish to send"),
 					@Arg(type = LuaType.NUMBER, name = "amount", description = "The amount you want to send"),
 					@Arg(type = LuaType.STRING, name = "direction", description = "The direction of the chest relative to the wrapped peripheral") })
-	public int insertItem(IGridTileEntity te, int slot, int amount, ForgeDirection direction) {
-		Preconditions.checkState(te instanceof IInventory, "Block is not inventory");
-		IInventory inventory = (IInventory)te;
-
+	public long insertItem(IGridTileEntity te, int slot, int amount, ForgeDirection direction) {
 		IMEInventoryHandler cell = getCell(te);
 
+		WorldCoord coord = te.getLocation();
+		IInventory targetInventory = InventoryUtils.getInventory(te.getWorld(), coord.x, coord.y, coord.z, direction);
+		Preconditions.checkNotNull(targetInventory, "Target inventory does not exists");
 		slot--;
-		Preconditions.checkArgument(slot >= 0 && slot < inventory.getSizeInventory(), "Slot is out of range");
-		ItemStack stack = inventory.getStackInSlot(slot);
+		Preconditions.checkArgument(slot >= 0 && slot < targetInventory.getSizeInventory(), "Slot is out of range");
+
+		if (amount <= 0) return 0;
+
+		ItemStack stack = targetInventory.getStackInSlot(slot);
 		if (stack == null) { return 0; }
 
 		amount = Math.min(amount, stack.stackSize);
-		amount = Math.max(amount, 0);
 		ItemStack sendStack = stack.copy();
 		sendStack.stackSize = amount;
 		IAEItemStack request = Util.createItemStack(sendStack);
 		IAEItemStack remaining = cell.addItems(request);
 
-		if (remaining == null) {
-			stack.stackSize -= amount;
-			if (stack.stackSize <= 0) {
-				inventory.setInventorySlotContents(slot, null);
-			} else {
-				inventory.setInventorySlotContents(slot, stack);
-			}
-			return amount;
-		}
-		int sent = (int)(amount - remaining.getStackSize());
-		if (sent <= 0) {
-			inventory.setInventorySlotContents(slot, null);
-		} else {
-			stack.stackSize -= sent;
-			inventory.setInventorySlotContents(slot, stack);
-		}
+		final long remainingCount = remaining != null? remaining.getStackSize() : 0;
+		final long sent = amount - remainingCount;
+		stack.stackSize -= sent;
+
+		if (stack.stackSize <= 0) targetInventory.setInventorySlotContents(slot, null);
 		return sent;
 	}
 
