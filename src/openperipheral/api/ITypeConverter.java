@@ -27,7 +27,8 @@ public interface ITypeConverter {
 	 * Convert to a Lua friendly format. You can pass most primitives back,
 	 * Return only types understood by ComputerCraft API (i.e. primitives, String, Maps and LuaObject), otherwise it will be converted to {@code nil} on Lua side
 	 * 
-	 * @param obj either null if you're not handling this object, or a valid object
+	 * @param obj
+	 *            either null if you're not handling this object, or a valid object
 	 * @return converted value or null
 	 */
 	public Object toLua(Object obj);

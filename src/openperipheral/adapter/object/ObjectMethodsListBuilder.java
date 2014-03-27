@@ -1,15 +1,15 @@
 package openperipheral.adapter.object;
 
-import openperipheral.adapter.AdaptedClass;
 import openperipheral.adapter.AdapterManager;
 import openperipheral.adapter.IDescriptable;
+import openperipheral.adapter.composed.ClassMethodsListBuilder;
 import openperipheral.adapter.method.MethodDeclaration;
 import dan200.computer.api.ILuaContext;
 
-public class ObjectAdaptedClass extends AdaptedClass<IObjectMethodExecutor> {
+public class ObjectMethodsListBuilder extends ClassMethodsListBuilder<IObjectMethodExecutor> {
 
-	public ObjectAdaptedClass(AdapterManager<?, IObjectMethodExecutor> manager, Class<?> cls) {
-		super(manager, cls);
+	public ObjectMethodsListBuilder() {
+		super(AdapterManager.objects);
 	}
 
 	@Override

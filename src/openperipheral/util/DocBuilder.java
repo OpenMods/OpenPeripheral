@@ -12,7 +12,10 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import net.minecraft.tileentity.TileEntity;
-import openperipheral.adapter.*;
+import openperipheral.adapter.AdapterManager;
+import openperipheral.adapter.IDescriptable;
+import openperipheral.adapter.IMethodExecutor;
+import openperipheral.adapter.composed.ClassMethodsList;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -67,7 +70,7 @@ public class DocBuilder {
 		result.appendChild(createProperty("class", cls.getName()));
 		result.appendChild(createProperty("simpleName", cls.getSimpleName()));
 
-		AdaptedClass<?> adapted = manager.getAdapterClass(cls);
+		ClassMethodsList<?> adapted = manager.getAdapterClass(cls);
 		for (IMethodExecutor method : adapted.getMethods()) {
 			Element methodDoc = doc.createElement("method");
 			fillDocForMethod(methodDoc, method.getWrappedMethod());

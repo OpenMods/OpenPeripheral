@@ -1,7 +1,7 @@
 package openperipheral.adapter.object;
 
-import openperipheral.adapter.AdaptedClass;
 import openperipheral.adapter.AdapterManager;
+import openperipheral.adapter.composed.ClassMethodsList;
 
 import com.google.common.base.Preconditions;
 
@@ -11,11 +11,11 @@ import dan200.computer.api.ILuaObject;
 public class LuaObjectWrapper {
 	public static ILuaObject wrap(AdapterManager<?, IObjectMethodExecutor> manager, Object target) {
 		Preconditions.checkNotNull(target, "Can't wrap null");
-		AdaptedClass<IObjectMethodExecutor> adapted = manager.getAdapterClass(target.getClass());
+		ClassMethodsList<IObjectMethodExecutor> adapted = manager.getAdapterClass(target.getClass());
 		return wrap(adapted, target);
 	}
 
-	public static ILuaObject wrap(final AdaptedClass<IObjectMethodExecutor> adapted, final Object target) {
+	public static ILuaObject wrap(final ClassMethodsList<IObjectMethodExecutor> adapted, final Object target) {
 		return new ILuaObject() {
 
 			@Override

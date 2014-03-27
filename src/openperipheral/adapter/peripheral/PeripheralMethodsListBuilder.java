@@ -1,17 +1,19 @@
 package openperipheral.adapter.peripheral;
 
-import openperipheral.adapter.AdaptedClass;
 import openperipheral.adapter.AdapterManager;
 import openperipheral.adapter.IDescriptable;
+import openperipheral.adapter.composed.ClassMethodsListBuilder;
 import openperipheral.adapter.method.MethodDeclaration;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.ILuaContext;
 
-public class PeripheralAdaptedClass extends AdaptedClass<IPeripheralMethodExecutor> {
+public class PeripheralMethodsListBuilder extends ClassMethodsListBuilder<IPeripheralMethodExecutor> {
 
-	public PeripheralAdaptedClass(AdapterManager<?, IPeripheralMethodExecutor> manager, Class<?> cls) {
-		super(manager, cls);
+	public PeripheralMethodsListBuilder() {
+		super(AdapterManager.peripherals);
 	}
+
+	public static final String ARG_TARGET = "target";
 
 	@Override
 	public IPeripheralMethodExecutor createDummyWrapper(final Object lister, final MethodDeclaration method) {

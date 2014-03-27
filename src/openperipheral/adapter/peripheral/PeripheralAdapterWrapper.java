@@ -7,7 +7,10 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 import openmods.Log;
-import openperipheral.adapter.*;
+import openperipheral.adapter.AdapterManager;
+import openperipheral.adapter.AdapterWrapper;
+import openperipheral.adapter.IDescriptable;
+import openperipheral.adapter.composed.ClassMethodsList;
 import openperipheral.adapter.method.MethodDeclaration;
 import openperipheral.adapter.method.MethodDeclaration.CallWrap;
 import openperipheral.adapter.object.IObjectMethodExecutor;
@@ -103,7 +106,7 @@ public abstract class PeripheralAdapterWrapper extends AdapterWrapper<IPeriphera
 	private void includeClass(List<IPeripheralMethodExecutor> result, Method targetProvider) {
 		Class<?> target = targetProvider.getReturnType();
 		Preconditions.checkArgument(!target.isPrimitive(), "Method %s is marked with annotation 'Include', but returns primitive type", targetProvider);
-		AdaptedClass<IObjectMethodExecutor> toInclude = AdapterManager.objects.getAdapterClass(target);
+		ClassMethodsList<IObjectMethodExecutor> toInclude = AdapterManager.objects.getAdapterClass(target);
 		for (IObjectMethodExecutor objectExecutor : toInclude.getMethods()) {
 			if (!objectExecutor.isSynthetic()) result.add(adaptObjectExecutor(targetProvider, objectExecutor));
 		}

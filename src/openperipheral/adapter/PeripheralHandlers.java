@@ -5,6 +5,7 @@ import java.util.*;
 import net.minecraft.tileentity.TileEntity;
 import openmods.Log;
 import openperipheral.Config;
+import openperipheral.adapter.composed.ClassMethodsList;
 import openperipheral.adapter.peripheral.HostedPeripheral;
 import openperipheral.adapter.peripheral.IPeripheralMethodExecutor;
 import openperipheral.adapter.peripheral.TickingHostedPeripheral;
@@ -22,7 +23,7 @@ public class PeripheralHandlers {
 	private static final IPeripheralHandler ADAPTER_HANDLER = new CachingPeripheralHandler() {
 		@Override
 		protected IHostedPeripheral createPeripheral(TileEntity tile) {
-			AdaptedClass<IPeripheralMethodExecutor> adapter = AdapterManager.peripherals.adaptClass(tile.getClass());
+			ClassMethodsList<IPeripheralMethodExecutor> adapter = AdapterManager.peripherals.adaptClass(tile.getClass());
 			return new HostedPeripheral(adapter, tile);
 		}
 	};
@@ -30,7 +31,7 @@ public class PeripheralHandlers {
 	private static final IPeripheralHandler ADAPTER_CACHING_HANDLER = new CachingPeripheralHandler() {
 		@Override
 		protected IHostedPeripheral createPeripheral(TileEntity tile) {
-			AdaptedClass<IPeripheralMethodExecutor> adapter = AdapterManager.peripherals.adaptClass(tile.getClass());
+			ClassMethodsList<IPeripheralMethodExecutor> adapter = AdapterManager.peripherals.adaptClass(tile.getClass());
 			return new HostedPeripheral(adapter, tile);
 		}
 	};
@@ -127,7 +128,7 @@ public class PeripheralHandlers {
 	}
 
 	public static IHostedPeripheral createHostedPeripheral(Object target) {
-		AdaptedClass<IPeripheralMethodExecutor> adapter = AdapterManager.peripherals.adaptClass(target.getClass());
+		ClassMethodsList<IPeripheralMethodExecutor> adapter = AdapterManager.peripherals.adaptClass(target.getClass());
 		if (target instanceof IUpdateHandler) return new TickingHostedPeripheral(adapter, (IUpdateHandler)target);
 		return new HostedPeripheral(adapter, target);
 	}

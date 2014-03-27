@@ -3,6 +3,9 @@ package openperipheral.adapter;
 import java.util.*;
 
 import openmods.Log;
+import openperipheral.adapter.composed.ClassMethodsComposer;
+import openperipheral.adapter.composed.ClassMethodsList;
+import openperipheral.adapter.composed.ClassMethodsListBuilder;
 import openperipheral.adapter.object.*;
 import openperipheral.adapter.peripheral.*;
 import openperipheral.api.IAdapterBase;
@@ -17,11 +20,18 @@ import dan200.computer.api.ILuaObject;
 
 public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodExecutor> {
 
+	private static final ClassMethodsComposer<IObjectMethodExecutor> OBJECT_COMPOSER = new ClassMethodsComposer<IObjectMethodExecutor>() {
+		@Override
+		protected ClassMethodsListBuilder<IObjectMethodExecutor> createBuilder() {
+			return new ObjectMethodsListBuilder();
+		}
+	};
+
 	public static final AdapterManager<IObjectAdapter, IObjectMethodExecutor> objects = new AdapterManager<IObjectAdapter, IObjectMethodExecutor>() {
 
 		@Override
-		protected AdaptedClass<IObjectMethodExecutor> adaptClass(Class<?> targetClass) {
-			return new ObjectAdaptedClass(this, targetClass);
+		protected ClassMethodsList<IObjectMethodExecutor> adaptClass(Class<?> targetClass) {
+			return OBJECT_COMPOSER.createMethodsList(targetClass);
 		}
 
 		@Override
@@ -35,10 +45,17 @@ public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodEx
 		}
 	};
 
+	private static final ClassMethodsComposer<IPeripheralMethodExecutor> PERIPHERAL_COMPOSER = new ClassMethodsComposer<IPeripheralMethodExecutor>() {
+		@Override
+		protected ClassMethodsListBuilder<IPeripheralMethodExecutor> createBuilder() {
+			return new PeripheralMethodsListBuilder();
+		}
+	};
+
 	public static final AdapterManager<IPeripheralAdapter, IPeripheralMethodExecutor> peripherals = new AdapterManager<IPeripheralAdapter, IPeripheralMethodExecutor>() {
 		@Override
-		protected AdaptedClass<IPeripheralMethodExecutor> adaptClass(Class<?> targetClass) {
-			return new PeripheralAdaptedClass(this, targetClass);
+		protected ClassMethodsList<IPeripheralMethodExecutor> adaptClass(Class<?> targetClass) {
+			return PERIPHERAL_COMPOSER.createMethodsList(targetClass);
 		}
 
 		@Override
@@ -56,7 +73,7 @@ public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodEx
 
 	private final Map<Class<?>, IMethodsList<E>> internalAdapters = Maps.newHashMap();
 
-	private final Map<Class<?>, AdaptedClass<E>> classes = Maps.newHashMap();
+	private final Map<Class<?>, ClassMethodsList<E>> classes = Maps.newHashMap();
 
 	public static void addObjectAdapter(IObjectAdapter adapter) {
 		objects.addAdapter(adapter);
@@ -95,8 +112,8 @@ public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodEx
 		internalAdapters.put(targetCls, wrapper);
 	}
 
-	public AdaptedClass<E> getAdapterClass(Class<?> targetCls) {
-		AdaptedClass<E> value = classes.get(targetCls);
+	public ClassMethodsList<E> getAdapterClass(Class<?> targetCls) {
+		ClassMethodsList<E> value = classes.get(targetCls);
 		if (value == null) {
 			value = adaptClass(targetCls);
 			classes.put(targetCls, value);
@@ -105,11 +122,11 @@ public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodEx
 		return value;
 	}
 
-	Collection<IMethodsList<E>> getExternalAdapters(Class<?> targetCls) {
+	public Collection<IMethodsList<E>> getExternalAdapters(Class<?> targetCls) {
 		return Collections.unmodifiableCollection(externalAdapters.get(targetCls));
 	}
 
-	IMethodsList<E> getInlineAdapter(Class<?> targetCls) {
+	public IMethodsList<E> getInlineAdapter(Class<?> targetCls) {
 		IMethodsList<E> wrapper = internalAdapters.get(targetCls);
 		if (wrapper == null) {
 			wrapper = wrapInlineAdapter(targetCls);
@@ -119,7 +136,7 @@ public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodEx
 		return wrapper;
 	}
 
-	protected abstract AdaptedClass<E> adaptClass(Class<?> targetClass);
+	protected abstract ClassMethodsList<E> adaptClass(Class<?> targetClass);
 
 	protected abstract IMethodsList<E> wrapExternalAdapter(A adapter);
 

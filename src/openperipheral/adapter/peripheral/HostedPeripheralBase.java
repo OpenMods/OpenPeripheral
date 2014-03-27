@@ -5,7 +5,7 @@ import java.util.logging.Level;
 
 import net.minecraft.nbt.NBTTagCompound;
 import openmods.Log;
-import openperipheral.adapter.AdaptedClass;
+import openperipheral.adapter.composed.ClassMethodsList;
 import openperipheral.api.IAttachable;
 import openperipheral.util.PeripheralUtils;
 import openperipheral.util.ResourceMount;
@@ -18,9 +18,9 @@ public class HostedPeripheralBase<T> implements IHostedPeripheral {
 
 	protected final String type;
 	protected final T targetObject;
-	protected final AdaptedClass<IPeripheralMethodExecutor> wrapped;
+	protected final ClassMethodsList<IPeripheralMethodExecutor> wrapped;
 
-	protected HostedPeripheralBase(AdaptedClass<IPeripheralMethodExecutor> wrapper, T targetObject) {
+	protected HostedPeripheralBase(ClassMethodsList<IPeripheralMethodExecutor> wrapper, T targetObject) {
 		this.targetObject = targetObject;
 		this.type = PeripheralUtils.getNameForTarget(targetObject);
 		this.wrapped = wrapper;

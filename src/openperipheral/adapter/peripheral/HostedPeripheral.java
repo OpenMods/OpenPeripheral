@@ -1,10 +1,10 @@
 package openperipheral.adapter.peripheral;
 
-import openperipheral.adapter.AdaptedClass;
+import openperipheral.adapter.composed.ClassMethodsList;
 
 public class HostedPeripheral extends HostedPeripheralBase<Object> {
 
-	public HostedPeripheral(AdaptedClass<IPeripheralMethodExecutor> wrapper, Object targetObject) {
+	public HostedPeripheral(ClassMethodsList<IPeripheralMethodExecutor> wrapper, Object targetObject) {
 		super(wrapper, targetObject);
 	}
 
