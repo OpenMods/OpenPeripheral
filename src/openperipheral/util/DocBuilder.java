@@ -12,6 +12,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import net.minecraft.tileentity.TileEntity;
+import openmods.Log;
 import openperipheral.adapter.AdapterManager;
 import openperipheral.adapter.IDescriptable;
 import openperipheral.adapter.IMethodExecutor;
@@ -54,7 +55,13 @@ public class DocBuilder {
 
 	public void createDocForTe(Class<? extends TileEntity> te) {
 		Element result = doc.createElement("tileEntity");
-		fillDocForClass(result, AdapterManager.peripherals, te);
+		try {
+			fillDocForClass(result, AdapterManager.peripherals, te);
+		} catch (Throwable t) {
+			Log.warn(t, "Error while creating docs for TE %s", te);
+			result.setAttribute("invalid", "true");
+			result.appendChild(doc.createComment("Something went wrong while making documentation for this element. Data may be partially missing or invalid"));
+		}
 		final String teName = Objects.firstNonNull(PeripheralUtils.getClassToNameMap().get(te), "null");
 		result.appendChild(createProperty("name", teName));
 		root.appendChild(result);

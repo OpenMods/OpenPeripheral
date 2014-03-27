@@ -44,8 +44,6 @@ public class OpenPeripheralCore {
 		Configuration config = new Configuration(configFile);
 		ConfigProcessing.processAnnotations(configFile, ModInfo.ID, config, Config.class);
 		if (config.hasChanged()) config.save();
-
-		ComputerCraftAPI.registerPeripheralProvider(new PeripheralHandlers());
 	}
 
 	@Mod.EventHandler
@@ -78,6 +76,6 @@ public class OpenPeripheralCore {
 
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent evt) {
-		PeripheralHandlers.discoverPeripherals();
+		ComputerCraftAPI.registerPeripheralProvider(new PeripheralHandlers());
 	}
 }

@@ -10,17 +10,24 @@ import openperipheral.adapter.composed.ClassMethodsList;
 import openperipheral.adapter.peripheral.AdapterPeripheral;
 import openperipheral.adapter.peripheral.IPeripheralMethodExecutor;
 import openperipheral.api.ICustomPeripheralProvider;
+import openperipheral.api.Ignore;
 import openperipheral.api.Volatile;
-import openperipheral.util.PeripheralUtils;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
 
 public class PeripheralHandlers implements IPeripheralProvider {
+	private static final IPeripheralFactory<TileEntity> NULL_HANDLER = new IPeripheralFactory<TileEntity>() {
+
+		@Override
+		public IPeripheral getPeripheral(TileEntity obj, int side) {
+			return null;
+		}
+	};
+
 	private static final IPeripheralFactory<TileEntity> ADAPTER_HANDLER = new SafePeripheralFactory() {
 		@Override
 		protected IPeripheral createPeripheral(TileEntity tile, int side) {
@@ -53,80 +60,69 @@ public class PeripheralHandlers implements IPeripheralProvider {
 
 	private static final Map<Class<? extends TileEntity>, IPeripheralFactory<TileEntity>> adaptedClasses = Maps.newHashMap();
 
+	private static final Set<String> blacklist = ImmutableSet.copyOf(Config.teBlacklist);
+
 	public static Collection<Class<? extends TileEntity>> getAllAdaptedTeClasses() {
 		return Collections.unmodifiableCollection(adaptedClasses.keySet());
 	}
 
-	@SuppressWarnings("unchecked")
-	public static void discoverPeripherals() {
-		Map<Class<? extends TileEntity>, String> classToNameMap = PeripheralUtils.getClassToNameMap();
+	private static IPeripheralFactory<TileEntity> findFactoryForClass(Class<? extends TileEntity> teClass) {
+		if (IPeripheral.class.isAssignableFrom(teClass)) return NULL_HANDLER;
 
-		Set<Class<? extends TileEntity>> candidates = Sets.newHashSet();
-		Set<Class<? extends TileEntity>> providerClasses = Sets.newHashSet();
-		Set<String> blacklist = ImmutableSet.copyOf(Config.teBlacklist);
-
-		for (Map.Entry<Class<? extends TileEntity>, String> e : classToNameMap.entrySet()) {
-			final Class<? extends TileEntity> teClass = e.getKey();
-			final String name = e.getValue();
-
-			if (teClass == null) {
-				Log.warn("TE with id %s has null key", name);
-			} else if (blacklist.contains(teClass.getName()) || blacklist.contains(name.toLowerCase())) {
-				Log.warn("Ignoring blacklisted TE %s = %s", name, teClass);
-			} else if (ICustomPeripheralProvider.class.isAssignableFrom(teClass)) {
-				providerClasses.add(teClass);
-			} else if (!IPeripheral.class.isAssignableFrom(teClass)) {
-				candidates.add(teClass);
+		if (ICustomPeripheralProvider.class.isAssignableFrom(teClass)) {
+			if (teClass.isAnnotationPresent(Volatile.class)) {
+				Log.fine("Adding non-caching provider handler for %s", teClass);
+				return PROVIDER_HANDLER;
+			} else {
+				Log.fine("Adding caching provider handler for %s", teClass);
+				return PROVIDER_CACHING_HANDLER;
 			}
-
 		}
 
-		Set<Class<? extends TileEntity>> interestingClasses = Sets.newHashSet();
+		if (isIgnored(teClass)) return NULL_HANDLER;
 
 		for (Class<?> adaptableClass : AdapterManager.peripherals.getAllAdaptableClasses()) {
-			if (blacklist.contains(adaptableClass.getName())) continue;
-			if (TileEntity.class.isAssignableFrom(adaptableClass)) {
-				// no need to continue, since CC does .isAssignableFrom when
-				// searching for peripheral
-				interestingClasses.add((Class<? extends TileEntity>)adaptableClass);
-			} else if (!adaptableClass.isInterface()) {
-				Log.warn("Class %s is neither interface nor TileEntity. Skipping peripheral registration.", adaptableClass);
-			} else {
-				Iterator<Class<? extends TileEntity>> it = candidates.iterator();
-				while (it.hasNext()) {
-					Class<? extends TileEntity> teClass = it.next();
-					if (adaptableClass.isAssignableFrom(teClass)) {
-						interestingClasses.add(teClass);
-						it.remove();
-					}
+			if (adaptableClass.isAssignableFrom(teClass)) {
+				if (teClass.isAnnotationPresent(Volatile.class)) {
+					Log.fine("Adding non-caching adapter handler for %s", teClass);
+					return ADAPTER_HANDLER;
+				} else {
+					Log.fine("Adding caching adapter handler for %s", teClass);
+					return ADAPTER_CACHING_HANDLER;
 				}
 			}
 		}
 
-		final int providerCount = providerClasses.size();
-		final int adapterCount = adaptedClasses.size();
-		Log.info("Registering peripheral handler for %d classes (providers: %d, adapters: %d))", providerCount + adapterCount, providerCount, adapterCount);
+		return NULL_HANDLER;
+	}
 
-		adaptedClasses.clear();
-		for (Class<? extends TileEntity> teClass : interestingClasses) {
-			if (teClass.isAnnotationPresent(Volatile.class)) {
-				Log.fine("Adding non-caching adapter handler for %s", teClass);
-				adaptedClasses.put(teClass, ADAPTER_HANDLER);
-			} else {
-				Log.fine("Adding caching adapter handler for %s", teClass);
-				adaptedClasses.put(teClass, ADAPTER_CACHING_HANDLER);
-			}
+	private static IPeripheralFactory<TileEntity> getFactoryForClass(Class<? extends TileEntity> teClass) {
+		IPeripheralFactory<TileEntity> factory = adaptedClasses.get(teClass);
+
+		if (factory == null) {
+			factory = findFactoryForClass(teClass);
+			adaptedClasses.put(teClass, factory);
 		}
 
-		for (Class<? extends TileEntity> teClass : providerClasses) {
-			if (teClass.isAnnotationPresent(Volatile.class)) {
-				Log.fine("Adding non-caching provider handler for %s", teClass);
-				adaptedClasses.put(teClass, PROVIDER_HANDLER);
-			} else {
-				Log.fine("Adding caching provider handler for %s", teClass);
-				adaptedClasses.put(teClass, PROVIDER_CACHING_HANDLER);
-			}
+		return factory;
+	}
+
+	protected static boolean isIgnored(Class<? extends TileEntity> teClass) {
+		final String teClassName = teClass.getName();
+		if (blacklist.contains(teClassName) || blacklist.contains(teClassName.toLowerCase())) return true;
+
+		if (teClass.isAnnotationPresent(Ignore.class)) return true;
+
+		try {
+			teClass.getField("OPENPERIPHERAL_IGNORE");
+			return true;
+		} catch (NoSuchFieldException e) {
+			// uff, we are not ignored
+		} catch (Throwable t) {
+			Log.warn(t, "Class %s doesn't cooperate", teClass);
 		}
+
+		return false;
 	}
 
 	public static IPeripheral createPeripheral(Object target) {
@@ -139,8 +135,7 @@ public class PeripheralHandlers implements IPeripheralProvider {
 		TileEntity te = world.getBlockTileEntity(x, y, z);
 		if (te == null) return null;
 
-		IPeripheralFactory<TileEntity> factory = adaptedClasses.get(te.getClass());
-		if (factory == null) return null;
+		IPeripheralFactory<TileEntity> factory = getFactoryForClass(te.getClass());
 
 		return factory.getPeripheral(te, side);
 	}
