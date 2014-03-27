@@ -107,7 +107,7 @@ public abstract class PeripheralAdapterWrapper extends AdapterWrapper<IPeriphera
 		Class<?> target = targetProvider.getReturnType();
 		Preconditions.checkArgument(!target.isPrimitive(), "Method %s is marked with annotation 'Include', but returns primitive type", targetProvider);
 		ClassMethodsList<IObjectMethodExecutor> toInclude = AdapterManager.objects.getAdapterClass(target);
-		for (IObjectMethodExecutor objectExecutor : toInclude.getMethods()) {
+		for (IObjectMethodExecutor objectExecutor : toInclude.listMethods()) {
 			if (!objectExecutor.isSynthetic()) result.add(adaptObjectExecutor(targetProvider, objectExecutor));
 		}
 	}

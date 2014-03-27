@@ -11,9 +11,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import openperipheral.adapter.IDescriptable;
-import openperipheral.adapter.IMethodExecutor;
-import openperipheral.adapter.IMethodsList;
+import openperipheral.adapter.*;
 import openperipheral.adapter.composed.ClassMethodsList;
 
 import org.w3c.dom.Document;
@@ -51,10 +49,10 @@ public class DocBuilder {
 		}
 	}
 
-	public void createDocForPeripheral(String type, IMethodsList<?> methods) {
+	public void createDocForPeripheral(String type, IAdapterMethodsList<?> methods) {
 		Element result = doc.createElement(type);
 		result.setAttribute("targetClass", methods.getTargetClass().toString());
-		fillMethods(result, methods.getMethods());
+		fillMethods(result, methods);
 		root.appendChild(result);
 	}
 
@@ -77,12 +75,11 @@ public class DocBuilder {
 	private void fillDocForClassList(Element result, Class<?> cls, ClassMethodsList<?> list) {
 		result.setAttribute("class", cls.getName());
 		result.appendChild(createProperty("simpleName", cls.getSimpleName()));
-
-		fillMethods(result, list.getMethods());
+		fillMethods(result, list);
 	}
 
-	protected void fillMethods(Element result, final Collection<? extends IMethodExecutor> methods) {
-		for (IMethodExecutor method : methods) {
+	protected void fillMethods(Element result, IMethodsHolder<?> holder) {
+		for (IMethodExecutor method : holder.listMethods()) {
 			if (method.isSynthetic()) continue;
 			Element methodDoc = doc.createElement("method");
 			fillDocForMethod(methodDoc, method.getWrappedMethod());

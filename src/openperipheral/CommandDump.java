@@ -10,7 +10,7 @@ import net.minecraft.util.ChatMessageComponent;
 import openmods.Log;
 import openmods.OpenMods;
 import openperipheral.adapter.AdapterManager;
-import openperipheral.adapter.IMethodsList;
+import openperipheral.adapter.IAdapterMethodsList;
 import openperipheral.adapter.composed.ClassMethodsList;
 import openperipheral.adapter.object.IObjectMethodExecutor;
 import openperipheral.adapter.peripheral.IPeripheralMethodExecutor;
@@ -60,10 +60,10 @@ public class CommandDump implements ICommand {
 			for (Map.Entry<Class<?>, ClassMethodsList<IObjectMethodExecutor>> e : AdapterManager.objects.listCollectedClasses().entrySet())
 				builder.createDocForObject(e.getKey(), e.getValue());
 
-			for (IMethodsList<?> e : AdapterManager.peripherals.listExternalAdapters())
+			for (IAdapterMethodsList<?> e : AdapterManager.peripherals.listExternalAdapters())
 				builder.createDocForPeripheral("peripheralAdapter", e);
 
-			for (IMethodsList<?> e : AdapterManager.objects.listExternalAdapters())
+			for (IAdapterMethodsList<?> e : AdapterManager.objects.listExternalAdapters())
 				builder.createDocForPeripheral("objectAdapter", e);
 
 			builder.dump(output);

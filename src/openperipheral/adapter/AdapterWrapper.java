@@ -16,7 +16,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 import com.google.common.collect.*;
 
-public abstract class AdapterWrapper<E extends IMethodExecutor> implements IMethodsList<E> {
+public abstract class AdapterWrapper<E extends IMethodExecutor> implements IAdapterMethodsList<E> {
 
 	private static boolean isFreeform(AnnotatedElement element, boolean defaultValue) {
 		Freeform freeform = element.getAnnotation(Freeform.class);
@@ -41,7 +41,7 @@ public abstract class AdapterWrapper<E extends IMethodExecutor> implements IMeth
 	}
 
 	@Override
-	public List<E> getMethods() {
+	public List<E> listMethods() {
 		return methods;
 	}
 

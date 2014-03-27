@@ -5,10 +5,11 @@ import java.util.Collections;
 import java.util.Map;
 
 import openperipheral.adapter.IMethodExecutor;
+import openperipheral.adapter.IMethodsHolder;
 
 import com.google.common.collect.ImmutableMap;
 
-public class ClassMethodsList<E extends IMethodExecutor> {
+public class ClassMethodsList<E extends IMethodExecutor> implements IMethodsHolder<E> {
 
 	private final Map<Integer, E> methodsByIndex;
 	public final String[] methodNames;
@@ -36,7 +37,8 @@ public class ClassMethodsList<E extends IMethodExecutor> {
 		return methodsByIndex.get(index);
 	}
 
-	public Collection<E> getMethods() {
+	@Override
+	public Collection<E> listMethods() {
 		return Collections.unmodifiableCollection(methodsByIndex.values());
 	}
 }

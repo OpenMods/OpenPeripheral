@@ -34,12 +34,12 @@ public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodEx
 		}
 
 		@Override
-		protected IMethodsList<IObjectMethodExecutor> wrapExternalAdapter(IObjectAdapter adapter) {
+		protected IAdapterMethodsList<IObjectMethodExecutor> wrapExternalAdapter(IObjectAdapter adapter) {
 			return new ObjectAdapterWrapper.External(adapter);
 		}
 
 		@Override
-		protected IMethodsList<IObjectMethodExecutor> wrapInlineAdapter(Class<?> targetClass) {
+		protected IAdapterMethodsList<IObjectMethodExecutor> wrapInlineAdapter(Class<?> targetClass) {
 			return new ObjectAdapterWrapper.Inline(targetClass);
 		}
 	};
@@ -58,19 +58,19 @@ public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodEx
 		}
 
 		@Override
-		protected IMethodsList<IPeripheralMethodExecutor> wrapExternalAdapter(IPeripheralAdapter adapter) {
+		protected IAdapterMethodsList<IPeripheralMethodExecutor> wrapExternalAdapter(IPeripheralAdapter adapter) {
 			return new PeripheralExternalAdapterWrapper(adapter);
 		}
 
 		@Override
-		protected IMethodsList<IPeripheralMethodExecutor> wrapInlineAdapter(Class<?> targetClass) {
+		protected IAdapterMethodsList<IPeripheralMethodExecutor> wrapInlineAdapter(Class<?> targetClass) {
 			return new PeripheralInlineAdapterWrapper(targetClass);
 		}
 	};
 
-	private final Multimap<Class<?>, IMethodsList<E>> externalAdapters = HashMultimap.create();
+	private final Multimap<Class<?>, IAdapterMethodsList<E>> externalAdapters = HashMultimap.create();
 
-	private final Map<Class<?>, IMethodsList<E>> internalAdapters = Maps.newHashMap();
+	private final Map<Class<?>, IAdapterMethodsList<E>> internalAdapters = Maps.newHashMap();
 
 	private final Map<Class<?>, ClassMethodsList<E>> classes = Maps.newHashMap();
 
@@ -90,7 +90,7 @@ public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodEx
 		return Sets.union(externalAdapters.keySet(), internalAdapters.keySet());
 	}
 
-	public Collection<IMethodsList<E>> listExternalAdapters() {
+	public Collection<IAdapterMethodsList<E>> listExternalAdapters() {
 		return Collections.unmodifiableCollection(externalAdapters.values());
 	}
 
@@ -99,7 +99,7 @@ public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodEx
 	}
 
 	public void addAdapter(A adapter) {
-		final IMethodsList<E> wrapper;
+		final IAdapterMethodsList<E> wrapper;
 		try {
 			wrapper = wrapExternalAdapter(adapter);
 		} catch (Throwable e) {
@@ -114,7 +114,7 @@ public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodEx
 	}
 
 	public void addInlineAdapter(Class<?> targetCls) {
-		IMethodsList<E> wrapper = wrapInlineAdapter(targetCls);
+		IAdapterMethodsList<E> wrapper = wrapInlineAdapter(targetCls);
 		Log.info("Registering auto-created adapter for class %s", targetCls);
 		internalAdapters.put(targetCls, wrapper);
 	}
@@ -129,12 +129,12 @@ public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodEx
 		return value;
 	}
 
-	public Collection<IMethodsList<E>> getExternalAdapters(Class<?> targetCls) {
+	public Collection<IAdapterMethodsList<E>> getExternalAdapters(Class<?> targetCls) {
 		return Collections.unmodifiableCollection(externalAdapters.get(targetCls));
 	}
 
-	public IMethodsList<E> getInlineAdapter(Class<?> targetCls) {
-		IMethodsList<E> wrapper = internalAdapters.get(targetCls);
+	public IAdapterMethodsList<E> getInlineAdapter(Class<?> targetCls) {
+		IAdapterMethodsList<E> wrapper = internalAdapters.get(targetCls);
 		if (wrapper == null) {
 			wrapper = wrapInlineAdapter(targetCls);
 			internalAdapters.put(targetCls, wrapper);
@@ -145,9 +145,9 @@ public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodEx
 
 	protected abstract ClassMethodsList<E> collectMethods(Class<?> targetClass);
 
-	protected abstract IMethodsList<E> wrapExternalAdapter(A adapter);
+	protected abstract IAdapterMethodsList<E> wrapExternalAdapter(A adapter);
 
-	protected abstract IMethodsList<E> wrapInlineAdapter(Class<?> targetClass);
+	protected abstract IAdapterMethodsList<E> wrapInlineAdapter(Class<?> targetClass);
 
 	public static ILuaObject wrapObject(Object o) {
 		return LuaObjectWrapper.wrap(objects, o);

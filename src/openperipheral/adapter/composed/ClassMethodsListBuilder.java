@@ -6,8 +6,8 @@ import java.util.Map;
 
 import openmods.Log;
 import openperipheral.adapter.AdapterManager;
+import openperipheral.adapter.IAdapterMethodsList;
 import openperipheral.adapter.IMethodExecutor;
-import openperipheral.adapter.IMethodsList;
 import openperipheral.adapter.method.MethodDeclaration;
 import openperipheral.api.LuaCallable;
 
@@ -42,17 +42,17 @@ public abstract class ClassMethodsListBuilder<E extends IMethodExecutor> {
 	}
 
 	public void addExternalAdapters(Class<?> cls) {
-		for (IMethodsList<E> wrapper : manager.getExternalAdapters(cls))
+		for (IAdapterMethodsList<E> wrapper : manager.getExternalAdapters(cls))
 			addMethods(wrapper);
 	}
 
 	public void addInlineAdapter(Class<?> cls) {
-		IMethodsList<E> wrapper = manager.getInlineAdapter(cls);
+		IAdapterMethodsList<E> wrapper = manager.getInlineAdapter(cls);
 		addMethods(wrapper);
 	}
 
-	public void addMethods(IMethodsList<E> wrapper) {
-		for (E executor : wrapper.getMethods()) {
+	public void addMethods(IAdapterMethodsList<E> wrapper) {
+		for (E executor : wrapper.listMethods()) {
 			for (String name : executor.getWrappedMethod().getNames()) {
 				final E previous = methods.put(name, executor);
 				if (previous != null) Log.fine("Previous defininition of Lua method '%s' overwritten by %s adapter", name, wrapper.describeType());
