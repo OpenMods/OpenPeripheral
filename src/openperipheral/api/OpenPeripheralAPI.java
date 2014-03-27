@@ -6,12 +6,8 @@ import java.util.logging.Logger;
 
 import net.minecraft.tileentity.TileEntity;
 import cpw.mods.fml.common.FMLLog;
-<<<<<<< HEAD
-import dan200.computer.api.IHostedPeripheral;
-import dan200.computer.api.ILuaObject;
-=======
+import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.peripheral.IPeripheral;
->>>>>>> cad4c1e... CC 1.6 update
 
 public class OpenPeripheralAPI {
 
@@ -42,17 +38,12 @@ public class OpenPeripheralAPI {
 		return callWithoutReturn("openperipheral.adapter.AdapterManager", "addInlinePeripheralAdapter", Class.class, cls);
 	}
 
-<<<<<<< HEAD
 	public static ILuaObject createWrapper(Object obj) {
 		return callWithReturn("openperipheral.adapter.AdapterManager", "wrapObject", Object.class, obj, ILuaObject.class);
 	}
 
-	public static IHostedPeripheral createHostedPeripheral(Object target) {
-		return callWithReturn("openperipheral.adapter.AdapterManager", "createHostedPeripheral", Object.class, target, IHostedPeripheral.class);
-=======
 	public static IPeripheral createHostedPeripheral(Object target) {
 		return callWithReturn("openperipheral.adapter.PeripheralHandlers", "createPeripheral", Object.class, target, IPeripheral.class);
->>>>>>> cad4c1e... CC 1.6 update
 	}
 
 	private static Method getMethod(String klazzName, String methodName, Class<?> argType) throws Exception {
