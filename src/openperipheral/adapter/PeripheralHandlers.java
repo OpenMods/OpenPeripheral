@@ -1,6 +1,7 @@
 package openperipheral.adapter;
 
-import java.util.*;
+import java.util.Map;
+import java.util.Set;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -31,7 +32,7 @@ public class PeripheralHandlers implements IPeripheralProvider {
 	private static final IPeripheralFactory<TileEntity> ADAPTER_HANDLER = new SafePeripheralFactory() {
 		@Override
 		protected IPeripheral createPeripheral(TileEntity tile, int side) {
-			ClassMethodsList<IPeripheralMethodExecutor> adapter = AdapterManager.peripherals.adaptClass(tile.getClass());
+			ClassMethodsList<IPeripheralMethodExecutor> adapter = AdapterManager.peripherals.getAdapterClass(tile.getClass());
 			return new AdapterPeripheral(adapter, tile);
 		}
 	};
@@ -39,7 +40,7 @@ public class PeripheralHandlers implements IPeripheralProvider {
 	private static final IPeripheralFactory<TileEntity> ADAPTER_CACHING_HANDLER = new CachingPeripheralFactory() {
 		@Override
 		protected IPeripheral createPeripheral(TileEntity tile, int side) {
-			ClassMethodsList<IPeripheralMethodExecutor> adapter = AdapterManager.peripherals.adaptClass(tile.getClass());
+			ClassMethodsList<IPeripheralMethodExecutor> adapter = AdapterManager.peripherals.getAdapterClass(tile.getClass());
 			return new AdapterPeripheral(adapter, tile);
 		}
 	};
@@ -61,10 +62,6 @@ public class PeripheralHandlers implements IPeripheralProvider {
 	private static final Map<Class<? extends TileEntity>, IPeripheralFactory<TileEntity>> adaptedClasses = Maps.newHashMap();
 
 	private static final Set<String> blacklist = ImmutableSet.copyOf(Config.teBlacklist);
-
-	public static Collection<Class<? extends TileEntity>> getAllAdaptedTeClasses() {
-		return Collections.unmodifiableCollection(adaptedClasses.keySet());
-	}
 
 	private static IPeripheralFactory<TileEntity> findFactoryForClass(Class<? extends TileEntity> teClass) {
 		if (IPeripheral.class.isAssignableFrom(teClass)) return NULL_HANDLER;
@@ -126,7 +123,7 @@ public class PeripheralHandlers implements IPeripheralProvider {
 	}
 
 	public static IPeripheral createPeripheral(Object target) {
-		ClassMethodsList<IPeripheralMethodExecutor> adapter = AdapterManager.peripherals.adaptClass(target.getClass());
+		ClassMethodsList<IPeripheralMethodExecutor> adapter = AdapterManager.peripherals.getAdapterClass(target.getClass());
 		return new AdapterPeripheral(adapter, target);
 	}
 

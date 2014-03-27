@@ -11,11 +11,9 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import net.minecraft.tileentity.TileEntity;
-import openmods.Log;
-import openperipheral.adapter.AdapterManager;
 import openperipheral.adapter.IDescriptable;
 import openperipheral.adapter.IMethodExecutor;
+import openperipheral.adapter.IMethodsList;
 import openperipheral.adapter.composed.ClassMethodsList;
 
 import org.w3c.dom.Document;
@@ -53,35 +51,41 @@ public class DocBuilder {
 		}
 	}
 
-	public void createDocForTe(Class<? extends TileEntity> te) {
+	public void createDocForPeripheral(String type, IMethodsList<?> methods) {
+		Element result = doc.createElement(type);
+		result.setAttribute("targetClass", methods.getTargetClass().toString());
+		fillMethods(result, methods.getMethods());
+		root.appendChild(result);
+	}
+
+	public void createDocForTe(Class<?> cls, ClassMethodsList<?> list) {
+		if (!list.hasMethods) return;
 		Element result = doc.createElement("tileEntity");
-		try {
-			fillDocForClass(result, AdapterManager.peripherals, te);
-		} catch (Throwable t) {
-			Log.warn(t, "Error while creating docs for TE %s", te);
-			result.setAttribute("invalid", "true");
-			result.appendChild(doc.createComment("Something went wrong while making documentation for this element. Data may be partially missing or invalid"));
-		}
-		final String teName = Objects.firstNonNull(PeripheralUtils.getClassToNameMap().get(te), "null");
+		fillDocForClassList(result, cls, list);
+		final String teName = Objects.firstNonNull(PeripheralUtils.getClassToNameMap().get(cls), "null");
 		result.appendChild(createProperty("name", teName));
 		root.appendChild(result);
 	}
 
-	public void createDocForObject(Class<?> cls) {
+	public void createDocForObject(Class<?> cls, ClassMethodsList<?> list) {
+		if (!list.hasMethods) return;
 		Element result = doc.createElement("luaObject");
-		fillDocForClass(result, AdapterManager.objects, cls);
+		fillDocForClassList(result, cls, list);
 		root.appendChild(result);
 	}
 
-	private void fillDocForClass(Element result, AdapterManager<?, ?> manager, Class<?> cls) {
-		result.appendChild(createProperty("class", cls.getName()));
+	private void fillDocForClassList(Element result, Class<?> cls, ClassMethodsList<?> list) {
+		result.setAttribute("class", cls.getName());
 		result.appendChild(createProperty("simpleName", cls.getSimpleName()));
 
-		ClassMethodsList<?> adapted = manager.getAdapterClass(cls);
-		for (IMethodExecutor method : adapted.getMethods()) {
+		fillMethods(result, list.getMethods());
+	}
+
+	protected void fillMethods(Element result, final Collection<? extends IMethodExecutor> methods) {
+		for (IMethodExecutor method : methods) {
+			if (method.isSynthetic()) continue;
 			Element methodDoc = doc.createElement("method");
 			fillDocForMethod(methodDoc, method.getWrappedMethod());
-			result.appendChild(createProperty("isSynthetic", Boolean.toString(method.isSynthetic())));
 			result.appendChild(methodDoc);
 		}
 	}

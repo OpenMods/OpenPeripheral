@@ -29,7 +29,7 @@ public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodEx
 	public static final AdapterManager<IObjectAdapter, IObjectMethodExecutor> objects = new AdapterManager<IObjectAdapter, IObjectMethodExecutor>() {
 
 		@Override
-		protected ClassMethodsList<IObjectMethodExecutor> adaptClass(Class<?> targetClass) {
+		protected ClassMethodsList<IObjectMethodExecutor> collectMethods(Class<?> targetClass) {
 			return OBJECT_COMPOSER.createMethodsList(targetClass);
 		}
 
@@ -53,7 +53,7 @@ public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodEx
 
 	public static final AdapterManager<IPeripheralAdapter, IPeripheralMethodExecutor> peripherals = new AdapterManager<IPeripheralAdapter, IPeripheralMethodExecutor>() {
 		@Override
-		protected ClassMethodsList<IPeripheralMethodExecutor> adaptClass(Class<?> targetClass) {
+		protected ClassMethodsList<IPeripheralMethodExecutor> collectMethods(Class<?> targetClass) {
 			return PERIPHERAL_COMPOSER.createMethodsList(targetClass);
 		}
 
@@ -90,6 +90,14 @@ public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodEx
 		return Sets.union(externalAdapters.keySet(), internalAdapters.keySet());
 	}
 
+	public Collection<IMethodsList<E>> listExternalAdapters() {
+		return Collections.unmodifiableCollection(externalAdapters.values());
+	}
+
+	public Map<Class<?>, ClassMethodsList<E>> listCollectedClasses() {
+		return Collections.unmodifiableMap(classes);
+	}
+
 	public void addAdapter(A adapter) {
 		final IMethodsList<E> wrapper;
 		try {
@@ -114,7 +122,7 @@ public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodEx
 	public ClassMethodsList<E> getAdapterClass(Class<?> targetCls) {
 		ClassMethodsList<E> value = classes.get(targetCls);
 		if (value == null) {
-			value = adaptClass(targetCls);
+			value = collectMethods(targetCls);
 			classes.put(targetCls, value);
 		}
 
@@ -135,7 +143,7 @@ public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodEx
 		return wrapper;
 	}
 
-	protected abstract ClassMethodsList<E> adaptClass(Class<?> targetClass);
+	protected abstract ClassMethodsList<E> collectMethods(Class<?> targetClass);
 
 	protected abstract IMethodsList<E> wrapExternalAdapter(A adapter);
 

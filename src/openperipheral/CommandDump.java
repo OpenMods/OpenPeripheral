@@ -2,14 +2,18 @@ package openperipheral;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatMessageComponent;
 import openmods.Log;
 import openmods.OpenMods;
-import openperipheral.adapter.PeripheralHandlers;
+import openperipheral.adapter.AdapterManager;
+import openperipheral.adapter.IMethodsList;
+import openperipheral.adapter.composed.ClassMethodsList;
+import openperipheral.adapter.object.IObjectMethodExecutor;
+import openperipheral.adapter.peripheral.IPeripheralMethodExecutor;
 import openperipheral.util.DocBuilder;
 
 public class CommandDump implements ICommand {
@@ -50,8 +54,17 @@ public class CommandDump implements ICommand {
 
 			DocBuilder builder = new DocBuilder();
 
-			for (Class<? extends TileEntity> te : PeripheralHandlers.getAllAdaptedTeClasses())
-				builder.createDocForTe(te);
+			for (Map.Entry<Class<?>, ClassMethodsList<IPeripheralMethodExecutor>> e : AdapterManager.peripherals.listCollectedClasses().entrySet())
+				builder.createDocForTe(e.getKey(), e.getValue());
+
+			for (Map.Entry<Class<?>, ClassMethodsList<IObjectMethodExecutor>> e : AdapterManager.objects.listCollectedClasses().entrySet())
+				builder.createDocForObject(e.getKey(), e.getValue());
+
+			for (IMethodsList<?> e : AdapterManager.peripherals.listExternalAdapters())
+				builder.createDocForPeripheral("peripheralAdapter", e);
+
+			for (IMethodsList<?> e : AdapterManager.objects.listExternalAdapters())
+				builder.createDocForPeripheral("objectAdapter", e);
 
 			builder.dump(output);
 			sender.sendChatToPlayer(ChatMessageComponent.createFromText("Done! Created file in " + output.getAbsolutePath()));

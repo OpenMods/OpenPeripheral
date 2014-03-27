@@ -12,15 +12,23 @@ public class ClassMethodsList<E extends IMethodExecutor> {
 
 	private final Map<Integer, E> methodsByIndex;
 	public final String[] methodNames;
+	public final boolean hasMethods;
 
 	ClassMethodsList(Map<String, E> methodsByName) {
 		ImmutableMap.Builder<Integer, E> methodsByIndex = ImmutableMap.builder();
 		methodNames = new String[methodsByName.size()];
 		int id = 0;
+
+		boolean hasMethods = false;
 		for (Map.Entry<String, E> e : methodsByName.entrySet()) {
+			final E executor = e.getValue();
+
 			methodNames[id] = e.getKey();
-			methodsByIndex.put(id++, e.getValue());
+			methodsByIndex.put(id++, executor);
+			hasMethods |= !executor.isSynthetic();
 		}
+
+		this.hasMethods = hasMethods;
 		this.methodsByIndex = methodsByIndex.build();
 	}
 
