@@ -22,21 +22,15 @@ import openperipheral.integration.thaumcraft.ModuleThaumcraft;
 import openperipheral.integration.thermalexpansion.ModuleThermalExpansion;
 import openperipheral.integration.tmechworks.ModuleTMechworks;
 import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 import dan200.computercraft.api.ComputerCraftAPI;
 
 @Mod(modid = ModInfo.ID, name = ModInfo.NAME, version = ModInfo.VERSION, dependencies = ModInfo.DEPENDENCIES)
-@NetworkMod(serverSideRequired = true, clientSideRequired = false, channels = { ModInfo.ID })
 public class OpenPeripheralCore {
-
-	@Instance(value = ModInfo.ID)
-	public static OpenPeripheralCore instance;
 
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent evt) {
