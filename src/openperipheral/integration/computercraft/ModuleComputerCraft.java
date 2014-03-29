@@ -10,7 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Vec3;
 import openmods.Mods;
 import openmods.utils.ReflectionHelper;
-import openmods.utils.ReflectionHelper.SafeClassLoad;
+import openmods.utils.SafeClassLoad;
 import openperipheral.TypeConversionRegistry;
 import openperipheral.api.IIntegrationModule;
 

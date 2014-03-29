@@ -10,9 +10,9 @@ import openperipheral.Config;
 import openperipheral.adapter.composed.ClassMethodsList;
 import openperipheral.adapter.peripheral.AdapterPeripheral;
 import openperipheral.adapter.peripheral.IPeripheralMethodExecutor;
-import openperipheral.api.ICustomPeripheralProvider;
 import openperipheral.api.Ignore;
 import openperipheral.api.Volatile;
+import openperipheral.api.cc16.ICustomPeripheralProvider;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
