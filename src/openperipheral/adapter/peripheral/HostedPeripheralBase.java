@@ -6,7 +6,7 @@ import java.util.logging.Level;
 import net.minecraft.nbt.NBTTagCompound;
 import openmods.Log;
 import openperipheral.adapter.composed.ClassMethodsList;
-import openperipheral.api.IAttachable;
+import openperipheral.api.cc15x.IAttachable;
 import openperipheral.util.PeripheralUtils;
 import openperipheral.util.ResourceMount;
 import dan200.computer.api.*;

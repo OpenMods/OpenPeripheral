@@ -9,9 +9,9 @@ import openperipheral.adapter.composed.ClassMethodsList;
 import openperipheral.adapter.peripheral.HostedPeripheral;
 import openperipheral.adapter.peripheral.IPeripheralMethodExecutor;
 import openperipheral.adapter.peripheral.TickingHostedPeripheral;
-import openperipheral.api.IPeripheralProvider;
 import openperipheral.api.IUpdateHandler;
 import openperipheral.api.Volatile;
+import openperipheral.api.cc15x.IPeripheralProvider;
 import openperipheral.util.PeripheralUtils;
 
 import com.google.common.collect.ImmutableSet;
