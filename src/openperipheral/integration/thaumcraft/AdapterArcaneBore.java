@@ -8,9 +8,7 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import openmods.utils.ReflectionHelper;
-import openperipheral.api.IPeripheralAdapter;
-import openperipheral.api.LuaMethod;
-import openperipheral.api.LuaType;
+import openperipheral.api.*;
 import openperipheral.util.FieldAccessHelpers;
 
 /**
@@ -27,12 +25,12 @@ public class AdapterArcaneBore implements IPeripheralAdapter {
 		return TILE_ARCANE_BORE;
 	}
 
-	@LuaMethod(returnType = LuaType.BOOLEAN, description = "Does the arcane bore have a pickaxe.")
+	@LuaCallable(returnTypes = LuaType.BOOLEAN, description = "Does the arcane bore have a pickaxe.")
 	public boolean hasPickaxe(Object target) {
 		return getBooleanField(target, "hasPickaxe");
 	}
 
-	@LuaMethod(returnType = LuaType.BOOLEAN, description = "Does the arcane bore have a focus.")
+	@LuaCallable(returnTypes = LuaType.BOOLEAN, description = "Does the arcane bore have a focus.")
 	public boolean hasFocus(Object target) {
 		return getBooleanField(target, "hasFocus");
 	}
@@ -41,42 +39,43 @@ public class AdapterArcaneBore implements IPeripheralAdapter {
 		return (bore instanceof IInventory)? ((IInventory)bore).getStackInSlot(1) : null;
 	}
 
-	@LuaMethod(returnType = LuaType.BOOLEAN, description = "is the pick broken?")
+	@LuaCallable(returnTypes = LuaType.BOOLEAN, description = "Is the pick broken?")
 	public boolean isPickaxeBroken(Object target) {
 		ItemStack pick = getPick(target);
 		return pick != null && pick.getItemDamage() + 1 == pick.getMaxDamage();
 	}
 
-	@LuaMethod(returnType = LuaType.BOOLEAN, description = "Is the Arcane bore active?")
+	@OnTick
+	@LuaCallable(returnTypes = LuaType.BOOLEAN, description = "Is the Arcane bore active?")
 	public boolean isWorking(Object target) {
 		ItemStack pick = getPick(target);
 		Boolean hasPower = ReflectionHelper.call(target, "gettingPower");
 		return hasPower && hasFocus(target) && hasPickaxe(target) && pick.isItemStackDamageable() && !isPickaxeBroken(target);
 	}
 
-	@LuaMethod(returnType = LuaType.NUMBER, description = "gets the radius of the bore's effects")
+	@LuaCallable(returnTypes = LuaType.NUMBER, description = "Gets the radius of the bore's effects")
 	public int getRadius(Object target) {
 		return 1 + (getIntField(target, "area") + getIntField(target, "maxRadius")) * 2;
 	}
 
-	@LuaMethod(returnType = LuaType.NUMBER, description = "gets the speed of the bore")
+	@LuaCallable(returnTypes = LuaType.NUMBER, description = "Gets the speed of the bore")
 	public int getSpeed(Object target) {
 		return getIntField(target, "speed");
 	}
 
-	@LuaMethod(returnType = LuaType.BOOLEAN, description = "Does the bore mine native clusters as well as normal ores")
+	@LuaCallable(returnTypes = LuaType.BOOLEAN, description = "Does the bore mine native clusters as well as normal ores")
 	public boolean hasNativeClusters(Object target) {
 		ItemStack pick = getPick(target);
 		return pick != null && ITEM_ELEMENTAL_PICK.isInstance(pick.getItem());
 	}
 
-	@LuaMethod(returnType = LuaType.NUMBER, description = "Gets the fortune level the Bore is mining with")
+	@LuaCallable(returnTypes = LuaType.NUMBER, description = "Gets the fortune level the Bore is mining with")
 	public int getFortune(Object target) {
 		ItemStack pick = getPick(target);
 		return EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, pick);
 	}
 
-	@LuaMethod(returnType = LuaType.BOOLEAN, description = "Does the Bore mine with silk touch")
+	@LuaCallable(returnTypes = LuaType.BOOLEAN, description = "Does the Bore mine with silk touch")
 	public boolean hasSilkTouch(Object target) {
 		ItemStack pick = getPick(target);
 		return EnchantmentHelper.getEnchantmentLevel(Enchantment.silkTouch.effectId, pick) > 0;

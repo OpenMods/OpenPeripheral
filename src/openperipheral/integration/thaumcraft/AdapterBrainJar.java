@@ -2,7 +2,7 @@ package openperipheral.integration.thaumcraft;
 
 import openmods.utils.ReflectionHelper;
 import openperipheral.api.IPeripheralAdapter;
-import openperipheral.api.LuaMethod;
+import openperipheral.api.LuaCallable;
 import openperipheral.api.LuaType;
 import openperipheral.util.FieldAccessHelpers;
 
@@ -14,7 +14,7 @@ public class AdapterBrainJar implements IPeripheralAdapter {
 		return TILE_JAR_BRAIN_CLASS;
 	}
 
-	@LuaMethod(returnType = LuaType.NUMBER, description = "Returns the amount of XP stored in the Brain in a Jar")
+	@LuaCallable(returnTypes = LuaType.NUMBER, description = "Returns the amount of XP stored in the Brain in a Jar")
 	public int getXP(Object target) {
 		return FieldAccessHelpers.getIntField(TILE_JAR_BRAIN_CLASS, target, "xp");
 	}

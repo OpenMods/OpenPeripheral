@@ -1,7 +1,7 @@
 package openperipheral.integration.thaumcraft;
 
 import openperipheral.api.IPeripheralAdapter;
-import openperipheral.api.LuaMethod;
+import openperipheral.api.LuaCallable;
 import openperipheral.api.LuaType;
 import thaumcraft.api.nodes.INode;
 import thaumcraft.api.nodes.NodeModifier;
@@ -15,13 +15,13 @@ public class AdapterNode implements IPeripheralAdapter {
 		return INode.class;
 	}
 
-	@LuaMethod(returnType = LuaType.STRING, description = "Get the type of the node")
+	@LuaCallable(returnTypes = LuaType.STRING, description = "Get the type of the node")
 	public String getNodeType(INode node) {
 		NodeType nodeType = node.getNodeType();
 		return (nodeType != null? nodeType.name() : NONE);
 	}
 
-	@LuaMethod(returnType = LuaType.STRING, description = "Get the modifier of the node")
+	@LuaCallable(returnTypes = LuaType.STRING, description = "Get the modifier of the node")
 	public String getNodeModifier(INode node) {
 		NodeModifier nodeModifier = node.getNodeModifier();
 		return (nodeModifier != null? nodeModifier.name() : NONE);
