@@ -1,21 +1,27 @@
 package openperipheral.adapter;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
 import java.util.Map;
 import java.util.Set;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import openmods.Log;
+import openmods.utils.ReflectionHelper;
 import openperipheral.Config;
 import openperipheral.adapter.composed.ClassMethodsList;
 import openperipheral.adapter.peripheral.AdapterPeripheral;
 import openperipheral.adapter.peripheral.IPeripheralMethodExecutor;
+import openperipheral.adapter.peripheral.ProxyAdapterPeripheral;
 import openperipheral.api.Ignore;
+import openperipheral.api.ProxyInterfaces;
 import openperipheral.api.Volatile;
 import openperipheral.api.cc16.ICustomPeripheralProvider;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
@@ -32,16 +38,15 @@ public class PeripheralHandlers implements IPeripheralProvider {
 	private static final IPeripheralFactory<TileEntity> ADAPTER_HANDLER = new SafePeripheralFactory() {
 		@Override
 		protected IPeripheral createPeripheral(TileEntity tile, int side) {
-			ClassMethodsList<IPeripheralMethodExecutor> adapter = AdapterManager.peripherals.getAdapterClass(tile.getClass());
-			return new AdapterPeripheral(adapter, tile);
+			return createAdaptedPeripheral(tile);
 		}
+
 	};
 
 	private static final IPeripheralFactory<TileEntity> ADAPTER_CACHING_HANDLER = new CachingPeripheralFactory() {
 		@Override
 		protected IPeripheral createPeripheral(TileEntity tile, int side) {
-			ClassMethodsList<IPeripheralMethodExecutor> adapter = AdapterManager.peripherals.getAdapterClass(tile.getClass());
-			return new AdapterPeripheral(adapter, tile);
+			return createAdaptedPeripheral(tile);
 		}
 	};
 
@@ -122,9 +127,27 @@ public class PeripheralHandlers implements IPeripheralProvider {
 		return false;
 	}
 
-	public static IPeripheral createPeripheral(Object target) {
-		ClassMethodsList<IPeripheralMethodExecutor> adapter = AdapterManager.peripherals.getAdapterClass(target.getClass());
-		return new AdapterPeripheral(adapter, target);
+	public static IPeripheral createAdaptedPeripheral(Object target) {
+		Class<?> targetClass = target.getClass();
+		ClassMethodsList<IPeripheralMethodExecutor> methods = AdapterManager.peripherals.getAdapterClass(targetClass);
+
+		ProxyInterfaces proxyAnn = targetClass.getAnnotation(ProxyInterfaces.class);
+		if (proxyAnn == null) return new AdapterPeripheral(methods, target);
+
+		Set<Class<?>> implemented = ReflectionHelper.getAllInterfaces(targetClass);
+		Set<Class<?>> blacklist = ImmutableSet.copyOf(proxyAnn.exclude());
+		Set<Class<?>> proxied = Sets.difference(implemented, blacklist);
+
+		if (proxied.isEmpty()) return new AdapterPeripheral(methods, target);
+
+		Set<Class<?>> allImplemented = Sets.newHashSet(proxied);
+		allImplemented.add(IPeripheral.class);
+
+		InvocationHandler handler = new ProxyAdapterPeripheral(methods, target);
+
+		Class<?>[] interfaces = allImplemented.toArray(new Class<?>[allImplemented.size()]);
+
+		return (IPeripheral)Proxy.newProxyInstance(targetClass.getClassLoader(), interfaces, handler);
 	}
 
 	@Override

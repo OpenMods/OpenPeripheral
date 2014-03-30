@@ -6,6 +6,6 @@ public class WrappersCC16 {
 	}
 
 	public static dan200.computercraft.api.peripheral.IPeripheral createPeripheral(Object target) {
-		return PeripheralHandlers.createPeripheral(target);
+		return PeripheralHandlers.createAdaptedPeripheral(target);
 	}
 }
