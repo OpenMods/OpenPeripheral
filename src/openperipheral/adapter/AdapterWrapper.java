@@ -52,7 +52,7 @@ public abstract class AdapterWrapper<E extends IMethodExecutor> implements IMeth
 
 	@Override
 	public String describeType() {
-		return "generated (source: " + adapterClass.toString() + ")";
+		return "wrapped (source: " + adapterClass.toString() + ")";
 	}
 
 	protected abstract List<E> buildMethodList();

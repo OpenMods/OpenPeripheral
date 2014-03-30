@@ -13,7 +13,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-@OnTick
 public class AdapterAspectContainer implements IPeripheralAdapter {
 	@Override
 	public Class<?> getTargetClass() {
