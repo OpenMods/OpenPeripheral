@@ -4,6 +4,7 @@ import java.util.Random;
 
 import net.minecraft.tileentity.TileEntity;
 import openmods.Log;
+import openperipheral.adapter.AdapterManager.InvalidClassException;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -66,11 +67,22 @@ abstract class SafePeripheralFactory implements IPeripheralFactory<TileEntity> {
 
 		try {
 			return createPeripheral(tile, side);
+		} catch (InvalidClassException e) {
+			Throwable cause = e.getCause();
+			if (cause != null) {
+				Log.severe(cause, "Can't create peripheral for TE %s @ (%d,%d,%d) in world %s due to error in class",
+						tile.getClass(), tile.xCoord, tile.yCoord, tile.zCoord, tile.worldObj.provider.dimensionId);
+			} else {
+				Log.severe("Can't create peripheral for TE %s @ (%d,%d,%d) in world %s due to error in class %s",
+						tile.getClass(), tile.xCoord, tile.yCoord, tile.zCoord, tile.worldObj.provider.dimensionId, tile.getClass());
+			}
+
 		} catch (Throwable t) {
 			Log.severe(t, "Can't create peripheral for TE %s @ (%d,%d,%d) in world %s",
 					tile.getClass(), tile.xCoord, tile.yCoord, tile.zCoord, tile.worldObj.provider.dimensionId);
-			return PLACEHOLDER;
+
 		}
+		return PLACEHOLDER;
 	}
 
 	protected abstract IPeripheral createPeripheral(TileEntity tile, int side);

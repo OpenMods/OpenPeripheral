@@ -19,6 +19,18 @@ import dan200.computercraft.api.lua.ILuaObject;
 
 public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodExecutor> {
 
+	public static class InvalidClassException extends RuntimeException {
+		private static final long serialVersionUID = 5722017683388067641L;
+
+		private InvalidClassException() {
+			super();
+		}
+
+		private InvalidClassException(Throwable cause) {
+			super(cause);
+		}
+	}
+
 	private static final ClassMethodsComposer<IObjectMethodExecutor> OBJECT_COMPOSER = new ClassMethodsComposer<IObjectMethodExecutor>() {
 		@Override
 		protected ClassMethodsListBuilder<IObjectMethodExecutor> createBuilder() {
@@ -74,6 +86,8 @@ public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodEx
 
 	private final Map<Class<?>, ClassMethodsList<E>> classes = Maps.newHashMap();
 
+	private final Set<Class<?>> invalidClasses = Sets.newHashSet();
+
 	public static void addObjectAdapter(IObjectAdapter adapter) {
 		objects.addAdapter(adapter);
 	}
@@ -120,9 +134,16 @@ public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodEx
 	}
 
 	public ClassMethodsList<E> getAdapterClass(Class<?> targetCls) {
+		if (invalidClasses.contains(targetCls)) throw new InvalidClassException();
+
 		ClassMethodsList<E> value = classes.get(targetCls);
 		if (value == null) {
-			value = collectMethods(targetCls);
+			try {
+				value = collectMethods(targetCls);
+			} catch (Throwable t) {
+				invalidClasses.add(targetCls);
+				throw new InvalidClassException(t);
+			}
 			classes.put(targetCls, value);
 		}
 
