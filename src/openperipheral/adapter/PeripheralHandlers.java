@@ -19,10 +19,7 @@ import openperipheral.util.PeripheralUtils;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
-import dan200.computer.api.ComputerCraftAPI;
-import dan200.computer.api.IHostedPeripheral;
-import dan200.computer.api.IPeripheralHandler;
-import dan200.computercraft.api.peripheral.IPeripheral;
+import dan200.computer.api.*;
 
 public class PeripheralHandlers {
 	private static final IPeripheralHandler ADAPTER_HANDLER = new CachingPeripheralHandler() {
