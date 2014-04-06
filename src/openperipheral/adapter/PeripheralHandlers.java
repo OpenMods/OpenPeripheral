@@ -137,6 +137,15 @@ public class PeripheralHandlers {
 		return new ProxyPeripheral(metods, target);
 	}
 
+	public static IHostedPeripheral createHostedPeripheralSafe(Object target) {
+		try {
+			return createHostedPeripheral(target);
+		} catch (Throwable t) {
+			Log.warn(t, "Failed to create peripheral for turtle");
+			return SafePeripheralHandler.BROKEN_PERIPHERAL;
+		}
+	}
+
 	public static IHostedPeripheral createHostedPeripheral(Object target) {
 		Class<?> targetClass = target.getClass();
 		ClassMethodsList<IPeripheralMethodExecutor> methods = AdapterManager.peripherals.getAdapterClass(targetClass);

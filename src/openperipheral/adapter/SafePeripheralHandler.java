@@ -30,7 +30,7 @@ abstract class SafePeripheralHandler implements IPeripheralHandler {
 			"abort_retry_fail_continue"
 	};
 
-	private static final IHostedPeripheral PLACEHOLDER = new IHostedPeripheral() {
+	public static final IHostedPeripheral BROKEN_PERIPHERAL = new IHostedPeripheral() {
 
 		@Override
 		public String getType() {
@@ -88,7 +88,7 @@ abstract class SafePeripheralHandler implements IPeripheralHandler {
 					tile.getClass(), tile.xCoord, tile.yCoord, tile.zCoord, tile.worldObj.provider.dimensionId);
 
 		}
-		return PLACEHOLDER;
+		return BROKEN_PERIPHERAL;
 	}
 
 	protected abstract IHostedPeripheral createPeripheral(TileEntity tile);
