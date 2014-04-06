@@ -3,15 +3,14 @@
   "modid" : "OpenPeripheralCore",
   "name" : "OpenPeripheralCore",
   "version" : "@VERSION@",
-  "url" : "http://www.openperipheral.info",
-  "credits" : "Everyone in #ComputerCraft, #OpenMods and #OpenCCSensors, also ChickenBones",
+  "url" : "http://www.openmods.info",
+  "credits" : "Everyone in #ComputerCraft, #OpenMods",
   "authors": [
     "Mikeemoo",
-    "cybcaoyibo",
-    "SinZ",
+    "boq",
     "theoriginalbit",
     "Foone",
-    "boq"
+    "SinZ"
   ],
   "description": "Converts many blocks into ComputerCraft peripherals!",
   "logoFile" : "",
