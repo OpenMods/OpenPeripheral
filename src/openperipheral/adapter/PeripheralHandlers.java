@@ -127,6 +127,15 @@ public class PeripheralHandlers implements IPeripheralProvider {
 		return false;
 	}
 
+	public static IPeripheral createAdaptedPeripheralSafe(Object target) {
+		try {
+			return createAdaptedPeripheral(target);
+		} catch (Throwable t) {
+			Log.warn(t, "Failed to create peripheral for turtle");
+			return SafePeripheralFactory.PLACEHOLDER;
+		}
+	}
+
 	public static IPeripheral createAdaptedPeripheral(Object target) {
 		Class<?> targetClass = target.getClass();
 		ClassMethodsList<IPeripheralMethodExecutor> methods = AdapterManager.peripherals.getAdapterClass(targetClass);

@@ -31,7 +31,7 @@ abstract class SafePeripheralFactory implements IPeripheralFactory<TileEntity> {
 			"abort_retry_fail_continue"
 	};
 
-	private static final IPeripheral PLACEHOLDER = new IPeripheral() {
+	public static final IPeripheral PLACEHOLDER = new IPeripheral() {
 
 		@Override
 		public String getType() {
