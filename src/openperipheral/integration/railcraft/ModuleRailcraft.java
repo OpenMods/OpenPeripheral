@@ -25,6 +25,7 @@ public class ModuleRailcraft implements IIntegrationModule {
 	@Override
 	public void init() {
 		AdapterManager.addPeripheralAdapter(new AdapterTileSteamTurbine());
+		AdapterManager.addPeripheralAdapter(new AdapterTileBoilerFirebox());
 		ticketStack = GameRegistry.findItemStack("Railcraft", "routing.ticket", 1);
 	}
 
