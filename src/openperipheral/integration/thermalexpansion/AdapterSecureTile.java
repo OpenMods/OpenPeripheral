@@ -30,14 +30,5 @@ public class AdapterSecureTile implements IPeripheralAdapter {
 		return tile.getAccess().name();
 	}
 
-	@LuaMethod(description = "Sets the AccessMode of this machine.", returnType = LuaType.BOOLEAN, args = {
-			@Arg(name = "accessMode", description = "The access mode you wish to set (can be PUBLIC,RESTRICTED or PRIVATE)", type = LuaType.STRING)
-	})
-	public boolean setAccess(ISecureTile tile, String access) {
-		try {
-			AccessMode mode = AccessMode.valueOf(access.toUpperCase(Locale.ENGLISH));
-			return tile.setAccess(mode);
-		} catch (IllegalArgumentException e) {}
-		return false;
-	}
+
 }
