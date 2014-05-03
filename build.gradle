@@ -47,6 +47,13 @@ repositories {
 apply plugin: 'forge'
 
 //================================================
+// Dependencies
+
+dependencies {
+    compile project(":OpenModsLib") // Load OpenModsLib from submodule
+}
+
+//================================================
 // Jar data
 
 // Grab system env
