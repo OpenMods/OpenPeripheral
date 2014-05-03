@@ -98,7 +98,7 @@ if (branch != null && !branch.equals("master")) {
 
 // Version tag for jar file name
 if (env.BUILD_NUMBER != null) {
-    version += "-" + env.BUILD_NUMBER
+    version += "-snapshot-" + env.BUILD_NUMBER
 }
 
 // Get Git metadata (if in Jenkins)
