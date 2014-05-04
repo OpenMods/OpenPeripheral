@@ -62,6 +62,7 @@ public class InventoryDescriptionUtils {
 			map.put("rawName", "empty");
 			map.put("qty", 0);
 			map.put("dmg", 0);
+			map.put("maxdmg", 0);
 			map.put("maxSize", 64);
 
 		} else {
@@ -70,6 +71,7 @@ public class InventoryDescriptionUtils {
 			map.put("rawName", getRawNameForStack(itemstack));
 			map.put("qty", itemstack.stackSize);
 			map.put("dmg", itemstack.getItemDamage());
+			map.put("maxdmg", itemstack.getMaxDamage());
 			map.put("maxSize", itemstack.getMaxStackSize());
 
 			IntegrationModuleRegistry.appendItemInfo(map, itemstack);
