@@ -2,7 +2,7 @@
 {
   "modid" : "OpenPeripheralCore",
   "name" : "OpenPeripheralCore",
-  "version" : "@VERSION@",
+  "version" : "${version}",
   "url" : "http://www.openmods.info",
   "credits" : "Everyone in #ComputerCraft, #OpenMods",
   "authors": [
