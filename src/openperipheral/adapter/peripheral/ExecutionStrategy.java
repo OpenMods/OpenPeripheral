@@ -7,6 +7,7 @@ import net.minecraft.world.World;
 import openmods.Log;
 import openperipheral.TickHandler;
 import openperipheral.api.IWorldProvider;
+import openperipheral.util.PeripheralUtils;
 import openperipheral.util.PrettyPrint;
 
 import com.google.common.base.Preconditions;
@@ -83,10 +84,12 @@ public abstract class ExecutionStrategy {
 
 	private abstract static class OnTick<T> extends ExecutionStrategy {
 
+		public abstract boolean isValid(T target);
+
 		public abstract World getWorld(T target);
 
 		@Override
-		public Object[] execute(Object target, IComputerAccess computer, ILuaContext context, final Callable<Object[]> callable) throws Exception {
+		public Object[] execute(final Object target, IComputerAccess computer, ILuaContext context, final Callable<Object[]> callable) throws Exception {
 			@SuppressWarnings("unchecked")
 			World world = getWorld((T)target);
 			Preconditions.checkNotNull(world, "Trying to execute OnTick method, but no available world");
@@ -96,11 +99,15 @@ public abstract class ExecutionStrategy {
 			TickHandler.addTickCallback(world, new Runnable() {
 				@Override
 				public void run() {
-					try {
-						responder.result = callable.call();
-					} catch (Throwable e) {
-						responder.error = e;
-					}
+					@SuppressWarnings("unchecked")
+					boolean isStillValid = isValid((T)target);
+					if (isStillValid) {
+						try {
+							responder.result = callable.call();
+						} catch (Throwable e) {
+							responder.error = e;
+						}
+					} else Log.info("Target invalidated before OnTick task finished");
 					responder.signalEvent();
 				}
 			});
@@ -130,6 +137,11 @@ public abstract class ExecutionStrategy {
 			return target.worldObj;
 		}
 
+		@Override
+		public boolean isValid(TileEntity target) {
+			return PeripheralUtils.isTileEntityValid(target);
+		}
+
 	};
 
 	private final static ExecutionStrategy ON_TICK_WORLD_PROVIDER = new OnTick<IWorldProvider>() {
@@ -137,6 +149,11 @@ public abstract class ExecutionStrategy {
 		@Override
 		public World getWorld(IWorldProvider target) {
 			return target.getWorld();
+		}
+
+		@Override
+		public boolean isValid(IWorldProvider target) {
+			return target.isValid();
 		}
 
 	};
@@ -153,6 +170,13 @@ public abstract class ExecutionStrategy {
 		@Override
 		public boolean isAlwaysSafe() {
 			return false;
+		}
+
+		@Override
+		public boolean isValid(Object target) {
+			if (target instanceof TileEntity) return PeripheralUtils.isTileEntityValid((TileEntity)target);
+			if (target instanceof IWorldProvider) return ((IWorldProvider)target).isValid();
+			throw new UnsupportedOperationException(String.format("Methods of adapter for %s cannot be synchronous", target.getClass()));
 		}
 	};
 
