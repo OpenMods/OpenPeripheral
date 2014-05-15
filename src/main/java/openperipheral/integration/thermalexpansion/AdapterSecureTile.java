@@ -1,10 +1,7 @@
 package openperipheral.integration.thermalexpansion;
 
-import java.util.Locale;
-
 import openperipheral.api.*;
 import cofh.api.tileentity.ISecureTile;
-import cofh.api.tileentity.ISecureTile.AccessMode;
 
 public class AdapterSecureTile implements IPeripheralAdapter {
 
@@ -29,6 +26,5 @@ public class AdapterSecureTile implements IPeripheralAdapter {
 	public String getAccess(ISecureTile tile) {
 		return tile.getAccess().name();
 	}
-
 
 }
