@@ -38,7 +38,7 @@ public class AdapterGridTileEntity implements IPeripheralAdapter {
 			args = {
 					@Arg(type = LuaType.TABLE, name = "stack", description = "A table representing the item stack") })
 	public void requestCrafting(IGridTileEntity te, ItemStack stack) throws AppEngTileMissingException {
-		getGrid(te).craftingRequest(stack);
+		getGrid(te).craftingRequest(stack, true, true);
 	}
 
 	@LuaMethod(description = "Extract an item", returnType = LuaType.NUMBER,
