@@ -1,5 +1,6 @@
 package openperipheral.integration.mystcraft;
 
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -107,7 +108,7 @@ public class AdapterWritingDesk implements IPeripheralAdapter {
 		String symbol = getSymbolFromPage(getNotebookStackInSlot(desk, deskSlot, notebookSlot));
 		if (symbol != null) {
 			FakePlayer fakePlayer = new FakePlayer(desk.getWorldObj(), "OpenPeripheral");
-			ReflectionHelper.call(DESK_CLASS, desk, "writeSymbol", fakePlayer, symbol);
+			ReflectionHelper.call(DESK_CLASS, desk, "writeSymbol", ReflectionHelper.typed(fakePlayer, EntityPlayerMP.class), symbol);
 		}
 
 	}
