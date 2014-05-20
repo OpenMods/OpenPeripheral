@@ -1,6 +1,11 @@
 package openperipheral.adapter.object;
 
+import java.util.Arrays;
+import java.util.logging.Level;
+
+import openmods.Log;
 import openperipheral.adapter.AdapterManager;
+import openperipheral.adapter.WrappedException;
 import openperipheral.adapter.composed.ClassMethodsList;
 
 import com.google.common.base.Preconditions;
@@ -26,8 +31,23 @@ public class LuaObjectWrapper {
 			@Override
 			public Object[] callMethod(ILuaContext context, int method, Object[] arguments) throws Exception {
 				IObjectMethodExecutor executor = adapted.getMethod(method);
-				Preconditions.checkNotNull(executor, "Invalid method index %s for wrapped %s", method, target.getClass());
-				return executor.execute(context, target, arguments);
+				Preconditions.checkArgument(executor != null, "Invalid method index: %d", method);
+
+				try {
+					return executor.execute(context, target, arguments);
+				} catch (WrappedException e) {
+					String methodName = adapted.methodNames[method];
+					Log.log(Level.FINE, e.getCause(), "Adapter error during method %s(%d) execution on object %s, args: %s",
+							methodName, method, target.getClass(), Arrays.toString(arguments));
+					throw e;
+				} catch (Exception e) {
+					String methodName = adapted.methodNames[method];
+					Log.log(Level.FINE, e.getCause(), "Internal error during method %s(%d) execution on object %s, args: %s",
+							methodName, method, target.getClass(), Arrays.toString(arguments));
+
+					// can wrap here, no special exceptions
+					throw new WrappedException(e);
+				}
 			}
 		};
 	}

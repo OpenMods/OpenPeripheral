@@ -5,10 +5,14 @@ import java.util.logging.Level;
 
 import net.minecraft.nbt.NBTTagCompound;
 import openmods.Log;
+import openperipheral.adapter.WrappedException;
 import openperipheral.adapter.composed.ClassMethodsList;
 import openperipheral.api.cc15x.IAttachable;
 import openperipheral.util.PeripheralUtils;
 import openperipheral.util.ResourceMount;
+
+import com.google.common.base.Preconditions;
+
 import dan200.computer.api.*;
 
 public class HostedPeripheralBase<T> implements IHostedPeripheral {
@@ -38,11 +42,24 @@ public class HostedPeripheralBase<T> implements IHostedPeripheral {
 
 	@Override
 	public Object[] callMethod(final IComputerAccess computer, ILuaContext context, int index, Object[] arguments) throws Exception {
+		IPeripheralMethodExecutor executor = wrapped.getMethod(index);
+		Preconditions.checkArgument(executor != null, "Invalid method index: %d", index);
+
 		try {
-			IPeripheralMethodExecutor executor = wrapped.getMethod(index);
 			return executor.execute(computer, context, targetObject, arguments);
+		} catch (InterruptedException e) {
+			// not our problem
+			throw e;
+		} catch (WrappedException e) {
+			String methodName = wrapped.methodNames[index];
+			Log.log(Level.FINE, e.getCause(), "Adapter error during method %s(%d) execution on peripheral %s, args: %s",
+					methodName, index, type, Arrays.toString(arguments));
+			throw e;
 		} catch (Exception e) {
-			Log.log(Level.FINE, e, "Error during method %d execution on peripheral %s, args: %s", index, type, Arrays.toString(arguments));
+			String methodName = wrapped.methodNames[index];
+			Log.log(Level.FINE, e, "Internal error during method %s(%d) execution on peripheral %s, args: %s",
+					methodName, index, type, Arrays.toString(arguments));
+			// don't wrap, Exception has special meaning (reset)
 			throw e;
 		}
 	}
