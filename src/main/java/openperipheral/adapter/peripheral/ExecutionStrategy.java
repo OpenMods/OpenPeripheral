@@ -6,9 +6,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import openmods.Log;
 import openperipheral.TickHandler;
+import openperipheral.adapter.WrappedException;
 import openperipheral.api.IWorldProvider;
 import openperipheral.util.PeripheralUtils;
-import openperipheral.util.PrettyPrint;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
@@ -35,6 +35,8 @@ public abstract class ExecutionStrategy {
 		return args;
 	}
 
+	public static final Object[] DUMMY = new Object[0];
+
 	private static class Responder {
 		private final ILuaContext context;
 		private final IComputerAccess access;
@@ -55,28 +57,28 @@ public abstract class ExecutionStrategy {
 				Object[] result;
 				try {
 					result = context.pullEvent(SYNC_EVENT);
-				} catch (Throwable e) {
-					// we will usually get here after program termination or
-					// computer reset
+				} catch (Exception e) {
 					nobodyLovesMe = true;
-					throw Throwables.propagate(e);
+					throw e;
+				} catch (Throwable t) {
+					nobodyLovesMe = true;
+					throw Throwables.propagate(t);
 				}
 				int transactionId = ((Number)result[1]).intValue();
 				if (transactionId == this.transactionId) break;
 			}
 		}
 
-		public void signalEvent() {
+		public void signalEvent(boolean log) {
 			Preconditions.checkState(error != null || result != null, "Must set either 'error' or 'result' before firing event");
 			if (nobodyLovesMe) {
-				Log.warn("Ignoring signal for transaction %s. (sob)", transactionId);
+				if (log) Log.warn("Ignoring signal for transaction %s. (sob)", transactionId);
 			} else {
 				try {
 					access.queueEvent(SYNC_EVENT, wrap(transactionId));
 				} catch (Exception e) {
-					// computer got restarted, but we get here due to race
-					// condition
-					Log.warn(e, "Failed to signal response to transaction '%d'", transactionId);
+					// computer got invalidated, but we get here due to delayed tick
+					if (log) Log.warn(e, "Failed to signal response to transaction '%d'", transactionId);
 				}
 			}
 		}
@@ -84,7 +86,7 @@ public abstract class ExecutionStrategy {
 
 	private abstract static class OnTick<T> extends ExecutionStrategy {
 
-		public abstract boolean isValid(T target);
+		public abstract boolean isLoaded(T target);
 
 		public abstract World getWorld(T target);
 
@@ -100,25 +102,25 @@ public abstract class ExecutionStrategy {
 				@Override
 				public void run() {
 					@SuppressWarnings("unchecked")
-					boolean isStillValid = isValid((T)target);
-					if (isStillValid) {
+					boolean isStillLoaded = isLoaded((T)target);
+					if (isStillLoaded) {
 						try {
 							responder.result = callable.call();
 						} catch (Throwable e) {
 							responder.error = e;
 						}
-					} else Log.info("Target invalidated before OnTick task finished");
-					responder.signalEvent();
+						responder.signalEvent(true);
+					} else {
+						// object is unloaded, but we still cant try to finish other thread
+						responder.result = DUMMY;
+						responder.signalEvent(false);
+					}
 				}
 			});
 
 			responder.waitForEvent();
 
-			if (responder.error != null) {
-				String description = PrettyPrint.getMessageForThrowable(responder.error);
-				throw new RuntimeException(description, responder.error);
-			}
-
+			if (responder.error != null) throw new WrappedException(responder.error);
 			return responder.result;
 		}
 	}
@@ -126,7 +128,11 @@ public abstract class ExecutionStrategy {
 	public static final ExecutionStrategy ASYNCHRONOUS = new ExecutionStrategy() {
 		@Override
 		public Object[] execute(Object target, IComputerAccess computer, ILuaContext context, Callable<Object[]> callable) throws Exception {
-			return callable.call();
+			try {
+				return callable.call();
+			} catch (Throwable t) {
+				throw new WrappedException(t);
+			}
 		}
 	};
 
@@ -138,7 +144,7 @@ public abstract class ExecutionStrategy {
 		}
 
 		@Override
-		public boolean isValid(TileEntity target) {
+		public boolean isLoaded(TileEntity target) {
 			return PeripheralUtils.isTileEntityValid(target);
 		}
 
@@ -152,7 +158,7 @@ public abstract class ExecutionStrategy {
 		}
 
 		@Override
-		public boolean isValid(IWorldProvider target) {
+		public boolean isLoaded(IWorldProvider target) {
 			return target.isValid();
 		}
 
@@ -173,7 +179,7 @@ public abstract class ExecutionStrategy {
 		}
 
 		@Override
-		public boolean isValid(Object target) {
+		public boolean isLoaded(Object target) {
 			if (target instanceof TileEntity) return PeripheralUtils.isTileEntityValid((TileEntity)target);
 			if (target instanceof IWorldProvider) return ((IWorldProvider)target).isValid();
 			throw new UnsupportedOperationException(String.format("Methods of adapter for %s cannot be synchronous", target.getClass()));

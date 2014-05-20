@@ -1,10 +1,14 @@
-package openperipheral.util;
-
-import openmods.Log;
+package openperipheral.adapter;
 
 import com.google.common.base.Strings;
 
-public class PrettyPrint {
+public class WrappedException extends RuntimeException {
+	private static final long serialVersionUID = 162027349454188794L;
+
+	public WrappedException(Throwable cause) {
+		super(cause);
+	}
+
 	public static String getMessageForThrowable(Throwable e) {
 		Throwable cause = e.getCause();
 
@@ -15,10 +19,16 @@ public class PrettyPrint {
 		final boolean secondEmpty = Strings.isNullOrEmpty(secondMessage);
 
 		if (firstEmpty && secondEmpty) {
-			Log.warn(e, "Exception without message");
-			return String.format("Unknown expection %s. Please contact devs on esper.net IRC #OpenMods", e.getClass());
+			return String.format("Caught exception %s without any info", e.getClass());
 		} else if (!firstEmpty && !secondEmpty) return String.format("%s, caused by %s", firstMessage, secondMessage);
 
 		return firstEmpty? secondMessage : firstMessage;
 	}
+
+	@Override
+	public String getMessage() {
+		Throwable cause = getCause();
+		return cause != null? getMessageForThrowable(cause) : "internal error";
+	}
+
 }
