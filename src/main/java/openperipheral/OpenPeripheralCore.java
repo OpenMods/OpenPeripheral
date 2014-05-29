@@ -3,7 +3,7 @@ package openperipheral;
 import java.io.File;
 
 import net.minecraftforge.client.ClientCommandHandler;
-import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.config.Configuration;
 import openmods.config.ConfigProcessing;
 import openperipheral.adapter.PeripheralHandlers;
 import openperipheral.integration.appeng.ModuleAppEng;
@@ -25,7 +25,6 @@ import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 import dan200.computercraft.api.ComputerCraftAPI;
 

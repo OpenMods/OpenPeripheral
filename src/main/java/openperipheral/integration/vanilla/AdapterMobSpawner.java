@@ -14,6 +14,6 @@ public class AdapterMobSpawner implements IPeripheralAdapter {
 
 	@LuaMethod(returnType = LuaType.STRING, description = "The name of the mob that spawns from the spawner")
 	public String getSpawningMobName(TileEntityMobSpawner spawner) {
-		return spawner.getSpawnerLogic().getEntityNameToSpawn();
+		return spawner.func_145881_a().getEntityNameToSpawn();
 	}
 }

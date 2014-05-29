@@ -25,7 +25,7 @@ public class AdapterSign implements IPeripheralAdapter {
 		line -= 1;
 		checkRange(line, sign.signText.length);
 		sign.signText[line] = text.length() < 15? text : text.substring(0, 15);
-		sign.worldObj.markBlockForUpdate(sign.xCoord, sign.yCoord, sign.zCoord);
+		sign.getWorldObj().markBlockForUpdate(sign.xCoord, sign.yCoord, sign.zCoord);
 	}
 
 	@LuaMethod(returnType = LuaType.STRING, onTick = false, description = "Gets the text from the supplied line of the sign",

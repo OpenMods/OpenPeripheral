@@ -28,7 +28,7 @@ public class EntityUtils {
 		}
 
 		if (entity.ridingEntity != null) {
-			map.put("ridingEntity", entity.ridingEntity.entityId);
+			map.put("ridingEntity", entity.ridingEntity.getEntityId());
 		}
 
 		IntegrationModuleRegistry.appendEntityInfo(map, entity, relativePos);

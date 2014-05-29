@@ -71,15 +71,15 @@ abstract class SafePeripheralFactory implements IPeripheralFactory<TileEntity> {
 			Throwable cause = e.getCause();
 			if (cause != null) {
 				Log.severe(cause, "Can't create peripheral for TE %s @ (%d,%d,%d) in world %s due to error in class",
-						tile.getClass(), tile.xCoord, tile.yCoord, tile.zCoord, tile.worldObj.provider.dimensionId);
+						tile.getClass(), tile.xCoord, tile.yCoord, tile.zCoord, tile.getWorldObj().provider.dimensionId);
 			} else {
 				Log.severe("Can't create peripheral for TE %s @ (%d,%d,%d) in world %s due to error in class %s",
-						tile.getClass(), tile.xCoord, tile.yCoord, tile.zCoord, tile.worldObj.provider.dimensionId, tile.getClass());
+						tile.getClass(), tile.xCoord, tile.yCoord, tile.zCoord, tile.getWorldObj().provider.dimensionId, tile.getClass());
 			}
 
 		} catch (Throwable t) {
 			Log.severe(t, "Can't create peripheral for TE %s @ (%d,%d,%d) in world %s",
-					tile.getClass(), tile.xCoord, tile.yCoord, tile.zCoord, tile.worldObj.provider.dimensionId);
+					tile.getClass(), tile.xCoord, tile.yCoord, tile.zCoord, tile.getWorldObj().provider.dimensionId);
 
 		}
 		return PLACEHOLDER;

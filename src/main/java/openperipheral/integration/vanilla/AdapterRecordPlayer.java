@@ -1,7 +1,6 @@
 package openperipheral.integration.vanilla;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntityRecordPlayer;
 import openperipheral.api.IPeripheralAdapter;
 import openperipheral.api.LuaMethod;
 import openperipheral.api.LuaType;

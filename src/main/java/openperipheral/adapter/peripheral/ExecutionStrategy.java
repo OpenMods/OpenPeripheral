@@ -140,7 +140,7 @@ public abstract class ExecutionStrategy {
 
 		@Override
 		public World getWorld(TileEntity target) {
-			return target.worldObj;
+			return target.getWorldObj();
 		}
 
 		@Override
@@ -168,7 +168,7 @@ public abstract class ExecutionStrategy {
 
 		@Override
 		public World getWorld(Object target) {
-			if (target instanceof TileEntity) return ((TileEntity)target).worldObj;
+			if (target instanceof TileEntity) return ((TileEntity)target).getWorldObj();
 			if (target instanceof IWorldProvider) return ((IWorldProvider)target).getWorld();
 			throw new UnsupportedOperationException(String.format("Methods of adapter for %s cannot be synchronous", target.getClass()));
 		}

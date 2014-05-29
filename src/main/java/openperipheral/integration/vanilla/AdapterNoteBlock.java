@@ -19,7 +19,7 @@ public class AdapterNoteBlock implements IPeripheralAdapter {
 
 	@LuaMethod(returnType = LuaType.VOID, description = "Play the current note on the noteblock")
 	public void triggerNote(TileEntityNote noteblock) {
-		noteblock.triggerNote(noteblock.worldObj, noteblock.xCoord, noteblock.yCoord, noteblock.zCoord);
+		noteblock.triggerNote(noteblock.getWorldObj(), noteblock.xCoord, noteblock.yCoord, noteblock.zCoord);
 	}
 
 	@LuaMethod(returnType = LuaType.VOID, description = "Set the note on the noteblock",
@@ -28,7 +28,7 @@ public class AdapterNoteBlock implements IPeripheralAdapter {
 			})
 	public void setPitch(TileEntityNote noteblock, int note) {
 		noteblock.note = (byte)(note % 25);
-		noteblock.onInventoryChanged();
+		noteblock.markDirty();
 	}
 
 	@LuaMethod(returnType = LuaType.NUMBER, description = "Get the note currently set on this noteblock")
@@ -44,7 +44,7 @@ public class AdapterNoteBlock implements IPeripheralAdapter {
 			@Optionals @Arg(type = LuaType.NUMBER, name = "x", description = "X coordinate od sound (relative to block)") Double dx,
 			@Arg(type = LuaType.NUMBER, name = "y", description = "Y coordinate of sound (relative to block)") Double dy,
 			@Arg(type = LuaType.NUMBER, name = "z", description = "Z coordinate of sound (relative to block)") Double dz) {
-		noteblock.worldObj.playSoundEffect(
+		noteblock.getWorldObj().playSoundEffect(
 				noteblock.xCoord + 0.5 + Objects.firstNonNull(dx, 0.0),
 				noteblock.yCoord + 0.5 + Objects.firstNonNull(dy, 0.0),
 				noteblock.zCoord + 0.5 + Objects.firstNonNull(dz, 0.0),

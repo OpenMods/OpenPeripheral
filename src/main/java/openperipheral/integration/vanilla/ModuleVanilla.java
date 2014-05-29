@@ -19,7 +19,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.EnumMovingObjectType;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import openmods.utils.ReflectionHelper;
@@ -83,7 +82,7 @@ public class ModuleVanilla implements IIntegrationModule {
 			boolean isTrading = villager.isTrading();
 			map.put("isTrading", isTrading);
 			if (isTrading) {
-				map.put("customer", villager.getCustomer().username);
+				map.put("customer", villager.getCustomer().getDisplayName());
 			}
 		}
 

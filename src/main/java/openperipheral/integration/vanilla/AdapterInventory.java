@@ -6,7 +6,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import openmods.utils.InventoryUtils;
 import openperipheral.api.*;
 
@@ -29,7 +29,7 @@ public class AdapterInventory implements IPeripheralAdapter {
 	@LuaMethod(returnType = LuaType.STRING, description = "Get the name of this inventory")
 	public String getInventoryName(IInventory target) {
 		IInventory inventory = InventoryUtils.getInventory(target);
-		return inventory != null? inventory.getInvName() : null;
+		return inventory != null? inventory.getInventoryName() : null;
 	}
 
 	@LuaMethod(returnType = LuaType.NUMBER, description = "Get the size of this inventory")
@@ -54,7 +54,7 @@ public class AdapterInventory implements IPeripheralAdapter {
 		Preconditions.checkArgument(direction != null && direction != ForgeDirection.UNKNOWN, "Invalid direction");
 		TileEntity te = (TileEntity)target;
 
-		final IInventory otherInventory = InventoryUtils.getInventory(te.worldObj, te.xCoord, te.yCoord, te.zCoord, direction);
+		final IInventory otherInventory = InventoryUtils.getInventory(te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord, direction);
 		final IInventory thisInventory = InventoryUtils.getInventory(target);
 
 		if (otherInventory == null || otherInventory == target) return 0;
@@ -80,7 +80,7 @@ public class AdapterInventory implements IPeripheralAdapter {
 		Preconditions.checkArgument(direction != null && direction != ForgeDirection.UNKNOWN, "Invalid direction");
 		TileEntity te = (TileEntity)target;
 
-		final IInventory otherInventory = InventoryUtils.getInventory(te.worldObj, te.xCoord, te.yCoord, te.zCoord, direction);
+		final IInventory otherInventory = InventoryUtils.getInventory(te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord, direction);
 		final IInventory thisInventory = InventoryUtils.getInventory(target);
 
 		if (otherInventory == null || otherInventory == target) return 0;

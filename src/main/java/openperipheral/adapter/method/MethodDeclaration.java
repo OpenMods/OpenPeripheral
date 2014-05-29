@@ -5,7 +5,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.Callable;
-import java.util.logging.Level;
 
 import openmods.Log;
 import openmods.utils.AnnotationMap;
@@ -242,7 +241,7 @@ public class MethodDeclaration implements IDescriptable {
 
 				Preconditions.checkState(!it.hasNext(), "Too many arguments!");
 			} catch (ArrayIndexOutOfBoundsException e) {
-				Log.log(Level.FINE, e, "Trying to access arg index, args = %s", Arrays.toString(luaValues));
+				Log.info("Trying to access arg index, args = %s", Arrays.toString(luaValues));
 				throw new IllegalArgumentException(String.format("Invalid Lua parameter count, needs %s, got %s", luaArgs.size(), luaValues.length));
 			}
 

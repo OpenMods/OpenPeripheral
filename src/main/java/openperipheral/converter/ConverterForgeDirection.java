@@ -3,7 +3,7 @@ package openperipheral.converter;
 import java.util.Arrays;
 import java.util.List;
 
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import openperipheral.api.ITypeConverter;
 
 public class ConverterForgeDirection implements ITypeConverter {
