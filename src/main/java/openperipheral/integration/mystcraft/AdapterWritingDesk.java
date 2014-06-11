@@ -1,5 +1,6 @@
 package openperipheral.integration.mystcraft;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -8,9 +9,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.FakePlayer;
 import net.minecraftforge.common.ForgeDirection;
-import openmods.utils.BlockUtils;
-import openmods.utils.InventoryUtils;
-import openmods.utils.ReflectionHelper;
+import openmods.utils.*;
+import openmods.utils.ReflectionHelper.MethodNotFound;
 import openperipheral.api.*;
 
 import com.google.common.base.Objects;
@@ -108,7 +108,11 @@ public class AdapterWritingDesk implements IPeripheralAdapter {
 		String symbol = getSymbolFromPage(getNotebookStackInSlot(desk, deskSlot, notebookSlot));
 		if (symbol != null) {
 			FakePlayer fakePlayer = new FakePlayer(desk.getWorldObj(), "OpenPeripheral");
-			ReflectionHelper.call(DESK_CLASS, desk, "writeSymbol", ReflectionHelper.typed(fakePlayer, EntityPlayerMP.class), symbol);
+			try {
+				ReflectionHelper.call(DESK_CLASS, desk, "writeSymbol", ReflectionHelper.typed(fakePlayer, EntityPlayer.class), symbol);
+			} catch (MethodNotFound e) {
+				ReflectionHelper.call(DESK_CLASS, desk, "writeSymbol", ReflectionHelper.typed(fakePlayer, EntityPlayerMP.class), symbol);
+			}
 		}
 
 	}
