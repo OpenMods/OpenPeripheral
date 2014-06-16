@@ -6,7 +6,7 @@
 	<target name="set-env">
 		<property name="env.BUILD_NUMBER" value="0" />
 		<property name="env.JOB_NAME" value="OpenPeripheralCore" />
-		<property name="mod.version" value="0.4" />
+		<property name="mod.version" value="0.4.1" />
 		<property name="mod.name" value="OpenPeripheralCore" />
 		<property name="mod.dir" value="openperipheral" />
 		<echo message="Starting build for ${mod.name} v${mod.version}" />
