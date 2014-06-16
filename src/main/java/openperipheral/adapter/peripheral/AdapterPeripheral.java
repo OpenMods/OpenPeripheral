@@ -44,6 +44,9 @@ public class AdapterPeripheral implements IPeripheral {
 
 	@Override
 	public Object[] callMethod(final IComputerAccess computer, ILuaContext context, int index, Object[] arguments) throws Exception {
+		// this should throw if peripheral isn't attached
+		computer.getAttachmentName();
+
 		IPeripheralMethodExecutor executor = wrapped.getMethod(index);
 		Preconditions.checkArgument(executor != null, "Invalid method index: %d", index);
 
