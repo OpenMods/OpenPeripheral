@@ -24,7 +24,7 @@ public class AdapterJar implements IPeripheralAdapter {
 		return FieldAccessHelpers.getField(TILE_JAR_FILLABLE_CLASS, target, "aspectFilter", null);
 	}
 
-	@LuaCallable(returnTypes = LuaType.TABLE, description = "Get the aspect filtered by this block block")
+	@LuaCallable(returnTypes = LuaType.STRING, description = "Get the aspect filtered by this block")
 	public String getAspectFilter(Object target) {
 		Aspect aspect = getFilterAspect(target);
 		return aspect != null? aspect.getName() : "";
