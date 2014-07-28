@@ -6,7 +6,7 @@ import java.util.logging.Level;
 import openmods.Log;
 import openperipheral.adapter.WrappedException;
 import openperipheral.adapter.composed.ClassMethodsList;
-import openperipheral.api.cc16.IAttachable;
+import openperipheral.api.IAttachable;
 import openperipheral.util.PeripheralUtils;
 import openperipheral.util.ResourceMount;
 

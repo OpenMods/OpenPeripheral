@@ -23,7 +23,7 @@ public class AdapterFrequencyOwner implements IPeripheralAdapter {
 		// get the current frequency
 		int frequency = getFreq(frequencyOwner);
 		// return a map of the frequency in ComputerCraft colour format
-		return OpenPeripheralAPI.wrap(
+		return MultiReturn.wrap(
 				1 << (frequency >> 8 & 0xF),
 				1 << (frequency >> 4 & 0xF),
 				1 << (frequency >> 0 & 0xF));
@@ -33,7 +33,7 @@ public class AdapterFrequencyOwner implements IPeripheralAdapter {
 			description = "Get the colours active on this chest or tank")
 	public IMultiReturn getColorNames(TileEntity frequencyOwner) {
 		int frequency = getFreq(frequencyOwner);
-		return OpenPeripheralAPI.wrap(
+		return MultiReturn.wrap(
 				colorToName(frequency >> 8 & 0xF),
 				colorToName(frequency >> 4 & 0xF),
 				colorToName(frequency >> 0 & 0xF));
