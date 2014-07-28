@@ -4,9 +4,11 @@ import java.util.Map;
 
 import net.minecraft.item.ItemStack;
 import openperipheral.api.ITypeConverter;
-import openperipheral.util.InventoryDescriptionUtils;
+import openperipheral.meta.ItemStackMetadataBuilder;
 
 public class ConverterItemStack implements ITypeConverter {
+
+	private ItemStackMetadataBuilder BUILDER = new ItemStackMetadataBuilder();
 
 	@Override
 	public Object fromLua(Object o, Class<?> required) {
@@ -32,8 +34,7 @@ public class ConverterItemStack implements ITypeConverter {
 
 	@Override
 	public Object toLua(Object o) {
-		if (o instanceof ItemStack) { return InventoryDescriptionUtils.itemstackToMap((ItemStack)o); }
-		return null;
+		return (o instanceof ItemStack)? BUILDER.getItemStackMetadata((ItemStack)o) : null;
 	}
 
 }

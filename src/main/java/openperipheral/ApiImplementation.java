@@ -1,4 +1,4 @@
-package openperipheral.implementations;
+package openperipheral;
 
 import java.lang.annotation.*;
 

@@ -1,12 +1,12 @@
-package openperipheral.implementations;
+package openperipheral.adapter;
 
-import openperipheral.adapter.AdapterManager;
+import openperipheral.ApiImplementation;
 import openperipheral.api.IAdapterRegistry;
 import openperipheral.api.IObjectAdapter;
 import openperipheral.api.IPeripheralAdapter;
 
 @ApiImplementation
-public class AdapterRegistryImpl implements IAdapterRegistry {
+public class AdapterRegistryWrapper implements IAdapterRegistry {
 
 	@Override
 	public void register(IPeripheralAdapter adapter) {

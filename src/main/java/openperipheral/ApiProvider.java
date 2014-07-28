@@ -3,8 +3,12 @@ package openperipheral;
 import java.lang.reflect.Modifier;
 import java.util.*;
 
+import openperipheral.adapter.AdapterFactoryWrapper;
+import openperipheral.adapter.AdapterRegistryWrapper;
 import openperipheral.api.IApiInterface;
-import openperipheral.implementations.*;
+import openperipheral.converter.TypeConvertersRegistryWrapper;
+import openperipheral.meta.EntityMetadataBuilder;
+import openperipheral.meta.ItemStackMetadataBuilder;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
@@ -93,10 +97,11 @@ public class ApiProvider {
 	}
 
 	static {
-		registerClass(AdapterFactoryImpl.class);
-		registerClass(TypeConvertersRegistryImpl.class);
-		registerClass(AdapterRegistryImpl.class);
-		registerClass(EntityMetaProviderImpl.class);
+		registerClass(AdapterFactoryWrapper.class);
+		registerClass(TypeConvertersRegistryWrapper.class);
+		registerClass(AdapterRegistryWrapper.class);
+		registerClass(EntityMetadataBuilder.class);
+		registerClass(ItemStackMetadataBuilder.class);
 	}
 
 	public static IApiInterface provideImplementation(Class<? extends IApiInterface> cls) {

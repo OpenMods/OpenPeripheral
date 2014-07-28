@@ -1,13 +1,12 @@
-package openperipheral.implementations;
+package openperipheral.adapter;
 
-import openperipheral.adapter.AdapterManager;
-import openperipheral.adapter.PeripheralHandlers;
+import openperipheral.ApiImplementation;
 import openperipheral.api.IAdapterFactory;
 import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.peripheral.IPeripheral;
 
 @ApiImplementation
-public class AdapterFactoryImpl implements IAdapterFactory {
+public class AdapterFactoryWrapper implements IAdapterFactory {
 
 	@Override
 	public ILuaObject wrapObject(Object target) {

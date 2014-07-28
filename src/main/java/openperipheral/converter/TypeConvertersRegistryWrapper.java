@@ -1,11 +1,12 @@
-package openperipheral.implementations;
+package openperipheral.converter;
 
+import openperipheral.ApiImplementation;
 import openperipheral.TypeConversionRegistry;
 import openperipheral.api.ITypeConverter;
 import openperipheral.api.ITypeConvertersRegistry;
 
 @ApiImplementation
-public class TypeConvertersRegistryImpl implements ITypeConvertersRegistry {
+public class TypeConvertersRegistryWrapper implements ITypeConvertersRegistry {
 
 	@Override
 	public void register(ITypeConverter converter) {

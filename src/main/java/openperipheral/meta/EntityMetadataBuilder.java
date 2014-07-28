@@ -1,16 +1,18 @@
-package openperipheral.implementations;
+package openperipheral.meta;
 
+import java.util.Collection;
 import java.util.Map;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Vec3;
-import openperipheral.IntegrationModuleRegistry;
-import openperipheral.api.IEntityMetaProvider;
+import openperipheral.ApiImplementation;
+import openperipheral.api.IEntityMetadataBuilder;
+import openperipheral.api.IEntityMetadataProvider;
 
 import com.google.common.collect.Maps;
 
 @ApiImplementation
-public class EntityMetaProviderImpl implements IEntityMetaProvider {
+public class EntityMetadataBuilder implements IEntityMetadataBuilder {
 	@Override
 	public Map<String, Object> getEntityMetadata(Entity entity, Vec3 relativePos) {
 
@@ -27,7 +29,11 @@ public class EntityMetaProviderImpl implements IEntityMetaProvider {
 			map.put("ridingEntity", entity.ridingEntity.entityId);
 		}
 
-		IntegrationModuleRegistry.appendEntityInfo(map, entity, relativePos);
+		@SuppressWarnings("unchecked")
+		final Collection<IEntityMetadataProvider<Object>> providers = (Collection<IEntityMetadataProvider<Object>>)MetaProvidersRegistry.ENITITES.getProviders(entity.getClass());
+
+		for (IEntityMetadataProvider<Object> provider : providers)
+			provider.buildMeta(map, entity);
 
 		return map;
 	}
@@ -54,5 +60,10 @@ public class EntityMetaProviderImpl implements IEntityMetaProvider {
 		position.put("y", entity.posY - relativePos.yCoord);
 		position.put("z", entity.posZ - relativePos.zCoord);
 		return position;
+	}
+
+	@Override
+	public void register(IEntityMetadataProvider<?> provider) {
+		MetaProvidersRegistry.ENITITES.addProvider(provider);
 	}
 }
