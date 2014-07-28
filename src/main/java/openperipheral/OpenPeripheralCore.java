@@ -6,21 +6,6 @@ import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.Configuration;
 import openmods.config.ConfigProcessing;
 import openperipheral.adapter.PeripheralHandlers;
-import openperipheral.integration.appeng.ModuleAppEng;
-import openperipheral.integration.buildcraft.ModuleBuildCraft;
-import openperipheral.integration.computercraft.ModuleComputerCraft;
-import openperipheral.integration.enderstorage.ModuleEnderStorage;
-import openperipheral.integration.forestry.ModuleForestry;
-import openperipheral.integration.ic2.ModuleIC2;
-import openperipheral.integration.minefactoryreloaded.ModuleMinefactoryReloaded;
-import openperipheral.integration.multiparts.ModuleMultiparts;
-import openperipheral.integration.mystcraft.ModuleMystcraft;
-import openperipheral.integration.projectred.ModuleProjectRed;
-import openperipheral.integration.railcraft.ModuleRailcraft;
-import openperipheral.integration.sgcraft.ModuleSgCraft;
-import openperipheral.integration.thaumcraft.ModuleThaumcraft;
-import openperipheral.integration.thermalexpansion.ModuleThermalExpansion;
-import openperipheral.integration.tmechworks.ModuleTMechworks;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -42,25 +27,6 @@ public class OpenPeripheralCore {
 
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent evt) {
-		IntegrationModuleRegistry.registerModule(new ModuleAppEng());
-		IntegrationModuleRegistry.registerModule(new ModuleIC2());
-		IntegrationModuleRegistry.registerModule(new ModuleEnderStorage());
-		IntegrationModuleRegistry.registerModule(new ModuleBuildCraft());
-		IntegrationModuleRegistry.registerModule(new ModuleForestry());
-		IntegrationModuleRegistry.registerModule(new ModuleMystcraft());
-		IntegrationModuleRegistry.registerModule(new ModuleProjectRed());
-		IntegrationModuleRegistry.registerModule(new ModuleRailcraft());
-		IntegrationModuleRegistry.registerModule(new ModuleThaumcraft());
-		IntegrationModuleRegistry.registerModule(new ModuleThermalExpansion());
-		IntegrationModuleRegistry.registerModule(new ModuleSgCraft());
-		IntegrationModuleRegistry.registerModule(new ModuleTMechworks());
-		IntegrationModuleRegistry.registerModule(new ModuleMultiparts());
-		IntegrationModuleRegistry.registerModule(new ModuleComputerCraft());
-		IntegrationModuleRegistry.registerModule(new ModuleMinefactoryReloaded());
-
-		IntegrationModuleRegistry.selectLoadedModules();
-		IntegrationModuleRegistry.initAllModules();
-
 		TickRegistry.registerTickHandler(new TickHandler(), Side.SERVER);
 
 		// not side only, so no proxy needed
