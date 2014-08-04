@@ -1,6 +1,5 @@
 package openperipheral.meta;
 
-import java.util.Collection;
 import java.util.Map;
 
 import net.minecraft.item.Item;
@@ -65,7 +64,7 @@ public class ItemStackMetadataBuilder implements IItemStackMetadataBuilder {
 
 		Item item = itemstack.getItem();
 		@SuppressWarnings("unchecked")
-		final Collection<IItemStackMetadataProvider<Object>> providers = (Collection<IItemStackMetadataProvider<Object>>)MetaProvidersRegistry.ITEMS.getProviders(item.getClass());
+		final Iterable<IItemStackMetadataProvider<Object>> providers = (Iterable<IItemStackMetadataProvider<Object>>)MetaProvidersRegistry.ITEMS.getProviders(item.getClass());
 
 		for (IItemStackMetadataProvider<Object> provider : providers) {
 			Object converted = provider.getMeta(item, itemstack);

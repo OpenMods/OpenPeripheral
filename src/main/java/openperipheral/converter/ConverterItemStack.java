@@ -35,7 +35,12 @@ public class ConverterItemStack implements ITypeConverter {
 
 	@Override
 	public Object toLua(ITypeConvertersRegistry registry, Object o) {
-		return (o instanceof ItemStack)? BUILDER.getItemStackMetadata((ItemStack)o) : null;
+		if (o instanceof ItemStack) {
+			Object meta = BUILDER.getItemStackMetadata((ItemStack)o);
+			return registry.toLua(meta);
+		}
+
+		return null;
 	}
 
 }

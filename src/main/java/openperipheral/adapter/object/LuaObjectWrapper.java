@@ -40,13 +40,13 @@ public class LuaObjectWrapper {
 					Log.log(Level.FINE, e.getCause(), "Adapter error during method %s(%d) execution on object %s, args: %s",
 							methodName, method, target.getClass(), Arrays.toString(arguments));
 					throw e;
-				} catch (Exception e) {
+				} catch (Throwable t) {
 					String methodName = adapted.methodNames[method];
-					Log.log(Level.FINE, e.getCause(), "Internal error during method %s(%d) execution on object %s, args: %s",
+					Log.log(Level.FINE, t.getCause(), "Internal error during method %s(%d) execution on object %s, args: %s",
 							methodName, method, target.getClass(), Arrays.toString(arguments));
 
 					// can wrap here, no special exceptions
-					throw new WrappedException(e);
+					throw new WrappedException(t);
 				}
 			}
 		};

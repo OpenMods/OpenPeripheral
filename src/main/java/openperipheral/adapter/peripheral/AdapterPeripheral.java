@@ -60,6 +60,11 @@ public class AdapterPeripheral implements IPeripheral {
 			Log.log(Level.FINE, e.getCause(), "Adapter error during method %s(%d) execution on peripheral %s, args: %s",
 					methodName, index, type, Arrays.toString(arguments));
 			throw e;
+		} catch (Error e) {
+			String methodName = wrapped.methodNames[index];
+			Log.log(Level.FINE, e, "Unwrapped error during method %s(%d) execution on peripheral %s, args: %s",
+					methodName, index, type, Arrays.toString(arguments));
+			throw new WrappedException(e);
 		} catch (Exception e) {
 			String methodName = wrapped.methodNames[index];
 			Log.log(Level.FINE, e, "Internal error during method %s(%d) execution on peripheral %s, args: %s",
