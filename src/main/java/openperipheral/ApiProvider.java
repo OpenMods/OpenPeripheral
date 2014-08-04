@@ -6,7 +6,6 @@ import java.util.*;
 import openperipheral.adapter.AdapterFactoryWrapper;
 import openperipheral.adapter.AdapterRegistryWrapper;
 import openperipheral.api.IApiInterface;
-import openperipheral.converter.TypeConvertersRegistryWrapper;
 import openperipheral.meta.EntityMetadataBuilder;
 import openperipheral.meta.ItemStackMetadataBuilder;
 
@@ -56,6 +55,19 @@ public class ApiProvider {
 		}
 	}
 
+	private static class SingletonProvider implements IApiProvider {
+		private final IApiInterface obj;
+
+		public SingletonProvider(IApiInterface obj) {
+			this.obj = obj;
+		}
+
+		@Override
+		public IApiInterface getInterface() {
+			return obj;
+		}
+	}
+
 	private static final Map<Class<? extends IApiInterface>, IApiProvider> PROVIDERS = Maps.newHashMap();
 
 	@SuppressWarnings("unchecked")
@@ -77,18 +89,10 @@ public class ApiProvider {
 		}
 	}
 
-	private static void registerClass(Class<? extends IApiInterface> cls) {
-		Preconditions.checkArgument(!Modifier.isAbstract(cls.getModifiers()));
-
-		ApiImplementation meta = cls.getAnnotation(ApiImplementation.class);
-		Preconditions.checkNotNull(meta);
-
+	private static void registerInterfaces(Class<? extends IApiInterface> cls, IApiProvider provider, final boolean includeSuper) {
 		Set<Class<? extends IApiInterface>> implemented = Sets.newHashSet();
 		addAllApis(implemented, cls.getInterfaces());
-
-		if (meta.includeSuper()) addAllInterfaces(implemented);
-
-		IApiProvider provider = meta.cacheable()? new SingleInstanceProvider(cls) : new NewInstanceProvider(cls);
+		if (includeSuper) addAllInterfaces(implemented);
 
 		for (Class<? extends IApiInterface> impl : implemented) {
 			IApiProvider prev = PROVIDERS.put(impl, provider);
@@ -96,12 +100,33 @@ public class ApiProvider {
 		}
 	}
 
+	private static void registerClass(Class<? extends IApiInterface> cls) {
+		Preconditions.checkArgument(!Modifier.isAbstract(cls.getModifiers()));
+
+		ApiImplementation meta = cls.getAnnotation(ApiImplementation.class);
+		Preconditions.checkNotNull(meta);
+
+		IApiProvider provider = meta.cacheable()? new SingleInstanceProvider(cls) : new NewInstanceProvider(cls);
+		registerInterfaces(cls, provider, meta.includeSuper());
+	}
+
+	private static void registerInstance(IApiInterface obj) {
+		final Class<? extends IApiInterface> cls = obj.getClass();
+
+		ApiSingleton meta = cls.getAnnotation(ApiSingleton.class);
+		Preconditions.checkNotNull(meta);
+
+		IApiProvider provider = new SingletonProvider(obj);
+		registerInterfaces(cls, provider, meta.includeSuper());
+	}
+
 	static {
 		registerClass(AdapterFactoryWrapper.class);
-		registerClass(TypeConvertersRegistryWrapper.class);
 		registerClass(AdapterRegistryWrapper.class);
 		registerClass(EntityMetadataBuilder.class);
 		registerClass(ItemStackMetadataBuilder.class);
+
+		registerInstance(TypeConversionRegistry.INSTANCE);
 	}
 
 	public static IApiInterface provideImplementation(Class<? extends IApiInterface> cls) {

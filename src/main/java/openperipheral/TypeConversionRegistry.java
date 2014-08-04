@@ -4,6 +4,7 @@ import java.util.Deque;
 import java.util.Set;
 
 import openperipheral.api.ITypeConverter;
+import openperipheral.api.ITypeConvertersRegistry;
 import openperipheral.converter.*;
 
 import com.google.common.collect.Lists;
@@ -11,11 +12,14 @@ import com.google.common.collect.Sets;
 
 import dan200.computercraft.api.lua.ILuaObject;
 
-public class TypeConversionRegistry {
+@ApiSingleton
+public class TypeConversionRegistry implements ITypeConvertersRegistry {
+
+	public static final TypeConversionRegistry INSTANCE = new TypeConversionRegistry();
 
 	private static final Deque<ITypeConverter> CONVENTERS = Lists.newLinkedList();
 
-	static {
+	private TypeConversionRegistry() {
 		CONVENTERS.add(new ConverterForgeDirection());
 		CONVENTERS.add(new ConverterFluidTankInfo());
 		CONVENTERS.add(new ConverterFluidTankInfo());
@@ -31,7 +35,8 @@ public class TypeConversionRegistry {
 		CONVENTERS.add(new ConverterString());
 	}
 
-	public static void registerTypeConverter(ITypeConverter converter) {
+	@Override
+	public void register(ITypeConverter converter) {
 		CONVENTERS.addFirst(converter);
 	}
 
@@ -54,20 +59,22 @@ public class TypeConversionRegistry {
 		return WRAPPER_TYPES.contains(clazz);
 	}
 
-	public static Object fromLua(Object obj, Class<?> expected) {
+	@Override
+	public Object fromLua(Object obj, Class<?> expected) {
 		for (ITypeConverter converter : CONVENTERS) {
-			Object response = converter.fromLua(obj, expected);
+			Object response = converter.fromLua(this, obj, expected);
 			if (response != null) return response;
 		}
 
 		return null;
 	}
 
-	public static Object toLua(Object obj) {
+	@Override
+	public Object toLua(Object obj) {
 		if (obj == null || obj instanceof ILuaObject) return obj;
 
 		for (ITypeConverter converter : CONVENTERS) {
-			Object response = converter.toLua(obj);
+			Object response = converter.toLua(this, obj);
 			if (response != null) return response;
 		}
 

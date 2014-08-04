@@ -32,8 +32,13 @@ public class EntityMetadataBuilder implements IEntityMetadataBuilder {
 		@SuppressWarnings("unchecked")
 		final Collection<IEntityMetadataProvider<Object>> providers = (Collection<IEntityMetadataProvider<Object>>)MetaProvidersRegistry.ENITITES.getProviders(entity.getClass());
 
-		for (IEntityMetadataProvider<Object> provider : providers)
-			provider.buildMeta(map, entity);
+		for (IEntityMetadataProvider<Object> provider : providers) {
+			Object converted = provider.getMeta(entity, relativePos);
+			if (converted != null) {
+				final String key = provider.getKey();
+				map.put(key, converted);
+			}
+		}
 
 		return map;
 	}

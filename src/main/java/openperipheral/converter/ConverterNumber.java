@@ -1,11 +1,12 @@
 package openperipheral.converter;
 
 import openperipheral.api.ITypeConverter;
+import openperipheral.api.ITypeConvertersRegistry;
 
 public class ConverterNumber implements ITypeConverter {
 
 	@Override
-	public Object fromLua(Object o, Class<?> required) {
+	public Object fromLua(ITypeConvertersRegistry registry, Object o, Class<?> required) {
 		final Double d;
 		if (o instanceof Double) {
 			d = (Double)o;
@@ -33,7 +34,7 @@ public class ConverterNumber implements ITypeConverter {
 	}
 
 	@Override
-	public Object toLua(Object o) {
+	public Object toLua(ITypeConvertersRegistry registry, Object o) {
 		return (o instanceof Number)? ((Number)o).doubleValue() : null;
 	}
 

@@ -1,6 +1,8 @@
 package openperipheral.meta;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Queue;
+import java.util.Set;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
@@ -28,7 +30,9 @@ public abstract class MetaProvidersRegistry<P extends IMetaProvider<?>> {
 
 	private final Multimap<Class<?>, P> directProviders = HashMultimap.create();
 
-	private final Multimap<Class<?>, P> allProviders = HashMultimap.create();
+	private final Set<P> genericProviders = Sets.newIdentityHashSet();
+
+	private final Multimap<Class<?>, P> specificProvidersCache = HashMultimap.create();
 
 	private final Set<Class<?>> inCache = Sets.newHashSet();
 
@@ -39,20 +43,26 @@ public abstract class MetaProvidersRegistry<P extends IMetaProvider<?>> {
 
 		Preconditions.checkArgument(targetClass.isInterface() || validateCls(targetClass),
 				"Invalid type: %s", targetClass);
-		directProviders.put(targetClass, provider);
-		allProviders.clear();
+
+		if (targetClass == Object.class) genericProviders.add(provider);
+		else directProviders.put(targetClass, provider);
+
+		specificProvidersCache.clear();
 		inCache.clear();
 	}
 
-	public Collection<? extends P> getProviders(Class<?> cls) {
+	public Iterable<? extends P> getProviders(Class<?> cls) {
+		Iterable<? extends P> specific;
+
 		if (!inCache.contains(cls)) {
-			Collection<P> providers = collectProviders(cls);
-			allProviders.putAll(cls, providers);
+			specific = collectProviders(cls);
+			specificProvidersCache.putAll(cls, specific);
 			inCache.add(cls);
-			return providers;
+		} else {
+			specific = specificProvidersCache.get(cls);
 		}
 
-		return allProviders.get(cls);
+		return Iterables.concat(specificProvidersCache.get(cls), specific);
 	}
 
 	private Set<P> collectProviders(Class<?> targetCls) {

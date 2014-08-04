@@ -33,22 +33,22 @@ public class ResourceMount implements IMount {
 	}
 
 	@Override
-	public boolean exists(String path) throws IOException {
+	public boolean exists(String path) {
 		return path.isEmpty() || files.contains(path);
 	}
 
 	@Override
-	public boolean isDirectory(String path) throws IOException {
+	public boolean isDirectory(String path) {
 		return path.isEmpty();
 	}
 
 	@Override
-	public void list(String path, List<String> contents) throws IOException {
+	public void list(String path, List<String> contents) {
 		contents.addAll(files);
 	}
 
 	@Override
-	public long getSize(String path) throws IOException {
+	public long getSize(String path) {
 		return 0;
 	}
 

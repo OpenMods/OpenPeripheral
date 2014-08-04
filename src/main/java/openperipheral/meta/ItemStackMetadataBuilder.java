@@ -67,8 +67,13 @@ public class ItemStackMetadataBuilder implements IItemStackMetadataBuilder {
 		@SuppressWarnings("unchecked")
 		final Collection<IItemStackMetadataProvider<Object>> providers = (Collection<IItemStackMetadataProvider<Object>>)MetaProvidersRegistry.ITEMS.getProviders(item.getClass());
 
-		for (IItemStackMetadataProvider<Object> provider : providers)
-			provider.buildMeta(map, item, itemstack);
+		for (IItemStackMetadataProvider<Object> provider : providers) {
+			Object converted = provider.getMeta(item, itemstack);
+			if (converted != null) {
+				final String key = provider.getKey();
+				map.put(key, converted);
+			}
+		}
 
 		return map;
 	}

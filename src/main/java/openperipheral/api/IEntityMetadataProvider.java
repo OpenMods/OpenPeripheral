@@ -1,9 +1,9 @@
 package openperipheral.api;
 
-import java.util.Map;
+import net.minecraft.util.Vec3;
 
 public interface IEntityMetadataProvider<C> extends IMetaProvider<C> {
 
-	public void buildMeta(Map<String, Object> output, C target);
+	public Object getMeta(C target, Vec3 relativePos);
 
 }

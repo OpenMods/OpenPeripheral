@@ -191,7 +191,7 @@ public class MethodDeclaration implements IDescriptable {
 
 	private Object[] validateResult(Object... result) {
 		for (int i = 0; i < result.length; i++)
-			result[i] = TypeConversionRegistry.toLua(result[i]);
+			result[i] = TypeConversionRegistry.INSTANCE.toLua(result[i]);
 
 		if (validateReturn) {
 			if (returnTypes.length == 0) {

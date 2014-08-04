@@ -38,7 +38,7 @@ public class Argument {
 
 	protected final Object convertSingleArg(Object o) {
 		if (o == null) return null;
-		Object converted = TypeConversionRegistry.fromLua(o, javaType);
+		Object converted = TypeConversionRegistry.INSTANCE.fromLua(o, javaType);
 		Preconditions.checkNotNull(converted, "Failed to convert arg '%s' value '%s' to '%s'", name, o, javaType.getSimpleName());
 		return converted;
 	}
