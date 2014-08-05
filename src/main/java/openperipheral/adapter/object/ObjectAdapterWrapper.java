@@ -57,7 +57,7 @@ public abstract class ObjectAdapterWrapper extends AdapterWrapper<IObjectMethodE
 		}
 
 		@Override
-		public Object[] execute(ILuaContext context, Object target, Object[] args) throws Exception {
+		public Object[] execute(ILuaContext context, Object target, Object[] args) {
 			return call(target, args);
 		}
 

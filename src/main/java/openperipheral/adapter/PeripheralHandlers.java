@@ -70,10 +70,10 @@ public class PeripheralHandlers implements IPeripheralProvider {
 
 		if (ICustomPeripheralProvider.class.isAssignableFrom(teClass)) {
 			if (teClass.isAnnotationPresent(Volatile.class)) {
-				Log.fine("Adding non-caching provider handler for %s", teClass);
+				Log.trace("Adding non-caching provider handler for %s", teClass);
 				return PROVIDER_HANDLER;
 			} else {
-				Log.fine("Adding caching provider handler for %s", teClass);
+				Log.trace("Adding caching provider handler for %s", teClass);
 				return PROVIDER_CACHING_HANDLER;
 			}
 		}
@@ -83,10 +83,10 @@ public class PeripheralHandlers implements IPeripheralProvider {
 		for (Class<?> adaptableClass : AdapterManager.peripherals.getAllAdaptableClasses()) {
 			if (adaptableClass.isAssignableFrom(teClass)) {
 				if (teClass.isAnnotationPresent(Volatile.class)) {
-					Log.fine("Adding non-caching adapter handler for %s", teClass);
+					Log.trace("Adding non-caching adapter handler for %s", teClass);
 					return ADAPTER_HANDLER;
 				} else {
-					Log.fine("Adding caching adapter handler for %s", teClass);
+					Log.trace("Adding caching adapter handler for %s", teClass);
 					return ADAPTER_CACHING_HANDLER;
 				}
 			}
@@ -158,7 +158,7 @@ public class PeripheralHandlers implements IPeripheralProvider {
 
 	@Override
 	public IPeripheral getPeripheral(World world, int x, int y, int z, int side) {
-		TileEntity te = world.getBlockTileEntity(x, y, z);
+		TileEntity te = world.getTileEntity(x, y, z);
 		if (te == null) return null;
 
 		IPeripheralFactory<TileEntity> factory = getFactoryForClass(te.getClass());

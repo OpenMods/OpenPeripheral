@@ -2,10 +2,15 @@ package openperipheral.converter;
 
 import java.util.Map;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import openperipheral.api.ITypeConverter;
 import openperipheral.api.ITypeConvertersRegistry;
 import openperipheral.meta.ItemStackMetadataBuilder;
+
+import com.google.common.base.Preconditions;
+
+import cpw.mods.fml.common.registry.GameRegistry;
 
 public class ConverterItemStack implements ITypeConverter {
 
@@ -16,12 +21,20 @@ public class ConverterItemStack implements ITypeConverter {
 		if (required == ItemStack.class && o instanceof Map) {
 			Map<?, ?> m = (Map<?, ?>)o;
 
-			if (!m.containsKey("id")) return null;
-			int id = ((Number)m.get("id")).intValue();
+			// TODO check
+			Object id = m.get("id");
+			Preconditions.checkArgument(id instanceof String, "Invalid item id");
+
+			String[] parts = ((String)id).split(":");
+			Preconditions.checkArgument(parts.length == 2, "Invalid item id");
+			String modId = parts[0];
+			String name = parts[1];
+			Item item = GameRegistry.findItem(modId, name);
+
 			int quantity = getIntValue(m, "qty", 1);
 			int dmg = getIntValue(m, "dmg", 0);
 
-			return new ItemStack(id, quantity, dmg);
+			return new ItemStack(item, quantity, dmg);
 		}
 		return null;
 	}

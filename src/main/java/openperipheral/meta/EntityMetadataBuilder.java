@@ -19,14 +19,14 @@ public class EntityMetadataBuilder implements IEntityMetadataBuilder {
 		Map<String, Object> map = Maps.newHashMap();
 
 		addPositionInfo(map, entity, relativePos);
-		map.put("type", entity.getEntityName());
+		map.put("type", entity.getCommandSenderName());
 
 		if (entity.riddenByEntity != null) {
 			map.put("riddenBy", getEntityMetadata(entity.riddenByEntity, relativePos));
 		}
 
 		if (entity.ridingEntity != null) {
-			map.put("ridingEntity", entity.ridingEntity.entityId);
+			map.put("ridingEntity", entity.ridingEntity.getEntityId());
 		}
 
 		@SuppressWarnings("unchecked")

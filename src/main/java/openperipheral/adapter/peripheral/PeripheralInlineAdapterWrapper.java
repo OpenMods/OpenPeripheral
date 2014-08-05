@@ -85,7 +85,7 @@ public class PeripheralInlineAdapterWrapper extends PeripheralAdapterWrapper imp
 		}
 
 		@Override
-		public Object[] execute(IComputerAccess computer, ILuaContext context, Object target, Object[] args) throws Exception {
+		public Object[] execute(IComputerAccess computer, ILuaContext context, Object target, Object[] args) {
 			return call(target, args);
 		}
 

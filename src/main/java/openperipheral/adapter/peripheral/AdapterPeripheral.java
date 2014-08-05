@@ -1,19 +1,21 @@
 package openperipheral.adapter.peripheral;
 
 import java.util.Arrays;
-import java.util.logging.Level;
 
 import openmods.Log;
-import openperipheral.adapter.WrappedException;
+import openperipheral.adapter.AdapterLogicException;
 import openperipheral.adapter.composed.ClassMethodsList;
 import openperipheral.api.IAttachable;
 import openperipheral.util.PeripheralUtils;
 import openperipheral.util.ResourceMount;
 
+import org.apache.logging.log4j.Level;
+
 import com.google.common.base.Preconditions;
 
 import dan200.computercraft.api.filesystem.IMount;
 import dan200.computercraft.api.lua.ILuaContext;
+import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 
@@ -43,7 +45,7 @@ public class AdapterPeripheral implements IPeripheral {
 	}
 
 	@Override
-	public Object[] callMethod(final IComputerAccess computer, ILuaContext context, int index, Object[] arguments) throws Exception {
+	public Object[] callMethod(final IComputerAccess computer, ILuaContext context, int index, Object[] arguments) throws LuaException, InterruptedException {
 		// this should throw if peripheral isn't attached
 		computer.getAttachmentName();
 
@@ -55,22 +57,18 @@ public class AdapterPeripheral implements IPeripheral {
 		} catch (InterruptedException e) {
 			// not our problem
 			throw e;
-		} catch (WrappedException e) {
-			String methodName = wrapped.methodNames[index];
-			Log.log(Level.FINE, e.getCause(), "Adapter error during method %s(%d) execution on peripheral %s, args: %s",
-					methodName, index, type, Arrays.toString(arguments));
+		} catch (LuaException e) {
 			throw e;
-		} catch (Error e) {
+		} catch (AdapterLogicException e) {
 			String methodName = wrapped.methodNames[index];
-			Log.log(Level.FINE, e, "Unwrapped error during method %s(%d) execution on peripheral %s, args: %s",
+			Log.log(Level.DEBUG, e.getCause(), "Adapter error during method %s(%d) execution on peripheral %s, args: %s",
 					methodName, index, type, Arrays.toString(arguments));
-			throw new WrappedException(e);
-		} catch (Exception e) {
+			throw e.rethrow();
+		} catch (Throwable e) {
 			String methodName = wrapped.methodNames[index];
-			Log.log(Level.FINE, e, "Internal error during method %s(%d) execution on peripheral %s, args: %s",
+			Log.log(Level.DEBUG, e, "Unwrapped error during method %s(%d) execution on peripheral %s, args: %s",
 					methodName, index, type, Arrays.toString(arguments));
-			// don't wrap, Exception has special meaning (reset)
-			throw e;
+			throw new LuaException("Internal error. Check logs for info");
 		}
 	}
 

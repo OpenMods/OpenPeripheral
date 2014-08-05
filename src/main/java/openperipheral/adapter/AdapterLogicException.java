@@ -2,10 +2,12 @@ package openperipheral.adapter;
 
 import com.google.common.base.Strings;
 
-public class WrappedException extends RuntimeException {
+import dan200.computercraft.api.lua.LuaException;
+
+public class AdapterLogicException extends RuntimeException {
 	private static final long serialVersionUID = 162027349454188794L;
 
-	public WrappedException(Throwable cause) {
+	public AdapterLogicException(Throwable cause) {
 		super(cause);
 	}
 
@@ -29,6 +31,10 @@ public class WrappedException extends RuntimeException {
 	public String getMessage() {
 		Throwable cause = getCause();
 		return cause != null? getMessageForThrowable(cause) : "internal error";
+	}
+
+	public LuaException rethrow() throws LuaException {
+		throw new LuaException(getMessage());
 	}
 
 }

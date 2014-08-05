@@ -8,8 +8,12 @@ import openperipheral.ApiImplementation;
 import openperipheral.api.IItemStackMetadataBuilder;
 import openperipheral.api.IItemStackMetadataProvider;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
 
 @ApiImplementation
 public class ItemStackMetadataBuilder implements IItemStackMetadataBuilder {
@@ -54,8 +58,12 @@ public class ItemStackMetadataBuilder implements IItemStackMetadataBuilder {
 
 		Map<String, Object> map = Maps.newHashMap();
 
-		map.put("id", itemstack.itemID);
-		map.put("name", getNameForItemStack(itemstack));
+		UniqueIdentifier id = GameRegistry.findUniqueIdentifierFor(itemstack.getItem());
+		Preconditions.checkNotNull(id, "Invalid item stack: %s", itemstack);
+		map.put("id", id.toString());
+		map.put("name", id.name);
+		map.put("mod_id", id.modId);
+		map.put("display_name", getNameForItemStack(itemstack));
 		map.put("rawName", getRawNameForStack(itemstack));
 		map.put("qty", itemstack.stackSize);
 		map.put("dmg", itemstack.getItemDamage());

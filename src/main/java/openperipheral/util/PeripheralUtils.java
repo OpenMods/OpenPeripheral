@@ -6,7 +6,6 @@ import net.minecraft.block.Block;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
 import openmods.Log;
 
 import com.google.common.base.Strings;
@@ -38,7 +37,7 @@ public class PeripheralUtils {
 
 		if (target instanceof IInventory) {
 			try {
-				return ((IInventory)target).getInvName();
+				return ((IInventory)target).getInventoryName();
 			} catch (Throwable t) {
 				Log.warn(t, "Can't get inventory name for %s", target.getClass());
 			}
@@ -75,14 +74,5 @@ public class PeripheralUtils {
 		}
 
 		return "";
-	}
-
-	public static boolean isTileEntityValid(TileEntity te) {
-		if (te.isInvalid()) return false;
-
-		World world = te.worldObj;
-		if (world == null) return false;
-
-		return world.blockExists(te.xCoord, te.yCoord, te.zCoord);
 	}
 }

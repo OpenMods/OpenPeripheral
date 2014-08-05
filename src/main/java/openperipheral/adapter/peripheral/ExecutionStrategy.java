@@ -5,15 +5,16 @@ import java.util.concurrent.Callable;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import openmods.Log;
-import openperipheral.TickHandler;
-import openperipheral.adapter.WrappedException;
+import openmods.utils.WorldUtils;
+import openperipheral.DelayedActionTickHandler;
+import openperipheral.adapter.AdapterLogicException;
 import openperipheral.api.IWorldProvider;
-import openperipheral.util.PeripheralUtils;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 
 import dan200.computercraft.api.lua.ILuaContext;
+import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 
 public abstract class ExecutionStrategy {
@@ -98,7 +99,7 @@ public abstract class ExecutionStrategy {
 
 			final Responder responder = new Responder(context, computer);
 
-			TickHandler.addTickCallback(world, new Runnable() {
+			DelayedActionTickHandler.addTickCallback(world, new Runnable() {
 				@Override
 				public void run() {
 					@SuppressWarnings("unchecked")
@@ -111,7 +112,7 @@ public abstract class ExecutionStrategy {
 						}
 						responder.signalEvent(true);
 					} else {
-						// object is unloaded, but we still cant try to finish other thread
+						// object is unloaded, but we still can try to finish other thread
 						responder.result = DUMMY;
 						responder.signalEvent(false);
 					}
@@ -120,7 +121,8 @@ public abstract class ExecutionStrategy {
 
 			responder.waitForEvent();
 
-			if (responder.error != null) throw new WrappedException(responder.error);
+			// This code was executed in main thread, so there are no special exceptions we need to pass
+			if (responder.error != null) throw new AdapterLogicException(responder.error);
 			return responder.result;
 		}
 	}
@@ -130,8 +132,12 @@ public abstract class ExecutionStrategy {
 		public Object[] execute(Object target, IComputerAccess computer, ILuaContext context, Callable<Object[]> callable) throws Exception {
 			try {
 				return callable.call();
-			} catch (Throwable t) {
-				throw new WrappedException(t);
+			} catch (InterruptedException e) {
+				throw e;
+			} catch (LuaException e) {
+				throw e;
+			} catch (Exception t) {
+				throw new AdapterLogicException(t);
 			}
 		}
 	};
@@ -140,12 +146,12 @@ public abstract class ExecutionStrategy {
 
 		@Override
 		public World getWorld(TileEntity target) {
-			return target.worldObj;
+			return target.getWorldObj();
 		}
 
 		@Override
 		public boolean isLoaded(TileEntity target) {
-			return PeripheralUtils.isTileEntityValid(target);
+			return WorldUtils.isTileEntityValid(target);
 		}
 
 	};
@@ -168,7 +174,7 @@ public abstract class ExecutionStrategy {
 
 		@Override
 		public World getWorld(Object target) {
-			if (target instanceof TileEntity) return ((TileEntity)target).worldObj;
+			if (target instanceof TileEntity) return ((TileEntity)target).getWorldObj();
 			if (target instanceof IWorldProvider) return ((IWorldProvider)target).getWorld();
 			throw new UnsupportedOperationException(String.format("Methods of adapter for %s cannot be synchronous", target.getClass()));
 		}
@@ -180,7 +186,7 @@ public abstract class ExecutionStrategy {
 
 		@Override
 		public boolean isLoaded(Object target) {
-			if (target instanceof TileEntity) return PeripheralUtils.isTileEntityValid((TileEntity)target);
+			if (target instanceof TileEntity) return WorldUtils.isTileEntityValid((TileEntity)target);
 			if (target instanceof IWorldProvider) return ((IWorldProvider)target).isValid();
 			throw new UnsupportedOperationException(String.format("Methods of adapter for %s cannot be synchronous", target.getClass()));
 		}

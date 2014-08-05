@@ -31,12 +31,11 @@ public class ConverterFluidTankInfo implements ITypeConverter {
 				Fluid fluid = fluidStack.getFluid();
 				if (fluid != null) {
 					map.put("name", fluid.getName());
-					map.put("rawName", fluid.getLocalizedName());
+					map.put("rawName", fluid.getLocalizedName(fluidStack));
 				}
 			}
 			return map;
 		}
 		return null;
 	}
-
 }

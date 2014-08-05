@@ -55,7 +55,7 @@ public abstract class ClassMethodsListBuilder<E extends IMethodExecutor> {
 		for (E executor : wrapper.listMethods()) {
 			for (String name : executor.getWrappedMethod().getNames()) {
 				final E previous = methods.put(name, executor);
-				if (previous != null) Log.fine("Previous defininition of Lua method '%s' overwritten by %s adapter", name, wrapper.describeType());
+				if (previous != null) Log.trace("Previous defininition of Lua method '%s' overwritten by %s adapter", name, wrapper.describeType());
 			}
 		}
 	}

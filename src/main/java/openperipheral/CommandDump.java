@@ -6,7 +6,7 @@ import java.util.Map;
 
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.ChatMessageComponent;
+import net.minecraft.util.ChatComponentText;
 import openmods.Log;
 import openmods.OpenMods;
 import openperipheral.adapter.AdapterManager;
@@ -67,10 +67,10 @@ public class CommandDump implements ICommand {
 				builder.createDocForPeripheral("objectAdapter", e);
 
 			builder.dump(output);
-			sender.sendChatToPlayer(ChatMessageComponent.createFromText("Done! Created file in " + output.getAbsolutePath()));
+			sender.addChatMessage(new ChatComponentText("Done! Created file in " + output.getAbsolutePath()));
 		} catch (Throwable t) {
 			Log.warn(t, "Failed to execute dump command");
-			sender.sendChatToPlayer(ChatMessageComponent.createFromText("Failed to execute! Check logs"));
+			sender.addChatMessage(new ChatComponentText("Failed to execute! Check logs"));
 
 		}
 	}
