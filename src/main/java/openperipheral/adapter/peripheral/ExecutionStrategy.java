@@ -6,7 +6,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import openmods.Log;
 import openmods.utils.WorldUtils;
-import openperipheral.DelayedActionTickHandler;
+import openmods.world.DelayedActionTickHandler;
 import openperipheral.adapter.AdapterLogicException;
 import openperipheral.api.IWorldProvider;
 
@@ -99,7 +99,7 @@ public abstract class ExecutionStrategy {
 
 			final Responder responder = new Responder(context, computer);
 
-			DelayedActionTickHandler.addTickCallback(world, new Runnable() {
+			DelayedActionTickHandler.INSTANCE.addTickCallback(world, new Runnable() {
 				@Override
 				public void run() {
 					@SuppressWarnings("unchecked")

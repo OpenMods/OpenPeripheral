@@ -20,6 +20,8 @@ public class TypeConversionRegistry implements ITypeConvertersRegistry {
 	private final Deque<ITypeConverter> converters = Lists.newLinkedList();
 
 	private TypeConversionRegistry() {
+		converters.add(new ConverterGameProfile());
+		converters.add(new ConverterForgeDirection());
 		converters.add(new ConverterForgeDirection());
 		converters.add(new ConverterFluidTankInfo());
 		converters.add(new ConverterFluidTankInfo());

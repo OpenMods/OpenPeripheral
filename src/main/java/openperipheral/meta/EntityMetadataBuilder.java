@@ -1,6 +1,5 @@
 package openperipheral.meta;
 
-import java.util.Collection;
 import java.util.Map;
 
 import net.minecraft.entity.Entity;
@@ -19,7 +18,9 @@ public class EntityMetadataBuilder implements IEntityMetadataBuilder {
 		Map<String, Object> map = Maps.newHashMap();
 
 		addPositionInfo(map, entity, relativePos);
-		map.put("type", entity.getCommandSenderName());
+		map.put("name", entity.getCommandSenderName());
+		map.put("id", entity.getEntityId());
+		map.put("uuid", entity.getUniqueID());
 
 		if (entity.riddenByEntity != null) {
 			map.put("riddenBy", getEntityMetadata(entity.riddenByEntity, relativePos));
@@ -30,7 +31,7 @@ public class EntityMetadataBuilder implements IEntityMetadataBuilder {
 		}
 
 		@SuppressWarnings("unchecked")
-		final Collection<IEntityMetadataProvider<Object>> providers = (Collection<IEntityMetadataProvider<Object>>)MetaProvidersRegistry.ENITITES.getProviders(entity.getClass());
+		final Iterable<IEntityMetadataProvider<Object>> providers = (Iterable<IEntityMetadataProvider<Object>>)MetaProvidersRegistry.ENITITES.getProviders(entity.getClass());
 
 		for (IEntityMetadataProvider<Object> provider : providers) {
 			Object converted = provider.getMeta(entity, relativePos);

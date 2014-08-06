@@ -6,7 +6,6 @@ import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.config.Configuration;
 import openmods.config.properties.ConfigProcessing;
 import openperipheral.adapter.PeripheralHandlers;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -26,7 +25,6 @@ public class OpenPeripheralCore {
 
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent evt) {
-		FMLCommonHandler.instance().bus().register(new DelayedActionTickHandler());
 		ClientCommandHandler.instance.registerCommand(new CommandDump());
 	}
 

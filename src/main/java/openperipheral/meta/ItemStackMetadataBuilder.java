@@ -42,13 +42,7 @@ public class ItemStackMetadataBuilder implements IItemStackMetadataBuilder {
 
 	static {
 		ImmutableMap.Builder<String, Object> builder = ImmutableMap.builder();
-		builder.put("id", 0)
-				.put("name", "empty")
-				.put("rawName", "empty")
-				.put("qty", 0)
-				.put("dmg", 0)
-				.put("maxdmg", 0)
-				.put("maxSize", 64);
+		builder.put("id", "invalid");
 		NULL = builder.build();
 	}
 
@@ -57,20 +51,10 @@ public class ItemStackMetadataBuilder implements IItemStackMetadataBuilder {
 		if (itemstack == null) return NULL;
 
 		Map<String, Object> map = Maps.newHashMap();
-
-		UniqueIdentifier id = GameRegistry.findUniqueIdentifierFor(itemstack.getItem());
-		Preconditions.checkNotNull(id, "Invalid item stack: %s", itemstack);
-		map.put("id", id.toString());
-		map.put("name", id.name);
-		map.put("mod_id", id.modId);
-		map.put("display_name", getNameForItemStack(itemstack));
-		map.put("rawName", getRawNameForStack(itemstack));
-		map.put("qty", itemstack.stackSize);
-		map.put("dmg", itemstack.getItemDamage());
-		map.put("maxdmg", itemstack.getMaxDamage());
-		map.put("maxSize", itemstack.getMaxStackSize());
-
 		Item item = itemstack.getItem();
+
+		fillBasicProperties(map, item, itemstack);
+
 		@SuppressWarnings("unchecked")
 		final Iterable<IItemStackMetadataProvider<Object>> providers = (Iterable<IItemStackMetadataProvider<Object>>)MetaProvidersRegistry.ITEMS.getProviders(item.getClass());
 
@@ -83,6 +67,20 @@ public class ItemStackMetadataBuilder implements IItemStackMetadataBuilder {
 		}
 
 		return map;
+	}
+
+	private static void fillBasicProperties(Map<String, Object> map, Item item, ItemStack itemstack) {
+		UniqueIdentifier id = GameRegistry.findUniqueIdentifierFor(item);
+		Preconditions.checkNotNull(id, "Invalid item stack: %s", itemstack);
+		map.put("id", id.toString());
+		map.put("name", id.name);
+		map.put("mod_id", id.modId);
+		map.put("display_name", getNameForItemStack(itemstack));
+		map.put("raw_name", getRawNameForStack(itemstack));
+		map.put("qty", itemstack.stackSize);
+		map.put("dmg", itemstack.getItemDamage());
+		map.put("max_dmg", itemstack.getMaxDamage());
+		map.put("max_size", itemstack.getMaxStackSize());
 	}
 
 	@Override
