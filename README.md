@@ -12,17 +12,17 @@ Compiling
 
 (Linux and Mac)
 
-You will need Apache Ant and Git.
+You will need Git.
 
 Run: git clone git://github.com/OpenMods/OpenPeripheral; && cd OpenPeripheral
 
 It should download the repository and cd into the repository.
 
-Next, run: ant
+Next, run: ./gradlew build
 
 It should find the Buildfile and start downloading Forge and MCP.
 
-It will start decompiling Minecraft and then after a few minutes there should be a file called 'OpenPeripheral-VERSION.jar' in bin/. That is the compiled version of OpenPeripheral.
+It will start decompiling Minecraft and then after a few minutes there should be a file called 'OpenPeripheralCore-VERSION.jar' in build/libs. That is the compiled version of OpenPeripheral.
 
 License
 =======
