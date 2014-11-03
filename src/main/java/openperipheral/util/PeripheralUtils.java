@@ -7,6 +7,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import openmods.Log;
+import openperipheral.api.PeripheralTypeId;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -38,6 +39,9 @@ public class PeripheralUtils {
 		if (target == null) return "invalid";
 
 		final Class<? extends Object> cls = target.getClass();
+
+		PeripheralTypeId customId = cls.getAnnotation(PeripheralTypeId.class);
+		if (customId != null) return customId.value();
 
 		if (target instanceof IInventory) {
 			try {
