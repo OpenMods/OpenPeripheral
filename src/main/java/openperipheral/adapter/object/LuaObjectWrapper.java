@@ -33,7 +33,7 @@ public class LuaObjectWrapper {
 			@Override
 			public Object[] callMethod(ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
 				IObjectMethodExecutor executor = adapted.getMethod(method);
-				Preconditions.checkArgument(executor != null, "Invalid method index: %d", method);
+				Preconditions.checkNotNull(executor, "Invalid method index: %d", method);
 
 				try {
 					return executor.execute(context, target, arguments);

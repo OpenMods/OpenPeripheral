@@ -50,7 +50,7 @@ public class AdapterPeripheral implements IPeripheral {
 		computer.getAttachmentName();
 
 		IPeripheralMethodExecutor executor = wrapped.getMethod(index);
-		Preconditions.checkArgument(executor != null, "Invalid method index: %d", index);
+		Preconditions.checkNotNull(executor, "Invalid method index: %d", index);
 
 		try {
 			return executor.execute(computer, context, targetObject, arguments);

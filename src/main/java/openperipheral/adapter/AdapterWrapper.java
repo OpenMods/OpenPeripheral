@@ -91,7 +91,7 @@ public abstract class AdapterWrapper<E extends IMethodExecutor> implements IAdap
 		if (args.length == 1 && args[0] == void.class) args = defaultArgs;
 
 		Method proxiedMethod = ReflectionHelper.getMethod(targetCls, names, args);
-		Preconditions.checkState(proxiedMethod != null, "Can find proxy argument '%s' for method %s %s in class (adapter: %s)",
+		Preconditions.checkNotNull(proxiedMethod, "Can find proxy argument '%s' for method %s %s in class (adapter: %s)",
 				name, targetCls, Arrays.toString(names), Arrays.toString(args), targetCls, adapterClass);
 		proxiedMethod.setAccessible(true);
 		Method prev = result.put(name, proxiedMethod);
