@@ -137,12 +137,12 @@ public class PeripheralHandlers implements IPeripheralProvider {
 		Class<?> targetClass = target.getClass();
 		ClassMethodsList<IPeripheralMethodExecutor> methods = AdapterManager.peripherals.getAdapterClass(targetClass);
 
-		ProxyInterfaces proxyAnn = targetClass.getAnnotation(ProxyInterfaces.class);
+		ExposeInterface proxyAnn = targetClass.getAnnotation(ExposeInterface.class);
 		if (proxyAnn == null) return new AdapterPeripheral(methods, target);
 
 		Set<Class<?>> implemented = ReflectionHelper.getAllInterfaces(targetClass);
-		Set<Class<?>> blacklist = ImmutableSet.copyOf(proxyAnn.exclude());
-		Set<Class<?>> proxied = Sets.difference(implemented, blacklist);
+		Set<Class<?>> whitelist = ImmutableSet.copyOf(proxyAnn.value());
+		Set<Class<?>> proxied = Sets.intersection(implemented, whitelist);
 
 		if (proxied.isEmpty()) return new AdapterPeripheral(methods, target);
 

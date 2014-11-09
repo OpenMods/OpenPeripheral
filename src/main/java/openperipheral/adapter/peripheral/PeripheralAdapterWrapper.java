@@ -14,7 +14,9 @@ import openperipheral.adapter.composed.ClassMethodsList;
 import openperipheral.adapter.method.MethodDeclaration;
 import openperipheral.adapter.method.MethodDeclaration.CallWrap;
 import openperipheral.adapter.object.IObjectMethodExecutor;
-import openperipheral.api.*;
+import openperipheral.api.Asynchronous;
+import openperipheral.api.Include;
+import openperipheral.api.OnTickSafe;
 
 import com.google.common.base.Preconditions;
 
@@ -37,9 +39,9 @@ public abstract class PeripheralAdapterWrapper extends AdapterWrapper<IPeriphera
 		return ignore != null? ignore.value() : defaultValue;
 	}
 
-	protected static boolean isOnTick(AnnotatedElement element, boolean defaultValue) {
-		OnTick onTick = element.getAnnotation(OnTick.class);
-		return onTick != null? onTick.value() : defaultValue;
+	protected static boolean isAsynchronous(AnnotatedElement element, boolean defaultValue) {
+		Asynchronous async = element.getAnnotation(Asynchronous.class);
+		return async != null? async.value() : defaultValue;
 	}
 
 	protected static abstract class PeripheralMethodExecutor implements IPeripheralMethodExecutor {
@@ -74,7 +76,7 @@ public abstract class PeripheralAdapterWrapper extends AdapterWrapper<IPeriphera
 
 	@Override
 	protected List<IPeripheralMethodExecutor> buildMethodList() {
-		final boolean defaultOnTick = isOnTick(adapterClass, false);
+		final boolean defaultAsync = isAsynchronous(adapterClass, true);
 
 		final boolean packageIsIgnoringWarnings = isIgnoringWarnings(adapterClass.getPackage(), false);
 		final boolean classIsIgnoringWarnings = isIgnoringWarnings(adapterClass, packageIsIgnoringWarnings);
@@ -82,10 +84,9 @@ public abstract class PeripheralAdapterWrapper extends AdapterWrapper<IPeriphera
 		List<IPeripheralMethodExecutor> peripheralMethods = buildMethodList(false, new MethodExecutorFactory<IPeripheralMethodExecutor>() {
 			@Override
 			public IPeripheralMethodExecutor createExecutor(Method method, MethodDeclaration decl, Map<String, Method> proxyArgs) {
-				LuaMethod methodAnn = method.getAnnotation(LuaMethod.class);
-				boolean onTick = (methodAnn != null)? methodAnn.onTick() : isOnTick(method, defaultOnTick);
+				boolean isAsync = isAsynchronous(method, defaultAsync);
 
-				ExecutionStrategy strategy = onTick? ExecutionStrategy.createOnTickStrategy(targetCls) : ExecutionStrategy.ASYNCHRONOUS;
+				ExecutionStrategy strategy = isAsync? ExecutionStrategy.ASYNCHRONOUS : ExecutionStrategy.createOnTickStrategy(targetCls);
 
 				if (!strategy.isAlwaysSafe() && !isIgnoringWarnings(method, classIsIgnoringWarnings)) {
 					Log.warn("Method '%s' is synchronous, but type %s does not provide world instance. Possible runtime crash!", method, targetCls);

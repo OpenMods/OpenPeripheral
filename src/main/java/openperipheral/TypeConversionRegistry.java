@@ -1,6 +1,8 @@
 package openperipheral;
 
 import java.util.Deque;
+import java.util.List;
+import java.util.Set;
 
 import openmods.Log;
 import openperipheral.api.ITypeConverter;
@@ -9,8 +11,7 @@ import openperipheral.converter.*;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
-
-import dan200.computercraft.api.lua.ILuaObject;
+import com.google.common.collect.Sets;
 
 @ApiSingleton
 public class TypeConversionRegistry implements ITypeConvertersRegistry {
@@ -18,6 +19,25 @@ public class TypeConversionRegistry implements ITypeConvertersRegistry {
 	public static final TypeConversionRegistry INSTANCE = new TypeConversionRegistry();
 
 	private final Deque<ITypeConverter> converters = Lists.newLinkedList();
+
+	private final Set<Class<?>> directlyIgnored = Sets.newHashSet();
+
+	private final List<Class<?>> subclassIngored = Lists.newArrayList();
+
+	@Override
+	public void registerIgnored(Class<?> ignored, boolean includeSubclasses) {
+		// I'm so cool!
+		(includeSubclasses? subclassIngored : directlyIgnored).add(ignored);
+	}
+
+	private boolean isIgnored(Class<?> cls) {
+		if (directlyIgnored.contains(cls)) return true;
+
+		for (Class<?> ingored : subclassIngored)
+			if (ingored.isAssignableFrom(cls)) return true;
+
+		return false;
+	}
 
 	private TypeConversionRegistry() {
 		converters.add(new ConverterGameProfile());
@@ -59,7 +79,7 @@ public class TypeConversionRegistry implements ITypeConvertersRegistry {
 
 	@Override
 	public Object toLua(Object obj) {
-		if (obj == null || obj instanceof ILuaObject) return obj;
+		if (obj == null || isIgnored(obj.getClass())) return obj;
 
 		for (ITypeConverter converter : converters) {
 			try {

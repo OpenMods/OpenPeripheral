@@ -58,56 +58,6 @@ public class MethodDeclaration implements IDescriptable {
 		return names.build();
 	}
 
-	public MethodDeclaration(Method method, LuaMethod luaMethod) {
-		this.method = method;
-
-		String luaName = luaMethod.name();
-		names = getNames(method, (LuaMethod.USE_METHOD_NAME.equals(luaName))? method.getName() : luaName);
-
-		this.description = luaMethod.description();
-		this.returnTypes = new LuaType[] { luaMethod.returnType() };
-		this.validateReturn = false;
-
-		final Class<?> methodArgs[] = method.getParameterTypes();
-		final Arg declaredLuaArgs[] = luaMethod.args();
-		final Annotation[][] argsAnnotations = method.getParameterAnnotations();
-		final int luaArgsStart = methodArgs.length - declaredLuaArgs.length;
-		final boolean isVarArg = method.isVarArgs();
-
-		Preconditions.checkArgument(luaArgsStart >= 0, "Method %s has less arguments than declared", method);
-
-		boolean isOptional = false;
-
-		ImmutableList.Builder<Argument> luaArgs = ImmutableList.builder();
-		for (int arg = 0; arg < declaredLuaArgs.length; arg++) {
-			boolean isLastArg = arg == (declaredLuaArgs.length - 1);
-
-			AnnotationMap annotations = new AnnotationMap(argsAnnotations[arg]);
-			Arg ann = declaredLuaArgs[arg];
-			annotations.put(ann);
-			int javaArgIndex = luaArgsStart + arg;
-
-			isOptional = checkOptional(isOptional, annotations);
-
-			ArgumentBuilder builder = new ArgumentBuilder();
-			builder.setVararg(isLastArg && isVarArg);
-			builder.setOptional(isOptional);
-			builder.setNullable(ann.isNullable());
-
-			luaArgs.add(createLuaArg(builder, annotations, methodArgs[javaArgIndex], javaArgIndex));
-		}
-
-		this.luaArgs = luaArgs.build();
-		this.javaArgs = ImmutableList.copyOf(Arrays.copyOf(methodArgs, luaArgsStart));
-
-		for (int arg = 0; arg < luaArgsStart; arg++) {
-			AnnotationMap annotations = new AnnotationMap(argsAnnotations[arg]);
-			Named named = annotations.get(Named.class);
-			if (named != null) namedArgs.put(named.value(), arg);
-			Preconditions.checkState(annotations.get(Optionals.class) == null, "@Optionals does not work for java arguments (method %s)", method);
-		}
-	}
-
 	public MethodDeclaration(Method method, LuaCallable meta) {
 		this.method = method;
 

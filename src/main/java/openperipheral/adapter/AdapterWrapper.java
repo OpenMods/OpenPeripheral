@@ -72,9 +72,6 @@ public abstract class AdapterWrapper<E extends IMethodExecutor> implements IAdap
 	}
 
 	protected MethodDeclaration createDeclaration(Method method) {
-		LuaMethod methodAnn = method.getAnnotation(LuaMethod.class);
-		if (methodAnn != null) return new MethodDeclaration(method, methodAnn);
-
 		LuaCallable callableAnn = method.getAnnotation(LuaCallable.class);
 		if (callableAnn != null) return new MethodDeclaration(method, callableAnn);
 
@@ -98,8 +95,8 @@ public abstract class AdapterWrapper<E extends IMethodExecutor> implements IAdap
 		Preconditions.checkState(prev == null, "Duplicated proxy arg name '%s' in adapter '%s'", name, adapterClass);
 	}
 
-	protected static IMethodProxy createProxy(final Object target, final Method method) {
-		return new IMethodProxy() {
+	protected static ICallableWithArgs createProxy(final Object target, final Method method) {
+		return new ICallableWithArgs() {
 			@SuppressWarnings("unchecked")
 			@Override
 			public <T> T call(Object... args) {
@@ -160,7 +157,7 @@ public abstract class AdapterWrapper<E extends IMethodExecutor> implements IAdap
 
 			validateArgTypes(decl);
 			for (String proxyArgName : allProxyArgs.keySet())
-				decl.declareJavaArgType(proxyArgName, IMethodProxy.class);
+				decl.declareJavaArgType(proxyArgName, ICallableWithArgs.class);
 
 			decl.validate();
 
