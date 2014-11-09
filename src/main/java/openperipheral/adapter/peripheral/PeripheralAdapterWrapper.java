@@ -76,7 +76,7 @@ public abstract class PeripheralAdapterWrapper extends AdapterWrapper<IPeriphera
 
 	@Override
 	protected List<IPeripheralMethodExecutor> buildMethodList() {
-		final boolean defaultAsync = isAsynchronous(adapterClass, true);
+		final boolean defaultAsync = isAsynchronous(adapterClass, false);
 
 		final boolean packageIsIgnoringWarnings = isIgnoringWarnings(adapterClass.getPackage(), false);
 		final boolean classIsIgnoringWarnings = isIgnoringWarnings(adapterClass, packageIsIgnoringWarnings);
