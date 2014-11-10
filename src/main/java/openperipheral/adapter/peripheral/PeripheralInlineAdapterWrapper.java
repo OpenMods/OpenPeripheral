@@ -45,9 +45,7 @@ public class PeripheralInlineAdapterWrapper extends PeripheralAdapterWrapper imp
 	}
 
 	@Override
-	protected void nameDefaultParameters(MethodDeclaration decl) {
-		decl.nameJavaArg(0, ARG_COMPUTER);
-	}
+	protected void nameDefaultParameters(MethodDeclaration decl) {}
 
 	@Override
 	protected void validateArgTypes(MethodDeclaration decl) {

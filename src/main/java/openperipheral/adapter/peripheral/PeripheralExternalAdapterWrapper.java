@@ -47,8 +47,7 @@ public class PeripheralExternalAdapterWrapper extends PeripheralAdapterWrapper {
 
 	@Override
 	protected void nameDefaultParameters(MethodDeclaration decl) {
-		decl.nameJavaArg(0, ARG_COMPUTER);
-		decl.nameJavaArg(1, ARG_TARGET);
+		decl.nameJavaArg(0, ARG_TARGET);
 	}
 
 	@Override

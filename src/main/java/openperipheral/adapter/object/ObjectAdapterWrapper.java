@@ -75,7 +75,6 @@ public abstract class ObjectAdapterWrapper extends AdapterWrapper<IObjectMethodE
 		@Override
 		protected void nameDefaultParameters(MethodDeclaration decl) {
 			decl.nameJavaArg(0, ARG_TARGET);
-			decl.nameJavaArg(1, ARG_CONTEXT);
 		}
 
 		@Override
@@ -100,9 +99,7 @@ public abstract class ObjectAdapterWrapper extends AdapterWrapper<IObjectMethodE
 		}
 
 		@Override
-		protected void nameDefaultParameters(MethodDeclaration decl) {
-			decl.nameJavaArg(0, ARG_CONTEXT);
-		}
+		protected void nameDefaultParameters(MethodDeclaration decl) {}
 
 		@Override
 		protected void validateArgTypes(MethodDeclaration decl) {
