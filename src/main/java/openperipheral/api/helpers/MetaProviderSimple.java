@@ -8,7 +8,7 @@ import com.google.common.reflect.TypeToken;
 public abstract class MetaProviderSimple<C> extends TypeToken<C> implements IMetaProvider<C> {
 	@Override
 	@SuppressWarnings("unchecked")
-	public Class<? extends C> getTargetClass() {
+	public final Class<? extends C> getTargetClass() {
 		return (Class<? extends C>)getRawType();
 	}
 }
