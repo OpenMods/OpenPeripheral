@@ -41,8 +41,6 @@ public class TypeConversionRegistry implements ITypeConvertersRegistry {
 
 	private TypeConversionRegistry() {
 		converters.add(new ConverterGameProfile());
-		converters.add(new ConverterForgeDirection());
-		converters.add(new ConverterForgeDirection());
 		converters.add(new ConverterFluidTankInfo());
 		converters.add(new ConverterFluidTankInfo());
 		converters.add(new ConverterItemStack());
@@ -52,6 +50,7 @@ public class TypeConversionRegistry implements ITypeConvertersRegistry {
 		converters.add(new ConverterList());
 		converters.add(new ConverterMap());
 		converters.add(new ConverterSet());
+		converters.add(new ConverterEnum());
 		converters.add(new ConverterDefault());
 		converters.add(new ConverterNumber());
 		converters.add(new ConverterString());
