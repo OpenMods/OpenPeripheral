@@ -5,8 +5,8 @@ import java.util.Map;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import openperipheral.ApiImplementation;
-import openperipheral.api.IItemStackMetadataBuilder;
-import openperipheral.api.IItemStackMetadataProvider;
+import openperipheral.api.IItemStackMetaBuilder;
+import openperipheral.api.IItemStackMetaProvider;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
@@ -16,7 +16,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
 
 @ApiImplementation
-public class ItemStackMetadataBuilder implements IItemStackMetadataBuilder {
+public class ItemStackMetadataBuilder implements IItemStackMetaBuilder {
 
 	private static String getNameForItemStack(ItemStack is) {
 		try {
@@ -56,9 +56,9 @@ public class ItemStackMetadataBuilder implements IItemStackMetadataBuilder {
 		fillBasicProperties(map, item, itemstack);
 
 		@SuppressWarnings("unchecked")
-		final Iterable<IItemStackMetadataProvider<Object>> providers = (Iterable<IItemStackMetadataProvider<Object>>)MetaProvidersRegistry.ITEMS.getProviders(item.getClass());
+		final Iterable<IItemStackMetaProvider<Object>> providers = (Iterable<IItemStackMetaProvider<Object>>)MetaProvidersRegistry.ITEMS.getProviders(item.getClass());
 
-		for (IItemStackMetadataProvider<Object> provider : providers) {
+		for (IItemStackMetaProvider<Object> provider : providers) {
 			Object converted = provider.getMeta(item, itemstack);
 			if (converted != null) {
 				final String key = provider.getKey();
@@ -84,7 +84,7 @@ public class ItemStackMetadataBuilder implements IItemStackMetadataBuilder {
 	}
 
 	@Override
-	public void register(IItemStackMetadataProvider<?> provider) {
+	public void register(IItemStackMetaProvider<?> provider) {
 		MetaProvidersRegistry.ITEMS.addProvider(provider);
 	}
 }

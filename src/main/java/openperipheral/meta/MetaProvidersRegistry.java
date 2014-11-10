@@ -6,8 +6,8 @@ import java.util.Set;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
-import openperipheral.api.IEntityMetadataProvider;
-import openperipheral.api.IItemStackMetadataProvider;
+import openperipheral.api.IEntityMetaProvider;
+import openperipheral.api.IItemStackMetaProvider;
 import openperipheral.api.IMetaProvider;
 
 import com.google.common.base.Preconditions;
@@ -24,9 +24,9 @@ public abstract class MetaProvidersRegistry<P extends IMetaProvider<?>> {
 		};
 	}
 
-	public static final MetaProvidersRegistry<IEntityMetadataProvider<?>> ENITITES = create(Entity.class);
+	public static final MetaProvidersRegistry<IEntityMetaProvider<?>> ENITITES = create(Entity.class);
 
-	public static final MetaProvidersRegistry<IItemStackMetadataProvider<?>> ITEMS = create(Item.class);
+	public static final MetaProvidersRegistry<IItemStackMetaProvider<?>> ITEMS = create(Item.class);
 
 	private final Multimap<Class<?>, P> directProviders = HashMultimap.create();
 

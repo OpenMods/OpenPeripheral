@@ -5,13 +5,13 @@ import java.util.Map;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Vec3;
 import openperipheral.ApiImplementation;
-import openperipheral.api.IEntityMetadataBuilder;
-import openperipheral.api.IEntityMetadataProvider;
+import openperipheral.api.IEntityMetaBuilder;
+import openperipheral.api.IEntityMetaProvider;
 
 import com.google.common.collect.Maps;
 
 @ApiImplementation
-public class EntityMetadataBuilder implements IEntityMetadataBuilder {
+public class EntityMetadataBuilder implements IEntityMetaBuilder {
 	@Override
 	public Map<String, Object> getEntityMetadata(Entity entity, Vec3 relativePos) {
 
@@ -31,9 +31,9 @@ public class EntityMetadataBuilder implements IEntityMetadataBuilder {
 		}
 
 		@SuppressWarnings("unchecked")
-		final Iterable<IEntityMetadataProvider<Object>> providers = (Iterable<IEntityMetadataProvider<Object>>)MetaProvidersRegistry.ENITITES.getProviders(entity.getClass());
+		final Iterable<IEntityMetaProvider<Object>> providers = (Iterable<IEntityMetaProvider<Object>>)MetaProvidersRegistry.ENITITES.getProviders(entity.getClass());
 
-		for (IEntityMetadataProvider<Object> provider : providers) {
+		for (IEntityMetaProvider<Object> provider : providers) {
 			Object converted = provider.getMeta(entity, relativePos);
 			if (converted != null) {
 				final String key = provider.getKey();
@@ -69,7 +69,7 @@ public class EntityMetadataBuilder implements IEntityMetadataBuilder {
 	}
 
 	@Override
-	public void register(IEntityMetadataProvider<?> provider) {
+	public void register(IEntityMetaProvider<?> provider) {
 		MetaProvidersRegistry.ENITITES.addProvider(provider);
 	}
 }
