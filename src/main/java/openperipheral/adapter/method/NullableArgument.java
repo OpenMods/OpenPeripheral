@@ -3,13 +3,13 @@ package openperipheral.adapter.method;
 import java.util.Iterator;
 import java.util.Map;
 
-import openperipheral.api.LuaType;
+import openperipheral.api.LuaArgType;
 
 import com.google.common.base.Preconditions;
 
 public class NullableArgument extends Argument {
 
-	public NullableArgument(String name, String description, LuaType luaType, Class<?> javaType, int javaArgIndex) {
+	public NullableArgument(String name, String description, LuaArgType luaType, Class<?> javaType, int javaArgIndex) {
 		super(name, description, luaType, javaType, javaArgIndex);
 	}
 

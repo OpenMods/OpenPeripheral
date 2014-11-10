@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import openperipheral.TypeConversionRegistry;
+import openperipheral.adapter.method.LuaTypeQualifier;
 import openperipheral.api.*;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -69,10 +70,10 @@ public class PropertyListBuilder {
 	public abstract static class FieldContext implements IDescriptable {
 		private final String name;
 		protected final String description;
-		protected LuaType type;
+		protected LuaArgType type;
 		protected final Field field;
 
-		protected FieldContext(String name, String description, LuaType type, Field field) {
+		protected FieldContext(String name, String description, LuaArgType type, Field field) {
 			this.name = name;
 			this.description = description;
 			this.type = type;
@@ -101,7 +102,7 @@ public class PropertyListBuilder {
 
 	private abstract static class GetterContext extends FieldContext {
 
-		protected GetterContext(String capitalizedName, String description, LuaType type, Field field) {
+		protected GetterContext(String capitalizedName, String description, LuaArgType type, Field field) {
 			super("get" + capitalizedName, description, type, field);
 		}
 
@@ -128,7 +129,7 @@ public class PropertyListBuilder {
 
 	private abstract static class SetterContext extends FieldContext {
 
-		protected SetterContext(String capitalizedName, String description, LuaType type, Field field) {
+		protected SetterContext(String capitalizedName, String description, LuaArgType type, Field field) {
 			super("set" + capitalizedName, description, type, field);
 		}
 
@@ -163,7 +164,7 @@ public class PropertyListBuilder {
 	}
 
 	private static class DefaultGetterContext extends GetterContext {
-		protected DefaultGetterContext(String capitalizedName, String description, LuaType type, Field field) {
+		protected DefaultGetterContext(String capitalizedName, String description, LuaArgType type, Field field) {
 			super(capitalizedName, description, type, field);
 		}
 
@@ -174,7 +175,7 @@ public class PropertyListBuilder {
 	}
 
 	private static class DefaultSetterContext extends SetterContext {
-		protected DefaultSetterContext(String capitalizedName, String description, LuaType type, Field field) {
+		protected DefaultSetterContext(String capitalizedName, String description, LuaArgType type, Field field) {
 			super(capitalizedName, description, type, field);
 		}
 
@@ -186,7 +187,7 @@ public class PropertyListBuilder {
 
 	private static class DelegatingGetterContext extends GetterContext {
 
-		protected DelegatingGetterContext(String capitalizedName, String description, LuaType type, Field field) {
+		protected DelegatingGetterContext(String capitalizedName, String description, LuaArgType type, Field field) {
 			super(capitalizedName, description, type, field);
 		}
 
@@ -199,7 +200,7 @@ public class PropertyListBuilder {
 
 	private static class DelegatingSetterContext extends SetterContext {
 
-		protected DelegatingSetterContext(String capitalizedName, String description, LuaType type, Field field) {
+		protected DelegatingSetterContext(String capitalizedName, String description, LuaArgType type, Field field) {
 			super(capitalizedName, description, type, field);
 		}
 
@@ -214,10 +215,15 @@ public class PropertyListBuilder {
 		public E createExecutor(FieldContext context);
 	}
 
-	private static ImmutablePair<GetterContext, SetterContext> createContexts(Field field, String name, LuaType type, String getterDescription, String setterDescription, boolean isDelegating, boolean readOnly) {
+	private static ImmutablePair<GetterContext, SetterContext> createContexts(Field field, String name, LuaArgType type, String getterDescription, String setterDescription, boolean isDelegating, boolean readOnly) {
 		int modifiers = field.getModifiers();
 		Preconditions.checkArgument((readOnly || !Modifier.isFinal(modifiers)) && !Modifier.isStatic(modifiers), "Field marked with @Property can't be either final or static");
 		field.setAccessible(true);
+
+		if (type == LuaArgType.AUTO) {
+			Class<?> fieldType = field.getType();
+			type = LuaTypeQualifier.qualifyArgType(fieldType);
+		}
 
 		if (Strings.isNullOrEmpty(name)) name = field.getName();
 		String capitalizedName = StringUtils.capitalize(name);

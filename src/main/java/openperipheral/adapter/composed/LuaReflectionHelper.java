@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import openperipheral.api.LuaCallable;
-import openperipheral.api.LuaType;
+import openperipheral.api.LuaReturnType;
 import openperipheral.api.Named;
 
 import com.google.common.collect.Lists;
@@ -35,17 +35,17 @@ public class LuaReflectionHelper {
 		return results;
 	}
 
-	@LuaCallable(returnTypes = LuaType.STRING)
+	@LuaCallable(returnTypes = LuaReturnType.STRING)
 	public String getClass(@Named("target") Object owner) {
 		return owner.getClass().toString();
 	}
 
-	@LuaCallable(returnTypes = LuaType.STRING)
+	@LuaCallable(returnTypes = LuaReturnType.STRING)
 	public String getSuperclass(@Named("target") Object owner) {
 		return owner.getClass().getSuperclass().toString();
 	}
 
-	@LuaCallable(returnTypes = LuaType.TABLE)
+	@LuaCallable(returnTypes = LuaReturnType.TABLE)
 	public List<String> getInterfaces(@Named("target") Object owner) {
 		List<String> results = Lists.newArrayList();
 		for (Class<?> cls : owner.getClass().getInterfaces())
@@ -53,12 +53,12 @@ public class LuaReflectionHelper {
 		return results;
 	}
 
-	@LuaCallable(returnTypes = LuaType.TABLE)
+	@LuaCallable(returnTypes = LuaReturnType.TABLE)
 	public Map<String, Map<String, Object>> getMethods(@Named("target") Object owner) {
 		return describe(owner.getClass().getMethods());
 	}
 
-	@LuaCallable(returnTypes = LuaType.TABLE)
+	@LuaCallable(returnTypes = LuaReturnType.TABLE)
 	public Map<String, Map<String, Object>> getDeclaredMethods(@Named("target") Object owner) {
 		return describe(owner.getClass().getDeclaredMethods());
 	}

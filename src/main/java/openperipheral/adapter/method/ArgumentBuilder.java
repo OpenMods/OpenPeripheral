@@ -1,6 +1,6 @@
 package openperipheral.adapter.method;
 
-import openperipheral.api.LuaType;
+import openperipheral.api.LuaArgType;
 
 import com.google.common.base.Preconditions;
 
@@ -22,7 +22,9 @@ public class ArgumentBuilder {
 		this.isOptional = isOptional;
 	}
 
-	public Argument build(String name, String description, LuaType luaType, Class<?> javaType, int javaArgIndex) {
+	public Argument build(String name, String description, LuaArgType luaType, Class<?> javaType, int javaArgIndex) {
+		if (luaType == LuaArgType.AUTO) luaType = LuaTypeQualifier.qualifyArgType(javaType);
+
 		if (isVararg) {
 			if (isNullable) return new NullableVarArgument(name, description, luaType, javaType, javaArgIndex);
 			else return new VarArgument(name, description, luaType, javaType, javaArgIndex);

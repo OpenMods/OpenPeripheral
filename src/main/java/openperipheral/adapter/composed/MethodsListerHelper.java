@@ -6,7 +6,7 @@ import java.util.Map;
 import openperipheral.adapter.IDescriptable;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.api.LuaCallable;
-import openperipheral.api.LuaType;
+import openperipheral.api.LuaReturnType;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
@@ -19,7 +19,7 @@ public class MethodsListerHelper<E extends IMethodExecutor> {
 		this.methods = methods;
 	}
 
-	@LuaCallable(returnTypes = LuaType.STRING, description = "List all the methods available")
+	@LuaCallable(returnTypes = LuaReturnType.STRING, description = "List all the methods available")
 	public String listMethods() {
 		List<String> info = Lists.newArrayList();
 		for (Map.Entry<String, E> e : methods.entrySet()) {
@@ -29,7 +29,7 @@ public class MethodsListerHelper<E extends IMethodExecutor> {
 		return Joiner.on(", ").join(info);
 	}
 
-	@LuaCallable(returnTypes = LuaType.TABLE, description = "Get a complete table of information about all available methods")
+	@LuaCallable(returnTypes = LuaReturnType.TABLE, description = "Get a complete table of information about all available methods")
 	public Map<?, ?> getAdvancedMethodsData() {
 		Map<String, Object> info = Maps.newHashMap();
 		for (Map.Entry<String, E> e : methods.entrySet()) {

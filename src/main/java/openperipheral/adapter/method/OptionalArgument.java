@@ -3,13 +3,13 @@ package openperipheral.adapter.method;
 import java.util.Iterator;
 import java.util.Map;
 
-import openperipheral.api.LuaType;
+import openperipheral.api.LuaArgType;
 
 import com.google.common.base.Preconditions;
 
 public class OptionalArgument extends Argument {
 
-	public OptionalArgument(String name, String description, LuaType luaType, Class<?> javaType, int javaArgIndex) {
+	public OptionalArgument(String name, String description, LuaArgType luaType, Class<?> javaType, int javaArgIndex) {
 		super(name, description, luaType, javaType, javaArgIndex);
 	}
 

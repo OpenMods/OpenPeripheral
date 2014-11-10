@@ -25,7 +25,7 @@ public class MethodDeclaration implements IDescriptable {
 	private final List<String> names;
 	private final Method method;
 	private final String description;
-	private final LuaType[] returnTypes;
+	private final LuaReturnType[] returnTypes;
 
 	private final boolean validateReturn;
 
@@ -124,8 +124,9 @@ public class MethodDeclaration implements IDescriptable {
 
 		final int returnLength = returnTypes.length;
 
-		for (LuaType t : returnTypes)
-			Preconditions.checkArgument(t != LuaType.VOID, "Method '%s' declares Void as return type. Use empty list instead.", method);
+		for (LuaReturnType t : returnTypes) {
+			Preconditions.checkArgument(t != LuaReturnType.VOID, "Method '%s' declares Void as return type. Use empty list instead.", method);
+		}
 
 		if (javaReturn == void.class) {
 			Preconditions.checkArgument(returnLength == 0, "Method '%s' returns nothing, but declares at least one Lua result", method);
@@ -150,7 +151,7 @@ public class MethodDeclaration implements IDescriptable {
 			} else {
 				Preconditions.checkArgument(result.length == returnTypes.length, "Returning invalid number of values from method %s, expected %s, got %s", method, returnTypes.length, result.length);
 				for (int i = 0; i < result.length; i++) {
-					final LuaType expected = returnTypes[i];
+					final LuaReturnType expected = returnTypes[i];
 					final Class<?> expectedType = expected.getJavaType();
 					final Object got = result[i];
 					Preconditions.checkArgument(got == null || expectedType.isInstance(got) || ReflectionHelper.compareTypes(expectedType, got.getClass()), "Invalid type of return value %s: expected %s, got %s", i, expected, got);
@@ -262,7 +263,7 @@ public class MethodDeclaration implements IDescriptable {
 
 		{
 			List<String> returns = Lists.newArrayList();
-			for (LuaType t : returnTypes)
+			for (LuaReturnType t : returnTypes)
 				returns.add(t.toString());
 			result.put(IDescriptable.RETURN_TYPES, returns);
 		}
