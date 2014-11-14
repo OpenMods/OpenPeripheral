@@ -10,6 +10,7 @@ import openmods.Log;
 import openmods.utils.AnnotationMap;
 import openmods.utils.ReflectionHelper;
 import openperipheral.TypeConversionRegistry;
+import openperipheral.adapter.AdapterLogicException;
 import openperipheral.adapter.IDescriptable;
 import openperipheral.api.*;
 
@@ -185,17 +186,21 @@ public class MethodDeclaration implements IDescriptable {
 		}
 
 		public CallWrap setLuaArgs(Object[] luaValues) {
-			Iterator<Object> it = Iterators.forArray(luaValues);
 			try {
-				for (Argument arg : luaArgs) {
-					Object value = arg.convert(it);
-					setArg(arg.javaArgIndex, value);
-				}
+				Iterator<Object> it = Iterators.forArray(luaValues);
+				try {
+					for (Argument arg : luaArgs) {
+						Object value = arg.convert(it);
+						setArg(arg.javaArgIndex, value);
+					}
 
-				Preconditions.checkState(!it.hasNext(), "Too many arguments!");
-			} catch (ArrayIndexOutOfBoundsException e) {
-				Log.log(Level.TRACE, e, "Trying to access arg index, args = %s", Arrays.toString(luaValues));
-				throw new IllegalArgumentException(String.format("Invalid Lua parameter count, needs %s, got %s", luaArgs.size(), luaValues.length));
+					Preconditions.checkState(!it.hasNext(), "Too many arguments!");
+				} catch (ArrayIndexOutOfBoundsException e) {
+					Log.log(Level.TRACE, e, "Trying to access arg index, args = %s", Arrays.toString(luaValues));
+					throw new IllegalArgumentException(String.format("Invalid Lua parameter count, needs %s, got %s", luaArgs.size(), luaValues.length));
+				}
+			} catch (Exception e) {
+				throw new AdapterLogicException(e);
 			}
 
 			return this;

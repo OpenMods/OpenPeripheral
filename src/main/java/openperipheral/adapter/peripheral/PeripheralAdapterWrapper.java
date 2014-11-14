@@ -69,7 +69,7 @@ public abstract class PeripheralAdapterWrapper extends AdapterWrapper<IPeriphera
 
 		@Override
 		public Object[] execute(IComputerAccess computer, ILuaContext context, Object target, Object[] args) throws Exception {
-			Callable<Object[]> callable = nameAdapterMethods(target, proxyArgs, createWrapper(computer, context, target, args));
+			final Callable<Object[]> callable = nameAdapterMethods(target, proxyArgs, createWrapper(computer, context, target, args));
 			return strategy.execute(target, computer, context, callable);
 		}
 	}

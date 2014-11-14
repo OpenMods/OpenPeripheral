@@ -66,7 +66,7 @@ public class AdapterPeripheral implements IPeripheral {
 			throw e.rethrow();
 		} catch (Throwable e) {
 			String methodName = wrapped.methodNames[index];
-			Log.log(Level.DEBUG, e, "Unwrapped error during method %s(%d) execution on peripheral %s, args: %s",
+			Log.log(Level.INFO, e, "Unwrapped error during method %s(%d) execution on peripheral %s, args: %s",
 					methodName, index, type, Arrays.toString(arguments));
 			throw new LuaException("Internal error. Check logs for info");
 		}
