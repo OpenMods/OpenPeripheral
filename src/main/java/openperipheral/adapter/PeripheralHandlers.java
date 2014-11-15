@@ -9,12 +9,13 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import openmods.Log;
 import openmods.utils.ReflectionHelper;
-import openperipheral.Config;
 import openperipheral.adapter.composed.ClassMethodsList;
 import openperipheral.adapter.peripheral.AdapterPeripheral;
 import openperipheral.adapter.peripheral.IPeripheralMethodExecutor;
 import openperipheral.adapter.peripheral.ProxyAdapterPeripheral;
-import openperipheral.api.*;
+import openperipheral.api.ExposeInterface;
+import openperipheral.api.ICustomPeripheralProvider;
+import openperipheral.api.Volatile;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
@@ -63,8 +64,6 @@ public class PeripheralHandlers implements IPeripheralProvider {
 
 	private static final Map<Class<? extends TileEntity>, IPeripheralFactory<TileEntity>> adaptedClasses = Maps.newHashMap();
 
-	private static final Set<String> blacklist = ImmutableSet.copyOf(Config.teBlacklist);
-
 	private static IPeripheralFactory<TileEntity> findFactoryForClass(Class<? extends TileEntity> teClass) {
 		if (IPeripheral.class.isAssignableFrom(teClass)) return NULL_HANDLER;
 
@@ -78,7 +77,7 @@ public class PeripheralHandlers implements IPeripheralProvider {
 			}
 		}
 
-		if (isIgnored(teClass)) return NULL_HANDLER;
+		if (TileEntityBlacklist.INSTANCE.isIgnored(teClass)) return NULL_HANDLER;
 
 		for (Class<?> adaptableClass : AdapterManager.peripherals.getAllAdaptableClasses()) {
 			if (adaptableClass.isAssignableFrom(teClass)) {
@@ -104,24 +103,6 @@ public class PeripheralHandlers implements IPeripheralProvider {
 		}
 
 		return factory;
-	}
-
-	protected static boolean isIgnored(Class<? extends TileEntity> teClass) {
-		final String teClassName = teClass.getName();
-		if (blacklist.contains(teClassName) || blacklist.contains(teClassName.toLowerCase())) return true;
-
-		if (teClass.isAnnotationPresent(Ignore.class)) return true;
-
-		try {
-			teClass.getField("OPENPERIPHERAL_IGNORE");
-			return true;
-		} catch (NoSuchFieldException e) {
-			// uff, we are not ignored
-		} catch (Throwable t) {
-			Log.warn(t, "Class %s doesn't cooperate", teClass);
-		}
-
-		return false;
 	}
 
 	public static IPeripheral createAdaptedPeripheralSafe(Object target) {
