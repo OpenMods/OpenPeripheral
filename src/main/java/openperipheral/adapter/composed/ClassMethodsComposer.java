@@ -28,8 +28,8 @@ public abstract class ClassMethodsComposer<E extends IMethodExecutor> {
 			builder.addInlineAdapter(c);
 		}
 
-		builder.addMethodsFromObject(new MethodsListerHelper<E>(builder.getMethodList()));
-		if (Config.devMethods) builder.addMethodsFromObject(new LuaReflectionHelper());
+		builder.addMethodsFromObject(new MethodsListerHelper<E>(builder.getMethodList(), builder.getSources()), "<meta>");
+		if (Config.devMethods) builder.addMethodsFromObject(new LuaReflectionHelper(), "<reflection>");
 
 		return builder.create();
 	}

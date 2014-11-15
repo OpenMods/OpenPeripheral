@@ -5,18 +5,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+import openmods.Log;
 import openperipheral.adapter.*;
 import openperipheral.adapter.PropertyListBuilder.FieldContext;
 import openperipheral.adapter.PropertyListBuilder.IPropertyExecutorFactory;
 import openperipheral.adapter.PropertyListBuilder.PropertyExecutor;
 import openperipheral.adapter.method.MethodDeclaration;
 import openperipheral.api.IObjectAdapter;
+import openperipheral.api.ObjectTypeId;
 import dan200.computercraft.api.lua.ILuaContext;
 
 public abstract class ObjectAdapterWrapper extends AdapterWrapper<IObjectMethodExecutor> {
 
-	protected ObjectAdapterWrapper(Class<?> adapterClass, Class<?> targetClass) {
-		super(adapterClass, targetClass);
+	protected ObjectAdapterWrapper(Class<?> adapterClass, Class<?> targetClass, String source) {
+		super(adapterClass, targetClass, source);
 	}
 
 	private static final String ARG_TARGET = "target";
@@ -68,7 +70,7 @@ public abstract class ObjectAdapterWrapper extends AdapterWrapper<IObjectMethodE
 		private final IObjectAdapter adapter;
 
 		public External(IObjectAdapter adapter) {
-			super(adapter.getClass(), adapter.getTargetClass());
+			super(adapter.getClass(), adapter.getTargetClass(), adapter.getSourceId());
 			this.adapter = adapter;
 		}
 
@@ -94,8 +96,22 @@ public abstract class ObjectAdapterWrapper extends AdapterWrapper<IObjectMethodE
 
 	public static class Inline extends ObjectAdapterWrapper implements IPropertyExecutorFactory<IObjectMethodExecutor> {
 
+		private final String source;
+
 		public Inline(Class<?> targetClass) {
-			super(targetClass, targetClass);
+			this(targetClass, getSourceId(targetClass));
+		}
+
+		private Inline(Class<?> targetClass, String source) {
+			super(targetClass, targetClass, source);
+			this.source = source;
+		}
+
+		private static String getSourceId(Class<?> cls) {
+			ObjectTypeId id = cls.getAnnotation(ObjectTypeId.class);
+			if (id != null) return id.value();
+			Log.trace("Inline adapter %s has no ObjectTypeId annotation", cls);
+			return cls.getName().toLowerCase();
 		}
 
 		@Override
@@ -121,7 +137,7 @@ public abstract class ObjectAdapterWrapper extends AdapterWrapper<IObjectMethodE
 		@Override
 		protected List<IObjectMethodExecutor> buildMethodList() {
 			List<IObjectMethodExecutor> result = super.buildMethodList();
-			PropertyListBuilder.buildPropertyList(targetCls, this, result);
+			PropertyListBuilder.buildPropertyList(targetCls, source, this, result);
 			return result;
 		}
 	}

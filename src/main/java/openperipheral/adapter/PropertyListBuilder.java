@@ -72,12 +72,14 @@ public class PropertyListBuilder {
 		protected final String description;
 		protected LuaArgType type;
 		protected final Field field;
+		private final String source;
 
-		protected FieldContext(String name, String description, LuaArgType type, Field field) {
+		protected FieldContext(String name, String description, LuaArgType type, Field field, String source) {
 			this.name = name;
 			this.description = description;
 			this.type = type;
 			this.field = field;
+			this.source = source;
 		}
 
 		public abstract Object call(Object target, Object... args);
@@ -90,9 +92,15 @@ public class PropertyListBuilder {
 		}
 
 		@Override
+		public String source() {
+			return source;
+		}
+
+		@Override
 		public Map<String, Object> describe() {
 			Map<String, Object> result = Maps.newHashMap();
 			result.put(IDescriptable.DESCRIPTION, description);
+			result.put(IDescriptable.SOURCE, source);
 			return result;
 		}
 	}
@@ -102,8 +110,8 @@ public class PropertyListBuilder {
 
 	private abstract static class GetterContext extends FieldContext {
 
-		protected GetterContext(String capitalizedName, String description, LuaArgType type, Field field) {
-			super("get" + capitalizedName, description, type, field);
+		protected GetterContext(String capitalizedName, String description, LuaArgType type, Field field, String source) {
+			super("get" + capitalizedName, description, type, field, source);
 		}
 
 		@Override
@@ -129,8 +137,8 @@ public class PropertyListBuilder {
 
 	private abstract static class SetterContext extends FieldContext {
 
-		protected SetterContext(String capitalizedName, String description, LuaArgType type, Field field) {
-			super("set" + capitalizedName, description, type, field);
+		protected SetterContext(String capitalizedName, String description, LuaArgType type, Field field, String source) {
+			super("set" + capitalizedName, description, type, field, source);
 		}
 
 		@Override
@@ -164,8 +172,8 @@ public class PropertyListBuilder {
 	}
 
 	private static class DefaultGetterContext extends GetterContext {
-		protected DefaultGetterContext(String capitalizedName, String description, LuaArgType type, Field field) {
-			super(capitalizedName, description, type, field);
+		protected DefaultGetterContext(String capitalizedName, String description, LuaArgType type, Field field, String source) {
+			super(capitalizedName, description, type, field, source);
 		}
 
 		@Override
@@ -175,8 +183,8 @@ public class PropertyListBuilder {
 	}
 
 	private static class DefaultSetterContext extends SetterContext {
-		protected DefaultSetterContext(String capitalizedName, String description, LuaArgType type, Field field) {
-			super(capitalizedName, description, type, field);
+		protected DefaultSetterContext(String capitalizedName, String description, LuaArgType type, Field field, String source) {
+			super(capitalizedName, description, type, field, source);
 		}
 
 		@Override
@@ -187,8 +195,8 @@ public class PropertyListBuilder {
 
 	private static class DelegatingGetterContext extends GetterContext {
 
-		protected DelegatingGetterContext(String capitalizedName, String description, LuaArgType type, Field field) {
-			super(capitalizedName, description, type, field);
+		protected DelegatingGetterContext(String capitalizedName, String description, LuaArgType type, Field field, String source) {
+			super(capitalizedName, description, type, field, source);
 		}
 
 		@Override
@@ -200,8 +208,8 @@ public class PropertyListBuilder {
 
 	private static class DelegatingSetterContext extends SetterContext {
 
-		protected DelegatingSetterContext(String capitalizedName, String description, LuaArgType type, Field field) {
-			super(capitalizedName, description, type, field);
+		protected DelegatingSetterContext(String capitalizedName, String description, LuaArgType type, Field field, String source) {
+			super(capitalizedName, description, type, field, source);
 		}
 
 		@Override
@@ -215,7 +223,7 @@ public class PropertyListBuilder {
 		public E createExecutor(FieldContext context);
 	}
 
-	private static ImmutablePair<GetterContext, SetterContext> createContexts(Field field, String name, LuaArgType type, String getterDescription, String setterDescription, boolean isDelegating, boolean readOnly) {
+	private static ImmutablePair<GetterContext, SetterContext> createContexts(Field field, String source, String name, LuaArgType type, String getterDescription, String setterDescription, boolean isDelegating, boolean readOnly) {
 		int modifiers = field.getModifiers();
 		Preconditions.checkArgument((readOnly || !Modifier.isFinal(modifiers)) && !Modifier.isStatic(modifiers), "Field marked with @Property can't be either final or static");
 		field.setAccessible(true);
@@ -233,11 +241,11 @@ public class PropertyListBuilder {
 		GetterContext getter;
 		SetterContext setter;
 		if (isDelegating) {
-			getter = new DelegatingGetterContext(capitalizedName, getterDescription, type, field);
-			setter = readOnly? null : new DelegatingSetterContext(capitalizedName, setterDescription, type, field);
+			getter = new DelegatingGetterContext(capitalizedName, getterDescription, type, field, source);
+			setter = readOnly? null : new DelegatingSetterContext(capitalizedName, setterDescription, type, field, source);
 		} else {
-			getter = new DefaultGetterContext(capitalizedName, getterDescription, type, field);
-			setter = readOnly? null : new DefaultSetterContext(capitalizedName, setterDescription, type, field);
+			getter = new DefaultGetterContext(capitalizedName, getterDescription, type, field, source);
+			setter = readOnly? null : new DefaultSetterContext(capitalizedName, setterDescription, type, field, source);
 		}
 
 		return ImmutablePair.of(getter, setter);
@@ -253,12 +261,12 @@ public class PropertyListBuilder {
 		}
 	}
 
-	public static <E extends IMethodExecutor> void buildPropertyList(Class<?> targetCls, IPropertyExecutorFactory<E> factory, List<E> output) {
+	public static <E extends IMethodExecutor> void buildPropertyList(Class<?> targetCls, String source, IPropertyExecutorFactory<E> factory, List<E> output) {
 		for (Field f : targetCls.getDeclaredFields()) {
 			{
 				Property p = f.getAnnotation(Property.class);
 				if (p != null) {
-					addMethods(createContexts(f, p.name(), p.type(), p.getterDesc(), p.setterDesc(), false, p.readOnly()), factory, output);
+					addMethods(createContexts(f, source, p.name(), p.type(), p.getterDesc(), p.setterDesc(), false, p.readOnly()), factory, output);
 					continue;
 				}
 			}
@@ -267,7 +275,7 @@ public class PropertyListBuilder {
 				CallbackProperty p = f.getAnnotation(CallbackProperty.class);
 				if (p != null) {
 					Preconditions.checkArgument(IPropertyCallback.class.isAssignableFrom(targetCls));
-					addMethods(createContexts(f, p.name(), p.type(), p.getterDesc(), p.setterDesc(), true, p.readOnly()), factory, output);
+					addMethods(createContexts(f, source, p.name(), p.type(), p.getterDesc(), p.setterDesc(), true, p.readOnly()), factory, output);
 				}
 			}
 		}

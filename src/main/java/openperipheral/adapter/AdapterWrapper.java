@@ -33,10 +33,12 @@ public abstract class AdapterWrapper<E extends IMethodExecutor> implements IAdap
 	protected final List<E> methods;
 	protected final Class<?> targetCls;
 	protected final Class<?> adapterClass;
+	protected final String source;
 
-	protected AdapterWrapper(Class<?> adapterClass, Class<?> targetClass) {
+	protected AdapterWrapper(Class<?> adapterClass, Class<?> targetClass, String source) {
 		this.adapterClass = adapterClass;
 		this.targetCls = targetClass;
+		this.source = source;
 		this.methods = ImmutableList.copyOf(buildMethodList());
 	}
 
@@ -73,7 +75,7 @@ public abstract class AdapterWrapper<E extends IMethodExecutor> implements IAdap
 
 	protected MethodDeclaration createDeclaration(Method method) {
 		LuaCallable callableAnn = method.getAnnotation(LuaCallable.class);
-		if (callableAnn != null) return new MethodDeclaration(method, callableAnn);
+		if (callableAnn != null) return new MethodDeclaration(method, callableAnn, source);
 
 		return null;
 	}

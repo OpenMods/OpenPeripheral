@@ -25,8 +25,8 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 
 public abstract class PeripheralAdapterWrapper extends AdapterWrapper<IPeripheralMethodExecutor> {
 
-	protected PeripheralAdapterWrapper(Class<?> adapterClass, Class<?> targetClass) {
-		super(adapterClass, targetClass);
+	protected PeripheralAdapterWrapper(Class<?> adapterClass, Class<?> targetClass, String source) {
+		super(adapterClass, targetClass, source);
 	}
 
 	static final String ARG_TARGET = "target";

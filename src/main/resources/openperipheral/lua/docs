@@ -44,6 +44,7 @@ else --must be 2 or more
   for name,data in pairs(info) do
     if args[2]:lower() == name:lower() then
       print(name..": "..data.description)
+      print("source: " .. data.source) 
       print("returns: "..string.lower(table.concat(data.returnTypes,',')))
       if #data.args > 0 then
         print("args: ")

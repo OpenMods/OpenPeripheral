@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import openmods.Log;
 import openperipheral.adapter.*;
 import openperipheral.adapter.PropertyListBuilder.FieldContext;
 import openperipheral.adapter.PropertyListBuilder.IPropertyExecutorFactory;
@@ -12,6 +13,7 @@ import openperipheral.adapter.PropertyListBuilder.PropertyExecutor;
 import openperipheral.adapter.method.MethodDeclaration;
 import openperipheral.adapter.method.MethodDeclaration.CallWrap;
 import openperipheral.adapter.object.IObjectMethodExecutor;
+import openperipheral.api.PeripheralTypeId;
 
 import com.google.common.base.Preconditions;
 
@@ -35,8 +37,22 @@ public class PeripheralInlineAdapterWrapper extends PeripheralAdapterWrapper imp
 		}
 	}
 
+	private final String source;
+
+	private static String getSourceId(Class<?> cls) {
+		PeripheralTypeId id = cls.getAnnotation(PeripheralTypeId.class);
+		if (id != null) return id.value();
+		Log.trace("Inline adapter %s has no PeripheralTypeId annotation", cls);
+		return cls.getName().toLowerCase();
+	}
+
 	public PeripheralInlineAdapterWrapper(Class<?> targetClass) {
-		super(targetClass, targetClass);
+		this(targetClass, getSourceId(targetClass));
+	}
+
+	private PeripheralInlineAdapterWrapper(Class<?> targetClass, String source) {
+		super(targetClass, targetClass, source);
+		this.source = source;
 	}
 
 	@Override
@@ -97,7 +113,7 @@ public class PeripheralInlineAdapterWrapper extends PeripheralAdapterWrapper imp
 	@Override
 	protected List<IPeripheralMethodExecutor> buildMethodList() {
 		List<IPeripheralMethodExecutor> result = super.buildMethodList();
-		PropertyListBuilder.buildPropertyList(targetCls, this, result);
+		PropertyListBuilder.buildPropertyList(targetCls, source, this, result);
 		return result;
 	}
 

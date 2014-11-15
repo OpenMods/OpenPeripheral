@@ -36,7 +36,7 @@ public class PeripheralExternalAdapterWrapper extends PeripheralAdapterWrapper {
 	private final IPeripheralAdapter adapter;
 
 	public PeripheralExternalAdapterWrapper(IPeripheralAdapter adapter) {
-		super(adapter.getClass(), adapter.getTargetClass());
+		super(adapter.getClass(), adapter.getTargetClass(), adapter.getSourceId());
 		this.adapter = adapter;
 	}
 

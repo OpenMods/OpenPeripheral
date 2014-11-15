@@ -2,6 +2,7 @@ package openperipheral.adapter.composed;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import openperipheral.adapter.IDescriptable;
 import openperipheral.adapter.IMethodExecutor;
@@ -14,9 +15,11 @@ import com.google.common.collect.Maps;
 
 public class MethodsListerHelper<E extends IMethodExecutor> {
 	private final Map<String, E> methods;
+	private final Set<String> sources;
 
-	public MethodsListerHelper(Map<String, E> methods) {
+	public MethodsListerHelper(Map<String, E> methods, Set<String> sources) {
 		this.methods = methods;
+		this.sources = sources;
 	}
 
 	@LuaCallable(returnTypes = LuaReturnType.STRING, description = "List all the methods available")
@@ -27,6 +30,15 @@ public class MethodsListerHelper<E extends IMethodExecutor> {
 			info.add(e.getKey() + m.signature());
 		}
 		return Joiner.on(", ").join(info);
+	}
+
+	@LuaCallable(returnTypes = LuaReturnType.TABLE, description = "List all method sources")
+	public Map<String, Boolean> listSources() {
+		Map<String, Boolean> result = Maps.newHashMap();
+		for (String source : sources) {
+			result.put(source, Boolean.TRUE);
+		}
+		return result;
 	}
 
 	@LuaCallable(returnTypes = LuaReturnType.TABLE, description = "Get a complete table of information about all available methods")

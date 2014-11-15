@@ -24,6 +24,7 @@ import com.google.common.collect.*;
 public class MethodDeclaration implements IDescriptable {
 
 	private final List<String> names;
+	private final String source;
 	private final Method method;
 	private final String description;
 	private final LuaReturnType[] returnTypes;
@@ -59,8 +60,9 @@ public class MethodDeclaration implements IDescriptable {
 		return names.build();
 	}
 
-	public MethodDeclaration(Method method, LuaCallable meta) {
+	public MethodDeclaration(Method method, LuaCallable meta, String source) {
 		this.method = method;
+		this.source = source;
 
 		String luaName = meta.name();
 		this.names = getNames(method, (LuaCallable.USE_METHOD_NAME.equals(luaName))? method.getName() : luaName);
@@ -265,6 +267,7 @@ public class MethodDeclaration implements IDescriptable {
 	public Map<String, Object> describe() {
 		Map<String, Object> result = Maps.newHashMap();
 		result.put(IDescriptable.DESCRIPTION, description);
+		result.put(IDescriptable.SOURCE, source);
 
 		{
 			List<String> returns = Lists.newArrayList();
@@ -300,5 +303,10 @@ public class MethodDeclaration implements IDescriptable {
 			result[index++] = arg.javaType;
 
 		return result;
+	}
+
+	@Override
+	public String source() {
+		return source;
 	}
 }

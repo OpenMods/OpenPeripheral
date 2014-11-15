@@ -9,10 +9,13 @@ public interface IDescriptable {
 	static final String ARGS = "args";
 	static final String RETURN_TYPES = "returnTypes";
 	static final String DESCRIPTION = "description";
+	static final String SOURCE = "source";
 
 	// Additional fields names for args
 	static final String NAME = "name";
 	static final String TYPE = "type";
+
+	public String source();
 
 	public List<String> getNames();
 
