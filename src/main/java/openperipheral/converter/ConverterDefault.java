@@ -1,6 +1,6 @@
 package openperipheral.converter;
 
-import openmods.reflection.ReflectionHelper;
+import openmods.reflection.TypeUtils;
 import openperipheral.api.ITypeConverter;
 import openperipheral.api.ITypeConvertersRegistry;
 
@@ -8,7 +8,7 @@ public class ConverterDefault implements ITypeConverter {
 
 	@Override
 	public Object fromLua(ITypeConvertersRegistry registry, Object obj, Class<?> expected) {
-		if (ReflectionHelper.compareTypes(obj.getClass(), expected)) return obj;
+		if (TypeUtils.compareTypes(obj.getClass(), expected)) return obj;
 		return null;
 	}
 

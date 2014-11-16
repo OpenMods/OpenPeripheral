@@ -7,7 +7,7 @@ import java.util.*;
 import java.util.concurrent.Callable;
 
 import openmods.Log;
-import openmods.reflection.ReflectionHelper;
+import openmods.reflection.TypeUtils;
 import openmods.utils.AnnotationMap;
 import openperipheral.TypeConversionRegistry;
 import openperipheral.adapter.AdapterLogicException;
@@ -157,7 +157,7 @@ public class MethodDeclaration implements IDescriptable {
 					final LuaReturnType expected = returnTypes[i];
 					final Class<?> expectedType = expected.getJavaType();
 					final Object got = result[i];
-					Preconditions.checkArgument(got == null || expectedType.isInstance(got) || ReflectionHelper.compareTypes(expectedType, got.getClass()), "Invalid type of return value %s: expected %s, got %s", i, expected, got);
+					Preconditions.checkArgument(got == null || expectedType.isInstance(got) || TypeUtils.compareTypes(expectedType, got.getClass()), "Invalid type of return value %s: expected %s, got %s", i, expected, got);
 				}
 			}
 		}
