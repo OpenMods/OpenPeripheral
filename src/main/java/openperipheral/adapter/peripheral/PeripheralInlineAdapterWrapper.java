@@ -117,4 +117,8 @@ public class PeripheralInlineAdapterWrapper extends PeripheralAdapterWrapper imp
 		return result;
 	}
 
+	@Override
+	public String describeType() {
+		return "internal periperal (source: " + adapterClass.toString() + ")";
+	}
 }

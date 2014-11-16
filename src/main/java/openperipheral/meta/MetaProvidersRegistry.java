@@ -6,6 +6,7 @@ import java.util.Set;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
+import openmods.Log;
 import openperipheral.api.IEntityMetaProvider;
 import openperipheral.api.IItemStackMetaProvider;
 import openperipheral.api.IMetaProvider;
@@ -15,18 +16,23 @@ import com.google.common.collect.*;
 
 public abstract class MetaProvidersRegistry<P extends IMetaProvider<?>> {
 
-	private static <T extends IMetaProvider<?>> MetaProvidersRegistry<T> create(final Class<?> baseCls) {
+	private static <T extends IMetaProvider<?>> MetaProvidersRegistry<T> create(final Class<?> baseCls, final String type) {
 		return new MetaProvidersRegistry<T>() {
 			@Override
 			protected boolean validateCls(Class<?> cls) {
 				return baseCls.isAssignableFrom(cls);
 			}
+
+			@Override
+			protected String type() {
+				return type;
+			}
 		};
 	}
 
-	public static final MetaProvidersRegistry<IEntityMetaProvider<?>> ENITITES = create(Entity.class);
+	public static final MetaProvidersRegistry<IEntityMetaProvider<?>> ENITITES = create(Entity.class, "entity");
 
-	public static final MetaProvidersRegistry<IItemStackMetaProvider<?>> ITEMS = create(Item.class);
+	public static final MetaProvidersRegistry<IItemStackMetaProvider<?>> ITEMS = create(Item.class, "item");
 
 	private final Multimap<Class<?>, P> directProviders = HashMultimap.create();
 
@@ -35,6 +41,8 @@ public abstract class MetaProvidersRegistry<P extends IMetaProvider<?>> {
 	private final Multimap<Class<?>, P> specificProvidersCache = HashMultimap.create();
 
 	private final Set<Class<?>> inCache = Sets.newHashSet();
+
+	protected abstract String type();
 
 	protected abstract boolean validateCls(Class<?> targetCls);
 
@@ -47,6 +55,7 @@ public abstract class MetaProvidersRegistry<P extends IMetaProvider<?>> {
 		if (targetClass == Object.class) genericProviders.add(provider);
 		else directProviders.put(targetClass, provider);
 
+		Log.trace("Registering %s metadata provider '%s' for '%s'", type(), provider.getClass(), targetClass);
 		specificProvidersCache.clear();
 		inCache.clear();
 	}

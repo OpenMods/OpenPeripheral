@@ -79,4 +79,9 @@ public class PeripheralExternalAdapterWrapper extends PeripheralAdapterWrapper {
 			}
 		};
 	}
+
+	@Override
+	public String describeType() {
+		return "external peripheral (source: " + adapterClass.toString() + ")";
+	}
 }

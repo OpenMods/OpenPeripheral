@@ -58,6 +58,7 @@ public class TypeConversionRegistry implements ITypeConvertersRegistry {
 
 	@Override
 	public void register(ITypeConverter converter) {
+		Log.trace("Registering type converter %s", converter);
 		converters.addFirst(converter);
 	}
 

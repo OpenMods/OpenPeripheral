@@ -92,6 +92,11 @@ public abstract class ObjectAdapterWrapper extends AdapterWrapper<IObjectMethodE
 					.setJavaArg(ARG_CONTEXT, context)
 					.setLuaArgs(args));
 		}
+
+		@Override
+		public String describeType() {
+			return "external object (source: " + adapterClass.toString() + ")";
+		}
 	}
 
 	public static class Inline extends ObjectAdapterWrapper implements IPropertyExecutorFactory<IObjectMethodExecutor> {
@@ -139,6 +144,11 @@ public abstract class ObjectAdapterWrapper extends AdapterWrapper<IObjectMethodE
 			List<IObjectMethodExecutor> result = super.buildMethodList();
 			PropertyListBuilder.buildPropertyList(targetCls, source, this, result);
 			return result;
+		}
+
+		@Override
+		public String describeType() {
+			return "internal object (source: " + adapterClass.toString() + ")";
 		}
 	}
 }

@@ -6,4 +6,6 @@ public interface IAdapterMethodsList<E extends IMethodExecutor> extends IMethods
 
 	public String describeType();
 
+	public String source();
+
 }

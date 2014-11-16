@@ -43,6 +43,11 @@ public abstract class AdapterWrapper<E extends IMethodExecutor> implements IAdap
 	}
 
 	@Override
+	public String source() {
+		return source;
+	}
+
+	@Override
 	public List<E> listMethods() {
 		return methods;
 	}
@@ -50,11 +55,6 @@ public abstract class AdapterWrapper<E extends IMethodExecutor> implements IAdap
 	@Override
 	public Class<?> getTargetClass() {
 		return targetCls;
-	}
-
-	@Override
-	public String describeType() {
-		return "wrapped (source: " + adapterClass.toString() + ")";
 	}
 
 	protected abstract List<E> buildMethodList();

@@ -123,13 +123,13 @@ public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodEx
 		final Class<?> targetCls = wrapper.getTargetClass();
 		Preconditions.checkArgument(!Object.class.equals(wrapper.getTargetClass()), "Can't add adapter for Object class");
 
-		Log.info("Registering %s adapter for class %s", wrapper.describeType(), targetCls);
+		Log.trace("Registering %s adapter (source id: %s) for %s", wrapper.describeType(), wrapper.source(), targetCls);
 		externalAdapters.put(wrapper.getTargetClass(), wrapper);
 	}
 
 	public void addInlineAdapter(Class<?> targetCls) {
 		IAdapterMethodsList<E> wrapper = wrapInlineAdapter(targetCls);
-		Log.info("Registering auto-created adapter for class %s", targetCls);
+		Log.trace("Registering %s adapter (source id: %s) adapter for %s", wrapper.describeType(), wrapper.source(), targetCls);
 		internalAdapters.put(targetCls, wrapper);
 	}
 
