@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import openmods.Log;
-import openmods.utils.ReflectionHelper;
+import openmods.reflection.ReflectionHelper;
 import openperipheral.adapter.method.MethodDeclaration;
 import openperipheral.adapter.method.MethodDeclaration.CallWrap;
 import openperipheral.api.*;

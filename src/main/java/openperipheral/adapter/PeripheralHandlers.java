@@ -8,7 +8,7 @@ import java.util.Set;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import openmods.Log;
-import openmods.utils.ReflectionHelper;
+import openmods.reflection.ReflectionHelper;
 import openperipheral.adapter.composed.ClassMethodsList;
 import openperipheral.adapter.peripheral.AdapterPeripheral;
 import openperipheral.adapter.peripheral.IPeripheralMethodExecutor;

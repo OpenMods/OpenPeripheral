@@ -7,8 +7,8 @@ import java.util.*;
 import java.util.concurrent.Callable;
 
 import openmods.Log;
+import openmods.reflection.ReflectionHelper;
 import openmods.utils.AnnotationMap;
-import openmods.utils.ReflectionHelper;
 import openperipheral.TypeConversionRegistry;
 import openperipheral.adapter.AdapterLogicException;
 import openperipheral.adapter.IDescriptable;

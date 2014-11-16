@@ -2,7 +2,7 @@ package openperipheral.adapter.method;
 
 import java.util.Collection;
 
-import openmods.utils.TypeUtils;
+import openmods.reflection.TypeUtils;
 import openperipheral.api.LuaArgType;
 import dan200.computercraft.api.lua.ILuaObject;
 
