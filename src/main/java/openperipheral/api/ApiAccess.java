@@ -6,7 +6,7 @@ import com.google.common.base.Throwables;
 
 /**
  * This class is used to get implementation of API interfaces (subclasses of {@link IApiInterface}.
- * 
+ *
  * Most commonly used interfaces:
  * <ul>
  * <li>{@link IAdapterFactory} - for creating ComputerCraft adapters for normal Java objects</li>
