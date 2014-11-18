@@ -23,6 +23,15 @@ import com.google.common.collect.*;
 
 public class MethodDeclaration implements IDescriptable {
 
+	public static class ArgumentDefinitionException extends IllegalStateException {
+		private static final long serialVersionUID = -6428721405547878927L;
+
+		public ArgumentDefinitionException(int argument, Throwable cause) {
+			super(String.format("Failed to parse annotations on argument %d", argument), cause);
+		}
+
+	}
+
 	private final List<String> names;
 	private final String source;
 	private final Method method;
@@ -31,91 +40,104 @@ public class MethodDeclaration implements IDescriptable {
 
 	private final boolean validateReturn;
 
-	private final Map<String, Integer> namedArgs = Maps.newHashMap();
+	private final boolean isDocumented;
+
+	private final BiMap<String, Integer> namedArgs = HashBiMap.create();
 	private final Set<String> allowedNames = Sets.newHashSet();
 
 	private final List<Class<?>> javaArgs;
 	private final List<Argument> luaArgs;
 
-	private static boolean checkOptional(boolean currentState, AnnotationMap annotations) {
-		return currentState || annotations.get(Optionals.class) != null;
-	}
-
-	private Argument createLuaArg(ArgumentBuilder builder, AnnotationMap annotations, Class<?> javaArgType, int index) {
-		Arg arg = annotations.get(Arg.class);
-		Preconditions.checkNotNull(arg, "Argument %d has no annotation", index);
-		try {
-			return builder.build(arg.name(), arg.description(), arg.type(), javaArgType, index);
-		} catch (Exception e) {
-			throw new IllegalArgumentException(String.format("Argument %d from method '%s' in invalid", index, method), e);
-		}
-	}
-
-	private static List<String> getNames(Method method, String mainName) {
+	private static List<String> getNames(Method method, LuaCallable meta) {
 		ImmutableList.Builder<String> names = ImmutableList.builder();
-		names.add(mainName);
+
+		String mainName = meta.name();
+
+		if (LuaCallable.USE_METHOD_NAME.equals(mainName)) names.add(method.getName());
+		else names.add(mainName);
 
 		Alias alias = method.getAnnotation(Alias.class);
 		if (alias != null) names.add(alias.value());
 		return names.build();
 	}
 
+	private static enum ArgParseState {
+		JAVA_REQUIRED,
+		JAVA_OPTIONAL,
+		LUA_REQUIRED,
+		LUA_OPTIONAL,
+
+	}
+
 	public MethodDeclaration(Method method, LuaCallable meta, String source) {
 		this.method = method;
 		this.source = source;
 
-		String luaName = meta.name();
-		this.names = getNames(method, (LuaCallable.USE_METHOD_NAME.equals(luaName))? method.getName() : luaName);
+		this.names = getNames(method, meta);
 
 		this.description = meta.description();
 		this.returnTypes = meta.returnTypes();
 		this.validateReturn = meta.validateReturn();
 
+		this.isDocumented = method.getAnnotation(HideDoc.class) == null;
+
 		if (validateReturn) validateResultCount();
 
 		final Class<?> methodArgs[] = method.getParameterTypes();
-		final Annotation[][] argsAnnotations = method.getParameterAnnotations();
 		final boolean isVarArg = method.isVarArgs();
 
 		ImmutableList.Builder<Argument> luaArgs = ImmutableList.builder();
 		ImmutableList.Builder<Class<?>> javaArgs = ImmutableList.builder();
-		boolean isInLuaArgs = false;
-		boolean isOptional = false;
 
-		for (int i = 0; i < methodArgs.length; i++) {
-			boolean isLastArg = i == (methodArgs.length - 1);
-			final Class<?> cls = methodArgs[i];
+		ArgParseState state = ArgParseState.JAVA_REQUIRED;
 
-			AnnotationMap annotations = new AnnotationMap(argsAnnotations[i]);
+		final Annotation[][] argsAnnotations = method.getParameterAnnotations();
+		for (int argIndex = 0; argIndex < methodArgs.length; argIndex++) {
+			try {
+				final Class<?> argType = methodArgs[argIndex];
 
-			boolean isLuaArg = false;
+				AnnotationMap argAnnotations = new AnnotationMap(argsAnnotations[argIndex]);
 
-			Arg tmp = annotations.get(Arg.class);
-			if (tmp != null) {
-				isOptional = checkOptional(isOptional, annotations);
+				boolean optionalStart = argAnnotations.get(Optionals.class) != null;
 
-				ArgumentBuilder builder = new ArgumentBuilder();
-				builder.setVararg(isLastArg && isVarArg);
-				builder.setOptional(isOptional);
-				builder.setNullable(tmp.isNullable());
+				Env envArg = argAnnotations.get(Env.class);
+				Arg luaArg = argAnnotations.get(Arg.class);
 
-				luaArgs.add(createLuaArg(builder, annotations, cls, i));
+				Preconditions.checkState(envArg == null || luaArg == null, "@Arg and @Env are mutually exclusive");
+				if (luaArg != null) {
 
-				isLuaArg = true;
-				isInLuaArgs = true;
+					if (state != ArgParseState.LUA_OPTIONAL) state = ArgParseState.LUA_REQUIRED;
+
+					if (optionalStart) {
+						Preconditions.checkState(state != ArgParseState.JAVA_OPTIONAL, "@Optional used more than once");
+						state = ArgParseState.LUA_OPTIONAL;
+					}
+
+					boolean isLastArg = argIndex == (methodArgs.length - 1);
+
+					ArgumentBuilder builder = new ArgumentBuilder();
+					builder.setVararg(isLastArg && isVarArg);
+					builder.setOptional(state == ArgParseState.LUA_OPTIONAL);
+					builder.setNullable(luaArg.isNullable());
+
+					final Argument arg = builder.build(luaArg.name(), luaArg.description(), luaArg.type(), argType, argIndex);
+					luaArgs.add(arg);
+				} else {
+					Preconditions.checkState(state == ArgParseState.JAVA_OPTIONAL || state == ArgParseState.JAVA_REQUIRED, "Unannotated arg in Lua part (perhaps missing @Arg annotation?)");
+					Preconditions.checkState(!optionalStart, "@Optionals does not work for java arguments");
+
+					if (envArg != null) {
+						Preconditions.checkState(state == ArgParseState.JAVA_OPTIONAL || state == ArgParseState.JAVA_REQUIRED, "@Env annotation used in Lua part of arguments");
+						namedArgs.put(envArg.value(), argIndex);
+						state = ArgParseState.JAVA_OPTIONAL;
+					} else {
+						Preconditions.checkState(state == ArgParseState.JAVA_REQUIRED, "Unnamed arguments must be declared before named ones");
+					}
+					javaArgs.add(argType);
+				}
+			} catch (Throwable t) {
+				throw new ArgumentDefinitionException(argIndex, t);
 			}
-
-			Preconditions.checkState(!isInLuaArgs || isLuaArg, "Argument %s in method %s look like Java arg, but is in Lua part (perhaps missing Arg annotation?)", i, method);
-
-			Named named = annotations.get(Named.class);
-			if (named != null) {
-				Preconditions.checkState(!isInLuaArgs, "Argument %s in method %s is Lua arg, but has Named annotation", i, method);
-				namedArgs.put(named.value(), i);
-			}
-
-			Preconditions.checkState(isInLuaArgs || annotations.get(Optionals.class) == null, "@Optionals does not work for java arguments (method %s)", method);
-
-			if (!isLuaArg) javaArgs.add(cls);
 		}
 
 		this.luaArgs = luaArgs.build();
@@ -230,10 +252,17 @@ public class MethodDeclaration implements IDescriptable {
 		return new CallWrap(target);
 	}
 
-	public void nameJavaArg(int index, String name) {
-		Preconditions.checkArgument(index < javaArgs.size(),
-				"Can't assign name '%s' to argument %s in method '%s'. Possible missing argument or @Freeform?",
-				name, index, method);
+	public void setDefaultArgName(int index, String name) {
+		if (index >= javaArgs.size()) {
+			// probably in Lua args already
+			return;
+		}
+
+		if (namedArgs.containsValue(index)) {
+			// arg already named, ignore
+			return;
+		}
+
 		Integer prev = namedArgs.put(name, index);
 		Preconditions.checkArgument(prev == null || prev == index, "Trying to replace '%s' mapping from  %s, got %s", name, prev, index);
 	}
@@ -308,5 +337,10 @@ public class MethodDeclaration implements IDescriptable {
 	@Override
 	public String source() {
 		return source;
+	}
+
+	@Override
+	public boolean isVisible() {
+		return isDocumented;
 	}
 }

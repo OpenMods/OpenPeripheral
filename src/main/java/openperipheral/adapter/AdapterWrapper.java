@@ -1,33 +1,23 @@
 package openperipheral.adapter;
 
-import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import openmods.Log;
-import openmods.reflection.ReflectionHelper;
 import openperipheral.adapter.method.MethodDeclaration;
-import openperipheral.adapter.method.MethodDeclaration.CallWrap;
-import openperipheral.api.*;
+import openperipheral.api.LuaCallable;
 
-import com.google.common.base.Preconditions;
-import com.google.common.base.Throwables;
-import com.google.common.collect.*;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 
 public abstract class AdapterWrapper<E extends IMethodExecutor> implements IAdapterMethodsList<E> {
 
-	private static boolean isFreeform(AnnotatedElement element, boolean defaultValue) {
-		Freeform freeform = element.getAnnotation(Freeform.class);
-		return freeform != null? freeform.value() : defaultValue;
-	}
+	public static class MethodWrapException extends RuntimeException {
+		private static final long serialVersionUID = -5116134133615320058L;
 
-	private static String[] getPrefixes(AnnotatedElement element, String[] defaultValue) {
-		if (element == null) return defaultValue; // possible for net.minecraft
-													// classes
-		Prefixed prefixed = element.getAnnotation(Prefixed.class);
-		return (prefixed != null)? prefixed.value() : defaultValue;
+		public MethodWrapException(Method method, Throwable cause) {
+			super(String.format("Failed to wrap method '%s'", method), cause);
+		}
 	}
 
 	protected final List<E> methods;
@@ -59,71 +49,14 @@ public abstract class AdapterWrapper<E extends IMethodExecutor> implements IAdap
 
 	protected abstract List<E> buildMethodList();
 
-	protected void namesFromAnnotation(String[] prefixes, MethodDeclaration decl) {
-		int i = 0;
-		for (String name : prefixes)
-			decl.nameJavaArg(i++, name);
-	}
-
-	protected abstract void validateArgTypes(MethodDeclaration decl);
-
-	protected abstract void nameDefaultParameters(MethodDeclaration decl);
+	protected abstract void configureJavaArguments(MethodDeclaration decl);
 
 	protected interface MethodExecutorFactory<E extends IMethodExecutor> {
-		public E createExecutor(Method method, MethodDeclaration decl, Map<String, Method> proxyArgs);
+		public E createExecutor(Method method, MethodDeclaration decl);
 	}
 
-	protected MethodDeclaration createDeclaration(Method method) {
-		LuaCallable callableAnn = method.getAnnotation(LuaCallable.class);
-		if (callableAnn != null) return new MethodDeclaration(method, callableAnn, source);
-
-		return null;
-	}
-
-	private void addProxyArgs(Map<String, Method> result, String defaultName, Class<?>[] defaultArgs, ProxyArg arg) {
-		String name = arg.argName();
-
-		String[] names = arg.methodNames();
-		if (names.length == 0) names = new String[] { defaultName };
-
-		Class<?> args[] = arg.args();
-		if (args.length == 1 && args[0] == void.class) args = defaultArgs;
-
-		Method proxiedMethod = ReflectionHelper.getMethod(targetCls, names, args);
-		Preconditions.checkNotNull(proxiedMethod, "Can find proxy argument '%s' for method %s %s in class (adapter: %s)",
-				name, targetCls, Arrays.toString(names), Arrays.toString(args), targetCls, adapterClass);
-		proxiedMethod.setAccessible(true);
-		Method prev = result.put(name, proxiedMethod);
-		Preconditions.checkState(prev == null, "Duplicated proxy arg name '%s' in adapter '%s'", name, adapterClass);
-	}
-
-	protected static ICallableWithArgs createProxy(final Object target, final Method method) {
-		return new ICallableWithArgs() {
-			@SuppressWarnings("unchecked")
-			@Override
-			public <T> T call(Object... args) {
-				try {
-					return (T)method.invoke(target, args);
-				} catch (Throwable t) {
-					throw Throwables.propagate(t);
-				}
-			}
-		};
-	}
-
-	protected static CallWrap nameAdapterMethods(Object target, Map<String, Method> proxyArgs, CallWrap wrap) {
-		for (Map.Entry<String, Method> e : proxyArgs.entrySet())
-			wrap.setJavaArg(e.getKey(), createProxy(target, e.getValue()));
-
-		return wrap;
-	}
-
-	protected List<E> buildMethodList(boolean defaultIsFreeform, MethodExecutorFactory<E> factory) {
+	protected List<E> buildMethodList(MethodExecutorFactory<E> factory) {
 		List<E> result = Lists.newArrayList();
-		final boolean clsIsFreeform = isFreeform(adapterClass, defaultIsFreeform);
-
-		final String[] packagePrefixes = getPrefixes(adapterClass.getPackage(), null);
-		final String[] classPrefixes = getPrefixes(adapterClass, packagePrefixes);
 
 		Method[] clsMethods;
 		try {
@@ -135,35 +68,19 @@ public abstract class AdapterWrapper<E extends IMethodExecutor> implements IAdap
 		}
 
 		for (Method method : clsMethods) {
-			MethodDeclaration decl = createDeclaration(method);
+			try {
+				LuaCallable callableAnn = method.getAnnotation(LuaCallable.class);
+				if (callableAnn == null) continue;
 
-			if (decl == null) continue;
+				final MethodDeclaration decl = new MethodDeclaration(method, callableAnn, source);
+				configureJavaArguments(decl);
+				decl.validate();
 
-			Map<String, Method> allProxyArgs = Maps.newHashMap();
-
-			Class<?>[] luaArgs = decl.getLuaArgTypes();
-			final ProxyArg proxyArg = method.getAnnotation(ProxyArg.class);
-			if (proxyArg != null) addProxyArgs(allProxyArgs, method.getName(), luaArgs, proxyArg);
-
-			final ProxyArgs proxyArgs = method.getAnnotation(ProxyArgs.class);
-			if (proxyArgs != null) for (ProxyArg arg : proxyArgs.value())
-				addProxyArgs(allProxyArgs, method.getName(), luaArgs, arg);
-
-			E exec = factory.createExecutor(method, decl, ImmutableMap.copyOf(allProxyArgs));
-
-			if (!isFreeform(method, clsIsFreeform)) {
-				final String[] methodPrefixes = getPrefixes(method, classPrefixes);
-				if (methodPrefixes != null) namesFromAnnotation(methodPrefixes, decl);
-				else nameDefaultParameters(decl);
+				E exec = factory.createExecutor(method, decl);
+				result.add(exec);
+			} catch (Throwable e) {
+				throw new MethodWrapException(method, e);
 			}
-
-			validateArgTypes(decl);
-			for (String proxyArgName : allProxyArgs.keySet())
-				decl.declareJavaArgType(proxyArgName, ICallableWithArgs.class);
-
-			decl.validate();
-
-			result.add(exec);
 		}
 
 		return result;

@@ -22,4 +22,6 @@ public interface IDescriptable {
 	public String signature();
 
 	public Map<String, Object> describe();
+
+	public boolean isVisible();
 }

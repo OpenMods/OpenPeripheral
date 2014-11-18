@@ -26,7 +26,7 @@ public class ClassMethodsList<E extends IMethodExecutor> implements IMethodsHold
 
 			methodNames[id] = e.getKey();
 			methodsByIndex.put(id++, executor);
-			hasMethods |= !executor.isSynthetic();
+			hasMethods |= !executor.isGenerated();
 		}
 
 		this.hasMethods = hasMethods;

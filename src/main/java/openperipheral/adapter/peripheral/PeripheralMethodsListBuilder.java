@@ -29,7 +29,7 @@ public class PeripheralMethodsListBuilder extends ClassMethodsListBuilder<IPerip
 			}
 
 			@Override
-			public boolean isSynthetic() {
+			public boolean isGenerated() {
 				return true;
 			}
 		};

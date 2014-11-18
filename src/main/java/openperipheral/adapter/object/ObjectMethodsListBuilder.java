@@ -26,7 +26,7 @@ public class ObjectMethodsListBuilder extends ClassMethodsListBuilder<IObjectMet
 			}
 
 			@Override
-			public boolean isSynthetic() {
+			public boolean isGenerated() {
 				return true;
 			}
 		};

@@ -3,7 +3,6 @@ package openperipheral.adapter.peripheral;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Callable;
 
 import openmods.Log;
@@ -16,7 +15,7 @@ import openperipheral.adapter.method.MethodDeclaration.CallWrap;
 import openperipheral.adapter.object.IObjectMethodExecutor;
 import openperipheral.api.Asynchronous;
 import openperipheral.api.Include;
-import openperipheral.api.OnTickSafe;
+import openperipheral.api.Synchronizable;
 
 import com.google.common.base.Preconditions;
 
@@ -35,7 +34,7 @@ public abstract class PeripheralAdapterWrapper extends AdapterWrapper<IPeriphera
 
 	protected static boolean isIgnoringWarnings(AnnotatedElement element, boolean defaultValue) {
 		if (element == null) return defaultValue;
-		OnTickSafe ignore = element.getAnnotation(OnTickSafe.class);
+		Synchronizable ignore = element.getAnnotation(Synchronizable.class);
 		return ignore != null? ignore.value() : defaultValue;
 	}
 
@@ -47,14 +46,12 @@ public abstract class PeripheralAdapterWrapper extends AdapterWrapper<IPeriphera
 	protected static abstract class PeripheralMethodExecutor implements IPeripheralMethodExecutor {
 		public final MethodDeclaration method;
 		public final ExecutionStrategy strategy;
-		public final Map<String, Method> proxyArgs;
 
 		protected abstract CallWrap createWrapper(IComputerAccess computer, ILuaContext context, Object target, Object[] luaArgs);
 
-		public PeripheralMethodExecutor(MethodDeclaration method, ExecutionStrategy strategy, Map<String, Method> proxyArgs) {
+		public PeripheralMethodExecutor(MethodDeclaration method, ExecutionStrategy strategy) {
 			this.method = method;
 			this.strategy = strategy;
-			this.proxyArgs = proxyArgs;
 		}
 
 		@Override
@@ -63,13 +60,13 @@ public abstract class PeripheralAdapterWrapper extends AdapterWrapper<IPeriphera
 		}
 
 		@Override
-		public boolean isSynthetic() {
+		public boolean isGenerated() {
 			return false;
 		}
 
 		@Override
 		public Object[] execute(IComputerAccess computer, ILuaContext context, Object target, Object[] args) throws Exception {
-			final Callable<Object[]> callable = nameAdapterMethods(target, proxyArgs, createWrapper(computer, context, target, args));
+			final Callable<Object[]> callable = createWrapper(computer, context, target, args);
 			return strategy.execute(target, computer, context, callable);
 		}
 	}
@@ -81,9 +78,9 @@ public abstract class PeripheralAdapterWrapper extends AdapterWrapper<IPeriphera
 		final boolean packageIsIgnoringWarnings = isIgnoringWarnings(adapterClass.getPackage(), false);
 		final boolean classIsIgnoringWarnings = isIgnoringWarnings(adapterClass, packageIsIgnoringWarnings);
 
-		List<IPeripheralMethodExecutor> peripheralMethods = buildMethodList(false, new MethodExecutorFactory<IPeripheralMethodExecutor>() {
+		List<IPeripheralMethodExecutor> peripheralMethods = buildMethodList(new MethodExecutorFactory<IPeripheralMethodExecutor>() {
 			@Override
-			public IPeripheralMethodExecutor createExecutor(Method method, MethodDeclaration decl, Map<String, Method> proxyArgs) {
+			public IPeripheralMethodExecutor createExecutor(Method method, MethodDeclaration decl) {
 				boolean isAsync = isAsynchronous(method, defaultAsync);
 
 				ExecutionStrategy strategy = isAsync? ExecutionStrategy.ASYNCHRONOUS : ExecutionStrategy.createOnTickStrategy(targetCls);
@@ -92,7 +89,7 @@ public abstract class PeripheralAdapterWrapper extends AdapterWrapper<IPeriphera
 					Log.warn("Method '%s' is synchronous, but type %s does not provide world instance. Possible runtime crash!", method, targetCls);
 				}
 
-				return PeripheralAdapterWrapper.this.createDirectExecutor(decl, strategy, proxyArgs);
+				return PeripheralAdapterWrapper.this.createDirectExecutor(decl, strategy);
 			}
 		});
 
@@ -109,11 +106,11 @@ public abstract class PeripheralAdapterWrapper extends AdapterWrapper<IPeriphera
 		Preconditions.checkArgument(!target.isPrimitive(), "Method %s is marked with annotation 'Include', but returns primitive type", targetProvider);
 		ClassMethodsList<IObjectMethodExecutor> toInclude = AdapterManager.objects.getAdapterClass(target);
 		for (IObjectMethodExecutor objectExecutor : toInclude.listMethods()) {
-			if (!objectExecutor.isSynthetic()) result.add(adaptObjectExecutor(targetProvider, objectExecutor));
+			if (!objectExecutor.isGenerated()) result.add(adaptObjectExecutor(targetProvider, objectExecutor));
 		}
 	}
 
-	protected abstract IPeripheralMethodExecutor createDirectExecutor(MethodDeclaration method, ExecutionStrategy strategy, Map<String, Method> proxyArgs);
+	protected abstract IPeripheralMethodExecutor createDirectExecutor(MethodDeclaration method, ExecutionStrategy strategy);
 
 	protected abstract IPeripheralMethodExecutor adaptObjectExecutor(Method targetProvider, IObjectMethodExecutor executor);
 }

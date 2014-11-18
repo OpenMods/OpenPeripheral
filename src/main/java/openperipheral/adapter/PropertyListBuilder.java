@@ -58,7 +58,7 @@ public class PropertyListBuilder {
 		}
 
 		@Override
-		public boolean isSynthetic() {
+		public boolean isGenerated() {
 			return false;
 		}
 
@@ -94,6 +94,11 @@ public class PropertyListBuilder {
 		@Override
 		public String source() {
 			return source;
+		}
+
+		@Override
+		public boolean isVisible() {
+			return true;
 		}
 
 		@Override

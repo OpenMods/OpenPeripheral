@@ -3,7 +3,6 @@ package openperipheral.adapter.peripheral;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import openmods.Log;
 import openperipheral.adapter.*;
@@ -24,8 +23,8 @@ public class PeripheralInlineAdapterWrapper extends PeripheralAdapterWrapper imp
 
 	private static class InlineMethodExecutor extends PeripheralMethodExecutor {
 
-		public InlineMethodExecutor(MethodDeclaration method, ExecutionStrategy strategy, Map<String, Method> proxyArgs) {
-			super(method, strategy, proxyArgs);
+		public InlineMethodExecutor(MethodDeclaration method, ExecutionStrategy strategy) {
+			super(method, strategy);
 		}
 
 		@Override
@@ -56,15 +55,12 @@ public class PeripheralInlineAdapterWrapper extends PeripheralAdapterWrapper imp
 	}
 
 	@Override
-	protected IPeripheralMethodExecutor createDirectExecutor(MethodDeclaration method, ExecutionStrategy strategy, Map<String, Method> proxyArgs) {
-		return new InlineMethodExecutor(method, strategy, proxyArgs);
+	protected IPeripheralMethodExecutor createDirectExecutor(MethodDeclaration method, ExecutionStrategy strategy) {
+		return new InlineMethodExecutor(method, strategy);
 	}
 
 	@Override
-	protected void nameDefaultParameters(MethodDeclaration decl) {}
-
-	@Override
-	protected void validateArgTypes(MethodDeclaration decl) {
+	protected void configureJavaArguments(MethodDeclaration decl) {
 		decl.declareJavaArgType(ARG_COMPUTER, IComputerAccess.class);
 		decl.declareJavaArgType(ARG_CONTEXT, ILuaContext.class);
 	}
@@ -75,7 +71,7 @@ public class PeripheralInlineAdapterWrapper extends PeripheralAdapterWrapper imp
 		return new IPeripheralMethodExecutor() {
 
 			@Override
-			public boolean isSynthetic() {
+			public boolean isGenerated() {
 				return false;
 			}
 

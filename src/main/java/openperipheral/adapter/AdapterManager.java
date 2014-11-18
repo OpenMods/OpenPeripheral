@@ -88,12 +88,12 @@ public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodEx
 
 	private final Set<Class<?>> invalidClasses = Sets.newHashSet();
 
-	public static void addObjectAdapter(IObjectAdapter adapter) {
-		objects.addAdapter(adapter);
+	public static boolean addObjectAdapter(IObjectAdapter adapter) {
+		return objects.addAdapter(adapter);
 	}
 
-	public static void addPeripheralAdapter(IPeripheralAdapter adapter) {
-		peripherals.addAdapter(adapter);
+	public static boolean addPeripheralAdapter(IPeripheralAdapter adapter) {
+		return peripherals.addAdapter(adapter);
 	}
 
 	public static void addInlinePeripheralAdapter(Class<?> cls) {
@@ -112,19 +112,20 @@ public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodEx
 		return Collections.unmodifiableMap(classes);
 	}
 
-	public void addAdapter(A adapter) {
+	public boolean addAdapter(A adapter) {
 		final IAdapterMethodsList<E> wrapper;
 		try {
 			wrapper = wrapExternalAdapter(adapter);
 		} catch (Throwable e) {
 			Log.warn(e, "Something went terribly wrong while adding internal adapter '%s'. It will be disabled", adapter.getClass());
-			return;
+			return false;
 		}
 		final Class<?> targetCls = wrapper.getTargetClass();
 		Preconditions.checkArgument(!Object.class.equals(wrapper.getTargetClass()), "Can't add adapter for Object class");
 
 		Log.trace("Registering %s adapter (source id: %s) for %s", wrapper.describeType(), wrapper.source(), targetCls);
 		externalAdapters.put(wrapper.getTargetClass(), wrapper);
+		return true;
 	}
 
 	public void addInlineAdapter(Class<?> targetCls) {

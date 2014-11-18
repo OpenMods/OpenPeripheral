@@ -9,13 +9,13 @@ import openperipheral.api.IPeripheralAdapter;
 public class AdapterRegistryWrapper implements IAdapterRegistry {
 
 	@Override
-	public void register(IPeripheralAdapter adapter) {
-		AdapterManager.addPeripheralAdapter(adapter);
+	public boolean register(IPeripheralAdapter adapter) {
+		return AdapterManager.addPeripheralAdapter(adapter);
 	}
 
 	@Override
-	public void register(IObjectAdapter adapter) {
-		AdapterManager.addObjectAdapter(adapter);
+	public boolean register(IObjectAdapter adapter) {
+		return AdapterManager.addObjectAdapter(adapter);
 	}
 
 	@Override

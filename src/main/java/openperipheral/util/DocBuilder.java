@@ -80,7 +80,7 @@ public class DocBuilder {
 
 	protected void fillMethods(Element result, IMethodsHolder<?> holder) {
 		for (IMethodExecutor method : holder.listMethods()) {
-			if (method.isSynthetic()) continue;
+			if (method.isGenerated()) continue;
 			Element methodDoc = doc.createElement("method");
 			fillDocForMethod(methodDoc, method.getWrappedMethod());
 			result.appendChild(methodDoc);

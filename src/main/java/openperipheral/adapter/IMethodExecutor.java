@@ -4,5 +4,5 @@ public interface IMethodExecutor {
 
 	public IDescriptable getWrappedMethod();
 
-	public boolean isSynthetic();
+	public boolean isGenerated();
 }

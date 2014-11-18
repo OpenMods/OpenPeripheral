@@ -2,7 +2,6 @@ package openperipheral.adapter.peripheral;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.Map;
 
 import openperipheral.adapter.IDescriptable;
 import openperipheral.adapter.method.MethodDeclaration;
@@ -19,8 +18,8 @@ public class PeripheralExternalAdapterWrapper extends PeripheralAdapterWrapper {
 
 	private class NormalMethodExecutor extends PeripheralMethodExecutor {
 
-		public NormalMethodExecutor(MethodDeclaration method, ExecutionStrategy strategy, Map<String, Method> proxyArgs) {
-			super(method, strategy, proxyArgs);
+		public NormalMethodExecutor(MethodDeclaration method, ExecutionStrategy strategy) {
+			super(method, strategy);
 		}
 
 		@Override
@@ -41,17 +40,14 @@ public class PeripheralExternalAdapterWrapper extends PeripheralAdapterWrapper {
 	}
 
 	@Override
-	protected IPeripheralMethodExecutor createDirectExecutor(MethodDeclaration method, ExecutionStrategy strategy, Map<String, Method> proxyArgs) {
-		return new NormalMethodExecutor(method, strategy, proxyArgs);
+	protected IPeripheralMethodExecutor createDirectExecutor(MethodDeclaration method, ExecutionStrategy strategy) {
+		return new NormalMethodExecutor(method, strategy);
 	}
 
 	@Override
-	protected void nameDefaultParameters(MethodDeclaration decl) {
-		decl.nameJavaArg(0, ARG_TARGET);
-	}
+	protected void configureJavaArguments(MethodDeclaration decl) {
+		decl.setDefaultArgName(0, ARG_TARGET);
 
-	@Override
-	protected void validateArgTypes(MethodDeclaration decl) {
 		decl.declareJavaArgType(ARG_COMPUTER, IComputerAccess.class);
 		decl.declareJavaArgType(ARG_CONTEXT, ILuaContext.class);
 		decl.declareJavaArgType(ARG_TARGET, targetCls);
@@ -63,7 +59,7 @@ public class PeripheralExternalAdapterWrapper extends PeripheralAdapterWrapper {
 		return new IPeripheralMethodExecutor() {
 
 			@Override
-			public boolean isSynthetic() {
+			public boolean isGenerated() {
 				return false;
 			}
 

@@ -2,7 +2,6 @@ package openperipheral.adapter.object;
 
 import java.lang.reflect.Method;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Callable;
 
 import openmods.Log;
@@ -26,9 +25,9 @@ public abstract class ObjectAdapterWrapper extends AdapterWrapper<IObjectMethodE
 
 	@Override
 	protected List<IObjectMethodExecutor> buildMethodList() {
-		return buildMethodList(true, new MethodExecutorFactory<IObjectMethodExecutor>() {
+		return buildMethodList(new MethodExecutorFactory<IObjectMethodExecutor>() {
 			@Override
-			public IObjectMethodExecutor createExecutor(Method method, final MethodDeclaration decl, final Map<String, Method> proxyArgs) {
+			public IObjectMethodExecutor createExecutor(Method method, final MethodDeclaration decl) {
 				return new IObjectMethodExecutor() {
 
 					@Override
@@ -38,11 +37,11 @@ public abstract class ObjectAdapterWrapper extends AdapterWrapper<IObjectMethodE
 
 					@Override
 					public Object[] execute(ILuaContext context, Object target, Object[] args) throws Exception {
-						return createWrapper(decl, context, target, args, proxyArgs).call();
+						return createWrapper(decl, context, target, args).call();
 					}
 
 					@Override
-					public boolean isSynthetic() {
+					public boolean isGenerated() {
 						return false;
 					}
 				};
@@ -50,7 +49,7 @@ public abstract class ObjectAdapterWrapper extends AdapterWrapper<IObjectMethodE
 		});
 	}
 
-	protected abstract Callable<Object[]> createWrapper(MethodDeclaration decl, ILuaContext context, Object target, Object[] args, Map<String, Method> proxyArgs);
+	protected abstract Callable<Object[]> createWrapper(MethodDeclaration decl, ILuaContext context, Object target, Object[] args);
 
 	private static class ObjectPropertyExecutor extends PropertyExecutor implements IObjectMethodExecutor {
 
@@ -75,22 +74,19 @@ public abstract class ObjectAdapterWrapper extends AdapterWrapper<IObjectMethodE
 		}
 
 		@Override
-		protected void nameDefaultParameters(MethodDeclaration decl) {
-			decl.nameJavaArg(0, ARG_TARGET);
-		}
+		protected void configureJavaArguments(MethodDeclaration decl) {
+			decl.setDefaultArgName(0, ARG_TARGET);
 
-		@Override
-		protected void validateArgTypes(MethodDeclaration decl) {
 			decl.declareJavaArgType(ARG_CONTEXT, ILuaContext.class);
 			decl.declareJavaArgType(ARG_TARGET, targetCls);
 		}
 
 		@Override
-		protected Callable<Object[]> createWrapper(MethodDeclaration decl, ILuaContext context, Object target, Object[] args, Map<String, Method> proxyArgs) {
-			return nameAdapterMethods(target, proxyArgs, decl.createWrapper(adapter)
+		protected Callable<Object[]> createWrapper(MethodDeclaration decl, ILuaContext context, Object target, Object[] args) {
+			return decl.createWrapper(adapter)
 					.setJavaArg(ARG_TARGET, target)
 					.setJavaArg(ARG_CONTEXT, context)
-					.setLuaArgs(args));
+					.setLuaArgs(args);
 		}
 
 		@Override
@@ -120,15 +116,12 @@ public abstract class ObjectAdapterWrapper extends AdapterWrapper<IObjectMethodE
 		}
 
 		@Override
-		protected void nameDefaultParameters(MethodDeclaration decl) {}
-
-		@Override
-		protected void validateArgTypes(MethodDeclaration decl) {
+		protected void configureJavaArguments(MethodDeclaration decl) {
 			decl.declareJavaArgType(ARG_CONTEXT, ILuaContext.class);
 		}
 
 		@Override
-		protected Callable<Object[]> createWrapper(MethodDeclaration decl, ILuaContext context, Object target, Object[] args, Map<String, Method> proxyArgs) {
+		protected Callable<Object[]> createWrapper(MethodDeclaration decl, ILuaContext context, Object target, Object[] args) {
 			return decl.createWrapper(target)
 					.setJavaArg(ARG_CONTEXT, context)
 					.setLuaArgs(args);
