@@ -16,6 +16,12 @@ import dan200.computercraft.api.ComputerCraftAPI;
 @Mod(modid = ModInfo.ID, name = ModInfo.NAME, version = ModInfo.VERSION, dependencies = ModInfo.DEPENDENCIES)
 public class OpenPeripheralCore {
 
+	static {
+		ApiProvider.installApi();
+	}
+
+	public static final String PROVIDED_API_VERSION = "2.1";
+
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent evt) {
 		final File configFile = evt.getSuggestedConfigurationFile();
