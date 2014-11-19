@@ -9,25 +9,20 @@ import dan200.computercraft.api.lua.ILuaContext;
 public class ObjectMethodsListBuilder extends ClassMethodsListBuilder<IObjectMethodExecutor> {
 
 	public ObjectMethodsListBuilder() {
-		super(AdapterManager.objects);
+		super(AdapterManager.OBJECTS_MANAGER);
 	}
 
 	@Override
 	public IObjectMethodExecutor createDummyWrapper(final Object lister, final MethodDeclaration method) {
 		return new IObjectMethodExecutor() {
 			@Override
-			public IDescriptable getWrappedMethod() {
+			public IDescriptable description() {
 				return method;
 			}
 
 			@Override
 			public Object[] execute(ILuaContext context, Object target, Object[] args) throws Exception {
 				return method.createWrapper(lister).setJavaArg(ARG_TARGET, target).setLuaArgs(args).call();
-			}
-
-			@Override
-			public boolean isGenerated() {
-				return true;
 			}
 		};
 	}

@@ -4,7 +4,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import openperipheral.adapter.composed.ClassMethodsList;
+import openperipheral.adapter.MethodMap;
 
 import com.google.common.base.Throwables;
 
@@ -12,7 +12,7 @@ import dan200.computercraft.api.peripheral.IPeripheral;
 
 public class ProxyAdapterPeripheral extends AdapterPeripheral implements InvocationHandler {
 
-	public ProxyAdapterPeripheral(ClassMethodsList<IPeripheralMethodExecutor> wrapper, Object targetObject) {
+	public ProxyAdapterPeripheral(MethodMap<IPeripheralMethodExecutor> wrapper, Object targetObject) {
 		super(wrapper, targetObject);
 	}
 

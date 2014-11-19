@@ -4,7 +4,8 @@ import java.util.Arrays;
 
 import openmods.Log;
 import openperipheral.adapter.AdapterLogicException;
-import openperipheral.adapter.composed.ClassMethodsList;
+import openperipheral.adapter.MethodMap;
+import openperipheral.adapter.WrappedEntityBase;
 import openperipheral.api.IAttachable;
 import openperipheral.util.PeripheralUtils;
 import openperipheral.util.ResourceMount;
@@ -19,19 +20,18 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 
-public class AdapterPeripheral implements IPeripheral {
+public class AdapterPeripheral extends WrappedEntityBase<IPeripheralMethodExecutor> implements IPeripheral {
 
 	private static final String MOUNT_NAME = "openp";
 	private static final IMount MOUNT = new ResourceMount();
 
 	protected final String type;
 	protected final Object targetObject;
-	protected final ClassMethodsList<IPeripheralMethodExecutor> wrapped;
 
-	public AdapterPeripheral(ClassMethodsList<IPeripheralMethodExecutor> wrapper, Object targetObject) {
+	public AdapterPeripheral(MethodMap<IPeripheralMethodExecutor> methods, Object targetObject) {
+		super(methods);
 		this.targetObject = targetObject;
 		this.type = PeripheralUtils.getNameForTarget(targetObject);
-		this.wrapped = wrapper;
 	}
 
 	@Override
@@ -41,7 +41,7 @@ public class AdapterPeripheral implements IPeripheral {
 
 	@Override
 	public String[] getMethodNames() {
-		return wrapped.methodNames;
+		return super.getMethodNames();
 	}
 
 	@Override
@@ -49,7 +49,7 @@ public class AdapterPeripheral implements IPeripheral {
 		// this should throw if peripheral isn't attached
 		computer.getAttachmentName();
 
-		IPeripheralMethodExecutor executor = wrapped.getMethod(index);
+		IPeripheralMethodExecutor executor = getMethod(index);
 		Preconditions.checkNotNull(executor, "Invalid method index: %d", index);
 
 		try {
@@ -60,12 +60,12 @@ public class AdapterPeripheral implements IPeripheral {
 		} catch (LuaException e) {
 			throw e;
 		} catch (AdapterLogicException e) {
-			String methodName = wrapped.methodNames[index];
+			String methodName = getMethodName(index);
 			Log.log(Level.DEBUG, e.getCause(), "Adapter error during method %s(%d) execution on peripheral %s, args: %s",
 					methodName, index, type, Arrays.toString(arguments));
 			throw e.rethrow();
 		} catch (Throwable e) {
-			String methodName = wrapped.methodNames[index];
+			String methodName = getMethodName(index);
 			Log.log(Level.INFO, e, "Unwrapped error during method %s(%d) execution on peripheral %s, args: %s",
 					methodName, index, type, Arrays.toString(arguments));
 			throw new LuaException("Internal error. Check logs for info");

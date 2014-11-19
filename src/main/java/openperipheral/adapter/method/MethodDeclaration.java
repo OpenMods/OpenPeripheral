@@ -40,8 +40,6 @@ public class MethodDeclaration implements IDescriptable {
 
 	private final boolean validateReturn;
 
-	private final boolean isDocumented;
-
 	private final BiMap<String, Integer> namedArgs = HashBiMap.create();
 	private final Set<String> allowedNames = Sets.newHashSet();
 
@@ -78,8 +76,6 @@ public class MethodDeclaration implements IDescriptable {
 		this.description = meta.description();
 		this.returnTypes = meta.returnTypes();
 		this.validateReturn = meta.validateReturn();
-
-		this.isDocumented = method.getAnnotation(HideDoc.class) == null;
 
 		if (validateReturn) validateResultCount();
 
@@ -337,10 +333,5 @@ public class MethodDeclaration implements IDescriptable {
 	@Override
 	public String source() {
 		return source;
-	}
-
-	@Override
-	public boolean isVisible() {
-		return isDocumented;
 	}
 }

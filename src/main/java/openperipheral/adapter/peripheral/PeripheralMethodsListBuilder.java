@@ -10,7 +10,7 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 public class PeripheralMethodsListBuilder extends ClassMethodsListBuilder<IPeripheralMethodExecutor> {
 
 	public PeripheralMethodsListBuilder() {
-		super(AdapterManager.peripherals);
+		super(AdapterManager.PERIPHERALS_MANAGER);
 	}
 
 	public static final String ARG_TARGET = "target";
@@ -19,18 +19,13 @@ public class PeripheralMethodsListBuilder extends ClassMethodsListBuilder<IPerip
 	public IPeripheralMethodExecutor createDummyWrapper(final Object lister, final MethodDeclaration method) {
 		return new IPeripheralMethodExecutor() {
 			@Override
-			public IDescriptable getWrappedMethod() {
+			public IDescriptable description() {
 				return method;
 			}
 
 			@Override
 			public Object[] execute(IComputerAccess computer, ILuaContext context, Object target, Object[] args) throws Exception {
 				return method.createWrapper(lister).setJavaArg(ARG_TARGET, target).setLuaArgs(args).call();
-			}
-
-			@Override
-			public boolean isGenerated() {
-				return true;
 			}
 		};
 	}

@@ -9,7 +9,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import openmods.Log;
 import openmods.reflection.ReflectionHelper;
-import openperipheral.adapter.composed.ClassMethodsList;
 import openperipheral.adapter.peripheral.AdapterPeripheral;
 import openperipheral.adapter.peripheral.IPeripheralMethodExecutor;
 import openperipheral.adapter.peripheral.ProxyAdapterPeripheral;
@@ -79,7 +78,7 @@ public class PeripheralHandlers implements IPeripheralProvider {
 
 		if (TileEntityBlacklist.INSTANCE.isIgnored(teClass)) return NULL_HANDLER;
 
-		for (Class<?> adaptableClass : AdapterManager.peripherals.getAllAdaptableClasses()) {
+		for (Class<?> adaptableClass : AdapterManager.PERIPHERALS_MANAGER.getAllAdaptableClasses()) {
 			if (adaptableClass.isAssignableFrom(teClass)) {
 				if (teClass.isAnnotationPresent(Volatile.class)) {
 					Log.trace("Adding non-caching adapter handler for %s", teClass);
@@ -116,7 +115,8 @@ public class PeripheralHandlers implements IPeripheralProvider {
 
 	public static IPeripheral createAdaptedPeripheral(Object target) {
 		Class<?> targetClass = target.getClass();
-		ClassMethodsList<IPeripheralMethodExecutor> methods = AdapterManager.peripherals.getAdapterClass(targetClass);
+		MethodMap<IPeripheralMethodExecutor> methods = AdapterManager.PERIPHERALS_MANAGER.getAdaptedClass(targetClass);
+		if (methods.isEmpty()) return null;
 
 		ExposeInterface proxyAnn = targetClass.getAnnotation(ExposeInterface.class);
 		if (proxyAnn == null) return new AdapterPeripheral(methods, target);

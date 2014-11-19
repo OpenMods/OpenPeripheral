@@ -4,11 +4,10 @@ import java.util.*;
 
 import openmods.Log;
 import openperipheral.adapter.composed.ClassMethodsComposer;
-import openperipheral.adapter.composed.ClassMethodsList;
 import openperipheral.adapter.composed.ClassMethodsListBuilder;
 import openperipheral.adapter.object.*;
 import openperipheral.adapter.peripheral.*;
-import openperipheral.api.IAdapterBase;
+import openperipheral.api.IAdapter;
 import openperipheral.api.IObjectAdapter;
 import openperipheral.api.IPeripheralAdapter;
 
@@ -17,7 +16,7 @@ import com.google.common.collect.*;
 
 import dan200.computercraft.api.lua.ILuaObject;
 
-public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodExecutor> {
+public abstract class AdapterManager<E extends IMethodExecutor> {
 
 	public static class InvalidClassException extends RuntimeException {
 		private static final long serialVersionUID = 5722017683388067641L;
@@ -38,20 +37,20 @@ public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodEx
 		}
 	};
 
-	public static final AdapterManager<IObjectAdapter, IObjectMethodExecutor> objects = new AdapterManager<IObjectAdapter, IObjectMethodExecutor>() {
+	public static final AdapterManager<IObjectMethodExecutor> OBJECTS_MANAGER = new AdapterManager<IObjectMethodExecutor>() {
 
 		@Override
-		protected ClassMethodsList<IObjectMethodExecutor> collectMethods(Class<?> targetClass) {
+		protected MethodMap<IObjectMethodExecutor> collectMethods(Class<?> targetClass) {
 			return OBJECT_COMPOSER.createMethodsList(targetClass);
 		}
 
 		@Override
-		protected IAdapterMethodsList<IObjectMethodExecutor> wrapExternalAdapter(IObjectAdapter adapter) {
+		protected AdapterWrapper<IObjectMethodExecutor> wrapExternalAdapter(IAdapter adapter) {
 			return new ObjectAdapterWrapper.External(adapter);
 		}
 
 		@Override
-		protected IAdapterMethodsList<IObjectMethodExecutor> wrapInlineAdapter(Class<?> targetClass) {
+		protected AdapterWrapper<IObjectMethodExecutor> wrapInlineAdapter(Class<?> targetClass) {
 			return new ObjectAdapterWrapper.Inline(targetClass);
 		}
 	};
@@ -63,81 +62,85 @@ public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodEx
 		}
 	};
 
-	public static final AdapterManager<IPeripheralAdapter, IPeripheralMethodExecutor> peripherals = new AdapterManager<IPeripheralAdapter, IPeripheralMethodExecutor>() {
+	public static final AdapterManager<IPeripheralMethodExecutor> PERIPHERALS_MANAGER = new AdapterManager<IPeripheralMethodExecutor>() {
 		@Override
-		protected ClassMethodsList<IPeripheralMethodExecutor> collectMethods(Class<?> targetClass) {
+		protected MethodMap<IPeripheralMethodExecutor> collectMethods(Class<?> targetClass) {
 			return PERIPHERAL_COMPOSER.createMethodsList(targetClass);
 		}
 
 		@Override
-		protected IAdapterMethodsList<IPeripheralMethodExecutor> wrapExternalAdapter(IPeripheralAdapter adapter) {
+		protected AdapterWrapper<IPeripheralMethodExecutor> wrapExternalAdapter(IAdapter adapter) {
 			return new PeripheralExternalAdapterWrapper(adapter);
 		}
 
 		@Override
-		protected IAdapterMethodsList<IPeripheralMethodExecutor> wrapInlineAdapter(Class<?> targetClass) {
+		protected AdapterWrapper<IPeripheralMethodExecutor> wrapInlineAdapter(Class<?> targetClass) {
 			return new PeripheralInlineAdapterWrapper(targetClass);
 		}
 	};
 
-	private final Multimap<Class<?>, IAdapterMethodsList<E>> externalAdapters = HashMultimap.create();
+	private final Multimap<Class<?>, AdapterWrapper<E>> externalAdapters = HashMultimap.create();
 
-	private final Map<Class<?>, IAdapterMethodsList<E>> internalAdapters = Maps.newHashMap();
+	private final Map<Class<?>, AdapterWrapper<E>> internalAdapters = Maps.newHashMap();
 
-	private final Map<Class<?>, ClassMethodsList<E>> classes = Maps.newHashMap();
+	private final Map<Class<?>, MethodMap<E>> classes = Maps.newHashMap();
 
 	private final Set<Class<?>> invalidClasses = Sets.newHashSet();
 
 	public static boolean addObjectAdapter(IObjectAdapter adapter) {
-		return objects.addAdapter(adapter);
+		return OBJECTS_MANAGER.addAdapter(adapter);
 	}
 
 	public static boolean addPeripheralAdapter(IPeripheralAdapter adapter) {
-		return peripherals.addAdapter(adapter);
+		return PERIPHERALS_MANAGER.addAdapter(adapter);
 	}
 
 	public static void addInlinePeripheralAdapter(Class<?> cls) {
-		peripherals.addInlineAdapter(cls);
+		PERIPHERALS_MANAGER.addInlineAdapter(cls);
 	}
 
 	public Set<Class<?>> getAllAdaptableClasses() {
 		return Sets.union(externalAdapters.keySet(), internalAdapters.keySet());
 	}
 
-	public Collection<IAdapterMethodsList<E>> listExternalAdapters() {
-		return Collections.unmodifiableCollection(externalAdapters.values());
+	public Map<Class<?>, Collection<AdapterWrapper<E>>> listExternalAdapters() {
+		return Collections.unmodifiableMap(externalAdapters.asMap());
 	}
 
-	public Map<Class<?>, ClassMethodsList<E>> listCollectedClasses() {
+	public Map<Class<?>, AdapterWrapper<E>> listInternalAdapters() {
+		return Collections.unmodifiableMap(internalAdapters);
+	}
+
+	public Map<Class<?>, MethodMap<E>> listCollectedClasses() {
 		return Collections.unmodifiableMap(classes);
 	}
 
-	public boolean addAdapter(A adapter) {
-		final IAdapterMethodsList<E> wrapper;
+	public boolean addAdapter(IAdapter adapter) {
+		final AdapterWrapper<E> wrapper;
 		try {
 			wrapper = wrapExternalAdapter(adapter);
 		} catch (Throwable e) {
 			Log.warn(e, "Something went terribly wrong while adding internal adapter '%s'. It will be disabled", adapter.getClass());
 			return false;
 		}
-		final Class<?> targetCls = wrapper.getTargetClass();
-		Preconditions.checkArgument(!Object.class.equals(wrapper.getTargetClass()), "Can't add adapter for Object class");
+		final Class<?> targetCls = adapter.getTargetClass();
+		Preconditions.checkArgument(!Object.class.equals(targetCls), "Can't add adapter for Object class");
 
-		Log.trace("Registering %s adapter (source id: %s) for %s", wrapper.describeType(), wrapper.source(), targetCls);
-		externalAdapters.put(wrapper.getTargetClass(), wrapper);
+		Log.trace("Registering %s adapter (source id: %s) for %s", wrapper.describe(), wrapper.source(), targetCls);
+		externalAdapters.put(targetCls, wrapper);
 		return true;
 	}
 
 	public void addInlineAdapter(Class<?> targetCls) {
-		IAdapterMethodsList<E> wrapper = wrapInlineAdapter(targetCls);
-		Log.trace("Registering %s adapter (source id: %s) adapter for %s", wrapper.describeType(), wrapper.source(), targetCls);
+		AdapterWrapper<E> wrapper = wrapInlineAdapter(targetCls);
+		Log.trace("Registering %s adapter (source id: %s) adapter for %s", wrapper.describe(), wrapper.source(), targetCls);
 		internalAdapters.put(targetCls, wrapper);
 	}
 
-	public ClassMethodsList<E> getAdapterClass(Class<?> targetCls) {
+	public MethodMap<E> getAdaptedClass(Class<?> targetCls) {
 		if (invalidClasses.contains(targetCls)) throw new InvalidClassException();
 
-		ClassMethodsList<E> value = classes.get(targetCls);
+		MethodMap<E> value = classes.get(targetCls);
 		if (value == null) {
 			try {
 				value = collectMethods(targetCls);
@@ -145,18 +148,19 @@ public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodEx
 				invalidClasses.add(targetCls);
 				throw new InvalidClassException(t);
 			}
+
 			classes.put(targetCls, value);
 		}
 
 		return value;
 	}
 
-	public Collection<IAdapterMethodsList<E>> getExternalAdapters(Class<?> targetCls) {
+	public Collection<AdapterWrapper<E>> getExternalAdapters(Class<?> targetCls) {
 		return Collections.unmodifiableCollection(externalAdapters.get(targetCls));
 	}
 
-	public IAdapterMethodsList<E> getInlineAdapter(Class<?> targetCls) {
-		IAdapterMethodsList<E> wrapper = internalAdapters.get(targetCls);
+	public AdapterWrapper<E> getInlineAdapter(Class<?> targetCls) {
+		AdapterWrapper<E> wrapper = internalAdapters.get(targetCls);
 		if (wrapper == null) {
 			wrapper = wrapInlineAdapter(targetCls);
 			internalAdapters.put(targetCls, wrapper);
@@ -165,13 +169,13 @@ public abstract class AdapterManager<A extends IAdapterBase, E extends IMethodEx
 		return wrapper;
 	}
 
-	protected abstract ClassMethodsList<E> collectMethods(Class<?> targetClass);
+	protected abstract MethodMap<E> collectMethods(Class<?> targetClass);
 
-	protected abstract IAdapterMethodsList<E> wrapExternalAdapter(A adapter);
+	protected abstract AdapterWrapper<E> wrapExternalAdapter(IAdapter adapter);
 
-	protected abstract IAdapterMethodsList<E> wrapInlineAdapter(Class<?> targetClass);
+	protected abstract AdapterWrapper<E> wrapInlineAdapter(Class<?> targetClass);
 
 	public static ILuaObject wrapObject(Object o) {
-		return LuaObjectWrapper.wrap(objects, o);
+		return LuaObjectWrapper.wrap(OBJECTS_MANAGER, o);
 	}
 }

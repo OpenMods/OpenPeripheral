@@ -71,13 +71,8 @@ public class PeripheralInlineAdapterWrapper extends PeripheralAdapterWrapper imp
 		return new IPeripheralMethodExecutor() {
 
 			@Override
-			public boolean isGenerated() {
-				return false;
-			}
-
-			@Override
-			public IDescriptable getWrappedMethod() {
-				return executor.getWrappedMethod();
+			public IDescriptable description() {
+				return executor.description();
 			}
 
 			@Override
@@ -109,12 +104,12 @@ public class PeripheralInlineAdapterWrapper extends PeripheralAdapterWrapper imp
 	@Override
 	protected List<IPeripheralMethodExecutor> buildMethodList() {
 		List<IPeripheralMethodExecutor> result = super.buildMethodList();
-		PropertyListBuilder.buildPropertyList(targetCls, source, this, result);
+		PropertyListBuilder.buildPropertyList(targetClass, source, this, result);
 		return result;
 	}
 
 	@Override
-	public String describeType() {
+	public String describe() {
 		return "internal periperal (source: " + adapterClass.toString() + ")";
 	}
 }

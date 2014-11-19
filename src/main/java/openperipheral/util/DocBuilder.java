@@ -11,8 +11,11 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import openperipheral.adapter.*;
-import openperipheral.adapter.composed.ClassMethodsList;
+import openperipheral.adapter.AdapterWrapper;
+import openperipheral.adapter.IDescriptable;
+import openperipheral.adapter.IMethodExecutor;
+import openperipheral.adapter.object.IObjectMethodExecutor;
+import openperipheral.adapter.peripheral.IPeripheralMethodExecutor;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -49,47 +52,67 @@ public class DocBuilder {
 		}
 	}
 
-	public void createDocForPeripheral(String type, IAdapterMethodsList<?> methods) {
-		Element result = doc.createElement(type);
-		result.setAttribute("targetClass", methods.getTargetClass().toString());
-		fillMethods(result, methods);
-		root.appendChild(result);
-	}
+	public void createDocForTe(Class<?> cls, Map<String, IPeripheralMethodExecutor> methods) {
+		if (methods.isEmpty()) return;
+		Element result = doc.createElement("peripheral");
+		fillDocForClass(result, cls, methods);
 
-	public void createDocForTe(Class<?> cls, ClassMethodsList<?> list) {
-		if (!list.hasMethods) return;
-		Element result = doc.createElement("tileEntity");
-		fillDocForClassList(result, cls, list);
 		final String teName = Objects.firstNonNull(PeripheralUtils.getClassToNameMap().get(cls), "null");
 		result.appendChild(createProperty("name", teName));
+
 		root.appendChild(result);
 	}
 
-	public void createDocForObject(Class<?> cls, ClassMethodsList<?> list) {
-		if (!list.hasMethods) return;
+	public void createDocForObject(Class<?> cls, Map<String, IObjectMethodExecutor> methods) {
+		if (methods.isEmpty()) return;
 		Element result = doc.createElement("luaObject");
-		fillDocForClassList(result, cls, list);
+		fillDocForClass(result, cls, methods);
 		root.appendChild(result);
 	}
 
-	private void fillDocForClassList(Element result, Class<?> cls, ClassMethodsList<?> list) {
-		result.setAttribute("class", cls.getName());
-		result.appendChild(createProperty("simpleName", cls.getSimpleName()));
-		fillMethods(result, list);
+	public void createDocForAdapter(String type, String location, Class<?> targetClass, AdapterWrapper<?> adapter) {
+		Element result = doc.createElement("adapter");
+		result.setAttribute("class", adapter.getAdapterClass().getName());
+		result.setAttribute("type", type);
+		result.setAttribute("location", location);
+
+		result.appendChild(createProperty("target", adapter.getTargetClass().getName()));
+		result.appendChild(createProperty("source", adapter.source()));
+
+		fillMethods(result, adapter.getMethods());
+		root.appendChild(result);
 	}
 
-	protected void fillMethods(Element result, IMethodsHolder<?> holder) {
-		for (IMethodExecutor method : holder.listMethods()) {
-			if (method.isGenerated()) continue;
+	protected void fillMethods(Element result, Collection<? extends IMethodExecutor> methods) {
+		for (IMethodExecutor method : methods) {
 			Element methodDoc = doc.createElement("method");
-			fillDocForMethod(methodDoc, method.getWrappedMethod());
+
+			final IDescriptable description = method.description();
+
+			Element names = doc.createElement("names");
+			for (String name : description.getNames())
+				names.appendChild(createProperty("name", name));
+			methodDoc.appendChild(names);
+
+			fillDocForDescriptable(methodDoc, description);
 			result.appendChild(methodDoc);
 		}
 	}
 
-	private void fillDocForMethod(Element result, IDescriptable method) {
-		for (String name : method.getNames())
-			result.appendChild(createProperty("name", name));
+	private <E extends IMethodExecutor> void fillDocForClass(Element result, Class<?> cls, Map<String, E> list) {
+		result.setAttribute("class", cls.getName());
+		result.appendChild(createProperty("simpleName", cls.getSimpleName()));
+
+		for (Map.Entry<String, E> entry : list.entrySet()) {
+			Element methodDoc = doc.createElement("method");
+
+			methodDoc.setAttribute("name", entry.getKey());
+			fillDocForDescriptable(methodDoc, entry.getValue().description());
+			result.appendChild(methodDoc);
+		}
+	}
+
+	private void fillDocForDescriptable(Element result, IDescriptable method) {
 
 		result.appendChild(createProperty("signature", method.signature()));
 		Element description = doc.createElement("extra");

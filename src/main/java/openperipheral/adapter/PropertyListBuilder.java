@@ -53,13 +53,8 @@ public class PropertyListBuilder {
 		}
 
 		@Override
-		public IDescriptable getWrappedMethod() {
+		public IDescriptable description() {
 			return context;
-		}
-
-		@Override
-		public boolean isGenerated() {
-			return false;
 		}
 
 		protected Object[] call(Object target, Object... args) {
@@ -94,11 +89,6 @@ public class PropertyListBuilder {
 		@Override
 		public String source() {
 			return source;
-		}
-
-		@Override
-		public boolean isVisible() {
-			return true;
 		}
 
 		@Override

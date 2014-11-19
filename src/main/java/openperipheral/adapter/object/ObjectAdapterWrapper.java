@@ -10,7 +10,7 @@ import openperipheral.adapter.PropertyListBuilder.FieldContext;
 import openperipheral.adapter.PropertyListBuilder.IPropertyExecutorFactory;
 import openperipheral.adapter.PropertyListBuilder.PropertyExecutor;
 import openperipheral.adapter.method.MethodDeclaration;
-import openperipheral.api.IObjectAdapter;
+import openperipheral.api.IAdapter;
 import openperipheral.api.ObjectTypeId;
 import dan200.computercraft.api.lua.ILuaContext;
 
@@ -31,18 +31,13 @@ public abstract class ObjectAdapterWrapper extends AdapterWrapper<IObjectMethodE
 				return new IObjectMethodExecutor() {
 
 					@Override
-					public IDescriptable getWrappedMethod() {
+					public IDescriptable description() {
 						return decl;
 					}
 
 					@Override
 					public Object[] execute(ILuaContext context, Object target, Object[] args) throws Exception {
 						return createWrapper(decl, context, target, args).call();
-					}
-
-					@Override
-					public boolean isGenerated() {
-						return false;
 					}
 				};
 			}
@@ -66,9 +61,9 @@ public abstract class ObjectAdapterWrapper extends AdapterWrapper<IObjectMethodE
 
 	public static class External extends ObjectAdapterWrapper {
 
-		private final IObjectAdapter adapter;
+		private final IAdapter adapter;
 
-		public External(IObjectAdapter adapter) {
+		public External(IAdapter adapter) {
 			super(adapter.getClass(), adapter.getTargetClass(), adapter.getSourceId());
 			this.adapter = adapter;
 		}
@@ -78,7 +73,7 @@ public abstract class ObjectAdapterWrapper extends AdapterWrapper<IObjectMethodE
 			decl.setDefaultArgName(0, ARG_TARGET);
 
 			decl.declareJavaArgType(ARG_CONTEXT, ILuaContext.class);
-			decl.declareJavaArgType(ARG_TARGET, targetCls);
+			decl.declareJavaArgType(ARG_TARGET, targetClass);
 		}
 
 		@Override
@@ -90,7 +85,7 @@ public abstract class ObjectAdapterWrapper extends AdapterWrapper<IObjectMethodE
 		}
 
 		@Override
-		public String describeType() {
+		public String describe() {
 			return "external object (source: " + adapterClass.toString() + ")";
 		}
 	}
@@ -135,12 +130,12 @@ public abstract class ObjectAdapterWrapper extends AdapterWrapper<IObjectMethodE
 		@Override
 		protected List<IObjectMethodExecutor> buildMethodList() {
 			List<IObjectMethodExecutor> result = super.buildMethodList();
-			PropertyListBuilder.buildPropertyList(targetCls, source, this, result);
+			PropertyListBuilder.buildPropertyList(targetClass, source, this, result);
 			return result;
 		}
 
 		@Override
-		public String describeType() {
+		public String describe() {
 			return "internal object (source: " + adapterClass.toString() + ")";
 		}
 	}

@@ -26,7 +26,7 @@ public class MethodsListerHelper<E extends IMethodExecutor> {
 	public String listMethods() {
 		List<String> info = Lists.newArrayList();
 		for (Map.Entry<String, E> e : methods.entrySet()) {
-			final IDescriptable m = e.getValue().getWrappedMethod();
+			final IDescriptable m = e.getValue().description();
 			info.add(e.getKey() + m.signature());
 		}
 		return Joiner.on(", ").join(info);
@@ -45,7 +45,7 @@ public class MethodsListerHelper<E extends IMethodExecutor> {
 	public Map<?, ?> getAdvancedMethodsData() {
 		Map<String, Object> info = Maps.newHashMap();
 		for (Map.Entry<String, E> e : methods.entrySet()) {
-			final IDescriptable m = e.getValue().getWrappedMethod();
+			final IDescriptable m = e.getValue().description();
 			info.put(e.getKey(), m.describe());
 		}
 		return info;

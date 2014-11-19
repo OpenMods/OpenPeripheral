@@ -10,7 +10,7 @@ import openperipheral.api.LuaCallable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
-public abstract class AdapterWrapper<E extends IMethodExecutor> implements IAdapterMethodsList<E> {
+public abstract class AdapterWrapper<E extends IMethodExecutor> {
 
 	public static class MethodWrapException extends RuntimeException {
 		private static final long serialVersionUID = -5116134133615320058L;
@@ -21,31 +21,34 @@ public abstract class AdapterWrapper<E extends IMethodExecutor> implements IAdap
 	}
 
 	protected final List<E> methods;
-	protected final Class<?> targetCls;
+	protected final Class<?> targetClass;
 	protected final Class<?> adapterClass;
 	protected final String source;
 
 	protected AdapterWrapper(Class<?> adapterClass, Class<?> targetClass, String source) {
 		this.adapterClass = adapterClass;
-		this.targetCls = targetClass;
+		this.targetClass = targetClass;
 		this.source = source;
 		this.methods = ImmutableList.copyOf(buildMethodList());
 	}
 
-	@Override
 	public String source() {
 		return source;
 	}
 
-	@Override
-	public List<E> listMethods() {
+	public List<E> getMethods() {
 		return methods;
 	}
 
-	@Override
-	public Class<?> getTargetClass() {
-		return targetCls;
+	public Class<?> getAdapterClass() {
+		return adapterClass;
 	}
+
+	public Class<?> getTargetClass() {
+		return targetClass;
+	}
+
+	public abstract String describe();
 
 	protected abstract List<E> buildMethodList();
 
@@ -85,5 +88,4 @@ public abstract class AdapterWrapper<E extends IMethodExecutor> implements IAdap
 
 		return result;
 	}
-
 }

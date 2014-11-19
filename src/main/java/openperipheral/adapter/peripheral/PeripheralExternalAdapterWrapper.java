@@ -7,7 +7,7 @@ import openperipheral.adapter.IDescriptable;
 import openperipheral.adapter.method.MethodDeclaration;
 import openperipheral.adapter.method.MethodDeclaration.CallWrap;
 import openperipheral.adapter.object.IObjectMethodExecutor;
-import openperipheral.api.IPeripheralAdapter;
+import openperipheral.api.IAdapter;
 
 import com.google.common.base.Preconditions;
 
@@ -32,9 +32,9 @@ public class PeripheralExternalAdapterWrapper extends PeripheralAdapterWrapper {
 		}
 	}
 
-	private final IPeripheralAdapter adapter;
+	private final IAdapter adapter;
 
-	public PeripheralExternalAdapterWrapper(IPeripheralAdapter adapter) {
+	public PeripheralExternalAdapterWrapper(IAdapter adapter) {
 		super(adapter.getClass(), adapter.getTargetClass(), adapter.getSourceId());
 		this.adapter = adapter;
 	}
@@ -50,22 +50,17 @@ public class PeripheralExternalAdapterWrapper extends PeripheralAdapterWrapper {
 
 		decl.declareJavaArgType(ARG_COMPUTER, IComputerAccess.class);
 		decl.declareJavaArgType(ARG_CONTEXT, ILuaContext.class);
-		decl.declareJavaArgType(ARG_TARGET, targetCls);
+		decl.declareJavaArgType(ARG_TARGET, targetClass);
 	}
 
 	@Override
 	protected IPeripheralMethodExecutor adaptObjectExecutor(final Method targetProvider, final IObjectMethodExecutor executor) {
-		Preconditions.checkArgument(Arrays.equals(targetProvider.getParameterTypes(), new Class<?>[] { targetCls }));
+		Preconditions.checkArgument(Arrays.equals(targetProvider.getParameterTypes(), new Class<?>[] { targetClass }));
 		return new IPeripheralMethodExecutor() {
 
 			@Override
-			public boolean isGenerated() {
-				return false;
-			}
-
-			@Override
-			public IDescriptable getWrappedMethod() {
-				return executor.getWrappedMethod();
+			public IDescriptable description() {
+				return executor.description();
 			}
 
 			@Override
@@ -77,7 +72,7 @@ public class PeripheralExternalAdapterWrapper extends PeripheralAdapterWrapper {
 	}
 
 	@Override
-	public String describeType() {
+	public String describe() {
 		return "external peripheral (source: " + adapterClass.toString() + ")";
 	}
 }

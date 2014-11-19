@@ -10,19 +10,18 @@ import openperipheral.adapter.*;
 import openperipheral.adapter.method.MethodDeclaration;
 import openperipheral.api.LuaCallable;
 
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 public abstract class ClassMethodsListBuilder<E extends IMethodExecutor> {
-	private final AdapterManager<?, E> manager;
+	private final AdapterManager<E> manager;
 
-	private final Map<String, E> methods = Maps.newHashMap();
+	private final MethodMap<E> methods = new MethodMap<E>();
 
 	private final Set<String> sources = Sets.newHashSet();
 
 	public static final String ARG_TARGET = "target";
 
-	public ClassMethodsListBuilder(AdapterManager<?, E> manager) {
+	public ClassMethodsListBuilder(AdapterManager<E> manager) {
 		this.manager = manager;
 	}
 
@@ -41,22 +40,22 @@ public abstract class ClassMethodsListBuilder<E extends IMethodExecutor> {
 	}
 
 	public void addExternalAdapters(Class<?> cls) {
-		for (IAdapterMethodsList<E> wrapper : manager.getExternalAdapters(cls))
+		for (AdapterWrapper<E> wrapper : manager.getExternalAdapters(cls))
 			addMethods(wrapper);
 	}
 
 	public void addInlineAdapter(Class<?> cls) {
-		IAdapterMethodsList<E> wrapper = manager.getInlineAdapter(cls);
+		AdapterWrapper<E> wrapper = manager.getInlineAdapter(cls);
 		addMethods(wrapper);
 	}
 
-	public void addMethods(IAdapterMethodsList<E> wrapper) {
-		for (E executor : wrapper.listMethods()) {
-			final IDescriptable descriptable = executor.getWrappedMethod();
+	public void addMethods(AdapterWrapper<E> wrapper) {
+		for (E executor : wrapper.getMethods()) {
+			final IDescriptable descriptable = executor.description();
 			sources.add(descriptable.source());
 			for (String name : descriptable.getNames()) {
 				final E previous = methods.put(name, executor);
-				if (previous != null) Log.trace("Previous defininition of Lua method '%s' overwritten by %s adapter", name, wrapper.describeType());
+				if (previous != null) Log.trace("Previous defininition of Lua method '%s' overwritten by %s adapter", name, wrapper.describe());
 			}
 		}
 	}
@@ -69,7 +68,11 @@ public abstract class ClassMethodsListBuilder<E extends IMethodExecutor> {
 		return Collections.unmodifiableSet(sources);
 	}
 
-	public ClassMethodsList<E> create() {
-		return new ClassMethodsList<E>(methods);
+	public boolean hasMethods() {
+		return !methods.isEmpty();
+	}
+
+	public MethodMap<E> create() {
+		return methods;
 	}
 }

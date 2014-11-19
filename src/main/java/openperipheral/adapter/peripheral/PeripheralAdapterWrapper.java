@@ -3,13 +3,11 @@ package openperipheral.adapter.peripheral;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Callable;
 
 import openmods.Log;
-import openperipheral.adapter.AdapterManager;
-import openperipheral.adapter.AdapterWrapper;
-import openperipheral.adapter.IDescriptable;
-import openperipheral.adapter.composed.ClassMethodsList;
+import openperipheral.adapter.*;
 import openperipheral.adapter.method.MethodDeclaration;
 import openperipheral.adapter.method.MethodDeclaration.CallWrap;
 import openperipheral.adapter.object.IObjectMethodExecutor;
@@ -18,6 +16,7 @@ import openperipheral.api.Include;
 import openperipheral.api.Synchronizable;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Sets;
 
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.peripheral.IComputerAccess;
@@ -55,13 +54,8 @@ public abstract class PeripheralAdapterWrapper extends AdapterWrapper<IPeriphera
 		}
 
 		@Override
-		public IDescriptable getWrappedMethod() {
+		public IDescriptable description() {
 			return method;
-		}
-
-		@Override
-		public boolean isGenerated() {
-			return false;
 		}
 
 		@Override
@@ -83,10 +77,10 @@ public abstract class PeripheralAdapterWrapper extends AdapterWrapper<IPeriphera
 			public IPeripheralMethodExecutor createExecutor(Method method, MethodDeclaration decl) {
 				boolean isAsync = isAsynchronous(method, defaultAsync);
 
-				ExecutionStrategy strategy = isAsync? ExecutionStrategy.ASYNCHRONOUS : ExecutionStrategy.createOnTickStrategy(targetCls);
+				ExecutionStrategy strategy = isAsync? ExecutionStrategy.ASYNCHRONOUS : ExecutionStrategy.createOnTickStrategy(targetClass);
 
 				if (!strategy.isAlwaysSafe() && !isIgnoringWarnings(method, classIsIgnoringWarnings)) {
-					Log.warn("Method '%s' is synchronous, but type %s does not provide world instance. Possible runtime crash!", method, targetCls);
+					Log.warn("Method '%s' is synchronous, but type %s does not provide world instance. Possible runtime crash!", method, targetClass);
 				}
 
 				return PeripheralAdapterWrapper.this.createDirectExecutor(decl, strategy);
@@ -104,10 +98,13 @@ public abstract class PeripheralAdapterWrapper extends AdapterWrapper<IPeriphera
 	private void includeClass(List<IPeripheralMethodExecutor> result, Method targetProvider) {
 		Class<?> target = targetProvider.getReturnType();
 		Preconditions.checkArgument(!target.isPrimitive(), "Method %s is marked with annotation 'Include', but returns primitive type", targetProvider);
-		ClassMethodsList<IObjectMethodExecutor> toInclude = AdapterManager.objects.getAdapterClass(target);
-		for (IObjectMethodExecutor objectExecutor : toInclude.listMethods()) {
-			if (!objectExecutor.isGenerated()) result.add(adaptObjectExecutor(targetProvider, objectExecutor));
-		}
+		MethodMap<IObjectMethodExecutor> toInclude = AdapterManager.OBJECTS_MANAGER.getAdaptedClass(target);
+
+		Set<IObjectMethodExecutor> executors = Sets.newIdentityHashSet();
+		executors.addAll(toInclude.values());
+
+		for (IObjectMethodExecutor e : executors)
+			result.add(adaptObjectExecutor(targetProvider, e));
 	}
 
 	protected abstract IPeripheralMethodExecutor createDirectExecutor(MethodDeclaration method, ExecutionStrategy strategy);

@@ -4,6 +4,7 @@ import java.util.*;
 
 import openperipheral.Config;
 import openperipheral.adapter.IMethodExecutor;
+import openperipheral.adapter.MethodMap;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -12,7 +13,7 @@ public abstract class ClassMethodsComposer<E extends IMethodExecutor> {
 
 	protected abstract ClassMethodsListBuilder<E> createBuilder();
 
-	public ClassMethodsList<E> createMethodsList(Class<?> cls) {
+	public MethodMap<E> createMethodsList(Class<?> cls) {
 		ClassMethodsListBuilder<E> builder = createBuilder();
 		final List<Class<?>> classHierarchy = Lists.reverse(listSuperClasses(cls));
 
@@ -28,8 +29,11 @@ public abstract class ClassMethodsComposer<E extends IMethodExecutor> {
 			builder.addInlineAdapter(c);
 		}
 
-		builder.addMethodsFromObject(new MethodsListerHelper<E>(builder.getMethodList(), builder.getSources()), "<meta>");
 		if (Config.devMethods) builder.addMethodsFromObject(new LuaReflectionHelper(), "<reflection>");
+
+		if (!builder.hasMethods()) return new MethodMap<E>();
+
+		builder.addMethodsFromObject(new MethodsListerHelper<E>(builder.getMethodList(), builder.getSources()), "<meta>");
 
 		return builder.create();
 	}
