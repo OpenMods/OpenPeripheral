@@ -14,67 +14,59 @@ import openperipheral.api.IMetaProvider;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.*;
 
-public abstract class MetaProvidersRegistry<P extends IMetaProvider<?>> {
+public class MetaProvidersRegistry<P extends IMetaProvider<?>> {
 
-	private static <T extends IMetaProvider<?>> MetaProvidersRegistry<T> create(final Class<?> baseCls, final String type) {
-		return new MetaProvidersRegistry<T>() {
-			@Override
-			protected boolean validateCls(Class<?> cls) {
-				return baseCls.isAssignableFrom(cls);
-			}
-
-			@Override
-			protected String type() {
-				return type;
-			}
-		};
+	private static <T extends IMetaProvider<?>> MetaProvidersRegistry<T> create(Class<?> baseCls, String type) {
+		return new MetaProvidersRegistry<T>(type, baseCls);
 	}
 
 	public static final MetaProvidersRegistry<IEntityMetaProvider<?>> ENITITES = create(Entity.class, "entity");
 
 	public static final MetaProvidersRegistry<IItemStackMetaProvider<?>> ITEMS = create(Item.class, "item");
 
-	private final Multimap<Class<?>, P> directProviders = HashMultimap.create();
+	private final Multimap<Class<?>, P> directProviders = ArrayListMultimap.create();
 
-	private final Set<P> genericProviders = Sets.newIdentityHashSet();
-
-	private final Multimap<Class<?>, P> specificProvidersCache = HashMultimap.create();
+	private final Multimap<Class<?>, P> providersCache = ArrayListMultimap.create();
 
 	private final Set<Class<?>> inCache = Sets.newHashSet();
 
-	protected abstract String type();
+	private final String type;
 
-	protected abstract boolean validateCls(Class<?> targetCls);
+	private final Class<?> baseClass;
+
+	public MetaProvidersRegistry(String type, Class<?> baseClass) {
+		this.type = type;
+		this.baseClass = baseClass;
+	}
 
 	public void addProvider(P provider) {
 		final Class<?> targetClass = provider.getTargetClass();
 
-		Preconditions.checkArgument(targetClass.isInterface() || validateCls(targetClass),
+		Preconditions.checkArgument(targetClass.isInterface() || baseClass.isAssignableFrom(targetClass),
 				"Invalid type: %s", targetClass);
 
-		if (targetClass == Object.class) genericProviders.add(provider);
-		else directProviders.put(targetClass, provider);
+		directProviders.put(targetClass, provider);
 
-		Log.trace("Registering %s metadata provider '%s' for '%s'", type(), provider.getClass(), targetClass);
-		specificProvidersCache.clear();
+		Log.trace("Registering %s metadata provider '%s' for '%s'", type, provider.getClass(), targetClass);
+		providersCache.clear();
 		inCache.clear();
 	}
 
 	public Iterable<? extends P> getProviders(Class<?> cls) {
-		Iterable<? extends P> specific;
+		Iterable<? extends P> all;
 
 		if (!inCache.contains(cls)) {
-			specific = collectProviders(cls);
-			specificProvidersCache.putAll(cls, specific);
+			all = collectAllProviders(cls);
+			providersCache.putAll(cls, all);
 			inCache.add(cls);
 		} else {
-			specific = specificProvidersCache.get(cls);
+			all = providersCache.get(cls);
 		}
 
-		return Iterables.concat(specificProvidersCache.get(cls), specific);
+		return all;
 	}
 
-	private Set<P> collectProviders(Class<?> targetCls) {
+	private Set<P> collectAllProviders(Class<?> targetCls) {
 		Set<P> providers = Sets.newIdentityHashSet();
 		for (Class<?> cls : getAllImplementedClasses(targetCls))
 			providers.addAll(directProviders.get(cls));
@@ -94,10 +86,11 @@ public abstract class MetaProvidersRegistry<P extends IMetaProvider<?>> {
 		Queue<Class<?>> queue = Lists.newLinkedList();
 		queue.add(targetCls);
 
-		Class<?> cls;
-		while ((cls = queue.poll()) != null) {
+		while (!queue.isEmpty()) {
+			Class<?> cls = queue.poll();
 			classes.add(cls);
-			queue.add(cls.getSuperclass());
+			final Class<?> superclass = cls.getSuperclass();
+			if (superclass != null) queue.add(superclass);
 			queue.addAll(Arrays.asList(cls.getInterfaces()));
 		}
 		return classes;

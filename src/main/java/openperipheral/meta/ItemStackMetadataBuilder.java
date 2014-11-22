@@ -8,7 +8,6 @@ import openperipheral.ApiImplementation;
 import openperipheral.api.IItemStackMetaBuilder;
 import openperipheral.api.IItemStackMetaProvider;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
@@ -71,10 +70,11 @@ public class ItemStackMetadataBuilder implements IItemStackMetaBuilder {
 
 	private static void fillBasicProperties(Map<String, Object> map, Item item, ItemStack itemstack) {
 		UniqueIdentifier id = GameRegistry.findUniqueIdentifierFor(item);
-		Preconditions.checkNotNull(id, "Invalid item stack: %s", itemstack);
-		map.put("id", id.toString());
-		map.put("name", id.name);
-		map.put("mod_id", id.modId);
+
+		map.put("id", id != null? id.toString() : "?");
+		map.put("name", id != null? id.name : "?");
+		map.put("mod_id", id != null? id.modId : "?");
+
 		map.put("display_name", getNameForItemStack(itemstack));
 		map.put("raw_name", getRawNameForStack(itemstack));
 		map.put("qty", itemstack.stackSize);
