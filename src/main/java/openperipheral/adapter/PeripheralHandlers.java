@@ -108,7 +108,7 @@ public class PeripheralHandlers implements IPeripheralProvider {
 		try {
 			return createAdaptedPeripheral(target);
 		} catch (Throwable t) {
-			Log.warn(t, "Failed to create peripheral for turtle");
+			Log.warn(t, "Failed to create peripheral for object '%s'", target);
 			return SafePeripheralFactory.PLACEHOLDER;
 		}
 	}
