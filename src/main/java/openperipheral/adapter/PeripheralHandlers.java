@@ -16,6 +16,7 @@ import openperipheral.api.ExposeInterface;
 import openperipheral.api.ICustomPeripheralProvider;
 import openperipheral.api.Volatile;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -105,6 +106,7 @@ public class PeripheralHandlers implements IPeripheralProvider {
 	}
 
 	public static IPeripheral createAdaptedPeripheralSafe(Object target) {
+		Preconditions.checkNotNull(target, "Null target");
 		try {
 			return createAdaptedPeripheral(target);
 		} catch (Throwable t) {
