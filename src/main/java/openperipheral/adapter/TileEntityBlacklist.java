@@ -2,17 +2,19 @@ package openperipheral.adapter;
 
 import java.util.Set;
 
-import net.minecraft.tileentity.TileEntity;
 import openmods.Log;
 import openmods.config.properties.ConfigurationChange;
+import openperipheral.ApiSingleton;
 import openperipheral.Config;
+import openperipheral.api.IPeripheralBlacklist;
 import openperipheral.api.Ignore;
 
 import com.google.common.collect.Sets;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
-public class TileEntityBlacklist {
+@ApiSingleton
+public class TileEntityBlacklist implements IPeripheralBlacklist {
 
 	public static final TileEntityBlacklist INSTANCE = new TileEntityBlacklist();
 
@@ -29,7 +31,8 @@ public class TileEntityBlacklist {
 		}
 	}
 
-	public boolean isIgnored(Class<? extends TileEntity> teClass) {
+	@Override
+	public boolean isBlacklisted(Class<?> teClass) {
 		final String teClassName = teClass.getName().toLowerCase();
 		if (fullBlacklist.contains(teClassName)) return true;
 
@@ -51,7 +54,13 @@ public class TileEntityBlacklist {
 		return false;
 	}
 
-	public void addClass(String className) {
+	@Override
+	public void addToBlacklist(String className) {
 		imcBlacklist.add(className.toLowerCase());
+	}
+
+	@Override
+	public void addToBlacklist(Class<?> cls) {
+		addToBlacklist(cls.getName());
 	}
 }

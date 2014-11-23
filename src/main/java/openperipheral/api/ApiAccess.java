@@ -10,6 +10,7 @@ package openperipheral.api;
  * <li>{@link IEntityMetaBuilder} - for registering metadata providers and getting metadata for in-game entitites</li>
  * <li>{@link IItemStackMetaBuilder} - for registering metadata providers and getting metadata for in-game items</li>
  * <li>{@link ITypeConvertersRegistry} - for registering type converters and converting values from and to Lua</li>
+ * <li>{@link IPeripheralBlacklist} - for checking if class is blacklisted (i.e. will not generate peripheral)</li>
  * </ul>
  */
 public class ApiAccess {

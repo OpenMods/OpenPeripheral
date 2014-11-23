@@ -6,6 +6,7 @@ import java.util.*;
 import openmods.Log;
 import openperipheral.adapter.AdapterFactoryWrapper;
 import openperipheral.adapter.AdapterRegistryWrapper;
+import openperipheral.adapter.TileEntityBlacklist;
 import openperipheral.api.ApiAccess;
 import openperipheral.api.IApiInterface;
 import openperipheral.meta.EntityMetadataBuilder;
@@ -129,6 +130,7 @@ public class ApiProvider implements ApiAccess.ApiProvider {
 		registerClass(ItemStackMetadataBuilder.class);
 
 		registerInstance(TypeConversionRegistry.INSTANCE);
+		registerInstance(TileEntityBlacklist.INSTANCE);
 	}
 
 	@Override

@@ -46,7 +46,7 @@ public class OpenPeripheralCore {
 	public void processMessage(FMLInterModComms.IMCEvent event) {
 		for (FMLInterModComms.IMCMessage m : event.getMessages()) {
 			if (m.isStringMessage() && "ignoreTileEntity".equalsIgnoreCase(m.key)) {
-				TileEntityBlacklist.INSTANCE.addClass(m.getStringValue());
+				TileEntityBlacklist.INSTANCE.addToBlacklist(m.getStringValue());
 			}
 		}
 	}

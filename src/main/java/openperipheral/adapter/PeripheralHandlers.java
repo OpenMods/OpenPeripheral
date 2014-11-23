@@ -77,7 +77,7 @@ public class PeripheralHandlers implements IPeripheralProvider {
 			}
 		}
 
-		if (TileEntityBlacklist.INSTANCE.isIgnored(teClass)) return NULL_HANDLER;
+		if (TileEntityBlacklist.INSTANCE.isBlacklisted(teClass)) return NULL_HANDLER;
 
 		for (Class<?> adaptableClass : AdapterManager.PERIPHERALS_MANAGER.getAllAdaptableClasses()) {
 			if (adaptableClass.isAssignableFrom(teClass)) {
