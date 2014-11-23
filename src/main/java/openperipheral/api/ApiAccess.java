@@ -14,10 +14,12 @@ package openperipheral.api;
  * </ul>
  */
 public class ApiAccess {
-	public static final String API_VERSION = "2.1";
+	public static final String API_VERSION = "2.2";
 
 	public interface ApiProvider {
 		public <T extends IApiInterface> T getApi(Class<T> cls);
+
+		public <T extends IApiInterface> boolean isApiPresent(Class<T> cls);
 	}
 
 	private ApiAccess() {}
@@ -33,5 +35,10 @@ public class ApiAccess {
 	public static <T extends IApiInterface> T getApi(Class<T> cls) {
 		if (provider == null) throw new IllegalStateException("API not initialized");
 		return provider.getApi(cls);
+	}
+
+	public static <T extends IApiInterface> boolean isApiPresent(Class<T> cls) {
+		if (provider == null) throw new IllegalStateException("API not initialized");
+		return provider.isApiPresent(cls);
 	}
 }

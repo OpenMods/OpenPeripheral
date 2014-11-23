@@ -141,6 +141,11 @@ public class ApiProvider implements ApiAccess.ApiProvider {
 		return (T)provider.getInterface();
 	}
 
+	@Override
+	public <T extends IApiInterface> boolean isApiPresent(Class<T> cls) {
+		return PROVIDERS.containsKey(cls);
+	}
+
 	static void installApi() {
 		final String presentApiVersion;
 		try {
