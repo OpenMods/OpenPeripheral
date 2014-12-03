@@ -12,36 +12,45 @@ import com.google.common.collect.Maps;
 
 @ApiImplementation
 public class EntityMetadataBuilder implements IEntityMetaBuilder {
+
 	@Override
 	public Map<String, Object> getEntityMetadata(Entity entity, Vec3 relativePos) {
+		return fillProperties(entity, relativePos);
+	}
 
+	private static Map<String, Object> fillProperties(Entity entity, Vec3 relativePos) {
 		Map<String, Object> map = Maps.newHashMap();
+		fillBasicProperties(map, entity, relativePos);
+		fillCustomProperties(map, entity, relativePos);
+		return map;
+	}
 
-		addPositionInfo(map, entity, relativePos);
-		map.put("name", entity.getCommandSenderName());
-		map.put("id", entity.getEntityId());
-		map.put("uuid", entity.getUniqueID());
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private static void fillCustomProperties(Map<String, Object> map, Entity entity, Vec3 relativePos) {
+		final Iterable<IEntityMetaProvider<?>> providers = MetaProvidersRegistry.ENITITES.getProviders(entity.getClass());
 
-		if (entity.riddenByEntity != null) {
-			map.put("riddenBy", getEntityMetadata(entity.riddenByEntity, relativePos));
-		}
-
-		if (entity.ridingEntity != null) {
-			map.put("ridingEntity", entity.ridingEntity.getEntityId());
-		}
-
-		@SuppressWarnings("unchecked")
-		final Iterable<IEntityMetaProvider<Object>> providers = (Iterable<IEntityMetaProvider<Object>>)MetaProvidersRegistry.ENITITES.getProviders(entity.getClass());
-
-		for (IEntityMetaProvider<Object> provider : providers) {
+		for (IEntityMetaProvider provider : providers) {
 			Object converted = provider.getMeta(entity, relativePos);
 			if (converted != null) {
 				final String key = provider.getKey();
 				map.put(key, converted);
 			}
 		}
+	}
 
-		return map;
+	private static void fillBasicProperties(Map<String, Object> map, Entity entity, Vec3 relativePos) {
+		addPositionInfo(map, entity, relativePos);
+		map.put("name", entity.getCommandSenderName());
+		map.put("id", entity.getEntityId());
+		map.put("uuid", entity.getUniqueID());
+
+		if (entity.riddenByEntity != null) {
+			map.put("riddenBy", fillProperties(entity.riddenByEntity, relativePos));
+		}
+
+		if (entity.ridingEntity != null) {
+			map.put("ridingEntity", entity.ridingEntity.getEntityId());
+		}
 	}
 
 	private static void addPositionInfo(Map<String, Object> map, Entity entity, Vec3 relativePos) {

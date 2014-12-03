@@ -48,24 +48,25 @@ public class ItemStackMetadataBuilder implements IItemStackMetaBuilder {
 	@Override
 	public Map<String, Object> getItemStackMetadata(ItemStack itemstack) {
 		if (itemstack == null) return NULL;
-
-		Map<String, Object> map = Maps.newHashMap();
 		Item item = itemstack.getItem();
 
+		Map<String, Object> map = Maps.newHashMap();
 		fillBasicProperties(map, item, itemstack);
+		fillCustomProperties(map, item, itemstack);
+		return map;
+	}
 
-		@SuppressWarnings("unchecked")
-		final Iterable<IItemStackMetaProvider<Object>> providers = (Iterable<IItemStackMetaProvider<Object>>)MetaProvidersRegistry.ITEMS.getProviders(item.getClass());
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private static void fillCustomProperties(Map<String, Object> map, Item item, ItemStack itemstack) {
+		final Iterable<IItemStackMetaProvider<?>> providers = MetaProvidersRegistry.ITEMS.getProviders(item.getClass());
 
-		for (IItemStackMetaProvider<Object> provider : providers) {
+		for (IItemStackMetaProvider provider : providers) {
 			Object converted = provider.getMeta(item, itemstack);
 			if (converted != null) {
 				final String key = provider.getKey();
 				map.put(key, converted);
 			}
 		}
-
-		return map;
 	}
 
 	private static void fillBasicProperties(Map<String, Object> map, Item item, ItemStack itemstack) {

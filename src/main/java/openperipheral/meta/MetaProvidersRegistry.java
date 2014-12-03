@@ -52,8 +52,8 @@ public class MetaProvidersRegistry<P extends IMetaProvider<?>> {
 		inCache.clear();
 	}
 
-	public Iterable<? extends P> getProviders(Class<?> cls) {
-		Iterable<? extends P> all;
+	public Iterable<P> getProviders(Class<?> cls) {
+		Iterable<P> all;
 
 		if (!inCache.contains(cls)) {
 			all = collectAllProviders(cls);
