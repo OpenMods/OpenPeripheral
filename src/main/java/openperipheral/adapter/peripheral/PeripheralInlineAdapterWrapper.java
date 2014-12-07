@@ -21,21 +21,6 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 
 public class PeripheralInlineAdapterWrapper extends PeripheralAdapterWrapper implements IPropertyExecutorFactory<IPeripheralMethodExecutor> {
 
-	private static class InlineMethodExecutor extends PeripheralMethodExecutor {
-
-		public InlineMethodExecutor(MethodDeclaration method, ExecutionStrategy strategy) {
-			super(method, strategy);
-		}
-
-		@Override
-		protected CallWrap createWrapper(IComputerAccess computer, ILuaContext context, Object target, Object[] luaArgs) {
-			return method.createWrapper(target)
-					.setJavaArg(ARG_COMPUTER, computer)
-					.setJavaArg(ARG_CONTEXT, context)
-					.setLuaArgs(luaArgs);
-		}
-	}
-
 	private final String source;
 
 	private static String getSourceId(Class<?> cls) {
@@ -56,7 +41,15 @@ public class PeripheralInlineAdapterWrapper extends PeripheralAdapterWrapper imp
 
 	@Override
 	protected IPeripheralMethodExecutor createDirectExecutor(MethodDeclaration method, ExecutionStrategy strategy) {
-		return new InlineMethodExecutor(method, strategy);
+		return new PeripheralMethodExecutor(method, strategy) {
+			@Override
+			protected CallWrap createWrapper(IComputerAccess computer, ILuaContext context, Object target, Object[] luaArgs) {
+				return method.createWrapper(target)
+						.setJavaArg(ARG_COMPUTER, computer)
+						.setJavaArg(ARG_CONTEXT, context)
+						.setLuaArgs(luaArgs);
+			}
+		};
 	}
 
 	@Override
@@ -111,5 +104,10 @@ public class PeripheralInlineAdapterWrapper extends PeripheralAdapterWrapper imp
 	@Override
 	public String describe() {
 		return "internal periperal (source: " + adapterClass.toString() + ")";
+	}
+
+	@Override
+	public boolean canUse(Class<?> cls) {
+		return true;
 	}
 }

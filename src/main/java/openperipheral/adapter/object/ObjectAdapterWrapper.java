@@ -11,6 +11,7 @@ import openperipheral.adapter.PropertyListBuilder.IPropertyExecutorFactory;
 import openperipheral.adapter.PropertyListBuilder.PropertyExecutor;
 import openperipheral.adapter.method.MethodDeclaration;
 import openperipheral.api.IAdapter;
+import openperipheral.api.IAdapterWithConstraints;
 import openperipheral.api.ObjectTypeId;
 import dan200.computercraft.api.lua.ILuaContext;
 
@@ -88,6 +89,32 @@ public abstract class ObjectAdapterWrapper extends AdapterWrapper<IObjectMethodE
 		public String describe() {
 			return "external object (source: " + adapterClass.toString() + ")";
 		}
+
+		@Override
+		public boolean canUse(Class<?> cls) {
+			return true;
+		}
+	}
+
+	public static class ExternalWithConstraints extends External {
+
+		private final IAdapterWithConstraints adapter;
+
+		public ExternalWithConstraints(IAdapterWithConstraints adapter) {
+			super(adapter);
+			this.adapter = adapter;
+		}
+
+		@Override
+		public String describe() {
+			return "external object (w/ constraints) (source: " + adapterClass.toString() + ")";
+		}
+
+		@Override
+		public boolean canUse(Class<?> cls) {
+			return adapter.canApply(cls);
+		}
+
 	}
 
 	public static class Inline extends ObjectAdapterWrapper implements IPropertyExecutorFactory<IObjectMethodExecutor> {
@@ -137,6 +164,11 @@ public abstract class ObjectAdapterWrapper extends AdapterWrapper<IObjectMethodE
 		@Override
 		public String describe() {
 			return "internal object (source: " + adapterClass.toString() + ")";
+		}
+
+		@Override
+		public boolean canUse(Class<?> cls) {
+			return true;
 		}
 	}
 }

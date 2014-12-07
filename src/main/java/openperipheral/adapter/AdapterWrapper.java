@@ -48,6 +48,8 @@ public abstract class AdapterWrapper<E extends IMethodExecutor> {
 		return targetClass;
 	}
 
+	public abstract boolean canUse(Class<?> cls);
+
 	public abstract String describe();
 
 	protected abstract List<E> buildMethodList();

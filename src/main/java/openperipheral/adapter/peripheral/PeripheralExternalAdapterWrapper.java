@@ -8,6 +8,7 @@ import openperipheral.adapter.method.MethodDeclaration;
 import openperipheral.adapter.method.MethodDeclaration.CallWrap;
 import openperipheral.adapter.object.IObjectMethodExecutor;
 import openperipheral.api.IAdapter;
+import openperipheral.api.IAdapterWithConstraints;
 
 import com.google.common.base.Preconditions;
 
@@ -15,20 +16,23 @@ import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 
 public class PeripheralExternalAdapterWrapper extends PeripheralAdapterWrapper {
+	public static class WithConstraints extends PeripheralExternalAdapterWrapper {
 
-	private class NormalMethodExecutor extends PeripheralMethodExecutor {
+		private final IAdapterWithConstraints adapter;
 
-		public NormalMethodExecutor(MethodDeclaration method, ExecutionStrategy strategy) {
-			super(method, strategy);
+		public WithConstraints(IAdapterWithConstraints adapter) {
+			super(adapter);
+			this.adapter = adapter;
 		}
 
 		@Override
-		protected CallWrap createWrapper(IComputerAccess computer, ILuaContext context, Object target, Object[] luaArgs) {
-			return method.createWrapper(adapter)
-					.setJavaArg(ARG_COMPUTER, computer)
-					.setJavaArg(ARG_TARGET, target)
-					.setJavaArg(ARG_CONTEXT, context)
-					.setLuaArgs(luaArgs);
+		public String describe() {
+			return "external peripheral (w/ constraints) (source: " + adapterClass.toString() + ")";
+		}
+
+		@Override
+		public boolean canUse(Class<?> cls) {
+			return adapter.canApply(cls);
 		}
 	}
 
@@ -41,7 +45,16 @@ public class PeripheralExternalAdapterWrapper extends PeripheralAdapterWrapper {
 
 	@Override
 	protected IPeripheralMethodExecutor createDirectExecutor(MethodDeclaration method, ExecutionStrategy strategy) {
-		return new NormalMethodExecutor(method, strategy);
+		return new PeripheralMethodExecutor(method, strategy) {
+			@Override
+			protected CallWrap createWrapper(IComputerAccess computer, ILuaContext context, Object target, Object[] luaArgs) {
+				return method.createWrapper(adapter)
+						.setJavaArg(ARG_COMPUTER, computer)
+						.setJavaArg(ARG_TARGET, target)
+						.setJavaArg(ARG_CONTEXT, context)
+						.setLuaArgs(luaArgs);
+			}
+		};
 	}
 
 	@Override
@@ -74,5 +87,10 @@ public class PeripheralExternalAdapterWrapper extends PeripheralAdapterWrapper {
 	@Override
 	public String describe() {
 		return "external peripheral (source: " + adapterClass.toString() + ")";
+	}
+
+	@Override
+	public boolean canUse(Class<?> cls) {
+		return true;
 	}
 }

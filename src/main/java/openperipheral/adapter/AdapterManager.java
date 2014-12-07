@@ -7,9 +7,7 @@ import openperipheral.adapter.composed.ClassMethodsComposer;
 import openperipheral.adapter.composed.ClassMethodsListBuilder;
 import openperipheral.adapter.object.*;
 import openperipheral.adapter.peripheral.*;
-import openperipheral.api.IAdapter;
-import openperipheral.api.IObjectAdapter;
-import openperipheral.api.IPeripheralAdapter;
+import openperipheral.api.*;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.*;
@@ -46,7 +44,9 @@ public abstract class AdapterManager<E extends IMethodExecutor> {
 
 		@Override
 		protected AdapterWrapper<IObjectMethodExecutor> wrapExternalAdapter(IAdapter adapter) {
-			return new ObjectAdapterWrapper.External(adapter);
+			return adapter instanceof IAdapterWithConstraints
+					? new ObjectAdapterWrapper.ExternalWithConstraints((IAdapterWithConstraints)adapter)
+					: new ObjectAdapterWrapper.External(adapter);
 		}
 
 		@Override
@@ -70,7 +70,9 @@ public abstract class AdapterManager<E extends IMethodExecutor> {
 
 		@Override
 		protected AdapterWrapper<IPeripheralMethodExecutor> wrapExternalAdapter(IAdapter adapter) {
-			return new PeripheralExternalAdapterWrapper(adapter);
+			return adapter instanceof IAdapterWithConstraints
+					? new PeripheralExternalAdapterWrapper.WithConstraints((IAdapterWithConstraints)adapter)
+					: new PeripheralExternalAdapterWrapper(adapter);
 		}
 
 		@Override

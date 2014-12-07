@@ -22,10 +22,10 @@ public abstract class ClassMethodsComposer<E extends IMethodExecutor> {
 			allSuperInterfaces.addAll(listSuperInterfaces(c));
 
 		for (Class<?> c : allSuperInterfaces)
-			builder.addExternalAdapters(c);
+			builder.addExternalAdapters(cls, c);
 
 		for (Class<?> c : classHierarchy) {
-			builder.addExternalAdapters(c);
+			builder.addExternalAdapters(cls, c);
 			builder.addInlineAdapter(c);
 		}
 

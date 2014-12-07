@@ -39,9 +39,10 @@ public abstract class ClassMethodsListBuilder<E extends IMethodExecutor> {
 		}
 	}
 
-	public void addExternalAdapters(Class<?> cls) {
-		for (AdapterWrapper<E> wrapper : manager.getExternalAdapters(cls))
-			addMethods(wrapper);
+	public void addExternalAdapters(Class<?> targetCls, Class<?> superClass) {
+		for (AdapterWrapper<E> wrapper : manager.getExternalAdapters(superClass))
+			if (wrapper.canUse(targetCls)) addMethods(wrapper);
+			else Log.warn("Adapter %s cannot be used for %s due to constraints", wrapper.describe());
 	}
 
 	public void addInlineAdapter(Class<?> cls) {
