@@ -13,6 +13,8 @@ import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
+import dan200.computercraft.api.lua.ILuaObject;
+
 @ApiSingleton
 public class TypeConversionRegistry implements ITypeConvertersRegistry {
 
@@ -33,13 +35,15 @@ public class TypeConversionRegistry implements ITypeConvertersRegistry {
 	private boolean isIgnored(Class<?> cls) {
 		if (directlyIgnored.contains(cls)) return true;
 
-		for (Class<?> ingored : subclassIngored)
-			if (ingored.isAssignableFrom(cls)) return true;
+		for (Class<?> ignored : subclassIngored)
+			if (ignored.isAssignableFrom(cls)) return true;
 
 		return false;
 	}
 
 	private TypeConversionRegistry() {
+		registerIgnored(ILuaObject.class, true);
+
 		converters.add(new ConverterGameProfile());
 		converters.add(new ConverterFluidTankInfo());
 		converters.add(new ConverterFluidTankInfo());
