@@ -87,9 +87,13 @@ public abstract class PeripheralAdapterWrapper extends AdapterWrapper<IPeriphera
 			}
 		});
 
-		for (Method m : adapterClass.getMethods()) {
-			Include marker = m.getAnnotation(Include.class);
-			if (marker != null) includeClass(peripheralMethods, m);
+		try {
+			for (Method m : adapterClass.getMethods()) {
+				Include marker = m.getAnnotation(Include.class);
+				if (marker != null) includeClass(peripheralMethods, m);
+			}
+		} catch (Throwable t) {
+			Log.severe(t, "Unable to add included methods from class %s (possible sideness fail)", adapterClass);
 		}
 
 		return peripheralMethods;
