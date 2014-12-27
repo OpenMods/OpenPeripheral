@@ -46,8 +46,8 @@ public class TypeConversionRegistry implements ITypeConvertersRegistry {
 
 		converters.add(new ConverterGameProfile());
 		converters.add(new ConverterFluidTankInfo());
-		converters.add(new ConverterFluidTankInfo());
 		converters.add(new ConverterItemStack());
+		converters.add(new ConverterFluidStack());
 
 		// DO NOT REORDER ANYTHING BELOW (unless you have good reason)
 		converters.add(new ConverterArray());
