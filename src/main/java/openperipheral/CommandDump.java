@@ -15,6 +15,8 @@ import openperipheral.adapter.object.IObjectMethodExecutor;
 import openperipheral.adapter.peripheral.IPeripheralMethodExecutor;
 import openperipheral.util.DocBuilder;
 
+import com.google.common.collect.Lists;
+
 public class CommandDump implements ICommand {
 
 	@Override
@@ -29,7 +31,7 @@ public class CommandDump implements ICommand {
 
 	@Override
 	public String getCommandUsage(ICommandSender sender) {
-		return "op_dump <file>";
+		return "op_dump <type> <file>";
 	}
 
 	@Override
@@ -54,12 +56,9 @@ public class CommandDump implements ICommand {
 
 	@Override
 	public void processCommand(ICommandSender sender, String[] args) {
-		String filename;
-		if (args.length == 1) {
-			filename = args[0];
-		} else {
-			filename = "openperipheral_docs.xml";
-		}
+		final String format = (args.length >= 1)? args[0] : "xhtml";
+		final String name = (args.length >= 2)? args[1] : "openperipheral_docs";
+		final String filename = name + '.' + format;
 
 		try {
 			File output = new File(filename);
@@ -79,12 +78,17 @@ public class CommandDump implements ICommand {
 			processExternalAdapters(builder, AdapterManager.OBJECTS_MANAGER, "object");
 			processInternalAdapters(builder, AdapterManager.OBJECTS_MANAGER, "object");
 
-			builder.dump(output);
-			sender.addChatMessage(new ChatComponentText("Done! Created file in " + output.getAbsolutePath()));
+			if (format.equalsIgnoreCase("xhtml")) builder.dumpXml(output, true);
+			else if (format.equalsIgnoreCase("xml")) builder.dumpXml(output, false);
+			else {
+				sender.addChatMessage(new ChatComponentText("Invalid format: " + format));
+				return;
+			}
+
+			sender.addChatMessage(new ChatComponentText("Done! Created " + format + " file in " + output.getAbsolutePath()));
 		} catch (Throwable t) {
 			Log.warn(t, "Failed to execute dump command");
 			sender.addChatMessage(new ChatComponentText("Failed to execute! Check logs"));
-
 		}
 	}
 
@@ -95,6 +99,7 @@ public class CommandDump implements ICommand {
 
 	@Override
 	public List<?> addTabCompletionOptions(ICommandSender icommandsender, String[] astring) {
+		if (astring.length == 1) return Lists.newArrayList("xml", "xhtml");
 		return null;
 	}
 

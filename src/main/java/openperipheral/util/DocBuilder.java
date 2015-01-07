@@ -1,6 +1,7 @@
 package openperipheral.util;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.Map;
 
@@ -10,6 +11,7 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import openperipheral.adapter.AdapterWrapper;
 import openperipheral.adapter.IDescriptable;
@@ -24,7 +26,6 @@ import com.google.common.base.Objects;
 import com.google.common.base.Throwables;
 
 public class DocBuilder {
-
 	private final Document doc;
 	private final Element root;
 
@@ -40,15 +41,28 @@ public class DocBuilder {
 		}
 	}
 
-	public void dump(File output) {
+	public void dumpXml(File output, boolean applyXslt) {
 		try {
-			TransformerFactory transformerFactory = TransformerFactory.newInstance();
-			Transformer transformer = transformerFactory.newTransformer();
+			final Transformer transformer = createTransformer(applyXslt);
 			DOMSource source = new DOMSource(doc);
 			StreamResult result = new StreamResult(output);
 			transformer.transform(source, result);
 		} catch (Exception e) {
 			throw Throwables.propagate(e);
+		}
+	}
+
+	private Transformer createTransformer(boolean applyXslt) throws Exception {
+		TransformerFactory transformerFactory = TransformerFactory.newInstance();
+
+		if (!applyXslt) return transformerFactory.newTransformer();
+
+		InputStream stylesheet = getClass().getResourceAsStream("/op_dump.xsl");
+		try {
+			StreamSource stylesource = new StreamSource(stylesheet);
+			return transformerFactory.newTransformer(stylesource);
+		} finally {
+			stylesheet.close();
 		}
 	}
 
