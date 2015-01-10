@@ -37,8 +37,9 @@ public class OpenPeripheralCore {
 		ClientCommandHandler.instance.registerCommand(new CommandDump());
 	}
 
+	// this method should be called as late as possible, to make sure we are last on provider list
 	@Mod.EventHandler
-	public void postInit(FMLPostInitializationEvent evt) {
+	public void loadComplete(FMLLoadCompleteEvent evt) {
 		ComputerCraftAPI.registerPeripheralProvider(new PeripheralHandlers());
 	}
 
