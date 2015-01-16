@@ -3,21 +3,15 @@ package openperipheral.adapter.peripheral;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.Callable;
 
 import openmods.Log;
-import openperipheral.adapter.*;
+import openperipheral.adapter.AdapterWrapper;
+import openperipheral.adapter.IDescriptable;
 import openperipheral.adapter.method.MethodDeclaration;
 import openperipheral.adapter.method.MethodDeclaration.CallWrap;
-import openperipheral.adapter.object.IObjectMethodExecutor;
 import openperipheral.api.Asynchronous;
-import openperipheral.api.Include;
 import openperipheral.api.Synchronizable;
-
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Sets;
-
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 
@@ -87,31 +81,8 @@ public abstract class PeripheralAdapterWrapper extends AdapterWrapper<IPeriphera
 			}
 		});
 
-		try {
-			for (Method m : adapterClass.getMethods()) {
-				Include marker = m.getAnnotation(Include.class);
-				if (marker != null) includeClass(peripheralMethods, m);
-			}
-		} catch (Throwable t) {
-			Log.severe(t, "Unable to add included methods from class %s (possible sideness fail)", adapterClass);
-		}
-
 		return peripheralMethods;
 	}
 
-	private void includeClass(List<IPeripheralMethodExecutor> result, Method targetProvider) {
-		Class<?> target = targetProvider.getReturnType();
-		Preconditions.checkArgument(!target.isPrimitive(), "Method %s is marked with annotation 'Include', but returns primitive type", targetProvider);
-		MethodMap<IObjectMethodExecutor> toInclude = AdapterManager.OBJECTS_MANAGER.getAdaptedClass(target);
-
-		Set<IObjectMethodExecutor> executors = Sets.newIdentityHashSet();
-		executors.addAll(toInclude.values());
-
-		for (IObjectMethodExecutor e : executors)
-			result.add(adaptObjectExecutor(targetProvider, e));
-	}
-
 	protected abstract IPeripheralMethodExecutor createDirectExecutor(MethodDeclaration method, ExecutionStrategy strategy);
-
-	protected abstract IPeripheralMethodExecutor adaptObjectExecutor(Method targetProvider, IObjectMethodExecutor executor);
 }

@@ -7,7 +7,9 @@ import java.lang.annotation.*;
  * If this annotations is found, created peripheral will include methods from wrapped object.
  * Every call will be delegated to instance returned from this method
  *
+ * @deprecated Too specific. No longer functional.
  */
+@Deprecated
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Include {

@@ -1,7 +1,5 @@
 package openperipheral.adapter.peripheral;
 
-import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.List;
 
 import openmods.Log;
@@ -11,11 +9,7 @@ import openperipheral.adapter.PropertyListBuilder.IPropertyExecutorFactory;
 import openperipheral.adapter.PropertyListBuilder.PropertyExecutor;
 import openperipheral.adapter.method.MethodDeclaration;
 import openperipheral.adapter.method.MethodDeclaration.CallWrap;
-import openperipheral.adapter.object.IObjectMethodExecutor;
 import openperipheral.api.PeripheralTypeId;
-
-import com.google.common.base.Preconditions;
-
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 
@@ -56,24 +50,6 @@ public class PeripheralInlineAdapterWrapper extends PeripheralAdapterWrapper imp
 	protected void configureJavaArguments(MethodDeclaration decl) {
 		decl.declareJavaArgType(ARG_COMPUTER, IComputerAccess.class);
 		decl.declareJavaArgType(ARG_CONTEXT, ILuaContext.class);
-	}
-
-	@Override
-	protected IPeripheralMethodExecutor adaptObjectExecutor(final Method targetProvider, final IObjectMethodExecutor executor) {
-		Preconditions.checkArgument(Arrays.equals(targetProvider.getParameterTypes(), new Class<?>[] {}));
-		return new IPeripheralMethodExecutor() {
-
-			@Override
-			public IDescriptable description() {
-				return executor.description();
-			}
-
-			@Override
-			public Object[] execute(IComputerAccess computer, ILuaContext context, Object target, Object[] args) throws Exception {
-				Object executorTarget = targetProvider.invoke(target);
-				return executor.execute(context, executorTarget, args);
-			}
-		};
 	}
 
 	private static class PeripheralPropertyExecutor extends PropertyExecutor implements IPeripheralMethodExecutor {
