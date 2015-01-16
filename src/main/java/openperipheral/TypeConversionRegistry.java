@@ -50,6 +50,7 @@ public class TypeConversionRegistry implements ITypeConvertersRegistry {
 		converters.add(new ConverterFluidStack());
 
 		// DO NOT REORDER ANYTHING BELOW (unless you have good reason)
+		converters.add(new ConverterCallable());
 		converters.add(new ConverterArray());
 		converters.add(new ConverterList());
 		converters.add(new ConverterMap());
