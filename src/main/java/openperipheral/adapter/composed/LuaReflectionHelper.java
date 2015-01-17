@@ -5,13 +5,12 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Map;
 
-import openperipheral.api.Env;
-import openperipheral.api.LuaCallable;
-import openperipheral.api.LuaReturnType;
+import openperipheral.api.*;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+@Asynchronous
 public class LuaReflectionHelper {
 	private static Map<String, Object> describe(Method method) {
 		Map<String, Object> desc = Maps.newHashMap();

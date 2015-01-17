@@ -1,4 +1,4 @@
-package openperipheral.adapter;
+package openperipheral.interfaces.cc.providers;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
@@ -9,12 +9,14 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import openmods.Log;
 import openmods.reflection.ReflectionHelper;
-import openperipheral.adapter.peripheral.AdapterPeripheral;
-import openperipheral.adapter.peripheral.IPeripheralMethodExecutor;
-import openperipheral.adapter.peripheral.ProxyAdapterPeripheral;
+import openperipheral.adapter.IMethodExecutor;
+import openperipheral.adapter.TileEntityBlacklist;
 import openperipheral.api.ExposeInterface;
 import openperipheral.api.ICustomPeripheralProvider;
 import openperipheral.api.Volatile;
+import openperipheral.interfaces.cc.Registries;
+import openperipheral.interfaces.cc.wrappers.AdapterPeripheral;
+import openperipheral.interfaces.cc.wrappers.ProxyAdapterPeripheral;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
@@ -24,7 +26,7 @@ import com.google.common.collect.Sets;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
 
-public class PeripheralHandlers implements IPeripheralProvider {
+public class PeripheralProvider implements IPeripheralProvider {
 	private static final IPeripheralFactory<TileEntity> NULL_HANDLER = new IPeripheralFactory<TileEntity>() {
 
 		@Override
@@ -79,19 +81,13 @@ public class PeripheralHandlers implements IPeripheralProvider {
 
 		if (TileEntityBlacklist.INSTANCE.isBlacklisted(teClass)) return NULL_HANDLER;
 
-		for (Class<?> adaptableClass : AdapterManager.PERIPHERALS_MANAGER.getAllAdaptableClasses()) {
-			if (adaptableClass.isAssignableFrom(teClass)) {
-				if (teClass.isAnnotationPresent(Volatile.class)) {
-					Log.trace("Adding non-caching adapter handler for %s", teClass);
-					return ADAPTER_HANDLER;
-				} else {
-					Log.trace("Adding caching adapter handler for %s", teClass);
-					return ADAPTER_CACHING_HANDLER;
-				}
-			}
+		if (teClass.isAnnotationPresent(Volatile.class)) {
+			Log.trace("Adding non-caching adapter handler for %s", teClass);
+			return ADAPTER_HANDLER;
+		} else {
+			Log.trace("Adding caching adapter handler for %s", teClass);
+			return ADAPTER_CACHING_HANDLER;
 		}
-
-		return NULL_HANDLER;
 	}
 
 	private static IPeripheralFactory<TileEntity> getFactoryForClass(Class<? extends TileEntity> teClass) {
@@ -117,7 +113,7 @@ public class PeripheralHandlers implements IPeripheralProvider {
 
 	public static IPeripheral createAdaptedPeripheral(Object target) {
 		Class<?> targetClass = target.getClass();
-		MethodMap<IPeripheralMethodExecutor> methods = AdapterManager.PERIPHERALS_MANAGER.getAdaptedClass(targetClass);
+		Map<String, IMethodExecutor> methods = Registries.PERIPHERAL_METHODS_FACTORY.getAdaptedClass(targetClass);
 		if (methods.isEmpty()) return null;
 
 		ExposeInterface proxyAnn = targetClass.getAnnotation(ExposeInterface.class);

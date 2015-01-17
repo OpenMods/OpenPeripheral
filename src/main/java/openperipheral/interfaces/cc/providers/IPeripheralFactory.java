@@ -1,4 +1,4 @@
-package openperipheral.adapter;
+package openperipheral.interfaces.cc.providers;
 
 import dan200.computercraft.api.peripheral.IPeripheral;
 

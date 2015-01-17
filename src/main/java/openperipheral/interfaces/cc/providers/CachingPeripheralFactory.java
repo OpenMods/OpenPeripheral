@@ -1,4 +1,4 @@
-package openperipheral.adapter;
+package openperipheral.interfaces.cc.providers;
 
 import java.util.Map;
 import java.util.WeakHashMap;

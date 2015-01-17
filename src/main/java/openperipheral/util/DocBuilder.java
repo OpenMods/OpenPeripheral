@@ -13,11 +13,9 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import openperipheral.adapter.AdapterWrapper;
 import openperipheral.adapter.IDescriptable;
 import openperipheral.adapter.IMethodExecutor;
-import openperipheral.adapter.object.IObjectMethodExecutor;
-import openperipheral.adapter.peripheral.IPeripheralMethodExecutor;
+import openperipheral.converter.wrappers.AdapterWrapper;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -66,7 +64,7 @@ public class DocBuilder {
 		}
 	}
 
-	public void createDocForTe(Class<?> cls, Map<String, IPeripheralMethodExecutor> methods) {
+	public void createDocForTe(Class<?> cls, Map<String, IMethodExecutor> methods) {
 		if (methods.isEmpty()) return;
 		Element result = doc.createElement("peripheral");
 		fillDocForClass(result, cls, methods);
@@ -77,14 +75,14 @@ public class DocBuilder {
 		root.appendChild(result);
 	}
 
-	public void createDocForObject(Class<?> cls, Map<String, IObjectMethodExecutor> methods) {
+	public void createDocForObject(Class<?> cls, Map<String, IMethodExecutor> methods) {
 		if (methods.isEmpty()) return;
 		Element result = doc.createElement("luaObject");
 		fillDocForClass(result, cls, methods);
 		root.appendChild(result);
 	}
 
-	public void createDocForAdapter(String type, String location, Class<?> targetClass, AdapterWrapper<?> adapter) {
+	public void createDocForAdapter(String type, String location, Class<?> targetClass, AdapterWrapper adapter) {
 		Element result = doc.createElement("adapter");
 		result.setAttribute("class", adapter.getAdapterClass().getName());
 		result.setAttribute("type", type);
@@ -108,7 +106,7 @@ public class DocBuilder {
 				names.appendChild(createProperty("name", name));
 			methodDoc.appendChild(names);
 
-			fillDocForDescriptable(methodDoc, description);
+			fillDocForMethod(methodDoc, method);
 			result.appendChild(methodDoc);
 		}
 	}
@@ -121,17 +119,18 @@ public class DocBuilder {
 			Element methodDoc = doc.createElement("method");
 
 			methodDoc.setAttribute("name", entry.getKey());
-			fillDocForDescriptable(methodDoc, entry.getValue().description());
+			fillDocForMethod(methodDoc, entry.getValue());
 			result.appendChild(methodDoc);
 		}
 	}
 
-	private void fillDocForDescriptable(Element result, IDescriptable method) {
-
-		result.appendChild(createProperty("signature", method.signature()));
-		Element description = doc.createElement("extra");
-		serializeMap(description, method.describe());
-		result.appendChild(description);
+	private void fillDocForMethod(Element result, IMethodExecutor method) {
+		result.setAttribute("asynchronous", Boolean.toString(method.isAsynchronous()));
+		IDescriptable description = method.description();
+		result.appendChild(createProperty("signature", description.signature()));
+		Element extra = doc.createElement("extra");
+		serializeMap(extra, description.describe());
+		result.appendChild(extra);
 	}
 
 	private void serializeValue(Element output, Object value) {

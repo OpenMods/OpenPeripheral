@@ -1,9 +1,11 @@
-package openperipheral.adapter.object;
+package openperipheral.interfaces.cc.wrappers;
 
 import java.util.Arrays;
+import java.util.Map;
 
 import openmods.Log;
 import openperipheral.adapter.*;
+import openperipheral.interfaces.cc.Registries;
 
 import org.apache.logging.log4j.Level;
 
@@ -15,10 +17,10 @@ import dan200.computercraft.api.lua.LuaException;
 
 public class LuaObjectWrapper {
 
-	private static class WrappedLuaObject extends WrappedEntityBase<IObjectMethodExecutor> implements ILuaObject {
+	private static class WrappedLuaObject extends WrappedEntityBase implements ILuaObject {
 		private final Object target;
 
-		private WrappedLuaObject(MethodMap<IObjectMethodExecutor> methods, Object target) {
+		private WrappedLuaObject(Map<String, IMethodExecutor> methods, Object target) {
 			super(methods);
 			this.target = target;
 		}
@@ -30,11 +32,11 @@ public class LuaObjectWrapper {
 
 		@Override
 		public Object[] callMethod(ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
-			IObjectMethodExecutor executor = getMethod(method);
+			IMethodExecutor executor = getMethod(method);
 			Preconditions.checkNotNull(executor, "Invalid method index: %d", method);
 
 			try {
-				return executor.execute(context, target, arguments);
+				return executor.startCall(target).setOptionalArg(DefaultArgNames.ARG_CONTEXT, context).call(arguments);
 			} catch (LuaException e) {
 				throw e;
 			} catch (InterruptedException e) {
@@ -49,9 +51,9 @@ public class LuaObjectWrapper {
 		}
 	}
 
-	public static ILuaObject wrap(AdapterManager<IObjectMethodExecutor> manager, Object target) {
+	public static ILuaObject wrap(Object target) {
 		Preconditions.checkNotNull(target, "Can't wrap null");
-		MethodMap<IObjectMethodExecutor> methods = manager.getAdaptedClass(target.getClass());
+		Map<String, IMethodExecutor> methods = Registries.OBJECT_METHODS_FACTORY.getAdaptedClass(target.getClass());
 		return methods.isEmpty()? null : new WrappedLuaObject(methods, target);
 	}
 }

@@ -48,7 +48,7 @@ public class PropertyListBuilder {
 	public static class PropertyExecutor implements IMethodExecutor {
 		private final FieldContext context;
 
-		protected PropertyExecutor(FieldContext context) {
+		public PropertyExecutor(FieldContext context) {
 			this.context = context;
 		}
 
@@ -57,8 +57,32 @@ public class PropertyListBuilder {
 			return context;
 		}
 
-		protected Object[] call(Object target, Object... args) {
-			return ArrayUtils.toArray(context.call(target, args));
+		@Override
+		public IMethodCall startCall(final Object target) {
+			return new IMethodCall() {
+				@Override
+				public IMethodCall setPositionalArg(int index, Object value) {
+					return this; // NO-OP
+				}
+
+				@Override
+				public IMethodCall setOptionalArg(String name, Object value) {
+					return this; // NO-OP
+				}
+
+				@Override
+				public Object[] call(Object[] args) throws Exception {
+					return context.call(target, args);
+				}
+			};
+		}
+
+		@Override
+		public void validateArgs(Map<String, Class<?>> args) {}
+
+		@Override
+		public boolean isAsynchronous() {
+			return true;
 		}
 	}
 
@@ -77,7 +101,7 @@ public class PropertyListBuilder {
 			this.source = source;
 		}
 
-		public abstract Object call(Object target, Object... args);
+		public abstract Object[] call(Object target, Object... args);
 
 		protected abstract IPropertyCallback getCallback(Object target);
 
@@ -110,10 +134,10 @@ public class PropertyListBuilder {
 		}
 
 		@Override
-		public Object call(Object target, Object... args) {
+		public Object[] call(Object target, Object... args) {
 			Preconditions.checkArgument(args.length == 0, "Getter has no arguments");
 			Object result = getCallback(target).getField(field);
-			return TypeConversionRegistry.INSTANCE.toLua(result);
+			return ArrayUtils.toArray(TypeConversionRegistry.INSTANCE.toLua(result));
 		}
 
 		@Override
@@ -137,14 +161,14 @@ public class PropertyListBuilder {
 		}
 
 		@Override
-		public Object call(Object target, Object... args) {
+		public Object[] call(Object target, Object... args) {
 			Preconditions.checkArgument(args.length == 1, "Setter must have exactly one argument");
 			Object arg = args[0];
 			Object converted = TypeConversionRegistry.INSTANCE.fromLua(arg, field.getType());
 			Preconditions.checkNotNull(converted, "Invalid value type");
 			getCallback(target).setField(field, converted);
 
-			return null;
+			return ArrayUtils.EMPTY_OBJECT_ARRAY;
 		}
 
 		@Override
@@ -214,8 +238,8 @@ public class PropertyListBuilder {
 		}
 	}
 
-	public interface IPropertyExecutorFactory<E extends IMethodExecutor> {
-		public E createExecutor(FieldContext context);
+	public interface IPropertyExecutorFactory {
+		public IMethodExecutor createExecutor(FieldContext context);
 	}
 
 	private static ImmutablePair<GetterContext, SetterContext> createContexts(Field field, String source, String name, LuaArgType type, String getterDescription, String setterDescription, boolean isDelegating, boolean readOnly) {
@@ -246,22 +270,22 @@ public class PropertyListBuilder {
 		return ImmutablePair.of(getter, setter);
 	}
 
-	private static <E extends IMethodExecutor> void addMethods(Pair<GetterContext, SetterContext> context, IPropertyExecutorFactory<E> builder, List<E> output) {
-		E getter = builder.createExecutor(context.getLeft());
+	private static void addMethods(Pair<GetterContext, SetterContext> context, List<IMethodExecutor> output) {
+		IMethodExecutor getter = new PropertyExecutor(context.getLeft());
 		output.add(getter);
 
 		if (context.getRight() != null) {
-			E setter = builder.createExecutor(context.getRight());
+			IMethodExecutor setter = new PropertyExecutor(context.getRight());
 			output.add(setter);
 		}
 	}
 
-	public static <E extends IMethodExecutor> void buildPropertyList(Class<?> targetCls, String source, IPropertyExecutorFactory<E> factory, List<E> output) {
+	public static void buildPropertyList(Class<?> targetCls, String source, List<IMethodExecutor> output) {
 		for (Field f : targetCls.getDeclaredFields()) {
 			{
 				Property p = f.getAnnotation(Property.class);
 				if (p != null) {
-					addMethods(createContexts(f, source, p.name(), p.type(), p.getterDesc(), p.setterDesc(), false, p.readOnly()), factory, output);
+					addMethods(createContexts(f, source, p.name(), p.type(), p.getterDesc(), p.setterDesc(), false, p.readOnly()), output);
 					continue;
 				}
 			}
@@ -270,7 +294,7 @@ public class PropertyListBuilder {
 				CallbackProperty p = f.getAnnotation(CallbackProperty.class);
 				if (p != null) {
 					Preconditions.checkArgument(IPropertyCallback.class.isAssignableFrom(targetCls));
-					addMethods(createContexts(f, source, p.name(), p.type(), p.getterDesc(), p.setterDesc(), true, p.readOnly()), factory, output);
+					addMethods(createContexts(f, source, p.name(), p.type(), p.getterDesc(), p.setterDesc(), true, p.readOnly()), output);
 				}
 			}
 		}

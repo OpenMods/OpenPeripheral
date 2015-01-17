@@ -3,18 +3,17 @@ package openperipheral.adapter.composed;
 import java.util.*;
 
 import openperipheral.Config;
+import openperipheral.adapter.AdapterRegistry;
 import openperipheral.adapter.IMethodExecutor;
-import openperipheral.adapter.MethodMap;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-public abstract class ClassMethodsComposer<E extends IMethodExecutor> {
+public class ClassMethodsComposer {
 
-	protected abstract ClassMethodsListBuilder<E> createBuilder();
-
-	public MethodMap<E> createMethodsList(Class<?> cls) {
-		ClassMethodsListBuilder<E> builder = createBuilder();
+	public Map<String, IMethodExecutor> createMethodsList(Class<?> cls, AdapterRegistry manager) {
+		ClassMethodsListBuilder builder = new ClassMethodsListBuilder(manager);
 		final List<Class<?>> classHierarchy = Lists.reverse(listSuperClasses(cls));
 
 		Set<Class<?>> allSuperInterfaces = Sets.newHashSet();
@@ -31,11 +30,11 @@ public abstract class ClassMethodsComposer<E extends IMethodExecutor> {
 			builder.addInlineAdapter(c);
 		}
 
-		if (Config.devMethods) builder.addMethodsFromObject(new LuaReflectionHelper(), "<reflection>");
+		if (Config.devMethods) builder.addMethodsFromObject(new LuaReflectionHelper(), cls, "<reflection>");
 
-		if (!builder.hasMethods()) return new MethodMap<E>();
+		if (!builder.hasMethods()) return ImmutableMap.of();
 
-		builder.addMethodsFromObject(new MethodsListerHelper<E>(builder.getMethodList(), builder.getSources()), "<meta>");
+		builder.addMethodsFromObject(new MethodsListerHelper(builder.getMethodList(), builder.getSources()), cls, "<meta>");
 
 		return builder.create();
 	}

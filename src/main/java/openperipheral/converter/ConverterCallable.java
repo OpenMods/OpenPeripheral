@@ -2,10 +2,10 @@ package openperipheral.converter;
 
 import java.util.Map;
 
-import openperipheral.adapter.AdapterManager;
 import openperipheral.api.ITypeConverter;
 import openperipheral.api.ITypeConvertersRegistry;
 import openperipheral.api.LuaObject;
+import openperipheral.interfaces.cc.wrappers.LuaObjectWrapper;
 
 import com.google.common.collect.Maps;
 
@@ -31,7 +31,7 @@ public class ConverterCallable implements ITypeConverter {
 
 	@Override
 	public Object toLua(ITypeConvertersRegistry registry, Object obj) {
-		if (isCallable(obj.getClass())) return AdapterManager.wrapObject(obj);
+		if (isCallable(obj.getClass())) return LuaObjectWrapper.wrap(obj);
 
 		return null;
 	}

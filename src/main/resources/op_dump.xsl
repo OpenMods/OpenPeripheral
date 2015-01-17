@@ -46,8 +46,8 @@ body {
   <p>Peripherals:</p>
   <ul>
   <xsl:for-each select="peripheral">
-    <xsl:sort select="simpleName/text()"/>
-    <li><a><xsl:attribute name="href">#periph.<xsl:value-of select="@class" /></xsl:attribute><xsl:value-of select="simpleName/text()" /></a></li>
+    <xsl:sort select="name/text()"/>
+    <li><a><xsl:attribute name="href">#periph.<xsl:value-of select="@class" /></xsl:attribute><xsl:value-of select="name/text()" /></a></li>
   </xsl:for-each>
   </ul>
   <p>Lua Objects:</p>
@@ -59,10 +59,22 @@ body {
   </ul>
   <p>Adapters:</p>
   <ul>
-  <xsl:for-each select="adapter">
-    <xsl:sort select="source/text()"/>
-    <li><a><xsl:attribute name="href">#adapt.<xsl:value-of select="@class" /></xsl:attribute><xsl:value-of select="source/text()" /></a></li>
-  </xsl:for-each>
+    <li>External:
+      <ul>
+      <xsl:for-each select="adapter[@location='external']">
+        <xsl:sort select="source/text()"/>
+        <li><a><xsl:attribute name="href">#adapt.<xsl:value-of select="@class" /></xsl:attribute><xsl:value-of select="source/text()" /></a></li>
+      </xsl:for-each>
+      </ul>
+    </li>
+    <li>Inline:
+      <ul>
+      <xsl:for-each select="adapter[@location='inline']">
+        <xsl:sort select="source/text()"/>
+        <li><a><xsl:attribute name="href">#adapt.<xsl:value-of select="@class" /></xsl:attribute><xsl:value-of select="source/text()" /></a></li>
+      </xsl:for-each>
+      </ul>
+    </li>
   </ul>
   
   <xsl:for-each select="peripheral">
@@ -73,6 +85,7 @@ body {
     <xsl:for-each select="method">
       <div class="method">
       <h2><code><xsl:value-of select="@name" /><xsl:value-of select="signature/text()" /></code></h2>
+      <xsl:if test="@asynchronous = 'false'"><p><strong>Synchronized</strong></p></xsl:if>
       <xsl:if test="extra/description"><p><xsl:value-of select="extra/description/text()" /></p></xsl:if>
       <xsl:if test="extra/source"><p>Source: <xsl:value-of select="extra/source/text()" /></p></xsl:if>
       <xsl:if test="extra/args/e">
@@ -97,6 +110,7 @@ body {
     <xsl:for-each select="method">
       <div class="method">
       <h2><code><xsl:value-of select="@name" /><xsl:value-of select="signature/text()" /></code></h2>
+      <xsl:if test="@asynchronous = 'false'"><p><strong>Synchronized</strong></p></xsl:if>
       <xsl:if test="extra/description"><p><xsl:value-of select="extra/description/text()" /></p></xsl:if>
       <xsl:if test="extra/source"><p>Source: <xsl:value-of select="extra/source/text()" /></p></xsl:if>
       <xsl:if test="extra/args/e">
@@ -126,6 +140,7 @@ body {
       <xsl:for-each select="names/name">
         <h2><code><xsl:value-of select="text()"/><xsl:value-of select="../../signature/text()" /></code></h2>
       </xsl:for-each>
+      <xsl:if test="@asynchronous = 'false'"><p><strong>Synchronized</strong></p></xsl:if>
       <xsl:if test="extra/description"><p><xsl:value-of select="extra/description/text()" /></p></xsl:if>
       <xsl:if test="extra/source"><p>Source: <xsl:value-of select="extra/source/text()" /></p></xsl:if>
       <xsl:if test="extra/args/e">

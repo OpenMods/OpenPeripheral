@@ -6,8 +6,9 @@ import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import openmods.config.properties.ConfigProcessing;
-import openperipheral.adapter.PeripheralHandlers;
 import openperipheral.adapter.TileEntityBlacklist;
+import openperipheral.interfaces.cc.Registries;
+import openperipheral.interfaces.cc.providers.PeripheralProvider;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.*;
@@ -40,7 +41,9 @@ public class OpenPeripheralCore {
 	// this method should be called as late as possible, to make sure we are last on provider list
 	@Mod.EventHandler
 	public void loadComplete(FMLLoadCompleteEvent evt) {
-		ComputerCraftAPI.registerPeripheralProvider(new PeripheralHandlers());
+		Registries.OBJECT_VALIDATOR.validate();
+		Registries.PERIPHERAL_VALIDATOR.validate();
+		ComputerCraftAPI.registerPeripheralProvider(new PeripheralProvider());
 	}
 
 	@EventHandler

@@ -27,7 +27,12 @@ buildscript {
     }
 }
 
+apply plugin: 'forge'
+apply plugin: 'java'
+
 repositories {
+    mavenCentral()
+    jcenter() 
     maven {
         name 'Forge'
         url 'http://files.minecraftforge.net/maven'
@@ -38,7 +43,9 @@ repositories {
     }
 }
 
-apply plugin: 'forge'
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
 
 //================================================
 // Dependencies

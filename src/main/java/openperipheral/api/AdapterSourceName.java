@@ -3,13 +3,10 @@ package openperipheral.api;
 import java.lang.annotation.*;
 
 /**
- * Used for creating custom names for peripherals. Useable only on TileEntities.
- *
- * @author boq
- *
+ * Used for creating custom names for source id of inline adapters
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface PeripheralTypeId {
+public @interface AdapterSourceName {
 	public String value();
 }

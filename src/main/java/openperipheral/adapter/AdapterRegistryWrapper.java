@@ -10,17 +10,17 @@ public class AdapterRegistryWrapper implements IAdapterRegistry {
 
 	@Override
 	public boolean register(IPeripheralAdapter adapter) {
-		return AdapterManager.addPeripheralAdapter(adapter);
+		return AdapterRegistry.PERIPHERAL_ADAPTERS.addAdapter(adapter);
 	}
 
 	@Override
 	public boolean register(IObjectAdapter adapter) {
-		return AdapterManager.addObjectAdapter(adapter);
+		return AdapterRegistry.OBJECT_ADAPTERS.addAdapter(adapter);
 	}
 
 	@Override
 	public void registerInline(Class<?> cls) {
-		AdapterManager.addInlinePeripheralAdapter(cls);
+		AdapterRegistry.PERIPHERAL_ADAPTERS.addInlineAdapter(cls);
 	}
 
 }

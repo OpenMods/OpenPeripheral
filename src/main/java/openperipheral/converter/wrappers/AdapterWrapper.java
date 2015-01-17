@@ -1,16 +1,18 @@
-package openperipheral.adapter;
+package openperipheral.converter.wrappers;
 
 import java.lang.reflect.Method;
 import java.util.List;
 
 import openmods.Log;
+import openperipheral.adapter.AsyncChecker;
+import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.method.MethodDeclaration;
 import openperipheral.api.LuaCallable;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
-public abstract class AdapterWrapper<E extends IMethodExecutor> {
+public abstract class AdapterWrapper {
 
 	public static class MethodWrapException extends RuntimeException {
 		private static final long serialVersionUID = -5116134133615320058L;
@@ -20,15 +22,17 @@ public abstract class AdapterWrapper<E extends IMethodExecutor> {
 		}
 	}
 
-	protected final List<E> methods;
+	protected final List<IMethodExecutor> methods;
 	protected final Class<?> targetClass;
 	protected final Class<?> adapterClass;
 	protected final String source;
+	protected final AsyncChecker asyncChecker;
 
 	protected AdapterWrapper(Class<?> adapterClass, Class<?> targetClass, String source) {
 		this.adapterClass = adapterClass;
 		this.targetClass = targetClass;
 		this.source = source;
+		this.asyncChecker = new AsyncChecker(adapterClass);
 		this.methods = ImmutableList.copyOf(buildMethodList());
 	}
 
@@ -36,7 +40,7 @@ public abstract class AdapterWrapper<E extends IMethodExecutor> {
 		return source;
 	}
 
-	public List<E> getMethods() {
+	public List<IMethodExecutor> getMethods() {
 		return methods;
 	}
 
@@ -52,16 +56,12 @@ public abstract class AdapterWrapper<E extends IMethodExecutor> {
 
 	public abstract String describe();
 
-	protected abstract List<E> buildMethodList();
+	public abstract IMethodExecutor createExecutor(Method method, MethodDeclaration decl);
 
-	protected abstract void configureJavaArguments(MethodDeclaration decl);
+	protected abstract void verifyArguments(MethodDeclaration decl);
 
-	protected interface MethodExecutorFactory<E extends IMethodExecutor> {
-		public E createExecutor(Method method, MethodDeclaration decl);
-	}
-
-	protected List<E> buildMethodList(MethodExecutorFactory<E> factory) {
-		List<E> result = Lists.newArrayList();
+	protected List<IMethodExecutor> buildMethodList() {
+		List<IMethodExecutor> result = Lists.newArrayList();
 
 		Method[] clsMethods;
 		try {
@@ -78,10 +78,8 @@ public abstract class AdapterWrapper<E extends IMethodExecutor> {
 				if (callableAnn == null) continue;
 
 				final MethodDeclaration decl = new MethodDeclaration(method, callableAnn, source);
-				configureJavaArguments(decl);
-				decl.validate();
-
-				E exec = factory.createExecutor(method, decl);
+				verifyArguments(decl);
+				IMethodExecutor exec = createExecutor(method, decl);
 				result.add(exec);
 			} catch (Throwable e) {
 				throw new MethodWrapException(method, e);

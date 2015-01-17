@@ -4,11 +4,11 @@ import java.lang.reflect.Modifier;
 import java.util.*;
 
 import openmods.Log;
-import openperipheral.adapter.AdapterFactoryWrapper;
 import openperipheral.adapter.AdapterRegistryWrapper;
 import openperipheral.adapter.TileEntityBlacklist;
 import openperipheral.api.ApiAccess;
 import openperipheral.api.IApiInterface;
+import openperipheral.interfaces.cc.providers.AdapterFactoryWrapper;
 import openperipheral.meta.EntityMetadataBuilder;
 import openperipheral.meta.ItemStackMetadataBuilder;
 

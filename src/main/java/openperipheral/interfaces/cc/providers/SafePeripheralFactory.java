@@ -1,10 +1,10 @@
-package openperipheral.adapter;
+package openperipheral.interfaces.cc.providers;
 
 import java.util.Random;
 
 import net.minecraft.tileentity.TileEntity;
 import openmods.Log;
-import openperipheral.adapter.AdapterManager.InvalidClassException;
+import openperipheral.adapter.ComposedMethodsFactory.InvalidClassException;
 
 import org.apache.commons.lang3.ArrayUtils;
 

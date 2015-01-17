@@ -1,67 +1,54 @@
 package openperipheral.adapter.composed;
 
-import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
 import openmods.Log;
-import openperipheral.adapter.*;
-import openperipheral.adapter.method.MethodDeclaration;
-import openperipheral.api.LuaCallable;
+import openperipheral.adapter.AdapterRegistry;
+import openperipheral.adapter.IDescriptable;
+import openperipheral.adapter.IMethodExecutor;
+import openperipheral.converter.wrappers.AdapterWrapper;
+import openperipheral.converter.wrappers.TechnicalAdapterWrapper;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-public abstract class ClassMethodsListBuilder<E extends IMethodExecutor> {
-	private final AdapterManager<E> manager;
+public class ClassMethodsListBuilder {
+	private final AdapterRegistry manager;
 
-	private final MethodMap<E> methods = new MethodMap<E>();
+	private final Map<String, IMethodExecutor> methods = Maps.newHashMap();
 
 	private final Set<String> sources = Sets.newHashSet();
 
-	public static final String ARG_TARGET = "target";
-
-	public ClassMethodsListBuilder(AdapterManager<E> manager) {
+	public ClassMethodsListBuilder(AdapterRegistry manager) {
 		this.manager = manager;
 	}
 
-	protected abstract E createDummyWrapper(Object lister, MethodDeclaration method);
-
-	public void addMethodsFromObject(Object target, String source) {
-		for (Method method : target.getClass().getMethods()) {
-			LuaCallable callableMeta = method.getAnnotation(LuaCallable.class);
-			if (callableMeta != null) {
-				MethodDeclaration decl = new MethodDeclaration(method, callableMeta, source);
-				sources.add(decl.source());
-				for (String name : decl.getNames())
-					methods.put(name, createDummyWrapper(target, decl));
-			}
-		}
-	}
-
 	public void addExternalAdapters(Class<?> targetCls, Class<?> superClass) {
-		for (AdapterWrapper<E> wrapper : manager.getExternalAdapters(superClass))
+		for (AdapterWrapper wrapper : manager.getExternalAdapters(superClass))
 			if (wrapper.canUse(targetCls)) addMethods(wrapper);
 			else Log.warn("Adapter %s cannot be used for %s due to constraints", wrapper.describe());
 	}
 
 	public void addInlineAdapter(Class<?> cls) {
-		AdapterWrapper<E> wrapper = manager.getInlineAdapter(cls);
+		AdapterWrapper wrapper = manager.getInlineAdapter(cls);
 		addMethods(wrapper);
 	}
 
-	public void addMethods(AdapterWrapper<E> wrapper) {
-		for (E executor : wrapper.getMethods()) {
+	public void addMethods(AdapterWrapper wrapper) {
+		for (IMethodExecutor executor : wrapper.getMethods()) {
 			final IDescriptable descriptable = executor.description();
 			sources.add(descriptable.source());
 			for (String name : descriptable.getNames()) {
-				final E previous = methods.put(name, executor);
+				final IMethodExecutor previous = methods.put(name, executor);
 				if (previous != null) Log.trace("Previous defininition of Lua method '%s' overwritten by %s adapter", name, wrapper.describe());
 			}
 		}
 	}
 
-	public Map<String, E> getMethodList() {
+	public Map<String, IMethodExecutor> getMethodList() {
 		return Collections.unmodifiableMap(methods);
 	}
 
@@ -73,7 +60,11 @@ public abstract class ClassMethodsListBuilder<E extends IMethodExecutor> {
 		return !methods.isEmpty();
 	}
 
-	public MethodMap<E> create() {
-		return methods;
+	public Map<String, IMethodExecutor> create() {
+		return ImmutableMap.copyOf(methods);
+	}
+
+	public void addMethodsFromObject(Object obj, Class<?> targetCls, String source) {
+		addMethods(new TechnicalAdapterWrapper(obj, targetCls, source));
 	}
 }

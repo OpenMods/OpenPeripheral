@@ -5,7 +5,6 @@ import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.concurrent.Callable;
 
 import openmods.Log;
 import openmods.reflection.TypeUtils;
@@ -13,6 +12,7 @@ import openmods.utils.AnnotationMap;
 import openperipheral.TypeConversionRegistry;
 import openperipheral.adapter.AdapterLogicException;
 import openperipheral.adapter.IDescriptable;
+import openperipheral.adapter.IMethodCall;
 import openperipheral.api.*;
 
 import org.apache.logging.log4j.Level;
@@ -30,7 +30,16 @@ public class MethodDeclaration implements IDescriptable {
 		public ArgumentDefinitionException(int argument, Throwable cause) {
 			super(String.format("Failed to parse annotations on argument %d", argument), cause);
 		}
+	}
 
+	private static class OptionalArg {
+		public final Class<?> cls;
+		public final int index;
+
+		public OptionalArg(Class<?> cls, int index) {
+			this.cls = cls;
+			this.index = index;
+		}
 	}
 
 	private final List<String> names;
@@ -43,11 +52,13 @@ public class MethodDeclaration implements IDescriptable {
 
 	private final boolean multipleReturn;
 
-	private final BiMap<String, Integer> namedArgs = HashBiMap.create();
-	private final Set<String> allowedNames = Sets.newHashSet();
+	private final List<Class<?>> positionalArgs = Lists.newArrayList();
 
-	private final List<Class<?>> javaArgs;
-	private final List<Argument> luaArgs;
+	private final Map<String, OptionalArg> optionalArgs = Maps.newHashMap();
+
+	private final List<Argument> luaArgs = Lists.newArrayList();
+
+	private final int argCount;
 
 	private static List<String> getNames(Method method, LuaCallable meta) {
 		ImmutableList.Builder<String> names = ImmutableList.builder();
@@ -63,7 +74,7 @@ public class MethodDeclaration implements IDescriptable {
 	}
 
 	private static enum ArgParseState {
-		JAVA_REQUIRED,
+		JAVA_POSITIONAL,
 		JAVA_OPTIONAL,
 		LUA_REQUIRED,
 		LUA_OPTIONAL,
@@ -87,10 +98,7 @@ public class MethodDeclaration implements IDescriptable {
 		final Class<?> methodArgs[] = method.getParameterTypes();
 		final boolean isVarArg = method.isVarArgs();
 
-		ImmutableList.Builder<Argument> luaArgs = ImmutableList.builder();
-		ImmutableList.Builder<Class<?>> javaArgs = ImmutableList.builder();
-
-		ArgParseState state = ArgParseState.JAVA_REQUIRED;
+		ArgParseState state = ArgParseState.JAVA_POSITIONAL;
 
 		final Annotation[][] argsAnnotations = method.getParameterAnnotations();
 		for (int argIndex = 0; argIndex < methodArgs.length; argIndex++) {
@@ -124,25 +132,27 @@ public class MethodDeclaration implements IDescriptable {
 					final Argument arg = builder.build(luaArg.name(), luaArg.description(), luaArg.type(), argType, argIndex);
 					luaArgs.add(arg);
 				} else {
-					Preconditions.checkState(state == ArgParseState.JAVA_OPTIONAL || state == ArgParseState.JAVA_REQUIRED, "Unannotated arg in Lua part (perhaps missing @Arg annotation?)");
+					Preconditions.checkState(state == ArgParseState.JAVA_OPTIONAL || state == ArgParseState.JAVA_POSITIONAL, "Unannotated arg in Lua part (perhaps missing @Arg annotation?)");
 					Preconditions.checkState(!optionalStart, "@Optionals does not work for java arguments");
 
 					if (envArg != null) {
-						Preconditions.checkState(state == ArgParseState.JAVA_OPTIONAL || state == ArgParseState.JAVA_REQUIRED, "@Env annotation used in Lua part of arguments");
-						namedArgs.put(envArg.value(), argIndex);
+						Preconditions.checkState(state == ArgParseState.JAVA_OPTIONAL || state == ArgParseState.JAVA_POSITIONAL, "@Env annotation used in Lua part of arguments");
+						final String envName = envArg.value();
+						OptionalArg prev = optionalArgs.put(envName, new OptionalArg(argType, argIndex));
+						if (prev != null) { throw new IllegalStateException(String.format("Conflict on name %s, args: %s, %s", envArg, prev.index, argIndex)); }
 						state = ArgParseState.JAVA_OPTIONAL;
 					} else {
-						Preconditions.checkState(state == ArgParseState.JAVA_REQUIRED, "Unnamed arguments must be declared before named ones");
+						Preconditions.checkState(state == ArgParseState.JAVA_POSITIONAL, "Unnamed arg cannot occur after named");
+						positionalArgs.add(argType);
 					}
-					javaArgs.add(argType);
 				}
 			} catch (Throwable t) {
 				throw new ArgumentDefinitionException(argIndex, t);
 			}
 		}
 
-		this.luaArgs = luaArgs.build();
-		this.javaArgs = javaArgs.build();
+		this.argCount = positionalArgs.size() + optionalArgs.size() + luaArgs.size();
+		Preconditions.checkState(this.argCount == methodArgs.length, "Internal error for method %s", method);
 	}
 
 	private void validateResultCount() {
@@ -227,9 +237,9 @@ public class MethodDeclaration implements IDescriptable {
 		return convertVarResult(result);
 	}
 
-	public class CallWrap implements Callable<Object[]> {
-		private final Object[] args = new Object[javaArgs.size() + luaArgs.size()];
-		private final Set<Integer> isSet = Sets.newHashSet();
+	private class CallWrap implements IMethodCall {
+		private final Object[] args = new Object[argCount];
+		private final boolean[] isSet = new boolean[argCount];
 		private final Object target;
 
 		public CallWrap(Object target) {
@@ -237,19 +247,38 @@ public class MethodDeclaration implements IDescriptable {
 		}
 
 		private CallWrap setArg(int position, Object value) {
-			boolean newlyAdded = isSet.add(position);
-			Preconditions.checkState(newlyAdded, "Trying to set already defined argument %s in method %s", position, method);
+			boolean alreadyAdded = isSet[position];
+			Preconditions.checkState(!alreadyAdded, "Trying to set already defined argument %s in method %s", position, method);
+
 			args[position] = value;
+			isSet[position] = true;
 			return this;
 		}
 
-		public CallWrap setJavaArg(String name, Object value) {
-			Integer position = namedArgs.get(name);
-			if (position != null) setArg(position, value);
+		@Override
+		public IMethodCall setOptionalArg(String name, Object value) {
+			OptionalArg arg = optionalArgs.get(name);
+			if (arg != null) {
+				Preconditions.checkState(value == null || arg.cls.isInstance(value),
+						"Object of type %s cannot be used as argument %s (name: %s) in method %s",
+						value != null? value.getClass() : "<null>", arg.index, name, method);
+				setArg(arg.index, value);
+			}
 			return this;
 		}
 
-		public CallWrap setLuaArgs(Object[] luaValues) {
+		@Override
+		public IMethodCall setPositionalArg(int index, Object value) {
+			Preconditions.checkElementIndex(index, positionalArgs.size(), "argument index");
+			Preconditions.checkState(value == null || positionalArgs.get(index).isInstance(value),
+					"Object of type %s cannot be used as argument %s in method %s",
+					value != null? value.getClass() : "<null>", index, method);
+
+			setArg(index, value);
+			return this;
+		}
+
+		private CallWrap setCallArgs(Object[] luaValues) {
 			try {
 				Iterator<Object> it = Iterators.forArray(luaValues);
 				try {
@@ -270,10 +299,9 @@ public class MethodDeclaration implements IDescriptable {
 			return this;
 		}
 
-		@Override
-		public Object[] call() throws Exception {
+		private Object[] call() throws Exception {
 			for (int i = 0; i < args.length; i++)
-				Preconditions.checkState(isSet.contains(i), "Parameter %s value not set", i);
+				Preconditions.checkState(isSet[i], "Parameter %s value not set", i);
 
 			final Object result;
 			try {
@@ -287,50 +315,42 @@ public class MethodDeclaration implements IDescriptable {
 			if (validateReturn) validateResult(converted);
 			return converted;
 		}
+
+		@Override
+		public Object[] call(Object[] args) throws Exception {
+			setCallArgs(args);
+			return call();
+		}
 	}
 
-	public CallWrap createWrapper(Object target) {
+	public IMethodCall startCall(Object target) {
 		return new CallWrap(target);
 	}
 
-	public void setDefaultArgName(int index, String name) {
-		if (index >= javaArgs.size()) {
-			// probably in Lua args already
-			return;
-		}
-
-		if (namedArgs.containsValue(index)) {
-			// arg already named, ignore
-			return;
-		}
-
-		Integer prev = namedArgs.put(name, index);
-		Preconditions.checkArgument(prev == null || prev == index, "Trying to replace '%s' mapping from  %s, got %s", name, prev, index);
-	}
-
-	public void declareJavaArgType(String name, Class<?> cls) {
-		allowedNames.add(name);
-		Integer index = namedArgs.get(name);
-		if (index != null) {
-			final Class<?> expected = javaArgs.get(index);
-			Preconditions.checkArgument(expected.isAssignableFrom(cls), "Invalid argument type in method %s, was %s, got %s", method, expected, cls);
+	public void validatePositionalNames(Class<?>... providedArgs) {
+		Preconditions.checkState(providedArgs.length == positionalArgs.size());
+		for (int i = 0; i < providedArgs.length; i++) {
+			final Class<?> needed = positionalArgs.get(i);
+			final Class<?> provided = providedArgs[i];
+			Preconditions.checkState(needed.isAssignableFrom(provided),
+					"Argument %s needs type %s, but %s provided", i, needed, provided);
 		}
 	}
 
-	public void validate() {
-		Set<String> unknown = Sets.difference(namedArgs.keySet(), allowedNames);
-		Preconditions.checkState(unknown.isEmpty(), "Unknown named arg(s) %s in method '%s'. Allowed args: %s", unknown, method, allowedNames);
+	public void validateOptionalNames(Map<String, Class<?>> providedArgs) {
+		for (Map.Entry<String, OptionalArg> e : optionalArgs.entrySet()) {
+			final OptionalArg needed = e.getValue();
+			final String name = e.getKey();
+			final Class<?> provided = providedArgs.get(name);
+			Preconditions.checkState(provided != null, "Method needs argument named %s (position %s) but it's not provided",
+					name, needed.index);
 
-		Set<Integer> needed = Sets.newHashSet();
-		for (int i = 0; i < javaArgs.size(); i++)
-			needed.add(i);
-
-		Set<Integer> named = Sets.newHashSet(namedArgs.values());
-		Set<Integer> missing = Sets.difference(needed, named);
-		Preconditions.checkState(missing.isEmpty(), "Arguments %s from method %s are not named", missing, method);
-
-		Set<Integer> extra = Sets.difference(named, needed);
-		Preconditions.checkState(missing.isEmpty(), "Lua arguments %s from method %s are named", extra, method);
+			final Class<?> neededCls = needed.cls;
+			Preconditions.checkState(neededCls.isAssignableFrom(provided),
+					"Method needs argument named %s (position %s) of type %s, but %s was provided",
+					name, needed.index, neededCls, provided
+					);
+		}
 	}
 
 	@Override
