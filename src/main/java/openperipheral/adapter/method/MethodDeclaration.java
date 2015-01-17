@@ -1,6 +1,7 @@
 package openperipheral.adapter.method;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -40,6 +41,8 @@ public class MethodDeclaration implements IDescriptable {
 
 	private final boolean validateReturn;
 
+	private final boolean multipleReturn;
+
 	private final BiMap<String, Integer> namedArgs = HashBiMap.create();
 	private final Set<String> allowedNames = Sets.newHashSet();
 
@@ -76,6 +79,8 @@ public class MethodDeclaration implements IDescriptable {
 		this.description = meta.description();
 		this.returnTypes = meta.returnTypes();
 		this.validateReturn = meta.validateReturn();
+
+		this.multipleReturn = method.isAnnotationPresent(MultipleReturn.class);
 
 		if (validateReturn) validateResultCount();
 
@@ -157,30 +162,69 @@ public class MethodDeclaration implements IDescriptable {
 			Preconditions.checkArgument(javaReturn == void.class, "Method '%s' returns '%s', but declares no Lua results", method, javaReturn);
 		}
 
+		if (multipleReturn) {
+			Preconditions.checkArgument(IMultiReturn.class.isAssignableFrom(javaReturn) || Collection.class.isAssignableFrom(javaReturn) || javaReturn.isArray(), "Method '%s' declared more than one Lua result, but returns single '%s' instead of array, collection or IMultiReturn", method, javaReturn);
+		}
+
 		if (returnLength > 1) {
-			Preconditions.checkArgument(javaReturn == IMultiReturn.class, "Method '%s' declared more than one Lua result, but returns single '%s' instead of '%s'", method, javaReturn, IMultiReturn.class);
+			Preconditions.checkArgument(IMultiReturn.class.isAssignableFrom(javaReturn) || multipleReturn, "Method '%s' declared more than one Lua result, but returns single '%s' instead of array, collection or IMultiReturn", method, javaReturn);
 		}
 	}
 
-	private Object[] validateResult(Object... result) {
+	private static void checkReturnType(int argIndex, LuaReturnType expected, Object actual) {
+		final Class<?> expectedJava = expected.getJavaType();
+		Preconditions.checkArgument(actual == null || expectedJava.isInstance(actual) || TypeUtils.compareTypes(expectedJava, actual.getClass()), "Invalid type of return value %s: expected %s, got %s", argIndex, expected, actual);
+	}
+
+	private void validateResult(Object... result) {
+		if (returnTypes.length == 0) {
+			Preconditions.checkArgument(result.length == 1 && result[0] == null, "Returning value from null method");
+		} else {
+			Preconditions.checkArgument(result.length == returnTypes.length, "Returning invalid number of values from method %s, expected %s, got %s", method, returnTypes.length, result.length);
+			for (int i = 0; i < result.length; i++)
+				checkReturnType(i, returnTypes[i], result[i]);
+		}
+	}
+
+	private static Object[] convertMultiResult(IMultiReturn result) {
+		return convertVarResult(result.getObjects());
+	}
+
+	private static Object[] convertCollectionResult(Collection<?> result) {
+		Object[] tmp = new Object[result.size()];
+		int i = 0;
+		for (Object o : result)
+			tmp[i++] = TypeConversionRegistry.INSTANCE.toLua(o);
+
+		return tmp;
+	}
+
+	private static Object[] convertArrayResult(Object array) {
+		int length = Array.getLength(array);
+		Object[] result = new Object[length];
+
+		for (int i = 0; i < length; i++)
+			result[i] = TypeConversionRegistry.INSTANCE.toLua(Array.get(array, i));
+
+		return result;
+	}
+
+	private static Object[] convertVarResult(Object... result) {
 		for (int i = 0; i < result.length; i++)
 			result[i] = TypeConversionRegistry.INSTANCE.toLua(result[i]);
 
-		if (validateReturn) {
-			if (returnTypes.length == 0) {
-				Preconditions.checkArgument(result.length == 1 && result[0] == null, "Returning value from null method");
-			} else {
-				Preconditions.checkArgument(result.length == returnTypes.length, "Returning invalid number of values from method %s, expected %s, got %s", method, returnTypes.length, result.length);
-				for (int i = 0; i < result.length; i++) {
-					final LuaReturnType expected = returnTypes[i];
-					final Class<?> expectedType = expected.getJavaType();
-					final Object got = result[i];
-					Preconditions.checkArgument(got == null || expectedType.isInstance(got) || TypeUtils.compareTypes(expectedType, got.getClass()), "Invalid type of return value %s: expected %s, got %s", i, expected, got);
-				}
-			}
+		return result;
+	}
+
+	private Object[] convertResult(Object result) {
+		if (result instanceof IMultiReturn) return convertMultiResult((IMultiReturn)result);
+
+		if (multipleReturn) {
+			if (result != null && result.getClass().isArray()) return convertArrayResult(result);
+			if (result instanceof Collection) return convertCollectionResult((Collection<?>)result);
 		}
 
-		return result;
+		return convertVarResult(result);
 	}
 
 	public class CallWrap implements Callable<Object[]> {
@@ -231,7 +275,7 @@ public class MethodDeclaration implements IDescriptable {
 			for (int i = 0; i < args.length; i++)
 				Preconditions.checkState(isSet.contains(i), "Parameter %s value not set", i);
 
-			Object result;
+			final Object result;
 			try {
 				result = method.invoke(target, args);
 			} catch (InvocationTargetException e) {
@@ -239,8 +283,9 @@ public class MethodDeclaration implements IDescriptable {
 				throw Throwables.propagate(wrapper != null? wrapper : e);
 			}
 
-			if (result instanceof IMultiReturn) return validateResult(((IMultiReturn)result).getObjects());
-			else return validateResult(result);
+			final Object[] converted = convertResult(result);
+			if (validateReturn) validateResult(converted);
+			return converted;
 		}
 	}
 
