@@ -2,6 +2,8 @@ package openperipheral.api;
 
 import java.lang.annotation.*;
 
+import li.cil.repack.com.naef.jnlua.LuaType;
+
 /**
  * Used to mark methods that should be visible in Lua.
  *

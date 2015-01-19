@@ -21,7 +21,7 @@ public class NullableArgument extends Argument {
 
 	@Override
 	public Object convert(Iterator<Object> args) {
-		Preconditions.checkState(args.hasNext(), "Not enough arguments, first missing: %s", name);
+		Preconditions.checkArgument(args.hasNext(), "Not enough arguments, first missing: %s", name);
 		Object arg = args.next();
 		return convertSingleArg(arg);
 	}

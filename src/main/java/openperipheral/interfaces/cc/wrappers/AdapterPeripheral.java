@@ -10,6 +10,7 @@ import openperipheral.adapter.AdapterLogicException;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.WrappedEntityBase;
 import openperipheral.api.IAttachable;
+import openperipheral.api.IOpenPeripheral;
 import openperipheral.api.IWorldProvider;
 import openperipheral.interfaces.cc.executors.*;
 import openperipheral.interfaces.cc.executors.SynchronousExecutor.TileEntityExecutor;
@@ -28,7 +29,7 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 
-public class AdapterPeripheral extends WrappedEntityBase implements IPeripheral {
+public class AdapterPeripheral extends WrappedEntityBase implements IPeripheral, IOpenPeripheral {
 
 	private static final String MOUNT_NAME = "openp";
 	private static final IMount MOUNT = new ResourceMount();

@@ -8,8 +8,8 @@ import openmods.Log;
 import openperipheral.adapter.AdapterRegistry;
 import openperipheral.adapter.IDescriptable;
 import openperipheral.adapter.IMethodExecutor;
-import openperipheral.converter.wrappers.AdapterWrapper;
-import openperipheral.converter.wrappers.TechnicalAdapterWrapper;
+import openperipheral.adapter.wrappers.AdapterWrapper;
+import openperipheral.adapter.wrappers.TechnicalAdapterWrapper;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;

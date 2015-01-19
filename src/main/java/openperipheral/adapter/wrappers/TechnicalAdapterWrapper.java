@@ -1,17 +1,19 @@
-package openperipheral.converter.wrappers;
+package openperipheral.adapter.wrappers;
 
 import java.lang.reflect.Method;
-import java.util.List;
 
+import openperipheral.adapter.DefaultArgNames;
 import openperipheral.adapter.IMethodCall;
 import openperipheral.adapter.IMethodExecutor;
-import openperipheral.adapter.PropertyListBuilder;
 import openperipheral.adapter.method.MethodDeclaration;
 
-public class InlineAdapterWrapper extends AdapterWrapper {
+public class TechnicalAdapterWrapper extends AdapterWrapper {
 
-	public InlineAdapterWrapper(Class<?> targetClass, String source) {
-		super(targetClass, targetClass, source);
+	private final Object adapter;
+
+	public TechnicalAdapterWrapper(Object adapter, Class<?> targetClass, String source) {
+		super(adapter.getClass(), targetClass, source);
+		this.adapter = adapter;
 	}
 
 	@Override
@@ -21,7 +23,7 @@ public class InlineAdapterWrapper extends AdapterWrapper {
 
 	@Override
 	public String describe() {
-		return "internal (source: " + adapterClass.toString() + ")";
+		return "generated (source: " + adapterClass.toString() + ")";
 	}
 
 	@Override
@@ -32,16 +34,8 @@ public class InlineAdapterWrapper extends AdapterWrapper {
 		return new MethodExecutorBase(decl, asyncChecker.isAsync(method)) {
 			@Override
 			public IMethodCall startCall(Object target) {
-				return method.startCall(target);
+				return method.startCall(adapter).setOptionalArg(DefaultArgNames.ARG_TARGET, target);
 			}
 		};
 	}
-
-	@Override
-	protected List<IMethodExecutor> buildMethodList() {
-		List<IMethodExecutor> result = super.buildMethodList();
-		PropertyListBuilder.buildPropertyList(targetClass, source, result);
-		return result;
-	}
-
 }

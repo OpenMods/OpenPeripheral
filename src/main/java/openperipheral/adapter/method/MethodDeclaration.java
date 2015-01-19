@@ -287,11 +287,13 @@ public class MethodDeclaration implements IDescriptable {
 						setArg(arg.javaArgIndex, value);
 					}
 
-					Preconditions.checkState(!it.hasNext(), "Too many arguments!");
+					Preconditions.checkArgument(!it.hasNext(), "Too many arguments!");
 				} catch (ArrayIndexOutOfBoundsException e) {
 					Log.log(Level.TRACE, e, "Trying to access arg index, args = %s", Arrays.toString(luaValues));
 					throw new IllegalArgumentException(String.format("Invalid Lua parameter count, needs %s, got %s", luaArgs.size(), luaValues.length));
 				}
+			} catch (IllegalArgumentException e) {
+				throw e;
 			} catch (Exception e) {
 				throw new AdapterLogicException(e);
 			}

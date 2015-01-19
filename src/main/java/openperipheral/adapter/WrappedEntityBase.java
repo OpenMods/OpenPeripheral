@@ -1,27 +1,27 @@
 package openperipheral.adapter;
 
-import java.util.List;
 import java.util.Map;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 
 public class WrappedEntityBase {
 
 	protected final String[] names;
-	protected final List<IMethodExecutor> methods;
+	protected final IMethodExecutor[] methods;
 
-	public WrappedEntityBase(Map<String, IMethodExecutor> list) {
-		List<String> names = Lists.newArrayList();
-		ImmutableList.Builder<IMethodExecutor> methods = ImmutableList.builder();
+	public WrappedEntityBase(Map<String, IMethodExecutor> methods) {
+		final int methodCount = methods.size();
+		this.names = new String[methodCount];
+		this.methods = new IMethodExecutor[methodCount];
 
-		for (Map.Entry<String, IMethodExecutor> e : list.entrySet()) {
-			names.add(e.getKey());
-			methods.add(e.getValue());
+		int i = 0;
+		for (Map.Entry<String, IMethodExecutor> e : methods.entrySet()) {
+			this.names[i] = e.getKey();
+			this.methods[i] = e.getValue();
+			i++;
 		}
+	}
 
-		this.methods = methods.build();
-		this.names = names.toArray(new String[0]);
+	public IMethodExecutor[] getMethods() {
+		return methods;
 	}
 
 	public String[] getMethodNames() {
@@ -29,7 +29,7 @@ public class WrappedEntityBase {
 	}
 
 	public IMethodExecutor getMethod(int index) {
-		return methods.get(index);
+		return methods[index];
 	}
 
 	public String getMethodName(int index) {

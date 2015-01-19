@@ -24,7 +24,7 @@ public class VarArgument extends Argument {
 	}
 
 	protected void checkArgument(Object value) {
-		Preconditions.checkNotNull(value, "Vararg parameter '%s' has null value, but is not marked as nullable", name);
+		Preconditions.checkArgument(value != null, "Vararg parameter '%s' has null value, but is not marked as nullable", name);
 	}
 
 	@Override

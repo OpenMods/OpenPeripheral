@@ -11,9 +11,7 @@ import openmods.Log;
 import openmods.reflection.ReflectionHelper;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.TileEntityBlacklist;
-import openperipheral.api.ExposeInterface;
-import openperipheral.api.ICustomPeripheralProvider;
-import openperipheral.api.Volatile;
+import openperipheral.api.*;
 import openperipheral.interfaces.cc.Registries;
 import openperipheral.interfaces.cc.wrappers.AdapterPeripheral;
 import openperipheral.interfaces.cc.wrappers.ProxyAdapterPeripheral;
@@ -127,6 +125,7 @@ public class PeripheralProvider implements IPeripheralProvider {
 
 		Set<Class<?>> allImplemented = Sets.newHashSet(proxied);
 		allImplemented.add(IPeripheral.class);
+		allImplemented.add(IOpenPeripheral.class);
 
 		InvocationHandler handler = new ProxyAdapterPeripheral(methods, target);
 

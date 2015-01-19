@@ -6,11 +6,10 @@ import java.util.Set;
 
 import openperipheral.adapter.IDescriptable;
 import openperipheral.adapter.IMethodExecutor;
-import openperipheral.api.Asynchronous;
-import openperipheral.api.LuaCallable;
-import openperipheral.api.LuaReturnType;
+import openperipheral.api.*;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -44,12 +43,18 @@ public class MethodsListerHelper {
 	}
 
 	@LuaCallable(returnTypes = LuaReturnType.TABLE, description = "Get a complete table of information about all available methods")
-	public Map<?, ?> getAdvancedMethodsData() {
-		Map<String, Object> info = Maps.newHashMap();
-		for (Map.Entry<String, IMethodExecutor> e : methods.entrySet()) {
-			final IDescriptable m = e.getValue().description();
-			info.put(e.getKey(), m.describe());
+	public Map<?, ?> getAdvancedMethodsData(@Optionals @Arg(name = "method") String methodName) {
+		if (methodName != null) {
+			IMethodExecutor method = methods.get(methodName);
+			Preconditions.checkArgument(method != null, "Method not found");
+			return method.description().describe();
+		} else {
+			Map<String, Object> info = Maps.newHashMap();
+			for (Map.Entry<String, IMethodExecutor> e : methods.entrySet()) {
+				final IDescriptable m = e.getValue().description();
+				info.put(e.getKey(), m.describe());
+			}
+			return info;
 		}
-		return info;
 	}
 }

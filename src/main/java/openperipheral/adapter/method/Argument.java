@@ -30,16 +30,16 @@ public class Argument {
 	}
 
 	public Object convert(Iterator<Object> args) {
-		Preconditions.checkState(args.hasNext(), "Not enough arguments, first missing: %s", name);
+		Preconditions.checkArgument(args.hasNext(), "Not enough arguments, first missing: %s", name);
 		Object arg = args.next();
-		Preconditions.checkNotNull(arg, "Argument %s cannot be null", name);
+		Preconditions.checkArgument(arg != null, "Argument %s cannot be null", name);
 		return convertSingleArg(arg);
 	}
 
 	protected final Object convertSingleArg(Object o) {
 		if (o == null) return null;
 		Object converted = TypeConversionRegistry.INSTANCE.fromLua(o, javaType);
-		Preconditions.checkNotNull(converted, "Failed to convert arg '%s' value '%s' to '%s'", name, o, javaType.getSimpleName());
+		Preconditions.checkArgument(converted != null, "Failed to convert arg '%s' value '%s' to '%s'", name, o, javaType.getSimpleName());
 		return converted;
 	}
 

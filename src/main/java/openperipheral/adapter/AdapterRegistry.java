@@ -6,10 +6,10 @@ import java.util.Map;
 
 import net.minecraft.tileentity.TileEntity;
 import openmods.Log;
+import openperipheral.adapter.wrappers.AdapterWrapper;
+import openperipheral.adapter.wrappers.ExternalAdapterWrapper;
+import openperipheral.adapter.wrappers.InlineAdapterWrapper;
 import openperipheral.api.*;
-import openperipheral.converter.wrappers.AdapterWrapper;
-import openperipheral.converter.wrappers.ExternalAdapterWrapper;
-import openperipheral.converter.wrappers.InlineAdapterWrapper;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultimap;

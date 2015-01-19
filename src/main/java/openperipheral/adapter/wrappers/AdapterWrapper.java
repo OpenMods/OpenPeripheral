@@ -1,4 +1,4 @@
-package openperipheral.converter.wrappers;
+package openperipheral.adapter.wrappers;
 
 import java.lang.reflect.Method;
 import java.util.List;

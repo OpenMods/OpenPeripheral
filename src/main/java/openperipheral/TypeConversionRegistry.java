@@ -4,6 +4,7 @@ import java.util.Deque;
 import java.util.List;
 import java.util.Set;
 
+import li.cil.oc.api.machine.Value;
 import openmods.Log;
 import openperipheral.api.ITypeConverter;
 import openperipheral.api.ITypeConvertersRegistry;
@@ -43,6 +44,7 @@ public class TypeConversionRegistry implements ITypeConvertersRegistry {
 
 	private TypeConversionRegistry() {
 		registerIgnored(ILuaObject.class, true);
+		registerIgnored(Value.class, true);
 
 		converters.add(new ConverterGameProfile());
 		converters.add(new ConverterFluidTankInfo());

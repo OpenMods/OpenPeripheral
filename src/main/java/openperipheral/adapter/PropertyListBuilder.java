@@ -71,7 +71,7 @@ public class PropertyListBuilder {
 				}
 
 				@Override
-				public Object[] call(Object[] args) throws Exception {
+				public Object[] call(Object[] args) {
 					return context.call(target, args);
 				}
 			};

@@ -1,4 +1,4 @@
-package openperipheral.converter.wrappers;
+package openperipheral.adapter.wrappers;
 
 import java.util.Map;
 

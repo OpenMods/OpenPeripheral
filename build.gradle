@@ -155,6 +155,18 @@ task deobfJar(type: Jar) {
     }
 }
 
+task deobfSourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'deobf-src'
+    from sourceSets.main.allSource
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'src'
+    from sourceSets.main.java
+}
+
 artifacts {
     archives deobfJar
+    archives sourcesJar
+    archives deobfSourcesJar
 }

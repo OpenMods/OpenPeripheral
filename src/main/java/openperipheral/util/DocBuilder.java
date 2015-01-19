@@ -15,7 +15,7 @@ import javax.xml.transform.stream.StreamSource;
 
 import openperipheral.adapter.IDescriptable;
 import openperipheral.adapter.IMethodExecutor;
-import openperipheral.converter.wrappers.AdapterWrapper;
+import openperipheral.adapter.wrappers.AdapterWrapper;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

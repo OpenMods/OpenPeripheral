@@ -12,7 +12,7 @@ import openmods.Log;
 import openmods.OpenMods;
 import openperipheral.adapter.AdapterRegistry;
 import openperipheral.adapter.IMethodExecutor;
-import openperipheral.converter.wrappers.AdapterWrapper;
+import openperipheral.adapter.wrappers.AdapterWrapper;
 import openperipheral.interfaces.cc.Registries;
 import openperipheral.util.DocBuilder;
 
