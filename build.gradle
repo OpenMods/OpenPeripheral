@@ -140,6 +140,10 @@ processResources {
     }
 }
 
+javadoc {
+    include 'openperipheral/api/**'
+}
+
 //================================================
 // Jar tasks
 
@@ -155,19 +159,39 @@ jar {
 
 // Dev jar
 task deobfJar(type: Jar) {
+    classifier 'deobf'
+
     from sourceSets.main.output
-    classifier = 'deobf'
+
     manifest {
         from jenkinsManifest, gitManifest, fmlManifest
     }
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'src'
+    classifier 'src'
+
     from sourceSets.main.java
+}
+
+task apiJar(type: Jar) {
+    classifier 'api'
+
+    from sourceSets.main.output
+    from sourceSets.main.java
+
+    include 'openperipheral/api/**'
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier 'javadoc'
+
+    from 'build/docs/javadoc'
 }
 
 artifacts {
     archives deobfJar
     archives sourcesJar
+    archives apiJar
+    archives javadocJar
 }
