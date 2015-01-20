@@ -41,10 +41,17 @@ repositories {
         name 'MinecraftS3'
         url 'http://s3.amazonaws.com/Minecraft.Download/libraries'
     }
+    maven {
+        name = "OC repo"
+        url = "http://maven.cil.li/"
+    }
 }
 
 dependencies {
+    compile "li.cil.oc:OpenComputers:MC1.7.10-1.4.3.283-dev:api"
+    
     testCompile group: 'junit', name: 'junit', version: '4.12'
+    testCompile "org.mockito:mockito-core:1.10.19"
 }
 
 //================================================
@@ -155,11 +162,6 @@ task deobfJar(type: Jar) {
     }
 }
 
-task deobfSourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'deobf-src'
-    from sourceSets.main.allSource
-}
-
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'src'
     from sourceSets.main.java
@@ -168,5 +170,4 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 artifacts {
     archives deobfJar
     archives sourcesJar
-    archives deobfSourcesJar
 }

@@ -20,14 +20,14 @@ import com.google.common.collect.Sets;
 
 public class ApiProvider implements ApiAccess.ApiProvider {
 
-	private interface IApiInstanceProvider {
-		public IApiInterface getInterface();
+	public interface IApiInstanceProvider<T extends IApiInterface> {
+		public T getInterface();
 	}
 
-	private static class SingleInstanceProvider implements IApiInstanceProvider {
-		private final IApiInterface instance;
+	private static class SingleInstanceProvider<T extends IApiInterface> implements IApiInstanceProvider<T> {
+		private final T instance;
 
-		public SingleInstanceProvider(Class<? extends IApiInterface> cls) {
+		public SingleInstanceProvider(Class<? extends T> cls) {
 			try {
 				instance = cls.newInstance();
 			} catch (Throwable t) {
@@ -36,20 +36,20 @@ public class ApiProvider implements ApiAccess.ApiProvider {
 		}
 
 		@Override
-		public IApiInterface getInterface() {
+		public T getInterface() {
 			return instance;
 		}
 	}
 
-	private static class NewInstanceProvider implements IApiInstanceProvider {
-		private final Class<? extends IApiInterface> cls;
+	private static class NewInstanceProvider<T extends IApiInterface> implements IApiInstanceProvider<T> {
+		private final Class<? extends T> cls;
 
-		public NewInstanceProvider(Class<? extends IApiInterface> cls) {
+		public NewInstanceProvider(Class<? extends T> cls) {
 			this.cls = cls;
 		}
 
 		@Override
-		public IApiInterface getInterface() {
+		public T getInterface() {
 			try {
 				return cls.newInstance();
 			} catch (Throwable t) {
@@ -58,20 +58,20 @@ public class ApiProvider implements ApiAccess.ApiProvider {
 		}
 	}
 
-	private static class SingletonProvider implements IApiInstanceProvider {
-		private final IApiInterface obj;
+	private static class SingletonProvider<T extends IApiInterface> implements IApiInstanceProvider<T> {
+		private final T obj;
 
-		public SingletonProvider(IApiInterface obj) {
+		public SingletonProvider(T obj) {
 			this.obj = obj;
 		}
 
 		@Override
-		public IApiInterface getInterface() {
+		public T getInterface() {
 			return obj;
 		}
 	}
 
-	private final Map<Class<? extends IApiInterface>, IApiInstanceProvider> PROVIDERS = Maps.newHashMap();
+	private final Map<Class<? extends IApiInterface>, IApiInstanceProvider<?>> PROVIDERS = Maps.newHashMap();
 
 	@SuppressWarnings("unchecked")
 	private static void listAllImplementedApis(Collection<Class<? extends IApiInterface>> output, Class<?>... intfs) {
@@ -92,35 +92,40 @@ public class ApiProvider implements ApiAccess.ApiProvider {
 		}
 	}
 
-	private void registerInterfaces(Class<? extends IApiInterface> cls, IApiInstanceProvider provider, final boolean includeSuper) {
+	private <T extends IApiInterface> void registerInterfaces(Class<? extends T> cls, IApiInstanceProvider<T> provider, boolean includeSuper) {
 		Set<Class<? extends IApiInterface>> implemented = Sets.newHashSet();
 		listAllImplementedApis(implemented, cls.getInterfaces());
 		if (includeSuper) addAllInterfaces(implemented);
 
 		for (Class<? extends IApiInterface> impl : implemented) {
-			IApiInstanceProvider prev = PROVIDERS.put(impl, provider);
+			IApiInstanceProvider<?> prev = PROVIDERS.put(impl, provider);
 			Preconditions.checkState(prev == null, "Conflict on interface %s", impl);
 		}
 	}
 
-	private void registerClass(Class<? extends IApiInterface> cls) {
+	private <T extends IApiInterface> void registerClass(Class<? extends T> cls) {
 		Preconditions.checkArgument(!Modifier.isAbstract(cls.getModifiers()));
 
 		ApiImplementation meta = cls.getAnnotation(ApiImplementation.class);
 		Preconditions.checkNotNull(meta);
 
-		IApiInstanceProvider provider = meta.cacheable()? new SingleInstanceProvider(cls) : new NewInstanceProvider(cls);
+		IApiInstanceProvider<T> provider = meta.cacheable()? new SingleInstanceProvider<T>(cls) : new NewInstanceProvider<T>(cls);
 		registerInterfaces(cls, provider, meta.includeSuper());
 	}
 
-	private void registerInstance(IApiInterface obj) {
-		final Class<? extends IApiInterface> cls = obj.getClass();
+	private <T extends IApiInterface> void registerInstance(T obj) {
+		@SuppressWarnings("unchecked")
+		final Class<? extends T> cls = (Class<? extends T>)obj.getClass();
 
 		ApiSingleton meta = cls.getAnnotation(ApiSingleton.class);
 		Preconditions.checkNotNull(meta);
 
-		IApiInstanceProvider provider = new SingletonProvider(obj);
+		IApiInstanceProvider<T> provider = new SingletonProvider<T>(obj);
 		registerInterfaces(cls, provider, meta.includeSuper());
+	}
+
+	private <T extends IApiInterface> void registerDirect(Class<? extends T> cls, IApiInstanceProvider<T> provider) {
+		registerInterfaces(cls, provider, false);
 	}
 
 	private ApiProvider() {
@@ -129,14 +134,15 @@ public class ApiProvider implements ApiAccess.ApiProvider {
 		registerClass(EntityMetadataBuilder.class);
 		registerClass(ItemStackMetadataBuilder.class);
 
-		registerInstance(TypeConversionRegistry.INSTANCE);
+		registerDirect(TypeConversionRegistry.class, TypeConvertersProvider.INSTANCE);
+
 		registerInstance(TileEntityBlacklist.INSTANCE);
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends IApiInterface> T getApi(Class<T> cls) {
-		IApiInstanceProvider provider = PROVIDERS.get(cls);
+		IApiInstanceProvider<?> provider = PROVIDERS.get(cls);
 		Preconditions.checkNotNull(provider, "Can't get implementation for class %s", cls);
 		return (T)provider.getInterface();
 	}

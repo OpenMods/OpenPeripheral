@@ -2,7 +2,7 @@ package openperipheral.adapter.wrappers;
 
 import java.lang.reflect.Method;
 
-import openperipheral.adapter.DefaultArgNames;
+import openperipheral.adapter.DefaultEnvArgs;
 import openperipheral.adapter.IMethodCall;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.method.MethodDeclaration;
@@ -34,7 +34,7 @@ public class TechnicalAdapterWrapper extends AdapterWrapper {
 		return new MethodExecutorBase(decl, asyncChecker.isAsync(method)) {
 			@Override
 			public IMethodCall startCall(Object target) {
-				return method.startCall(adapter).setOptionalArg(DefaultArgNames.ARG_TARGET, target);
+				return method.startCall(adapter).setOptionalArg(DefaultEnvArgs.ARG_TARGET, target);
 			}
 		};
 	}

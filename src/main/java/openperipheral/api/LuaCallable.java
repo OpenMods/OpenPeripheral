@@ -2,8 +2,6 @@ package openperipheral.api;
 
 import java.lang.annotation.*;
 
-import li.cil.repack.com.naef.jnlua.LuaType;
-
 /**
  * Used to mark methods that should be visible in Lua.
  *
@@ -25,7 +23,7 @@ public @interface LuaCallable {
 	String description() default "";
 
 	/**
-	 * List of types expected to be returned from call. Empty list marks no results. Using {@link LuaType#VOID} in this list will cause error
+	 * List of types expected to be returned from call. Empty list marks no results. Using {@link LuaReturnType#VOID} in this list will cause error
 	 */
 	LuaReturnType[] returnTypes() default {};
 

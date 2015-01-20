@@ -8,7 +8,7 @@ import net.minecraft.world.World;
 import openmods.Log;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.TileEntityBlacklist;
-import openperipheral.interfaces.oc.Registries;
+import openperipheral.interfaces.oc.ModuleOpenComputers;
 
 import com.google.common.collect.Maps;
 
@@ -37,7 +37,7 @@ public class DriverOpenPeripheral implements li.cil.oc.api.driver.Block {
 
 	private static boolean shouldProvide(Class<?> cls) {
 		if (TileEntityBlacklist.INSTANCE.isBlacklisted(cls)) return false;
-		Map<String, IMethodExecutor> methods = Registries.PERIPHERAL_METHODS_FACTORY.getAdaptedClass(cls);
+		Map<String, IMethodExecutor> methods = ModuleOpenComputers.PERIPHERAL_METHODS_FACTORY.getAdaptedClass(cls);
 		return !methods.isEmpty();
 	}
 

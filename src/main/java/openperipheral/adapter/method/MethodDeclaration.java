@@ -9,10 +9,7 @@ import java.util.*;
 import openmods.Log;
 import openmods.reflection.TypeUtils;
 import openmods.utils.AnnotationMap;
-import openperipheral.TypeConversionRegistry;
-import openperipheral.adapter.AdapterLogicException;
-import openperipheral.adapter.IDescriptable;
-import openperipheral.adapter.IMethodCall;
+import openperipheral.adapter.*;
 import openperipheral.api.*;
 
 import org.apache.logging.log4j.Level;
@@ -196,51 +193,53 @@ public class MethodDeclaration implements IDescriptable {
 		}
 	}
 
-	private static Object[] convertMultiResult(IMultiReturn result) {
-		return convertVarResult(result.getObjects());
+	private static Object[] convertMultiResult(ITypeConvertersRegistry converter, IMultiReturn result) {
+		return convertVarResult(converter, result.getObjects());
 	}
 
-	private static Object[] convertCollectionResult(Collection<?> result) {
+	private static Object[] convertCollectionResult(ITypeConvertersRegistry converter, Collection<?> result) {
 		Object[] tmp = new Object[result.size()];
 		int i = 0;
 		for (Object o : result)
-			tmp[i++] = TypeConversionRegistry.INSTANCE.toLua(o);
+			tmp[i++] = converter.toLua(o);
 
 		return tmp;
 	}
 
-	private static Object[] convertArrayResult(Object array) {
+	private static Object[] convertArrayResult(ITypeConvertersRegistry converter, Object array) {
 		int length = Array.getLength(array);
 		Object[] result = new Object[length];
 
 		for (int i = 0; i < length; i++)
-			result[i] = TypeConversionRegistry.INSTANCE.toLua(Array.get(array, i));
+			result[i] = converter.toLua(Array.get(array, i));
 
 		return result;
 	}
 
-	private static Object[] convertVarResult(Object... result) {
+	private static Object[] convertVarResult(ITypeConvertersRegistry converter, Object... result) {
 		for (int i = 0; i < result.length; i++)
-			result[i] = TypeConversionRegistry.INSTANCE.toLua(result[i]);
+			result[i] = converter.toLua(result[i]);
 
 		return result;
 	}
 
-	private Object[] convertResult(Object result) {
-		if (result instanceof IMultiReturn) return convertMultiResult((IMultiReturn)result);
+	private Object[] convertResult(ITypeConvertersRegistry converter, Object result) {
+		if (result instanceof IMultiReturn) return convertMultiResult(converter, (IMultiReturn)result);
 
 		if (multipleReturn) {
-			if (result != null && result.getClass().isArray()) return convertArrayResult(result);
-			if (result instanceof Collection) return convertCollectionResult((Collection<?>)result);
+			if (result != null && result.getClass().isArray()) return convertArrayResult(converter, result);
+			if (result instanceof Collection) return convertCollectionResult(converter, (Collection<?>)result);
 		}
 
-		return convertVarResult(result);
+		return convertVarResult(converter, result);
 	}
 
 	private class CallWrap implements IMethodCall {
 		private final Object[] args = new Object[argCount];
 		private final boolean[] isSet = new boolean[argCount];
 		private final Object target;
+
+		private ITypeConvertersRegistry converter;
 
 		public CallWrap(Object target) {
 			this.target = target;
@@ -257,6 +256,8 @@ public class MethodDeclaration implements IDescriptable {
 
 		@Override
 		public IMethodCall setOptionalArg(String name, Object value) {
+			if (DefaultEnvArgs.ARG_CONVERTER.equals(name)) this.converter = (ITypeConvertersRegistry)value;
+
 			OptionalArg arg = optionalArgs.get(name);
 			if (arg != null) {
 				Preconditions.checkState(value == null || arg.cls.isInstance(value),
@@ -279,11 +280,12 @@ public class MethodDeclaration implements IDescriptable {
 		}
 
 		private CallWrap setCallArgs(Object[] luaValues) {
+			Preconditions.checkState(converter != null, "Converter not set!");
 			try {
 				Iterator<Object> it = Iterators.forArray(luaValues);
 				try {
 					for (Argument arg : luaArgs) {
-						Object value = arg.convert(it);
+						Object value = arg.convert(converter, it);
 						setArg(arg.javaArgIndex, value);
 					}
 
@@ -302,6 +304,7 @@ public class MethodDeclaration implements IDescriptable {
 		}
 
 		private Object[] call() throws Exception {
+			Preconditions.checkState(converter != null, "Converter not set!");
 			for (int i = 0; i < args.length; i++)
 				Preconditions.checkState(isSet[i], "Parameter %s value not set", i);
 
@@ -313,7 +316,7 @@ public class MethodDeclaration implements IDescriptable {
 				throw Throwables.propagate(wrapper != null? wrapper : e);
 			}
 
-			final Object[] converted = convertResult(result);
+			final Object[] converted = convertResult(converter, result);
 			if (validateReturn) validateResult(converted);
 			return converted;
 		}

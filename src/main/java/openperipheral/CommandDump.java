@@ -13,7 +13,7 @@ import openmods.OpenMods;
 import openperipheral.adapter.AdapterRegistry;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.wrappers.AdapterWrapper;
-import openperipheral.interfaces.cc.Registries;
+import openperipheral.interfaces.cc.ModuleComputerCraft;
 import openperipheral.util.DocBuilder;
 
 import com.google.common.collect.Lists;
@@ -68,10 +68,10 @@ public class CommandDump implements ICommand {
 
 			DocBuilder builder = new DocBuilder();
 
-			for (Map.Entry<Class<?>, Map<String, IMethodExecutor>> e : Registries.PERIPHERAL_METHODS_FACTORY.listCollectedClasses().entrySet())
+			for (Map.Entry<Class<?>, Map<String, IMethodExecutor>> e : ModuleComputerCraft.PERIPHERAL_METHODS_FACTORY.listCollectedClasses().entrySet())
 				builder.createDocForTe(e.getKey(), e.getValue());
 
-			for (Map.Entry<Class<?>, Map<String, IMethodExecutor>> e : Registries.OBJECT_METHODS_FACTORY.listCollectedClasses().entrySet())
+			for (Map.Entry<Class<?>, Map<String, IMethodExecutor>> e : ModuleComputerCraft.OBJECT_METHODS_FACTORY.listCollectedClasses().entrySet())
 				builder.createDocForObject(e.getKey(), e.getValue());
 
 			processExternalAdapters(builder, AdapterRegistry.PERIPHERAL_ADAPTERS, "peripheral");

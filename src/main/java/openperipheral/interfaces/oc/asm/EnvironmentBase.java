@@ -4,9 +4,10 @@ import li.cil.oc.api.driver.NamedBlock;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.prefab.ManagedEnvironment;
-import openperipheral.adapter.DefaultArgNames;
+import openperipheral.adapter.DefaultEnvArgs;
 import openperipheral.adapter.IMethodExecutor;
-import openperipheral.util.PeripheralUtils;
+import openperipheral.api.Architectures;
+import openperipheral.util.NameUtils;
 
 /**
  * Warning: don't change method names or arguments, used in {@link EnvironmentCodeGenerator}
@@ -21,12 +22,14 @@ public abstract class EnvironmentBase extends ManagedEnvironment implements Name
 	private final String type;
 
 	public EnvironmentBase(Object target) {
-		this.type = PeripheralUtils.getNameForTarget(target);
+		this.type = NameUtils.getNameForTarget(target);
 	}
 
 	protected static Object[] call(Object target, IMethodExecutor executor, Context context, Arguments arguments) throws Exception {
 		Object[] args = arguments.toArray();
-		return executor.startCall(target).setOptionalArg(DefaultArgNames.ARG_CONTEXT, context).call(args);
+		return DefaultEnvArgs.addCommonArgs(executor.startCall(target), Architectures.OPEN_COMPUTERS)
+				.setOptionalArg(DefaultEnvArgs.ARG_CONTEXT, context)
+				.call(args);
 	}
 
 	@Override

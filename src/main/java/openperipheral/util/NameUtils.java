@@ -15,7 +15,7 @@ import com.google.common.base.Strings;
 
 import cpw.mods.fml.relauncher.ReflectionHelper;
 
-public class PeripheralUtils {
+public class NameUtils {
 
 	private static Map<String, Class<? extends TileEntity>> teNameToClass;
 	private static Map<Class<? extends TileEntity>, String> teClassToName;

@@ -2,20 +2,19 @@ package openperipheral;
 
 import java.io.File;
 
-import li.cil.oc.api.Driver;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
+import openmods.Mods;
 import openmods.config.properties.ConfigProcessing;
 import openperipheral.adapter.TileEntityBlacklist;
 import openperipheral.api.IOpenPeripheral;
-import openperipheral.interfaces.cc.Registries;
-import openperipheral.interfaces.cc.providers.PeripheralProvider;
-import openperipheral.interfaces.oc.providers.DriverOpenPeripheral;
+import openperipheral.interfaces.cc.ModuleComputerCraft;
+import openperipheral.interfaces.oc.ModuleOpenComputers;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.*;
-import dan200.computercraft.api.ComputerCraftAPI;
 
 @Mod(modid = ModInfo.ID, name = ModInfo.NAME, version = ModInfo.VERSION, dependencies = ModInfo.DEPENDENCIES, acceptableRemoteVersions = "*")
 public class OpenPeripheralCore {
@@ -35,23 +34,23 @@ public class OpenPeripheralCore {
 
 		MinecraftForge.EVENT_BUS.register(TileEntityBlacklist.INSTANCE);
 
-		FMLInterModComms.sendMessage("OpenComputers", "blacklistPeripheral", IOpenPeripheral.class.getName());
+		FMLInterModComms.sendMessage(Mods.OPENCOMPUTERS, "blacklistPeripheral", IOpenPeripheral.class.getName());
+
+		if (Loader.isModLoaded(Mods.OPENCOMPUTERS)) ModuleOpenComputers.init();
+		if (Loader.isModLoaded(Mods.COMPUTERCRAFT)) ModuleComputerCraft.init();
 	}
 
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent evt) {
 		ClientCommandHandler.instance.registerCommand(new CommandDump());
 
-		Driver.add(new DriverOpenPeripheral());
+		if (Loader.isModLoaded(Mods.OPENCOMPUTERS)) ModuleOpenComputers.registerProvider();
 	}
 
 	// this method should be called as late as possible, to make sure we are last on provider list
 	@Mod.EventHandler
 	public void loadComplete(FMLLoadCompleteEvent evt) {
-		Registries.OBJECT_VALIDATOR.validate();
-		Registries.PERIPHERAL_VALIDATOR.validate();
-
-		ComputerCraftAPI.registerPeripheralProvider(new PeripheralProvider());
+		if (Loader.isModLoaded(Mods.COMPUTERCRAFT)) ModuleComputerCraft.registerProvider();
 	}
 
 	@EventHandler

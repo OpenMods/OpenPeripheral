@@ -12,7 +12,7 @@ import openmods.reflection.ReflectionHelper;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.TileEntityBlacklist;
 import openperipheral.api.*;
-import openperipheral.interfaces.cc.Registries;
+import openperipheral.interfaces.cc.ModuleComputerCraft;
 import openperipheral.interfaces.cc.wrappers.AdapterPeripheral;
 import openperipheral.interfaces.cc.wrappers.ProxyAdapterPeripheral;
 
@@ -111,7 +111,7 @@ public class PeripheralProvider implements IPeripheralProvider {
 
 	public static IPeripheral createAdaptedPeripheral(Object target) {
 		Class<?> targetClass = target.getClass();
-		Map<String, IMethodExecutor> methods = Registries.PERIPHERAL_METHODS_FACTORY.getAdaptedClass(targetClass);
+		Map<String, IMethodExecutor> methods = ModuleComputerCraft.PERIPHERAL_METHODS_FACTORY.getAdaptedClass(targetClass);
 		if (methods.isEmpty()) return null;
 
 		ExposeInterface proxyAnn = targetClass.getAnnotation(ExposeInterface.class);

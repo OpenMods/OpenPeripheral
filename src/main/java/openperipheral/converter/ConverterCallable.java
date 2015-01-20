@@ -5,11 +5,10 @@ import java.util.Map;
 import openperipheral.api.ITypeConverter;
 import openperipheral.api.ITypeConvertersRegistry;
 import openperipheral.api.LuaObject;
-import openperipheral.interfaces.cc.wrappers.LuaObjectWrapper;
 
 import com.google.common.collect.Maps;
 
-public class ConverterCallable implements ITypeConverter {
+public abstract class ConverterCallable implements ITypeConverter {
 
 	private final Map<Class<?>, Boolean> cache = Maps.newHashMap();
 
@@ -29,9 +28,11 @@ public class ConverterCallable implements ITypeConverter {
 		return null;
 	}
 
+	protected abstract Object wrap(Object o);
+
 	@Override
 	public Object toLua(ITypeConvertersRegistry registry, Object obj) {
-		if (isCallable(obj.getClass())) return LuaObjectWrapper.wrap(obj);
+		if (isCallable(obj.getClass())) return wrap(obj);
 
 		return null;
 	}

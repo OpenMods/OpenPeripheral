@@ -5,7 +5,6 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Map;
 
-import openperipheral.TypeConversionRegistry;
 import openperipheral.adapter.method.LuaTypeQualifier;
 import openperipheral.api.*;
 
@@ -60,6 +59,8 @@ public class PropertyListBuilder {
 		@Override
 		public IMethodCall startCall(final Object target) {
 			return new IMethodCall() {
+				private ITypeConvertersRegistry converter;
+
 				@Override
 				public IMethodCall setPositionalArg(int index, Object value) {
 					return this; // NO-OP
@@ -67,12 +68,14 @@ public class PropertyListBuilder {
 
 				@Override
 				public IMethodCall setOptionalArg(String name, Object value) {
+					if (DefaultEnvArgs.ARG_CONVERTER.equals(name)) this.converter = (ITypeConvertersRegistry)value;
+
 					return this; // NO-OP
 				}
 
 				@Override
 				public Object[] call(Object[] args) {
-					return context.call(target, args);
+					return context.call(converter, target, args);
 				}
 			};
 		}
@@ -101,7 +104,7 @@ public class PropertyListBuilder {
 			this.source = source;
 		}
 
-		public abstract Object[] call(Object target, Object... args);
+		public abstract Object[] call(ITypeConvertersRegistry converter, Object target, Object... args);
 
 		protected abstract IPropertyCallback getCallback(Object target);
 
@@ -134,10 +137,10 @@ public class PropertyListBuilder {
 		}
 
 		@Override
-		public Object[] call(Object target, Object... args) {
+		public Object[] call(ITypeConvertersRegistry converter, Object target, Object... args) {
 			Preconditions.checkArgument(args.length == 0, "Getter has no arguments");
 			Object result = getCallback(target).getField(field);
-			return ArrayUtils.toArray(TypeConversionRegistry.INSTANCE.toLua(result));
+			return ArrayUtils.toArray(converter.toLua(result));
 		}
 
 		@Override
@@ -161,10 +164,10 @@ public class PropertyListBuilder {
 		}
 
 		@Override
-		public Object[] call(Object target, Object... args) {
+		public Object[] call(ITypeConvertersRegistry converter, Object target, Object... args) {
 			Preconditions.checkArgument(args.length == 1, "Setter must have exactly one argument");
 			Object arg = args[0];
-			Object converted = TypeConversionRegistry.INSTANCE.fromLua(arg, field.getType());
+			Object converted = converter.fromLua(arg, field.getType());
 			Preconditions.checkNotNull(converted, "Invalid value type");
 			getCallback(target).setField(field, converted);
 

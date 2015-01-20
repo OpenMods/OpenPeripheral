@@ -3,6 +3,7 @@ package openperipheral.adapter.method;
 import java.util.Iterator;
 import java.util.Map;
 
+import openperipheral.api.ITypeConvertersRegistry;
 import openperipheral.api.LuaArgType;
 
 import com.google.common.base.Preconditions;
@@ -20,10 +21,10 @@ public class NullableArgument extends Argument {
 	}
 
 	@Override
-	public Object convert(Iterator<Object> args) {
+	public Object convert(ITypeConvertersRegistry converter, Iterator<Object> args) {
 		Preconditions.checkArgument(args.hasNext(), "Not enough arguments, first missing: %s", name);
 		Object arg = args.next();
-		return convertSingleArg(arg);
+		return convertSingleArg(converter, arg);
 	}
 
 	@Override

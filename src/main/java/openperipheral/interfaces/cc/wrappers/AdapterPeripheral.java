@@ -12,11 +12,11 @@ import openperipheral.adapter.WrappedEntityBase;
 import openperipheral.api.IAttachable;
 import openperipheral.api.IOpenPeripheral;
 import openperipheral.api.IWorldProvider;
+import openperipheral.interfaces.cc.ResourceMount;
 import openperipheral.interfaces.cc.executors.*;
 import openperipheral.interfaces.cc.executors.SynchronousExecutor.TileEntityExecutor;
 import openperipheral.interfaces.cc.executors.SynchronousExecutor.WorldProviderExecutor;
-import openperipheral.util.PeripheralUtils;
-import openperipheral.util.ResourceMount;
+import openperipheral.util.NameUtils;
 
 import org.apache.logging.log4j.Level;
 
@@ -40,7 +40,7 @@ public class AdapterPeripheral extends WrappedEntityBase implements IPeripheral,
 
 	public AdapterPeripheral(Map<String, IMethodExecutor> methods, Object target) {
 		super(methods);
-		this.type = PeripheralUtils.getNameForTarget(target);
+		this.type = NameUtils.getNameForTarget(target);
 		this.target = target;
 
 		ImmutableList.Builder<PeripheralExecutor<?>> executors = ImmutableList.builder();
@@ -87,7 +87,7 @@ public class AdapterPeripheral extends WrappedEntityBase implements IPeripheral,
 			String methodName = getMethodName(index);
 			Log.log(Level.DEBUG, e.getCause(), "Adapter error during method %s(%d) execution on peripheral %s, args: %s",
 					methodName, index, type, Arrays.toString(arguments));
-			throw e.rethrow();
+			throw e;
 		} catch (Throwable e) {
 			String methodName = getMethodName(index);
 			Log.log(Level.INFO, e, "Unwrapped error during method %s(%d) execution on peripheral %s, args: %s",

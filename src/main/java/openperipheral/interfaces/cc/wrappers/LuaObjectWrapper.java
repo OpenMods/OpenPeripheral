@@ -5,7 +5,8 @@ import java.util.Map;
 
 import openmods.Log;
 import openperipheral.adapter.*;
-import openperipheral.interfaces.cc.Registries;
+import openperipheral.api.Architectures;
+import openperipheral.interfaces.cc.ModuleComputerCraft;
 
 import org.apache.logging.log4j.Level;
 
@@ -36,7 +37,9 @@ public class LuaObjectWrapper {
 			Preconditions.checkNotNull(executor, "Invalid method index: %d", method);
 
 			try {
-				return executor.startCall(target).setOptionalArg(DefaultArgNames.ARG_CONTEXT, context).call(arguments);
+				return DefaultEnvArgs.addCommonArgs(executor.startCall(target), Architectures.COMPUTER_CRAFT)
+						.setOptionalArg(DefaultEnvArgs.ARG_CONTEXT, context)
+						.call(arguments);
 			} catch (LuaException e) {
 				throw e;
 			} catch (InterruptedException e) {
@@ -46,14 +49,14 @@ public class LuaObjectWrapper {
 				Log.log(Level.DEBUG, t.getCause(), "Internal error during method %s(%d) execution on object %s, args: %s",
 						methodName, method, target.getClass(), Arrays.toString(arguments));
 
-				throw new AdapterLogicException(t).rethrow();
+				throw new AdapterLogicException(t);
 			}
 		}
 	}
 
 	public static ILuaObject wrap(Object target) {
 		Preconditions.checkNotNull(target, "Can't wrap null");
-		Map<String, IMethodExecutor> methods = Registries.OBJECT_METHODS_FACTORY.getAdaptedClass(target.getClass());
+		Map<String, IMethodExecutor> methods = ModuleComputerCraft.OBJECT_METHODS_FACTORY.getAdaptedClass(target.getClass());
 		return methods.isEmpty()? null : new WrappedLuaObject(methods, target);
 	}
 }

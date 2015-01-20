@@ -1,4 +1,4 @@
-package openperipheral.util;
+package openperipheral.interfaces.cc;
 
 import java.io.IOException;
 import java.io.InputStream;

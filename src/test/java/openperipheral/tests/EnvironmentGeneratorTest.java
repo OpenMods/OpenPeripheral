@@ -1,8 +1,6 @@
 package openperipheral.tests;
 
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -14,7 +12,10 @@ import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.ManagedEnvironment;
+import openperipheral.TypeConvertersProvider;
 import openperipheral.adapter.*;
+import openperipheral.api.Architectures;
+import openperipheral.api.ITypeConvertersRegistry;
 import openperipheral.interfaces.oc.asm.EnvironmentFactory;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -76,6 +77,7 @@ public class EnvironmentGeneratorTest {
 		Arguments args = mock(Arguments.class);
 		final Object[] result = new Object[] { 1, 2, 3 };
 		when(args.toArray()).thenReturn(result);
+		when(call.setOptionalArg(eq(DefaultEnvArgs.ARG_CONVERTER), anyObject())).thenReturn(call);
 		when(call.setOptionalArg(anyString(), anyObject())).thenReturn(call);
 		Context context = mock(Context.class);
 
@@ -84,12 +86,15 @@ public class EnvironmentGeneratorTest {
 		verify(executor).startCall(target);
 
 		verify(args).toArray();
-		verify(call).setOptionalArg(DefaultArgNames.ARG_CONTEXT, context);
+		verify(call).setOptionalArg(DefaultEnvArgs.ARG_CONTEXT, context);
 		verify(call).call(result);
 	}
 
 	@Test
 	public void test() throws Exception {
+		ITypeConvertersRegistry converter = mock(ITypeConvertersRegistry.class); // Dependency injection? Office hours only!
+		TypeConvertersProvider.INSTANCE.registerConverter(Architectures.OPEN_COMPUTERS, converter, true);
+
 		Map<String, Pair<IMethodExecutor, IMethodCall>> mocks = Maps.newHashMap();
 
 		// 7 methods, to generate ICONST_0...ICONST_5 and then LDC 6

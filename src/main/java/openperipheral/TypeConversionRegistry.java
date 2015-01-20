@@ -4,7 +4,6 @@ import java.util.Deque;
 import java.util.List;
 import java.util.Set;
 
-import li.cil.oc.api.machine.Value;
 import openmods.Log;
 import openperipheral.api.ITypeConverter;
 import openperipheral.api.ITypeConvertersRegistry;
@@ -14,12 +13,8 @@ import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-import dan200.computercraft.api.lua.ILuaObject;
-
 @ApiSingleton
 public class TypeConversionRegistry implements ITypeConvertersRegistry {
-
-	public static final TypeConversionRegistry INSTANCE = new TypeConversionRegistry();
 
 	private final Deque<ITypeConverter> converters = Lists.newLinkedList();
 
@@ -42,17 +37,17 @@ public class TypeConversionRegistry implements ITypeConvertersRegistry {
 		return false;
 	}
 
-	private TypeConversionRegistry() {
-		registerIgnored(ILuaObject.class, true);
-		registerIgnored(Value.class, true);
+	protected void addCustomConverters(Deque<ITypeConverter> converters) {}
 
+	protected TypeConversionRegistry() {
 		converters.add(new ConverterGameProfile());
 		converters.add(new ConverterFluidTankInfo());
 		converters.add(new ConverterItemStack());
 		converters.add(new ConverterFluidStack());
 
+		addCustomConverters(converters);
+
 		// DO NOT REORDER ANYTHING BELOW (unless you have good reason)
-		converters.add(new ConverterCallable());
 		converters.add(new ConverterArray());
 		converters.add(new ConverterList());
 		converters.add(new ConverterMap());

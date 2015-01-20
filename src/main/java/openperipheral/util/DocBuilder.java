@@ -69,7 +69,7 @@ public class DocBuilder {
 		Element result = doc.createElement("peripheral");
 		fillDocForClass(result, cls, methods);
 
-		final String teName = Objects.firstNonNull(PeripheralUtils.getClassToNameMap().get(cls), "null");
+		final String teName = Objects.firstNonNull(NameUtils.getClassToNameMap().get(cls), "null");
 		result.appendChild(createProperty("name", teName));
 
 		root.appendChild(result);

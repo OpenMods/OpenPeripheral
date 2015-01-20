@@ -8,7 +8,7 @@ import li.cil.oc.api.network.ManagedEnvironment;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.WrappedEntityBase;
 import openperipheral.api.ExposeInterface;
-import openperipheral.interfaces.oc.Registries;
+import openperipheral.interfaces.oc.ModuleOpenComputers;
 import openperipheral.interfaces.oc.asm.EnvironmentFactory;
 
 import com.google.common.base.Preconditions;
@@ -28,7 +28,7 @@ public class EnvironmentProvider {
 		Constructor<? extends ManagedEnvironment> envCtor = generatedClasses.get(targetCls);
 
 		if (envCtor == null) {
-			Map<String, IMethodExecutor> methods = Registries.PERIPHERAL_METHODS_FACTORY.getAdaptedClass(targetCls);
+			Map<String, IMethodExecutor> methods = ModuleOpenComputers.PERIPHERAL_METHODS_FACTORY.getAdaptedClass(targetCls);
 
 			ExposeInterface intfAnnotation = targetCls.getAnnotation(ExposeInterface.class);
 
