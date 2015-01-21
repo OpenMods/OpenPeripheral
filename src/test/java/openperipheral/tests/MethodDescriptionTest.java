@@ -37,13 +37,13 @@ public class MethodDescriptionTest {
 	}
 
 	private static void checkNoArgs(MethodDeclaration decl) {
-		decl.validatePositionalNames();
-		decl.validateOptionalNames(NO_OPTIONALS);
+		decl.validatePositionalArgs();
+		decl.validateOptionalArgs(NO_OPTIONALS);
 	}
 
 	private static void checkTargetOnly(MethodDeclaration decl) {
-		decl.validatePositionalNames(B.class);
-		decl.validateOptionalNames(NO_OPTIONALS);
+		decl.validatePositionalArgs(B.class);
+		decl.validateOptionalArgs(NO_OPTIONALS);
 	}
 
 	private static MethodDeclaration createMethodDecl(Class<?> cls) {
@@ -70,8 +70,8 @@ public class MethodDescriptionTest {
 	@Test
 	public void testBaseTargetOnly() {
 		MethodDeclaration decl = createMethodDecl(BaseTargetOnly.class);
-		decl.validatePositionalNames(B.class);
-		decl.validateOptionalNames(singleArg("env1", B.class));
+		decl.validatePositionalArgs(B.class);
+		decl.validateOptionalArgs(singleArg("env1", B.class));
 	}
 
 	public static class TargetOnly {
@@ -112,34 +112,34 @@ public class MethodDescriptionTest {
 	@Test
 	public void testSingleEnv() {
 		MethodDeclaration decl = createMethodDecl(SingleEnv.class);
-		decl.validatePositionalNames(B.class);
-		decl.validateOptionalNames(singleArg("env1", D.class));
+		decl.validatePositionalArgs(B.class);
+		decl.validateOptionalArgs(singleArg("env1", D.class));
 	}
 
 	@Test(expected = Exception.class)
 	public void testMissingEnvName() {
 		MethodDeclaration decl = createMethodDecl(SingleEnv.class);
-		decl.validatePositionalNames(B.class);
-		decl.validateOptionalNames(singleArg("env2", D.class));
+		decl.validatePositionalArgs(B.class);
+		decl.validateOptionalArgs(singleArg("env2", D.class));
 	}
 
 	@Test(expected = Exception.class)
 	public void testMissingEnvType() {
 		MethodDeclaration decl = createMethodDecl(SingleEnv.class);
-		decl.validatePositionalNames(B.class);
-		decl.validateOptionalNames(singleArg("env1", B.class));
+		decl.validatePositionalArgs(B.class);
+		decl.validateOptionalArgs(singleArg("env1", B.class));
 	}
 
 	@Test(expected = Exception.class)
 	public void testMissingPositioned() {
 		MethodDeclaration decl = createMethodDecl(SingleEnv.class);
-		decl.validatePositionalNames(B.class, B.class);
+		decl.validatePositionalArgs(B.class, B.class);
 	}
 
 	@Test(expected = Exception.class)
 	public void testInvalidTypePositioned() {
 		MethodDeclaration decl = createMethodDecl(SingleEnv.class);
-		decl.validatePositionalNames(D.class);
+		decl.validatePositionalArgs(D.class);
 	}
 
 	public static class Empty {
@@ -165,8 +165,8 @@ public class MethodDescriptionTest {
 	@Test
 	public void testTwoEnvOnly() {
 		MethodDeclaration decl = createMethodDecl(TwoEnvOnly.class);
-		decl.validatePositionalNames();
-		decl.validateOptionalNames(twoArgs("env1", D.class, "target", Object.class));
+		decl.validatePositionalArgs();
+		decl.validateOptionalArgs(twoArgs("env1", D.class, "target", Object.class));
 	}
 
 	public static class SingleEnvOnly {
@@ -179,8 +179,8 @@ public class MethodDescriptionTest {
 	@Test
 	public void testSingleEnvOnly() {
 		MethodDeclaration decl = createMethodDecl(SingleEnvOnly.class);
-		decl.validatePositionalNames();
-		decl.validateOptionalNames(singleArg("env1", D.class));
+		decl.validatePositionalArgs();
+		decl.validateOptionalArgs(singleArg("env1", D.class));
 	}
 
 	public static class SingleLuaOnly {
@@ -245,8 +245,8 @@ public class MethodDescriptionTest {
 	@Test
 	public void testEnvLua() {
 		MethodDeclaration decl = createMethodDecl(EnvLua.class);
-		decl.validatePositionalNames(B.class);
-		decl.validateOptionalNames(singleArg("env1", D.class));
+		decl.validatePositionalArgs(B.class);
+		decl.validateOptionalArgs(singleArg("env1", D.class));
 	}
 
 	public static class FullOptional {
@@ -298,8 +298,8 @@ public class MethodDescriptionTest {
 	@Test
 	public void testEverything() {
 		MethodDeclaration decl = createMethodDecl(Everything.class);
-		decl.validatePositionalNames(B.class);
-		decl.validateOptionalNames(singleArg("env1", D.class));
+		decl.validatePositionalArgs(B.class);
+		decl.validateOptionalArgs(singleArg("env1", D.class));
 	}
 
 	public static class MultiDirect {

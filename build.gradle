@@ -32,7 +32,7 @@ apply plugin: 'java'
 
 repositories {
     mavenCentral()
-    jcenter() 
+    jcenter()
     maven {
         name 'Forge'
         url 'http://files.minecraftforge.net/maven'
@@ -49,7 +49,7 @@ repositories {
 
 dependencies {
     compile "li.cil.oc:OpenComputers:MC1.7.10-1.4.5.28:api"
-    
+
     testCompile group: 'junit', name: 'junit', version: '4.12'
     testCompile "org.mockito:mockito-core:1.10.19"
 }
@@ -119,7 +119,7 @@ ext.gitManifest = manifest {
 minecraft {
     version = mc_ver + "-" + forge_ver
     runDir = 'eclipse/assets'
-    
+
     replaceIn "openperipheral/ModInfo.java"
     replace '$VERSION$', mod_version
     replace '$LIB-VERSION$', project(':OpenModsLib').mod_version

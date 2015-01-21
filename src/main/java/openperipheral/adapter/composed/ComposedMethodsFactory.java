@@ -1,11 +1,13 @@
-package openperipheral.adapter;
+package openperipheral.adapter.composed;
 
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
-import openperipheral.adapter.composed.ClassMethodsComposer;
+import openperipheral.adapter.AdapterRegistry;
+import openperipheral.adapter.IMethodExecutor;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
@@ -27,10 +29,13 @@ public class ComposedMethodsFactory {
 
 	private final Set<Class<?>> invalidClasses = Sets.newHashSet();
 
-	public final AdapterRegistry adapters;
+	private final AdapterRegistry adapters;
 
-	public ComposedMethodsFactory(AdapterRegistry adapters) {
+	private final ClassMethodsComposer composer;
+
+	public ComposedMethodsFactory(AdapterRegistry adapters, Predicate<IMethodExecutor> selector) {
 		this.adapters = adapters;
+		this.composer = new ClassMethodsComposer(selector);
 	}
 
 	public Map<Class<?>, Map<String, IMethodExecutor>> listCollectedClasses() {
@@ -43,7 +48,7 @@ public class ComposedMethodsFactory {
 		Map<String, IMethodExecutor> value = classes.get(targetCls);
 		if (value == null) {
 			try {
-				value = new ClassMethodsComposer().createMethodsList(targetCls, adapters);
+				value = composer.createMethodsList(targetCls, adapters);
 			} catch (Throwable t) {
 				invalidClasses.add(targetCls);
 				throw new InvalidClassException(t);

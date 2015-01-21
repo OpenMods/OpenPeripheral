@@ -330,7 +330,7 @@ public class MethodDeclaration implements IDescriptable {
 		return new CallWrap(target);
 	}
 
-	public void validatePositionalNames(Class<?>... providedArgs) {
+	public void validatePositionalArgs(Class<?>... providedArgs) {
 		Preconditions.checkState(providedArgs.length == positionalArgs.size());
 		for (int i = 0; i < providedArgs.length; i++) {
 			final Class<?> needed = positionalArgs.get(i);
@@ -340,7 +340,7 @@ public class MethodDeclaration implements IDescriptable {
 		}
 	}
 
-	public void validateOptionalNames(Map<String, Class<?>> providedArgs) {
+	public void validateOptionalArgs(Map<String, Class<?>> providedArgs) {
 		for (Map.Entry<String, OptionalArg> e : optionalArgs.entrySet()) {
 			final OptionalArg needed = e.getValue();
 			final String name = e.getKey();
@@ -354,6 +354,15 @@ public class MethodDeclaration implements IDescriptable {
 					name, needed.index, neededCls, provided
 					);
 		}
+	}
+
+	public Map<String, Class<?>> getOptionalArgs() {
+		Map<String, Class<?>> result = Maps.newHashMap();
+
+		for (Map.Entry<String, OptionalArg> e : optionalArgs.entrySet())
+			result.put(e.getKey(), e.getValue().cls);
+
+		return result;
 	}
 
 	@Override

@@ -4,7 +4,10 @@ import li.cil.oc.api.Driver;
 import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.machine.Value;
 import openperipheral.TypeConvertersProvider;
-import openperipheral.adapter.*;
+import openperipheral.adapter.AdapterRegistry;
+import openperipheral.adapter.DefaultEnvArgs;
+import openperipheral.adapter.composed.ComposedMethodsFactory;
+import openperipheral.adapter.composed.MethodSelector;
 import openperipheral.adapter.method.LuaTypeQualifier;
 import openperipheral.api.Architectures;
 import openperipheral.api.ITypeConvertersRegistry;
@@ -13,21 +16,18 @@ import openperipheral.interfaces.oc.providers.DriverOpenPeripheral;
 
 public class ModuleOpenComputers {
 
-	public static final MethodsValidator PERIPHERAL_VALIDATOR = new MethodsValidator(AdapterRegistry.PERIPHERAL_ADAPTERS);
+	public static final ComposedMethodsFactory OBJECT_METHODS_FACTORY;
+
+	public static final ComposedMethodsFactory PERIPHERAL_METHODS_FACTORY;
 
 	static {
-		PERIPHERAL_VALIDATOR.addArg(DefaultEnvArgs.ARG_CONTEXT, Context.class);
+		final MethodSelector selector = new MethodSelector(Architectures.OPEN_COMPUTERS)
+				.addDefaultEnv()
+				.addProvidedEnv(DefaultEnvArgs.ARG_CONTEXT, Context.class);
+
+		PERIPHERAL_METHODS_FACTORY = new ComposedMethodsFactory(AdapterRegistry.PERIPHERAL_ADAPTERS, selector);
+		OBJECT_METHODS_FACTORY = new ComposedMethodsFactory(AdapterRegistry.OBJECT_ADAPTERS, selector);
 	}
-
-	public static final ComposedMethodsFactory PERIPHERAL_METHODS_FACTORY = new ComposedMethodsFactory(AdapterRegistry.PERIPHERAL_ADAPTERS);
-
-	public static final MethodsValidator OBJECT_VALIDATOR = new MethodsValidator(AdapterRegistry.OBJECT_ADAPTERS);
-
-	static {
-		OBJECT_VALIDATOR.addArg(DefaultEnvArgs.ARG_CONTEXT, Context.class);
-	}
-
-	public static final ComposedMethodsFactory OBJECT_METHODS_FACTORY = new ComposedMethodsFactory(AdapterRegistry.OBJECT_ADAPTERS);
 
 	public static void init() {
 		ITypeConvertersRegistry converter = new TypeConversionRegistryOC();

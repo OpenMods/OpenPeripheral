@@ -31,10 +31,10 @@ public class TechnicalAdapterWrapper extends AdapterWrapper {
 
 	@Override
 	public IMethodExecutor createExecutor(Method method, MethodDeclaration decl) {
-		return new MethodExecutorBase(decl, asyncChecker.isAsync(method)) {
+		return new MethodExecutorBase(decl, method, metaInfo) {
 			@Override
 			public IMethodCall startCall(Object target) {
-				return method.startCall(adapter).setOptionalArg(DefaultEnvArgs.ARG_TARGET, target);
+				return super.startCall(adapter).setOptionalArg(DefaultEnvArgs.ARG_TARGET, target);
 			}
 		};
 	}

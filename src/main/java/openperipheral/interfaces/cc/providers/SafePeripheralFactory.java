@@ -4,7 +4,7 @@ import java.util.Random;
 
 import net.minecraft.tileentity.TileEntity;
 import openmods.Log;
-import openperipheral.adapter.ComposedMethodsFactory.InvalidClassException;
+import openperipheral.adapter.composed.ComposedMethodsFactory.InvalidClassException;
 
 import org.apache.commons.lang3.ArrayUtils;
 

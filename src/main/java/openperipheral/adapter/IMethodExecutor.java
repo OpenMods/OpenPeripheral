@@ -7,7 +7,9 @@ public interface IMethodExecutor {
 
 	public IMethodCall startCall(Object target);
 
-	public void validateArgs(Map<String, Class<?>> args);
-
 	public boolean isAsynchronous();
+
+	public boolean canInclude(String architecture);
+
+	public Map<String, Class<?>> requiredEnv();
 }

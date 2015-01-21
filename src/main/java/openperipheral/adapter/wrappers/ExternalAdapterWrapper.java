@@ -49,15 +49,15 @@ public class ExternalAdapterWrapper extends AdapterWrapper {
 
 	@Override
 	protected void verifyArguments(MethodDeclaration decl) {
-		decl.validatePositionalNames(targetClass);
+		decl.validatePositionalArgs(targetClass);
 	}
 
 	@Override
 	public IMethodExecutor createExecutor(Method method, MethodDeclaration decl) {
-		return new MethodExecutorBase(decl, asyncChecker.isAsync(method)) {
+		return new MethodExecutorBase(decl, method, metaInfo) {
 			@Override
 			public IMethodCall startCall(Object target) {
-				return method.startCall(adapter).setPositionalArg(0, target);
+				return super.startCall(adapter).setPositionalArg(0, target);
 			}
 		};
 	}

@@ -11,6 +11,7 @@ import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.wrappers.AdapterWrapper;
 import openperipheral.adapter.wrappers.TechnicalAdapterWrapper;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -22,8 +23,11 @@ public class ClassMethodsListBuilder {
 
 	private final Set<String> sources = Sets.newHashSet();
 
-	public ClassMethodsListBuilder(AdapterRegistry manager) {
+	private final Predicate<IMethodExecutor> selector;
+
+	public ClassMethodsListBuilder(AdapterRegistry manager, Predicate<IMethodExecutor> selector) {
 		this.manager = manager;
+		this.selector = selector;
 	}
 
 	public void addExternalAdapters(Class<?> targetCls, Class<?> superClass) {
@@ -40,12 +44,15 @@ public class ClassMethodsListBuilder {
 	public void addMethods(AdapterWrapper wrapper) {
 		for (IMethodExecutor executor : wrapper.getMethods()) {
 			final IDescriptable descriptable = executor.description();
-			sources.add(descriptable.source());
-			for (String name : descriptable.getNames()) {
-				final IMethodExecutor previous = methods.put(name, executor);
-				if (previous != null) Log.trace("Previous defininition of Lua method '%s' overwritten by %s adapter", name, wrapper.describe());
-			}
+			if (selector.apply(executor)) {
+				sources.add(descriptable.source());
+				for (String name : descriptable.getNames()) {
+					final IMethodExecutor previous = methods.put(name, executor);
+					if (previous != null) Log.trace("Previous defininition of Lua method '%s' overwritten by %s adapter", name, wrapper.describe());
+				}
+			} else Log.trace("Method %s from %s is was excluded by %s", descriptable.getNames(), wrapper.source(), selector);
 		}
+
 	}
 
 	public Map<String, IMethodExecutor> getMethodList() {

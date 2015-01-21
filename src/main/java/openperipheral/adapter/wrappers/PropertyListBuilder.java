@@ -1,10 +1,11 @@
-package openperipheral.adapter;
+package openperipheral.adapter.wrappers;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Map;
 
+import openperipheral.adapter.*;
 import openperipheral.adapter.method.LuaTypeQualifier;
 import openperipheral.api.*;
 
@@ -17,6 +18,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
 public class PropertyListBuilder {
@@ -81,11 +83,18 @@ public class PropertyListBuilder {
 		}
 
 		@Override
-		public void validateArgs(Map<String, Class<?>> args) {}
-
-		@Override
 		public boolean isAsynchronous() {
 			return true;
+		}
+
+		@Override
+		public boolean canInclude(String architecture) {
+			return true;
+		}
+
+		@Override
+		public Map<String, Class<?>> requiredEnv() {
+			return ImmutableMap.of();
 		}
 	}
 

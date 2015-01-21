@@ -94,16 +94,4 @@ public class AdapterRegistry {
 		Log.trace("Inline adapter %s has no @AdapterSourceName annotation", cls);
 		return cls.getName().toLowerCase();
 	}
-
-	public void validateInlineAdapters(Map<String, Class<?>> args) {
-		for (AdapterWrapper wrapper : internalAdapters.values())
-			for (IMethodExecutor method : wrapper.getMethods())
-				method.validateArgs(args);
-	}
-
-	public void validateExternalAdapters(Map<String, Class<?>> args) {
-		for (AdapterWrapper wrapper : externalAdapters.values())
-			for (IMethodExecutor method : wrapper.getMethods())
-				method.validateArgs(args);
-	}
 }

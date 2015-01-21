@@ -4,7 +4,6 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import openmods.Log;
-import openperipheral.adapter.AsyncChecker;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.method.MethodDeclaration;
 import openperipheral.api.LuaCallable;
@@ -26,13 +25,13 @@ public abstract class AdapterWrapper {
 	protected final Class<?> targetClass;
 	protected final Class<?> adapterClass;
 	protected final String source;
-	protected final AsyncChecker asyncChecker;
+	protected final MethodMetaExtractor metaInfo;
 
 	protected AdapterWrapper(Class<?> adapterClass, Class<?> targetClass, String source) {
 		this.adapterClass = adapterClass;
 		this.targetClass = targetClass;
 		this.source = source;
-		this.asyncChecker = new AsyncChecker(adapterClass);
+		this.metaInfo = new MethodMetaExtractor(adapterClass);
 		this.methods = ImmutableList.copyOf(buildMethodList());
 	}
 

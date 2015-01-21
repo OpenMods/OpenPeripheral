@@ -5,7 +5,6 @@ import java.util.List;
 
 import openperipheral.adapter.IMethodCall;
 import openperipheral.adapter.IMethodExecutor;
-import openperipheral.adapter.PropertyListBuilder;
 import openperipheral.adapter.method.MethodDeclaration;
 
 public class InlineAdapterWrapper extends AdapterWrapper {
@@ -29,10 +28,10 @@ public class InlineAdapterWrapper extends AdapterWrapper {
 
 	@Override
 	public IMethodExecutor createExecutor(Method method, MethodDeclaration decl) {
-		return new MethodExecutorBase(decl, asyncChecker.isAsync(method)) {
+		return new MethodExecutorBase(decl, method, metaInfo) {
 			@Override
 			public IMethodCall startCall(Object target) {
-				return method.startCall(target);
+				return super.startCall(target);
 			}
 		};
 	}

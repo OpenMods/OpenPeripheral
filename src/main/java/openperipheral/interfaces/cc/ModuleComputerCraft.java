@@ -1,7 +1,10 @@
 package openperipheral.interfaces.cc;
 
 import openperipheral.TypeConvertersProvider;
-import openperipheral.adapter.*;
+import openperipheral.adapter.AdapterRegistry;
+import openperipheral.adapter.DefaultEnvArgs;
+import openperipheral.adapter.composed.ComposedMethodsFactory;
+import openperipheral.adapter.composed.MethodSelector;
 import openperipheral.adapter.method.LuaTypeQualifier;
 import openperipheral.api.Architectures;
 import openperipheral.api.ITypeConvertersRegistry;
@@ -14,23 +17,24 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 
 public class ModuleComputerCraft {
 
-	public static final MethodsValidator PERIPHERAL_VALIDATOR = new MethodsValidator(AdapterRegistry.PERIPHERAL_ADAPTERS);
+	public static final ComposedMethodsFactory PERIPHERAL_METHODS_FACTORY;
+
+	public static final ComposedMethodsFactory OBJECT_METHODS_FACTORY;
 
 	static {
-		PERIPHERAL_VALIDATOR.addArg(DefaultEnvArgs.ARG_COMPUTER, IComputerAccess.class);
-		PERIPHERAL_VALIDATOR.addArg(DefaultEnvArgs.ARG_CONTEXT, ILuaContext.class);
+		final MethodSelector peripheralSelector = new MethodSelector(Architectures.COMPUTER_CRAFT)
+				.addDefaultEnv()
+				.addProvidedEnv(DefaultEnvArgs.ARG_COMPUTER, IComputerAccess.class)
+				.addProvidedEnv(DefaultEnvArgs.ARG_CONTEXT, ILuaContext.class);
+
+		PERIPHERAL_METHODS_FACTORY = new ComposedMethodsFactory(AdapterRegistry.PERIPHERAL_ADAPTERS, peripheralSelector);
+
+		final MethodSelector objectSelector = new MethodSelector(Architectures.COMPUTER_CRAFT)
+				.addDefaultEnv()
+				.addProvidedEnv(DefaultEnvArgs.ARG_CONTEXT, ILuaContext.class);
+
+		OBJECT_METHODS_FACTORY = new ComposedMethodsFactory(AdapterRegistry.OBJECT_ADAPTERS, objectSelector);
 	}
-
-	public static final ComposedMethodsFactory PERIPHERAL_METHODS_FACTORY = new ComposedMethodsFactory(AdapterRegistry.PERIPHERAL_ADAPTERS);
-
-	public static final MethodsValidator OBJECT_VALIDATOR = new MethodsValidator(AdapterRegistry.OBJECT_ADAPTERS);
-
-	static {
-		OBJECT_VALIDATOR.addArg(DefaultEnvArgs.ARG_COMPUTER, IComputerAccess.class);
-		OBJECT_VALIDATOR.addArg(DefaultEnvArgs.ARG_CONTEXT, ILuaContext.class);
-	}
-
-	public static final ComposedMethodsFactory OBJECT_METHODS_FACTORY = new ComposedMethodsFactory(AdapterRegistry.OBJECT_ADAPTERS);
 
 	public static void init() {
 		ITypeConvertersRegistry converter = new TypeConversionRegistryCC();

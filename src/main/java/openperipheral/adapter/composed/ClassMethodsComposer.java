@@ -6,14 +6,21 @@ import openperipheral.Config;
 import openperipheral.adapter.AdapterRegistry;
 import openperipheral.adapter.IMethodExecutor;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 public class ClassMethodsComposer {
 
+	private final Predicate<IMethodExecutor> selector;
+
+	public ClassMethodsComposer(Predicate<IMethodExecutor> selector) {
+		this.selector = selector;
+	}
+
 	public Map<String, IMethodExecutor> createMethodsList(Class<?> cls, AdapterRegistry manager) {
-		ClassMethodsListBuilder builder = new ClassMethodsListBuilder(manager);
+		ClassMethodsListBuilder builder = new ClassMethodsListBuilder(manager, selector);
 		final List<Class<?>> classHierarchy = Lists.reverse(listSuperClasses(cls));
 
 		Set<Class<?>> allSuperInterfaces = Sets.newHashSet();
