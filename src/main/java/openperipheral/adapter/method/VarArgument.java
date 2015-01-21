@@ -56,4 +56,9 @@ public class VarArgument extends Argument {
 		return name + "...";
 	}
 
+	@Override
+	public String doc() {
+		return super.doc() + "...";
+	}
+
 }

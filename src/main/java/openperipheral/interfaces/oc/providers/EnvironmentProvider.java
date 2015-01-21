@@ -10,6 +10,7 @@ import openperipheral.adapter.WrappedEntityBase;
 import openperipheral.api.ExposeInterface;
 import openperipheral.interfaces.oc.ModuleOpenComputers;
 import openperipheral.interfaces.oc.asm.EnvironmentFactory;
+import openperipheral.util.NameUtils;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
@@ -19,8 +20,6 @@ import com.google.common.collect.Maps;
 public class EnvironmentProvider {
 
 	private final EnvironmentFactory evnClassFactory = new EnvironmentFactory();
-
-	private int clsCounter;
 
 	private Map<Class<?>, Constructor<? extends ManagedEnvironment>> generatedClasses = Maps.newHashMap();
 
@@ -34,7 +33,7 @@ public class EnvironmentProvider {
 
 			Set<Class<?>> exposedInterfaces = intfAnnotation != null? getInterfaces(targetCls, intfAnnotation.value()) : ImmutableSet.<Class<?>> of();
 
-			String name = String.format("OpEnvironment$$%04d_%08X", clsCounter++, System.identityHashCode(targetCls));
+			String name = "OpEnvironment$$" + NameUtils.grumize(targetCls);
 			Class<? extends ManagedEnvironment> cls = evnClassFactory.generateEnvironment(name, targetCls, exposedInterfaces, new WrappedEntityBase(methods));
 
 			try {

@@ -21,5 +21,7 @@ public interface IDescriptable {
 
 	public String signature();
 
+	public String doc();
+
 	public Map<String, Object> describe();
 }

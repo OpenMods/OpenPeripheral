@@ -56,7 +56,7 @@ public class EnvironmentGeneratorTest {
 		when(executor.isAsynchronous()).thenReturn(isAsynchronous);
 
 		IDescriptable descriptable = mock(IDescriptable.class);
-		when(descriptable.signature()).thenReturn(desc);
+		when(descriptable.doc()).thenReturn(desc);
 		when(executor.description()).thenReturn(descriptable);
 
 		IMethodCall call = mock(IMethodCall.class);
@@ -72,7 +72,7 @@ public class EnvironmentGeneratorTest {
 		Assert.assertNotNull(callback);
 
 		Assert.assertEquals(executor.isAsynchronous(), callback.direct());
-		Assert.assertEquals(executor.description().signature(), callback.doc());
+		Assert.assertEquals(executor.description().doc(), callback.doc());
 
 		Arguments args = mock(Arguments.class);
 		final Object[] result = new Object[] { 1, 2, 3 };
@@ -113,7 +113,7 @@ public class EnvironmentGeneratorTest {
 
 		EnvironmentFactory generator = new EnvironmentFactory();
 
-		Class<?> cls = generator.generateEnvironment("TestClass", TargetClass.class, ImmutableSet.of(InterfaceA.class, InterfaceB.class), new WrappedEntityBase(methods));
+		Class<?> cls = generator.generateEnvironment("TestClass\u2652", TargetClass.class, ImmutableSet.of(InterfaceA.class, InterfaceB.class), new WrappedEntityBase(methods));
 
 		final TargetClass target = mock(TargetClass.class);
 		Object o = cls.getConstructor(TargetClass.class).newInstance(target);

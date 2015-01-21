@@ -24,11 +24,18 @@ public class MethodsListerHelper {
 	}
 
 	@LuaCallable(returnTypes = LuaReturnType.STRING, description = "List all the methods available")
-	public String listMethods() {
+	public String listMethods(@Optionals @Arg(name = "namesOnly") Boolean namesOnly) {
+		boolean justNames = namesOnly == Boolean.TRUE;
 		List<String> info = Lists.newArrayList();
 		for (Map.Entry<String, IMethodExecutor> e : methods.entrySet()) {
-			final IDescriptable m = e.getValue().description();
-			info.add(e.getKey() + m.signature());
+			final String name = e.getKey();
+
+			if (justNames) {
+				info.add(name);
+			} else {
+				final IDescriptable m = e.getValue().description();
+				info.add(name + m.signature());
+			}
 		}
 		return Joiner.on(", ").join(info);
 	}
@@ -40,6 +47,13 @@ public class MethodsListerHelper {
 			result.put(source, Boolean.TRUE);
 		}
 		return result;
+	}
+
+	@LuaCallable(returnTypes = LuaReturnType.STRING, description = "Brief description of method")
+	public String doc(@Arg(name = "method") String methodName) {
+		IMethodExecutor method = methods.get(methodName);
+		Preconditions.checkArgument(method != null, "Method not found");
+		return method.description().doc();
 	}
 
 	@LuaCallable(returnTypes = LuaReturnType.TABLE, description = "Get a complete table of information about all available methods")

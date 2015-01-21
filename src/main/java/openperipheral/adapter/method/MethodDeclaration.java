@@ -14,9 +14,7 @@ import openperipheral.api.*;
 
 import org.apache.logging.log4j.Level;
 
-import com.google.common.base.Joiner;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Throwables;
+import com.google.common.base.*;
 import com.google.common.collect.*;
 
 public class MethodDeclaration implements IDescriptable {
@@ -403,5 +401,27 @@ public class MethodDeclaration implements IDescriptable {
 	@Override
 	public String source() {
 		return source;
+	}
+
+	@Override
+	public String doc() {
+		// function(arg:type[, optionArg:type]):resultType -- Description
+		List<String> args = Lists.newArrayList();
+
+		for (Argument arg : luaArgs)
+			args.add(arg.name + ":" + arg.doc());
+
+		List<String> returns = Lists.newArrayList();
+
+		for (LuaReturnType r : returnTypes)
+			returns.add(r.getName());
+
+		String ret = returns.size() == 1? returns.get(0) : ("(" + Joiner.on(',').join(returns) + ")");
+
+		String result = String.format("function(%s):%s", Joiner.on(',').join(args), ret);
+
+		if (!Strings.isNullOrEmpty(description)) result += " -- " + description;
+
+		return result;
 	}
 }

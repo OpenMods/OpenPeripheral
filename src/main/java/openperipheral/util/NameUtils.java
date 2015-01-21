@@ -89,4 +89,8 @@ public class NameUtils {
 
 		return cls.getSimpleName();
 	}
+
+	public static String grumize(Class<?> targetCls) {
+		return targetCls.getName().replace('.', '\u2603');
+	}
 }

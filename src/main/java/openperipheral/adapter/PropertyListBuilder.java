@@ -149,6 +149,11 @@ public class PropertyListBuilder {
 		}
 
 		@Override
+		public String doc() {
+			return String.format("function():%s -- %s", type.name(), description);
+		}
+
+		@Override
 		public Map<String, Object> describe() {
 			Map<String, Object> result = super.describe();
 			result.put(IDescriptable.ARGS, EMPTY_ARGS);
@@ -180,11 +185,15 @@ public class PropertyListBuilder {
 		}
 
 		@Override
+		public String doc() {
+			return String.format("function(%s) -- %s", type.name(), description);
+		}
+
+		@Override
 		public Map<String, Object> describe() {
 			Map<String, Object> args = Maps.newHashMap();
 			args.put(IDescriptable.NAME, "value");
 			args.put(IDescriptable.TYPE, type.toString());
-			args.put(IDescriptable.DESCRIPTION, "");
 
 			Map<String, Object> result = super.describe();
 			result.put(IDescriptable.ARGS, args);

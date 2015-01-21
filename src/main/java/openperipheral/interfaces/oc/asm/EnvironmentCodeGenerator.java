@@ -125,7 +125,7 @@ public class EnvironmentCodeGenerator {
 			AnnotationVisitor av = wrap.visitAnnotation(CALLBACK_TYPE.getDescriptor(), true);
 			av.visit("value", name);
 			av.visit("direct", executor.isAsynchronous());
-			av.visit("doc", executor.description().signature()); // TODO: convert to expected format
+			av.visit("doc", executor.description().doc());
 			av.visitEnd();
 			// TODO: getter/setter
 

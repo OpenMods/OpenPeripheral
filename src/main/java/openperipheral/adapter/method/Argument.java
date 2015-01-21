@@ -55,4 +55,8 @@ public class Argument {
 	public String toString() {
 		return name;
 	}
+
+	public String doc() {
+		return luaType.getName();
+	}
 }

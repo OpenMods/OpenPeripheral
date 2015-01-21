@@ -33,5 +33,4 @@ public class NullableArgument extends Argument {
 		result.put("nullable", true);
 		return result;
 	}
-
 }

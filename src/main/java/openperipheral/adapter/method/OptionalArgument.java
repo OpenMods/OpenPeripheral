@@ -39,4 +39,9 @@ public class OptionalArgument extends Argument {
 	public String toString() {
 		return name + "?";
 	}
+
+	@Override
+	public String doc() {
+		return super.doc() + "?";
+	}
 }

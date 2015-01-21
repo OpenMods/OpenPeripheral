@@ -28,10 +28,4 @@ public class NullableVarArgument extends VarArgument {
 		result.put("nullable", true);
 		return result;
 	}
-
-	@Override
-	public String toString() {
-		return name + "?...";
-	}
-
 }
