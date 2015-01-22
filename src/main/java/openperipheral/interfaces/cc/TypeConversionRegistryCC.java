@@ -2,8 +2,8 @@ package openperipheral.interfaces.cc;
 
 import java.util.Deque;
 
-import openperipheral.TypeConversionRegistry;
 import openperipheral.api.ITypeConverter;
+import openperipheral.converter.TypeConversionRegistry;
 import dan200.computercraft.api.lua.ILuaObject;
 
 public class TypeConversionRegistryCC extends TypeConversionRegistry {

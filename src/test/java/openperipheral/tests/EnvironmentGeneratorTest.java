@@ -8,14 +8,19 @@ import static org.mockito.Mockito.when;
 import java.lang.reflect.Method;
 import java.util.Map;
 
+import li.cil.oc.api.detail.Builder.ComponentBuilder;
+import li.cil.oc.api.detail.Builder.NodeBuilder;
+import li.cil.oc.api.detail.NetworkAPI;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
+import li.cil.oc.api.network.Environment;
 import li.cil.oc.api.network.ManagedEnvironment;
-import openperipheral.TypeConvertersProvider;
+import li.cil.oc.api.network.Visibility;
 import openperipheral.adapter.*;
-import openperipheral.api.Architectures;
+import openperipheral.api.Constants;
 import openperipheral.api.ITypeConvertersRegistry;
+import openperipheral.converter.TypeConvertersProvider;
 import openperipheral.interfaces.oc.asm.EnvironmentFactory;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -77,7 +82,7 @@ public class EnvironmentGeneratorTest {
 		Arguments args = mock(Arguments.class);
 		final Object[] result = new Object[] { 1, 2, 3 };
 		when(args.toArray()).thenReturn(result);
-		when(call.setOptionalArg(eq(DefaultEnvArgs.ARG_CONVERTER), anyObject())).thenReturn(call);
+		when(call.setOptionalArg(eq(Constants.ARG_CONVERTER), anyObject())).thenReturn(call);
 		when(call.setOptionalArg(anyString(), anyObject())).thenReturn(call);
 		Context context = mock(Context.class);
 
@@ -86,14 +91,17 @@ public class EnvironmentGeneratorTest {
 		verify(executor).startCall(target);
 
 		verify(args).toArray();
-		verify(call).setOptionalArg(DefaultEnvArgs.ARG_CONTEXT, context);
+		verify(call).setOptionalArg(Constants.ARG_CONTEXT, context);
 		verify(call).call(result);
 	}
 
 	@Test
 	public void test() throws Exception {
 		ITypeConvertersRegistry converter = mock(ITypeConvertersRegistry.class); // Dependency injection? Office hours only!
-		TypeConvertersProvider.INSTANCE.registerConverter(Architectures.OPEN_COMPUTERS, converter, true);
+		
+		configureApi();
+		
+		TypeConvertersProvider.INSTANCE.registerConverter(Constants.ARCH_OPEN_COMPUTERS, converter, true);
 
 		Map<String, Pair<IMethodExecutor, IMethodCall>> mocks = Maps.newHashMap();
 
@@ -132,5 +140,15 @@ public class EnvironmentGeneratorTest {
 			final Pair<IMethodExecutor, IMethodCall> value = method.getValue();
 			testMethod(target, o, cls, method.getKey(), value.getLeft(), value.getRight());
 		}
+	}
+
+	private static void configureApi() {
+		final NodeBuilder nodeBuilderMock = mock(NodeBuilder.class);
+		final ComponentBuilder componentBuilderMock = mock(ComponentBuilder.class);
+		final NetworkAPI networkMock = mock(NetworkAPI.class);
+		li.cil.oc.api.API.network = networkMock;
+		when(networkMock.newNode(any(Environment.class), any(Visibility.class))).thenReturn(nodeBuilderMock);
+		when(nodeBuilderMock.withComponent(anyString())).thenReturn(componentBuilderMock);
+		when(componentBuilderMock.create()).thenReturn(null);
 	}
 }

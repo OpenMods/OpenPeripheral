@@ -87,7 +87,7 @@ public class AdapterPeripheral extends WrappedEntityBase implements IPeripheral,
 			String methodName = getMethodName(index);
 			Log.log(Level.DEBUG, e.getCause(), "Adapter error during method %s(%d) execution on peripheral %s, args: %s",
 					methodName, index, type, Arrays.toString(arguments));
-			throw e;
+			throw new LuaException(e.getMessage());
 		} catch (Throwable e) {
 			String methodName = getMethodName(index);
 			Log.log(Level.INFO, e, "Unwrapped error during method %s(%d) execution on peripheral %s, args: %s",

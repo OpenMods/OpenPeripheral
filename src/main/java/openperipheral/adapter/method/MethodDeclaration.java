@@ -9,7 +9,9 @@ import java.util.*;
 import openmods.Log;
 import openmods.reflection.TypeUtils;
 import openmods.utils.AnnotationMap;
-import openperipheral.adapter.*;
+import openperipheral.adapter.AdapterLogicException;
+import openperipheral.adapter.IDescriptable;
+import openperipheral.adapter.IMethodCall;
 import openperipheral.api.*;
 
 import org.apache.logging.log4j.Level;
@@ -254,7 +256,7 @@ public class MethodDeclaration implements IDescriptable {
 
 		@Override
 		public IMethodCall setOptionalArg(String name, Object value) {
-			if (DefaultEnvArgs.ARG_CONVERTER.equals(name)) this.converter = (ITypeConvertersRegistry)value;
+			if (Constants.ARG_CONVERTER.equals(name)) this.converter = (ITypeConvertersRegistry)value;
 
 			OptionalArg arg = optionalArgs.get(name);
 			if (arg != null) {

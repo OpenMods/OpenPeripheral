@@ -5,7 +5,9 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Map;
 
-import openperipheral.adapter.*;
+import openperipheral.adapter.IDescriptable;
+import openperipheral.adapter.IMethodCall;
+import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.method.LuaTypeQualifier;
 import openperipheral.api.*;
 
@@ -22,6 +24,8 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
 public class PropertyListBuilder {
+
+	private static final ImmutableMap<String, Class<?>> NEEDED_ENV = ImmutableMap.<String, Class<?>> builder().put(Constants.ARG_CONVERTER, ITypeConvertersRegistry.class).build();
 
 	private static IPropertyCallback createDefaultCallback(final Object owner) {
 		return new IPropertyCallback() {
@@ -70,7 +74,7 @@ public class PropertyListBuilder {
 
 				@Override
 				public IMethodCall setOptionalArg(String name, Object value) {
-					if (DefaultEnvArgs.ARG_CONVERTER.equals(name)) this.converter = (ITypeConvertersRegistry)value;
+					if (Constants.ARG_CONVERTER.equals(name)) this.converter = (ITypeConvertersRegistry)value;
 
 					return this; // NO-OP
 				}
@@ -94,7 +98,7 @@ public class PropertyListBuilder {
 
 		@Override
 		public Map<String, Class<?>> requiredEnv() {
-			return ImmutableMap.of();
+			return NEEDED_ENV;
 		}
 	}
 

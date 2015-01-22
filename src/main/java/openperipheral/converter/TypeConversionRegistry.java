@@ -1,13 +1,13 @@
-package openperipheral;
+package openperipheral.converter;
 
 import java.util.Deque;
 import java.util.List;
 import java.util.Set;
 
 import openmods.Log;
+import openperipheral.ApiSingleton;
 import openperipheral.api.ITypeConverter;
 import openperipheral.api.ITypeConvertersRegistry;
-import openperipheral.converter.*;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;

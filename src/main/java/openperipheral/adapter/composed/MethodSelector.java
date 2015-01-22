@@ -2,8 +2,8 @@ package openperipheral.adapter.composed;
 
 import java.util.Map;
 
-import openperipheral.adapter.DefaultEnvArgs;
 import openperipheral.adapter.IMethodExecutor;
+import openperipheral.api.Constants;
 import openperipheral.api.ITypeConvertersRegistry;
 
 import com.google.common.base.Predicate;
@@ -20,7 +20,7 @@ public class MethodSelector implements Predicate<IMethodExecutor> {
 	}
 
 	public MethodSelector addDefaultEnv() {
-		providedEnv.put(DefaultEnvArgs.ARG_CONVERTER, ITypeConvertersRegistry.class);
+		providedEnv.put(Constants.ARG_CONVERTER, ITypeConvertersRegistry.class);
 		return this;
 	}
 

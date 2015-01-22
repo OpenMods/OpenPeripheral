@@ -6,10 +6,10 @@ import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.ManagedPeripheral;
 import li.cil.oc.api.prefab.AbstractValue;
-import openperipheral.adapter.DefaultEnvArgs;
 import openperipheral.adapter.IMethodExecutor;
-import openperipheral.api.Architectures;
+import openperipheral.api.Constants;
 import openperipheral.interfaces.oc.ModuleOpenComputers;
+import openperipheral.interfaces.oc.OpenComputersEnv;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -51,8 +51,12 @@ public class ManagedPeripheralWrapper {
 			Preconditions.checkArgument(executor != null, "Invalid method name: '%s'", method);
 
 			Object[] objArgs = args.toArray();
-			return DefaultEnvArgs.addCommonArgs(executor.startCall(target), Architectures.OPEN_COMPUTERS)
-					.setOptionalArg(DefaultEnvArgs.ARG_CONTEXT, context)
+
+			// even though we have 'context', we don't wrap it as 'access', so OC and CC behaviours are the same.
+			// this should prevent confusion of 'access' on object making method OC only.
+			// user can always pull 'context'
+			return OpenComputersEnv.addCommonArgs(executor.startCall(target))
+					.setOptionalArg(Constants.ARG_CONTEXT, context)
 					.call(objArgs);
 		}
 

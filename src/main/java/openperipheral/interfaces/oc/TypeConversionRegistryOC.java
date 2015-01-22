@@ -3,8 +3,8 @@ package openperipheral.interfaces.oc;
 import java.util.Deque;
 
 import li.cil.oc.api.machine.Value;
-import openperipheral.TypeConversionRegistry;
 import openperipheral.api.ITypeConverter;
+import openperipheral.converter.TypeConversionRegistry;
 
 public class TypeConversionRegistryOC extends TypeConversionRegistry {
 

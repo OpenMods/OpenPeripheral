@@ -1,4 +1,4 @@
-package openperipheral;
+package openperipheral.converter;
 
 import java.util.Map;
 

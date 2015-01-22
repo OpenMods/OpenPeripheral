@@ -4,8 +4,11 @@ import java.util.Arrays;
 import java.util.Map;
 
 import openmods.Log;
-import openperipheral.adapter.*;
-import openperipheral.api.Architectures;
+import openperipheral.adapter.AdapterLogicException;
+import openperipheral.adapter.IMethodExecutor;
+import openperipheral.adapter.WrappedEntityBase;
+import openperipheral.api.Constants;
+import openperipheral.interfaces.cc.ComputerCraftEnv;
 import openperipheral.interfaces.cc.ModuleComputerCraft;
 
 import org.apache.logging.log4j.Level;
@@ -37,8 +40,8 @@ public class LuaObjectWrapper {
 			Preconditions.checkNotNull(executor, "Invalid method index: %d", method);
 
 			try {
-				return DefaultEnvArgs.addCommonArgs(executor.startCall(target), Architectures.COMPUTER_CRAFT)
-						.setOptionalArg(DefaultEnvArgs.ARG_CONTEXT, context)
+				return ComputerCraftEnv.addCommonArgs(executor.startCall(target))
+						.setOptionalArg(Constants.ARG_CONTEXT, context)
 						.call(arguments);
 			} catch (LuaException e) {
 				throw e;
@@ -49,7 +52,7 @@ public class LuaObjectWrapper {
 				Log.log(Level.DEBUG, t.getCause(), "Internal error during method %s(%d) execution on object %s, args: %s",
 						methodName, method, target.getClass(), Arrays.toString(arguments));
 
-				throw new AdapterLogicException(t);
+				throw new LuaException(AdapterLogicException.getMessageForThrowable(t));
 			}
 		}
 	}
