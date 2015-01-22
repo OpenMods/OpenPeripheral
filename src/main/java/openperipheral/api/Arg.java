@@ -4,14 +4,15 @@ import java.lang.annotation.*;
 
 /**
  * This annotation is used to supply metadata about arguments in Lua methods.
- * Every Lua argument should be marked with this one, either through {@link LuaMethod#args()} or directly on argument
- * when using {@link LuaCallable}.
+ * Every Lua argument should be marked with this one.
+ * 
+ * @see Env
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
 public @interface Arg {
 	/**
-	 * This name will be visible in documentation program or in .listMethods() result.
+	 * This name will be visible in documentation program or in {@code .listMethods()} result.
 	 * Value is mandatory, since information about argument name is not visible in runtime.
 	 * This value has no effects in Java part
 	 */

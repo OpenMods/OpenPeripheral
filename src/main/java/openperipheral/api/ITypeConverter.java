@@ -1,13 +1,10 @@
 package openperipheral.api;
 
 /**
- * A type converter can automatically convert objects between a Java format
- * and a Lua friendly format.
- * Basic ones are already built in (primitives, itemstacks, tanks), but you
- * can register custom ones.
+ * A type converter can automatically convert objects between a Java format and a Lua friendly format.
+ * Basic ones are already built in (primitives, itemstacks, tanks), but you can register custom ones.
  *
- * If you don't think your converter should be handling the object passed in
- * just return null to allow other converters to attempt the conversion.
+ * If you don't think your converter should be handling the object passed in just return null to allow other converters to attempt the conversion.
  *
  * @author mikeef
  *
@@ -27,7 +24,7 @@ public interface ITypeConverter {
 
 	/**
 	 * Convert to a Lua friendly format. You can pass most primitives back,
-	 * Return only types understood by ComputerCraft API (i.e. primitives, String, Maps and LuaObject), otherwise it will be converted to {@code nil} on Lua side
+	 * Return only types understood by underlying architecture (i.e. primitives, String, Maps), otherwise it will be converted to {@code nil} on Lua side
 	 *
 	 * @param registry
 	 * @param obj

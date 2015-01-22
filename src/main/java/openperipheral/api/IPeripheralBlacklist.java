@@ -3,7 +3,7 @@ package openperipheral.api;
 /**
  * Blacklist for peripherals.
  * Classes on this list will be ignored by OpenPeripheral peripheral handler.
- * There are few other ways to blacklist class, see blacklisting section in main API doc
+ * There are few other ways to blacklist class, see blacklisting section in main API doc.
  */
 public interface IPeripheralBlacklist extends IApiInterface {
 

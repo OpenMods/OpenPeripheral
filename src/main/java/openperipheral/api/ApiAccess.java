@@ -9,7 +9,8 @@ package openperipheral.api;
  * <li>{@link IAdapterRegistry} - for registering adapter classes</li>
  * <li>{@link IEntityMetaBuilder} - for registering metadata providers and getting metadata for in-game entitites</li>
  * <li>{@link IItemStackMetaBuilder} - for registering metadata providers and getting metadata for in-game items</li>
- * <li>{@link ITypeConvertersRegistry} - for registering type converters and converting values from and to Lua</li>
+ * <li>{@link ITypeConvertersRegistry} - for registering type converters and converting values from and to Lua. <strong>Object returned for this interface should not be used for conversion</strong></li>
+ * <li>{@link ITypeConvertersProvider} - for getting architecture-specific type converters</li>
  * <li>{@link IPeripheralBlacklist} - for checking if class is blacklisted (i.e. will not generate peripheral)</li>
  * </ul>
  */

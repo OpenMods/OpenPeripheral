@@ -3,7 +3,8 @@ package openperipheral.api;
 import java.lang.annotation.*;
 
 /**
- * Used for creating custom names for source id of inline adapters
+ * Used for setting custom names for source id of inline adapters.
+ * For external adapter see {@link IAdapter#getSourceId()}.
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

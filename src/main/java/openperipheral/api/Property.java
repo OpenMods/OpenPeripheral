@@ -4,7 +4,7 @@ import java.lang.annotation.*;
 
 /**
  * This annotation is used to mark class fields that should be exposed in Lua as get/set accessors.
- * Every call will directly operate on field
+ * Every call will directly operate on field.
  *
  * @see CallbackProperty
  */

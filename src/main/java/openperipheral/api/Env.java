@@ -3,10 +3,13 @@ package openperipheral.api;
 import java.lang.annotation.*;
 
 /**
+ * Used to mark method arguments as receivers of instance of specific variable
+ * Available variable names and expected types of argument depend on context. See {@link Constants} for possible values and type.
  *
- * Used to mark method arguments as receivers of extra instanceof of env variables
- * (like {@code "computer"} -> {@link dan200.computercraft.api.peripheral.IComputerAccess} and {@code "context"} -> {@link dan200.computercraft.api.lua.ILuaContext}).
- * Available variable names depend on context.
+ *
+ * Selecting some values will exclude method from not supporting architectures (e.g. {@link Constants#ARG_COMPUTER} will hide this method from OpenComputers).
+ *
+ * @see Arg
  */
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
