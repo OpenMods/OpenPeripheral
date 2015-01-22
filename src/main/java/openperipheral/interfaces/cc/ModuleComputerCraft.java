@@ -37,7 +37,7 @@ public class ModuleComputerCraft {
 	public static void init() {
 		ITypeConvertersRegistry converter = new TypeConversionRegistryCC();
 		// CC converter is default one (legacy behaviour)
-		TypeConvertersProvider.INSTANCE.registerConverter(Constants.ARCH_COMPUTER_CRAFT, converter, true);
+		TypeConvertersProvider.INSTANCE.registerConverter(Constants.ARCH_COMPUTER_CRAFT, converter);
 
 		LuaTypeQualifier.registerType(ILuaObject.class, LuaArgType.OBJECT);
 	}

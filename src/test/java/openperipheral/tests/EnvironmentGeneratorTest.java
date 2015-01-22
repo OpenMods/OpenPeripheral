@@ -101,7 +101,7 @@ public class EnvironmentGeneratorTest {
 		
 		configureApi();
 		
-		TypeConvertersProvider.INSTANCE.registerConverter(Constants.ARCH_OPEN_COMPUTERS, converter, true);
+		TypeConvertersProvider.INSTANCE.registerConverter(Constants.ARCH_OPEN_COMPUTERS, converter);
 
 		Map<String, Pair<IMethodExecutor, IMethodCall>> mocks = Maps.newHashMap();
 

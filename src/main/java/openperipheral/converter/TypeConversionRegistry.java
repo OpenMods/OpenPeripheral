@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Set;
 
 import openmods.Log;
-import openperipheral.ApiSingleton;
 import openperipheral.api.ITypeConverter;
 import openperipheral.api.ITypeConvertersRegistry;
 
@@ -13,7 +12,6 @@ import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-@ApiSingleton
 public class TypeConversionRegistry implements ITypeConvertersRegistry {
 
 	private final Deque<ITypeConverter> converters = Lists.newLinkedList();

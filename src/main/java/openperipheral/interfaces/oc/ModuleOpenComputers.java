@@ -34,7 +34,7 @@ public class ModuleOpenComputers {
 
 	public static void init() {
 		ITypeConvertersRegistry converter = new TypeConversionRegistryOC();
-		TypeConvertersProvider.INSTANCE.registerConverter(Constants.ARCH_OPEN_COMPUTERS, converter, false);
+		TypeConvertersProvider.INSTANCE.registerConverter(Constants.ARCH_OPEN_COMPUTERS, converter);
 
 		LuaTypeQualifier.registerType(Value.class, LuaArgType.OBJECT);
 	}

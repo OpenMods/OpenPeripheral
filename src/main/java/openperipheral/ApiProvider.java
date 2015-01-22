@@ -138,6 +138,7 @@ public class ApiProvider implements ApiAccess.ApiProvider {
 
 		registerDirect(TypeConversionRegistry.class, TypeConvertersProvider.INSTANCE);
 
+		registerInstance(TypeConvertersProvider.INSTANCE);
 		registerInstance(TileEntityBlacklist.INSTANCE);
 	}
 
