@@ -13,7 +13,8 @@ import java.lang.annotation.*;
  *
  * When used in external adapters (defined in {@link IAdapter}, accepted arguments are
  * <ul>
- * <li>target - should be target class (see {@link IAdapter#getTargetClass()} or superclass <li><li> Argument annotated with {@link Env} - for implementation specific details</li>
+ * <li>target - should be target class (see {@link IAdapter#getTargetClass()} or superclass</li>
+ * <li>Argument annotated with {@link Env} - for implementation specific details</li>
  * <li>Argument annotated with {@link Arg} - for Lua visible arguments</li>
  * </ul>
  *

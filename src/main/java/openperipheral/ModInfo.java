@@ -7,5 +7,5 @@ public class ModInfo {
 	public static final String VERSION = "$VERSION$";
 	public static final String PROXY_SERVER = "openperipheral.core.CommonProxy";
 	public static final String PROXY_CLIENT = "openperipheral.core.client.ClientProxy";
-	public static final String DEPENDENCIES = "required-after:OpenMods@[$LIB-VERSION$];required-after:ComputerCraft@[1.64,];after:AppliedEnergistics;after:IC2;after:EnderStorage;after:BuildCraft|Core;after:Forestry;after:Mystcraft;after:Railcraft;after:Thaumcraft;after:ThermalExpansion;";
+	public static final String DEPENDENCIES = "required-after:OpenMods@[$LIB-VERSION$];after:ComputerCraft@[1.64,];after:OpenComputers@[1.4.5,];";
 }

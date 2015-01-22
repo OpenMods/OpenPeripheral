@@ -4,13 +4,14 @@ import java.lang.reflect.Modifier;
 import java.util.*;
 
 import openmods.Log;
+import openmods.Mods;
 import openperipheral.adapter.AdapterRegistryWrapper;
 import openperipheral.adapter.TileEntityBlacklist;
 import openperipheral.api.ApiAccess;
 import openperipheral.api.IApiInterface;
 import openperipheral.converter.TypeConversionRegistry;
 import openperipheral.converter.TypeConvertersProvider;
-import openperipheral.interfaces.cc.providers.AdapterFactoryWrapper;
+import openperipheral.interfaces.cc.ModuleComputerCraft;
 import openperipheral.meta.EntityMetadataBuilder;
 import openperipheral.meta.ItemStackMetadataBuilder;
 
@@ -19,6 +20,8 @@ import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+
+import cpw.mods.fml.common.Loader;
 
 public class ApiProvider implements ApiAccess.ApiProvider {
 
@@ -105,7 +108,7 @@ public class ApiProvider implements ApiAccess.ApiProvider {
 		}
 	}
 
-	private <T extends IApiInterface> void registerClass(Class<? extends T> cls) {
+	public <T extends IApiInterface> void registerClass(Class<? extends T> cls) {
 		Preconditions.checkArgument(!Modifier.isAbstract(cls.getModifiers()));
 
 		ApiImplementation meta = cls.getAnnotation(ApiImplementation.class);
@@ -131,7 +134,6 @@ public class ApiProvider implements ApiAccess.ApiProvider {
 	}
 
 	private ApiProvider() {
-		registerClass(AdapterFactoryWrapper.class);
 		registerClass(AdapterRegistryWrapper.class);
 		registerClass(EntityMetadataBuilder.class);
 		registerClass(ItemStackMetadataBuilder.class);
@@ -140,6 +142,8 @@ public class ApiProvider implements ApiAccess.ApiProvider {
 
 		registerInstance(TypeConvertersProvider.INSTANCE);
 		registerInstance(TileEntityBlacklist.INSTANCE);
+
+		if (Loader.isModLoaded(Mods.COMPUTERCRAFT)) ModuleComputerCraft.installAPI(this);
 	}
 
 	@Override

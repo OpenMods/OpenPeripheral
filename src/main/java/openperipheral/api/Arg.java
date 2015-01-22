@@ -5,7 +5,7 @@ import java.lang.annotation.*;
 /**
  * This annotation is used to supply metadata about arguments in Lua methods.
  * Every Lua argument should be marked with this one.
- * 
+ *
  * @see Env
  */
 @Retention(RetentionPolicy.RUNTIME)

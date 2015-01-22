@@ -1,11 +1,13 @@
 package openperipheral.interfaces.cc;
 
+import openperipheral.ApiProvider;
 import openperipheral.adapter.AdapterRegistry;
 import openperipheral.adapter.composed.ComposedMethodsFactory;
 import openperipheral.adapter.composed.MethodSelector;
 import openperipheral.adapter.method.LuaTypeQualifier;
 import openperipheral.api.*;
 import openperipheral.converter.TypeConvertersProvider;
+import openperipheral.interfaces.cc.providers.AdapterFactoryWrapper;
 import openperipheral.interfaces.cc.providers.PeripheralProvider;
 import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.lua.ILuaContext;
@@ -44,5 +46,9 @@ public class ModuleComputerCraft {
 
 	public static void registerProvider() {
 		ComputerCraftAPI.registerPeripheralProvider(new PeripheralProvider());
+	}
+
+	public static void installAPI(ApiProvider apiProvider) {
+		apiProvider.registerClass(AdapterFactoryWrapper.class);
 	}
 }
