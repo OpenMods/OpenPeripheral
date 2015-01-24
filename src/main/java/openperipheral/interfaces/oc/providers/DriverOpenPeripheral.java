@@ -20,12 +20,12 @@ public class DriverOpenPeripheral implements li.cil.oc.api.driver.Block {
 
 	@Override
 	public boolean worksWith(World world, int x, int y, int z) {
-		TileEntity te = world.getTileEntity(x, y, z);
+		final TileEntity te = world.getTileEntity(x, y, z);
 		if (te == null) return false;
 
-		Class<?> cls = te.getClass();
+		final Class<?> cls = te.getClass();
 
-		Boolean result = cache.get(te);
+		Boolean result = cache.get(cls);
 
 		if (result == null) {
 			result = shouldProvide(cls);

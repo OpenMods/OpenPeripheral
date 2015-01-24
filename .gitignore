@@ -8,3 +8,8 @@ Thumbs.db
 /.gradle
 /build/
 /run/
+
+# Eclipse
+.classpath
+.project
+.settings/

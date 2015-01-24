@@ -40,7 +40,7 @@ public class CommandDump implements ICommand {
 		return null;
 	}
 
-	private static <E extends IMethodExecutor> void processExternalAdapters(DocBuilder builder, AdapterRegistry registry, String type) {
+	private static void processExternalAdapters(DocBuilder builder, AdapterRegistry registry, String type) {
 		for (Map.Entry<Class<?>, Collection<AdapterWrapper>> e : registry.listExternalAdapters().entrySet()) {
 			final Class<?> cls = e.getKey();
 			for (AdapterWrapper w : e.getValue())
@@ -48,7 +48,7 @@ public class CommandDump implements ICommand {
 		}
 	}
 
-	private static <E extends IMethodExecutor> void processInternalAdapters(DocBuilder builder, AdapterRegistry registry, String type) {
+	private static void processInternalAdapters(DocBuilder builder, AdapterRegistry registry, String type) {
 		for (Map.Entry<Class<?>, AdapterWrapper> e : registry.listInternalAdapters().entrySet()) {
 			final AdapterWrapper adapter = e.getValue();
 			if (!adapter.getMethods().isEmpty()) builder.createDocForAdapter(type, "inline", e.getKey(), adapter);
