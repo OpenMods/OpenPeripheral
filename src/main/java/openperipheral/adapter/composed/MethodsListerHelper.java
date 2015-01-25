@@ -24,18 +24,14 @@ public class MethodsListerHelper {
 	}
 
 	@LuaCallable(returnTypes = LuaReturnType.STRING, description = "List all the methods available")
-	public String listMethods(@Optionals @Arg(name = "namesOnly") Boolean namesOnly) {
-		boolean justNames = namesOnly == Boolean.TRUE;
+	public String listMethods(@Optionals @Arg(name = "filterSource") String source) {
 		List<String> info = Lists.newArrayList();
 		for (Map.Entry<String, IMethodExecutor> e : methods.entrySet()) {
 			final String name = e.getKey();
+			final IMethodExecutor executor = e.getValue();
 
-			if (justNames) {
-				info.add(name);
-			} else {
-				final IDescriptable m = e.getValue().description();
-				info.add(name + m.signature());
-			}
+			final IDescriptable m = executor.description();
+			if (source == null || source.equals(m.source())) info.add(name + m.signature());
 		}
 		return Joiner.on(", ").join(info);
 	}
