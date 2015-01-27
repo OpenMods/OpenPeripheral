@@ -8,6 +8,7 @@ import openmods.Log;
 import openperipheral.api.ITypeConverter;
 import openperipheral.api.ITypeConvertersRegistry;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -64,6 +65,11 @@ public class TypeConversionRegistry implements ITypeConvertersRegistry {
 
 	@Override
 	public Object fromLua(Object obj, Class<?> expected) {
+		if (obj == null) {
+			Preconditions.checkArgument(!expected.isPrimitive(), "This value cannot be nil");
+			return null;
+		}
+
 		for (ITypeConverter converter : converters) {
 			try {
 				Object response = converter.fromLua(this, obj, expected);
