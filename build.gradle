@@ -142,6 +142,7 @@ processResources {
 
 javadoc {
     include 'openperipheral/api/**'
+    failOnError = false
 }
 
 //================================================
