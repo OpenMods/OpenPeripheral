@@ -1,5 +1,5 @@
 /*
- * OpenModsLib build file.
+ * OpenPeripheralCore build file.
  * @author Arkan <arkan@emberwalker.cc>
  */
 
@@ -142,7 +142,10 @@ processResources {
 
 javadoc {
     include 'openperipheral/api/**'
-    failOnError = false
+
+    if (JavaVersion.current().isJava8Compatible()) {
+        options.addBooleanOption('Xdoclint:accessibility,html,syntax', true)
+    }
 }
 
 //================================================

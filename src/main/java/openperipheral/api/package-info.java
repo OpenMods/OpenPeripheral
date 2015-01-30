@@ -46,7 +46,6 @@
  * </ol>
  *
  * During call Java arguments marked with {@link openperipheral.api.Env} are filled with values depending on it's names and types. Some of them are predefined in {@link openperipheral.api.Constants}
- * </ul>
  */
 
 @API(apiVersion = openperipheral.api.ApiAccess.API_VERSION, owner = "OpenPeripheralCore", provides = "OpenPeripheralApi")
