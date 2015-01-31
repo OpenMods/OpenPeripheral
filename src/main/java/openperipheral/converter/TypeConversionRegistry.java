@@ -40,6 +40,7 @@ public class TypeConversionRegistry implements ITypeConvertersRegistry {
 
 	protected TypeConversionRegistry() {
 		converters.add(new ConverterGameProfile());
+		converters.add(new ConverterUuid());
 		converters.add(new ConverterFluidTankInfo());
 		converters.add(new ConverterItemStack());
 		converters.add(new ConverterFluidStack());

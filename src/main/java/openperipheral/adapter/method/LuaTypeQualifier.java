@@ -2,6 +2,7 @@ package openperipheral.adapter.method;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 import openmods.reflection.TypeUtils;
 import openperipheral.api.LuaArgType;
@@ -33,6 +34,7 @@ public class LuaTypeQualifier {
 		cls = TypeUtils.toObjectType(cls);
 
 		if (cls == String.class) return LuaArgType.STRING;
+		if (cls == UUID.class) return LuaArgType.STRING;
 		if (cls == Boolean.class) return LuaArgType.BOOLEAN;
 		if (cls == Void.class) return LuaArgType.VOID;
 		if (Number.class.isAssignableFrom(cls)) return LuaArgType.NUMBER;
