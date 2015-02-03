@@ -9,7 +9,10 @@ import openmods.Log;
 import openperipheral.adapter.wrappers.AdapterWrapper;
 import openperipheral.adapter.wrappers.ExternalAdapterWrapper;
 import openperipheral.adapter.wrappers.InlineAdapterWrapper;
-import openperipheral.api.*;
+import openperipheral.api.adapter.AdapterSourceName;
+import openperipheral.api.adapter.IAdapter;
+import openperipheral.api.adapter.IAdapterWithConstraints;
+import openperipheral.api.peripheral.PeripheralTypeId;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultimap;

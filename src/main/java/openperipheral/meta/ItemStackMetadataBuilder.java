@@ -5,8 +5,8 @@ import java.util.Map;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import openperipheral.ApiImplementation;
-import openperipheral.api.IItemStackMetaBuilder;
-import openperipheral.api.IItemStackMetaProvider;
+import openperipheral.api.meta.IItemStackMetaBuilder;
+import openperipheral.api.meta.IItemStackMetaProvider;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;

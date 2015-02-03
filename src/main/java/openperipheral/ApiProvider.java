@@ -5,13 +5,14 @@ import java.util.*;
 
 import openmods.Log;
 import openmods.Mods;
-import openperipheral.adapter.AdapterRegistryWrapper;
+import openperipheral.adapter.ObjectAdapterRegistryWrapper;
+import openperipheral.adapter.PeripheralAdapterRegistryWrapper;
 import openperipheral.adapter.TileEntityBlacklist;
 import openperipheral.api.ApiAccess;
 import openperipheral.api.IApiInterface;
-import openperipheral.converter.TypeConversionRegistry;
 import openperipheral.converter.TypeConvertersProvider;
 import openperipheral.interfaces.cc.ModuleComputerCraft;
+import openperipheral.interfaces.oc.ModuleOpenComputers;
 import openperipheral.meta.EntityMetadataBuilder;
 import openperipheral.meta.ItemStackMetadataBuilder;
 
@@ -129,21 +130,17 @@ public class ApiProvider implements ApiAccess.ApiProvider {
 		registerInterfaces(cls, provider, meta.includeSuper());
 	}
 
-	private <T extends IApiInterface> void registerDirect(Class<? extends T> cls, IApiInstanceProvider<T> provider) {
-		registerInterfaces(cls, provider, false);
-	}
-
 	private ApiProvider() {
-		registerClass(AdapterRegistryWrapper.class);
+		registerClass(PeripheralAdapterRegistryWrapper.class);
+		registerClass(ObjectAdapterRegistryWrapper.class);
 		registerClass(EntityMetadataBuilder.class);
 		registerClass(ItemStackMetadataBuilder.class);
-
-		registerDirect(TypeConversionRegistry.class, TypeConvertersProvider.INSTANCE);
 
 		registerInstance(TypeConvertersProvider.INSTANCE);
 		registerInstance(TileEntityBlacklist.INSTANCE);
 
 		if (Loader.isModLoaded(Mods.COMPUTERCRAFT)) ModuleComputerCraft.installAPI(this);
+		if (Loader.isModLoaded(Mods.OPENCOMPUTERS)) ModuleOpenComputers.installAPI(this);
 	}
 
 	@Override

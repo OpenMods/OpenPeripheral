@@ -9,7 +9,12 @@ import openperipheral.adapter.IDescriptable;
 import openperipheral.adapter.IMethodCall;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.method.LuaTypeQualifier;
-import openperipheral.api.*;
+import openperipheral.api.Constants;
+import openperipheral.api.adapter.CallbackProperty;
+import openperipheral.api.adapter.IPropertyCallback;
+import openperipheral.api.adapter.Property;
+import openperipheral.api.adapter.method.LuaArgType;
+import openperipheral.api.converter.IConverter;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -25,7 +30,7 @@ import com.google.common.collect.Maps;
 
 public class PropertyListBuilder {
 
-	private static final ImmutableMap<String, Class<?>> NEEDED_ENV = ImmutableMap.<String, Class<?>> builder().put(Constants.ARG_CONVERTER, ITypeConvertersRegistry.class).build();
+	private static final ImmutableMap<String, Class<?>> NEEDED_ENV = ImmutableMap.<String, Class<?>> builder().put(Constants.ARG_CONVERTER, IConverter.class).build();
 
 	private static IPropertyCallback createDefaultCallback(final Object owner) {
 		return new IPropertyCallback() {
@@ -65,7 +70,7 @@ public class PropertyListBuilder {
 		@Override
 		public IMethodCall startCall(final Object target) {
 			return new IMethodCall() {
-				private ITypeConvertersRegistry converter;
+				private IConverter converter;
 
 				@Override
 				public IMethodCall setPositionalArg(int index, Object value) {
@@ -74,7 +79,7 @@ public class PropertyListBuilder {
 
 				@Override
 				public IMethodCall setOptionalArg(String name, Object value) {
-					if (Constants.ARG_CONVERTER.equals(name)) this.converter = (ITypeConvertersRegistry)value;
+					if (Constants.ARG_CONVERTER.equals(name)) this.converter = (IConverter)value;
 
 					return this; // NO-OP
 				}
@@ -117,7 +122,7 @@ public class PropertyListBuilder {
 			this.source = source;
 		}
 
-		public abstract Object[] call(ITypeConvertersRegistry converter, Object target, Object... args);
+		public abstract Object[] call(IConverter converter, Object target, Object... args);
 
 		protected abstract IPropertyCallback getCallback(Object target);
 
@@ -150,7 +155,7 @@ public class PropertyListBuilder {
 		}
 
 		@Override
-		public Object[] call(ITypeConvertersRegistry converter, Object target, Object... args) {
+		public Object[] call(IConverter converter, Object target, Object... args) {
 			Preconditions.checkArgument(args.length == 0, "Getter has no arguments");
 			Object result = getCallback(target).getField(field);
 			return ArrayUtils.toArray(converter.toLua(result));
@@ -182,7 +187,7 @@ public class PropertyListBuilder {
 		}
 
 		@Override
-		public Object[] call(ITypeConvertersRegistry converter, Object target, Object... args) {
+		public Object[] call(IConverter converter, Object target, Object... args) {
 			Preconditions.checkArgument(args.length == 1, "Setter must have exactly one argument");
 			Object arg = args[0];
 			Object converted = converter.fromLua(arg, field.getType());

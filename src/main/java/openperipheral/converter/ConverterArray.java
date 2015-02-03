@@ -3,15 +3,14 @@ package openperipheral.converter;
 import java.lang.reflect.Array;
 import java.util.Map;
 
-import openperipheral.api.ITypeConverter;
-import openperipheral.api.ITypeConvertersRegistry;
+import openperipheral.api.converter.IConverter;
 
 import com.google.common.collect.Maps;
 
-public class ConverterArray implements ITypeConverter {
+public class ConverterArray extends GenericConverterAdapter {
 
 	@Override
-	public Object fromLua(ITypeConvertersRegistry registry, Object o, Class<?> required) {
+	public Object fromLua(IConverter registry, Object o, Class<?> required) {
 		if (o instanceof Map && required.isArray()) {
 			@SuppressWarnings("unchecked")
 			Map<Object, Object> m = (Map<Object, Object>)o;
@@ -51,7 +50,7 @@ public class ConverterArray implements ITypeConverter {
 	}
 
 	@Override
-	public Object toLua(ITypeConvertersRegistry registry, Object o) {
+	public Object toLua(IConverter registry, Object o) {
 		if (o.getClass().isArray()) {
 			Map<Object, Object> ret = Maps.newHashMap();
 			int length = Array.getLength(o);

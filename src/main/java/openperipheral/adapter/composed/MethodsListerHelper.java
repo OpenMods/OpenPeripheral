@@ -6,7 +6,8 @@ import java.util.Set;
 
 import openperipheral.adapter.IDescriptable;
 import openperipheral.adapter.IMethodExecutor;
-import openperipheral.api.*;
+import openperipheral.api.adapter.Asynchronous;
+import openperipheral.api.adapter.method.*;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;

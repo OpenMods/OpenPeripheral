@@ -1,6 +1,6 @@
 package openperipheral.api.helpers;
 
-import openperipheral.api.IMetaProvider;
+import openperipheral.api.meta.IMetaProvider;
 
 import com.google.common.reflect.TypeToken;
 

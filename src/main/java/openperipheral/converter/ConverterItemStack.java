@@ -4,20 +4,19 @@ import java.util.Map;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import openperipheral.api.ITypeConverter;
-import openperipheral.api.ITypeConvertersRegistry;
+import openperipheral.api.converter.IConverter;
 import openperipheral.meta.ItemStackMetadataBuilder;
 
 import com.google.common.base.Preconditions;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 
-public class ConverterItemStack implements ITypeConverter {
+public class ConverterItemStack extends GenericConverterAdapter {
 
 	private ItemStackMetadataBuilder BUILDER = new ItemStackMetadataBuilder();
 
 	@Override
-	public Object fromLua(ITypeConvertersRegistry registry, Object o, Class<?> required) {
+	public Object fromLua(IConverter registry, Object o, Class<?> required) {
 		if (required == ItemStack.class && o instanceof Map) {
 			Map<?, ?> m = (Map<?, ?>)o;
 
@@ -47,7 +46,7 @@ public class ConverterItemStack implements ITypeConverter {
 	}
 
 	@Override
-	public Object toLua(ITypeConvertersRegistry registry, Object o) {
+	public Object toLua(IConverter registry, Object o) {
 		if (o instanceof ItemStack) {
 			Object meta = BUILDER.getItemStackMetadata((ItemStack)o);
 			return registry.toLua(meta);

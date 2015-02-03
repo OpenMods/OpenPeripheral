@@ -14,18 +14,20 @@ import li.cil.oc.api.detail.NetworkAPI;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
-import li.cil.oc.api.network.Environment;
-import li.cil.oc.api.network.ManagedEnvironment;
-import li.cil.oc.api.network.Visibility;
+import li.cil.oc.api.network.*;
 import openperipheral.adapter.*;
 import openperipheral.api.Constants;
-import openperipheral.api.ITypeConvertersRegistry;
+import openperipheral.api.architecture.IArchitectureAccess;
+import openperipheral.api.architecture.IAttachable;
+import openperipheral.api.architecture.oc.IOpenComputersAttachable;
+import openperipheral.api.converter.IConverter;
 import openperipheral.converter.TypeConvertersProvider;
 import openperipheral.interfaces.oc.asm.EnvironmentFactory;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Assert;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
@@ -45,6 +47,14 @@ public class EnvironmentGeneratorTest {
 	}
 
 	private abstract static class TargetClass implements InterfaceA, InterfaceB {
+
+	}
+
+	private abstract static class AwareTargetClass implements IOpenComputersAttachable, IAttachable {
+
+	}
+	
+	private abstract static class SemiAwareTargetClass implements IOpenComputersAttachable {
 
 	}
 
@@ -97,10 +107,10 @@ public class EnvironmentGeneratorTest {
 
 	@Test
 	public void test() throws Exception {
-		ITypeConvertersRegistry converter = mock(ITypeConvertersRegistry.class); // Dependency injection? Office hours only!
-		
+		IConverter converter = mock(IConverter.class); // Dependency injection? Office hours only!
+
 		configureApi();
-		
+
 		TypeConvertersProvider.INSTANCE.registerConverter(Constants.ARCH_OPEN_COMPUTERS, converter);
 
 		Map<String, Pair<IMethodExecutor, IMethodCall>> mocks = Maps.newHashMap();
@@ -139,6 +149,84 @@ public class EnvironmentGeneratorTest {
 		for (Map.Entry<String, Pair<IMethodExecutor, IMethodCall>> method : mocks.entrySet()) {
 			final Pair<IMethodExecutor, IMethodCall> value = method.getValue();
 			testMethod(target, o, cls, method.getKey(), value.getLeft(), value.getRight());
+		}
+	}
+
+	private interface ContextNode extends Context, Node {}
+
+	@Test
+	public void testConnectivity() throws Exception {
+		configureApi();
+
+		EnvironmentFactory generator = new EnvironmentFactory();
+
+		Map<String, IMethodExecutor> methods = Maps.newHashMap();
+		Class<? extends ManagedEnvironment> cls = generator.generateEnvironment("TestClass\u2653", AwareTargetClass.class, ImmutableSet.<Class<?>> of(), new WrappedEntityBase(methods));
+
+		final AwareTargetClass target = mock(AwareTargetClass.class);
+		ManagedEnvironment o = cls.getConstructor(AwareTargetClass.class).newInstance(target);
+
+		ContextNode contextNode = mock(ContextNode.class);
+		final String nodeAddress = "node_11";
+		when(contextNode.address()).thenReturn(nodeAddress);
+		when(contextNode.node()).thenReturn(contextNode);
+
+		o.onConnect(contextNode);
+
+		ArgumentCaptor<IArchitectureAccess> connectAccess = ArgumentCaptor.forClass(IArchitectureAccess.class);
+		verify(target).addComputer(connectAccess.capture());
+		Assert.assertEquals(nodeAddress, connectAccess.getValue().callerName());
+
+		{
+			ArgumentCaptor<Node> node = ArgumentCaptor.forClass(Node.class);
+			verify(target).onConnect(node.capture());
+			Assert.assertEquals(contextNode, node.getValue());
+		}
+
+		o.onDisconnect(contextNode);
+
+		ArgumentCaptor<IArchitectureAccess> disconnectAccess = ArgumentCaptor.forClass(IArchitectureAccess.class);
+		verify(target).removeComputer(disconnectAccess.capture());
+		Assert.assertEquals(connectAccess.getValue(), disconnectAccess.getValue()); // must be same object
+
+		{
+			ArgumentCaptor<Node> node = ArgumentCaptor.forClass(Node.class);
+			verify(target).onConnect(node.capture());
+			Assert.assertEquals(contextNode, node.getValue());
+		}
+	}
+	
+	@Test
+	public void testNodeConnectivity() throws Exception {
+		configureApi();
+
+		EnvironmentFactory generator = new EnvironmentFactory();
+
+		Map<String, IMethodExecutor> methods = Maps.newHashMap();
+		Class<? extends ManagedEnvironment> cls = generator.generateEnvironment("TestClass\u2654", SemiAwareTargetClass.class, ImmutableSet.<Class<?>> of(), new WrappedEntityBase(methods));
+
+		final SemiAwareTargetClass target = mock(SemiAwareTargetClass.class);
+		ManagedEnvironment o = cls.getConstructor(SemiAwareTargetClass.class).newInstance(target);
+
+		ContextNode contextNode = mock(ContextNode.class);
+		final String nodeAddress = "node_12";
+		when(contextNode.address()).thenReturn(nodeAddress);
+		when(contextNode.node()).thenReturn(contextNode);
+
+		o.onConnect(contextNode);
+
+		{
+			ArgumentCaptor<Node> node = ArgumentCaptor.forClass(Node.class);
+			verify(target).onConnect(node.capture());
+			Assert.assertEquals(contextNode, node.getValue());
+		}
+
+		o.onDisconnect(contextNode);
+
+		{
+			ArgumentCaptor<Node> node = ArgumentCaptor.forClass(Node.class);
+			verify(target).onConnect(node.capture());
+			Assert.assertEquals(contextNode, node.getValue());
 		}
 	}
 

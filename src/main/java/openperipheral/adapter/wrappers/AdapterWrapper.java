@@ -6,7 +6,7 @@ import java.util.List;
 import openmods.Log;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.method.MethodDeclaration;
-import openperipheral.api.LuaCallable;
+import openperipheral.api.adapter.method.LuaCallable;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;

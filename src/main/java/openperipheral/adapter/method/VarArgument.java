@@ -5,8 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import openperipheral.api.ITypeConvertersRegistry;
-import openperipheral.api.LuaArgType;
+import openperipheral.api.adapter.method.LuaArgType;
+import openperipheral.api.converter.IConverter;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
@@ -29,7 +29,7 @@ public class VarArgument extends Argument {
 	}
 
 	@Override
-	public Object convert(ITypeConvertersRegistry converter, Iterator<Object> args) {
+	public Object convert(IConverter converter, Iterator<Object> args) {
 		List<Object> allArgs = Lists.newArrayList(args);
 
 		Object vararg = Array.newInstance(javaType, allArgs.size());

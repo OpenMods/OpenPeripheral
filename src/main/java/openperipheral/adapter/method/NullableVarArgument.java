@@ -2,7 +2,7 @@ package openperipheral.adapter.method;
 
 import java.util.Map;
 
-import openperipheral.api.LuaArgType;
+import openperipheral.api.adapter.method.LuaArgType;
 
 import com.google.common.base.Preconditions;
 

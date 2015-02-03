@@ -1,6 +1,6 @@
 package openperipheral.adapter.method;
 
-import openperipheral.api.LuaArgType;
+import openperipheral.api.adapter.method.LuaArgType;
 
 import com.google.common.base.Preconditions;
 

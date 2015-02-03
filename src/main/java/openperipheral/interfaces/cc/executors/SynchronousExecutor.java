@@ -7,7 +7,7 @@ import openmods.utils.WorldUtils;
 import openmods.world.DelayedActionTickHandler;
 import openperipheral.adapter.AdapterLogicException;
 import openperipheral.adapter.IMethodExecutor;
-import openperipheral.api.IWorldProvider;
+import openperipheral.api.adapter.IWorldProvider;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;

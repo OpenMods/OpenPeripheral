@@ -7,7 +7,7 @@ import java.util.Set;
 import li.cil.oc.api.network.ManagedEnvironment;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.WrappedEntityBase;
-import openperipheral.api.ExposeInterface;
+import openperipheral.api.peripheral.ExposeInterface;
 import openperipheral.interfaces.oc.ModuleOpenComputers;
 import openperipheral.interfaces.oc.asm.EnvironmentFactory;
 import openperipheral.util.NameUtils;

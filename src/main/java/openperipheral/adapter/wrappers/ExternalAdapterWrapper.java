@@ -5,8 +5,8 @@ import java.lang.reflect.Method;
 import openperipheral.adapter.IMethodCall;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.method.MethodDeclaration;
-import openperipheral.api.IAdapter;
-import openperipheral.api.IAdapterWithConstraints;
+import openperipheral.api.adapter.IAdapter;
+import openperipheral.api.adapter.IAdapterWithConstraints;
 
 public class ExternalAdapterWrapper extends AdapterWrapper {
 

@@ -3,17 +3,16 @@ package openperipheral.converter;
 import java.util.List;
 import java.util.Map;
 
-import openperipheral.api.ITypeConverter;
-import openperipheral.api.ITypeConvertersRegistry;
+import openperipheral.api.converter.IConverter;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-public class ConverterList implements ITypeConverter {
+public class ConverterList extends GenericConverterAdapter {
 
 	@Override
-	public Object fromLua(ITypeConvertersRegistry registry, Object obj, Class<?> expected) {
+	public Object fromLua(IConverter registry, Object obj, Class<?> expected) {
 		if (obj instanceof Map && expected == List.class) {
 			@SuppressWarnings("unchecked")
 			Map<Object, Object> m = (Map<Object, Object>)obj;
@@ -50,7 +49,7 @@ public class ConverterList implements ITypeConverter {
 	}
 
 	@Override
-	public Object toLua(ITypeConvertersRegistry registry, Object obj) {
+	public Object toLua(IConverter registry, Object obj) {
 		if (obj instanceof List) {
 			Map<Integer, Object> ret = Maps.newHashMap();
 

@@ -3,8 +3,8 @@ package openperipheral.adapter.method;
 import java.util.Iterator;
 import java.util.Map;
 
-import openperipheral.api.ITypeConvertersRegistry;
-import openperipheral.api.LuaArgType;
+import openperipheral.api.adapter.method.LuaArgType;
+import openperipheral.api.converter.IConverter;
 
 import com.google.common.base.Preconditions;
 
@@ -21,7 +21,7 @@ public class OptionalArgument extends Argument {
 	}
 
 	@Override
-	public Object convert(ITypeConvertersRegistry converter, Iterator<Object> args) {
+	public Object convert(IConverter converter, Iterator<Object> args) {
 		if (!args.hasNext()) return null;
 
 		Object arg = args.next();

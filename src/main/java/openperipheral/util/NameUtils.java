@@ -7,7 +7,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import openmods.Log;
-import openperipheral.api.PeripheralTypeId;
+import openperipheral.api.peripheral.PeripheralTypeId;
 
 import org.apache.commons.lang3.StringUtils;
 

@@ -5,9 +5,12 @@ import openperipheral.adapter.AdapterRegistry;
 import openperipheral.adapter.composed.ComposedMethodsFactory;
 import openperipheral.adapter.composed.MethodSelector;
 import openperipheral.adapter.method.LuaTypeQualifier;
-import openperipheral.api.*;
+import openperipheral.api.Constants;
+import openperipheral.api.adapter.method.LuaArgType;
+import openperipheral.api.architecture.IArchitectureAccess;
+import openperipheral.api.converter.IConverter;
 import openperipheral.converter.TypeConvertersProvider;
-import openperipheral.interfaces.cc.providers.AdapterFactoryWrapper;
+import openperipheral.interfaces.cc.providers.AdapterFactoryWrapperCC;
 import openperipheral.interfaces.cc.providers.PeripheralProvider;
 import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.lua.ILuaContext;
@@ -37,7 +40,7 @@ public class ModuleComputerCraft {
 	}
 
 	public static void init() {
-		ITypeConvertersRegistry converter = new TypeConversionRegistryCC();
+		IConverter converter = new TypeConversionRegistryCC();
 		// CC converter is default one (legacy behaviour)
 		TypeConvertersProvider.INSTANCE.registerConverter(Constants.ARCH_COMPUTER_CRAFT, converter);
 
@@ -49,6 +52,6 @@ public class ModuleComputerCraft {
 	}
 
 	public static void installAPI(ApiProvider apiProvider) {
-		apiProvider.registerClass(AdapterFactoryWrapper.class);
+		apiProvider.registerClass(AdapterFactoryWrapperCC.class);
 	}
 }

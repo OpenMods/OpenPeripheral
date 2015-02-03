@@ -2,19 +2,24 @@ package openperipheral.interfaces.cc;
 
 import openperipheral.adapter.IMethodCall;
 import openperipheral.api.Constants;
-import openperipheral.api.IArchitectureAccess;
-import openperipheral.api.ITypeConvertersRegistry;
+import openperipheral.api.architecture.IArchitectureAccess;
+import openperipheral.api.converter.IConverter;
 import openperipheral.converter.TypeConvertersProvider;
 import openperipheral.interfaces.cc.wrappers.LuaObjectWrapper;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 
 public class ComputerCraftEnv {
 
-	private static IArchitectureAccess createAccess(final IComputerAccess access) {
+	public static IArchitectureAccess createAccess(final IComputerAccess access) {
 		return new IArchitectureAccess() {
 			@Override
 			public String architecture() {
 				return Constants.ARCH_COMPUTER_CRAFT;
+			}
+
+			@Override
+			public String callerName() {
+				return Integer.toString(access.getID());
 			}
 
 			@Override
@@ -36,7 +41,7 @@ public class ComputerCraftEnv {
 	}
 
 	public static IMethodCall addCommonArgs(IMethodCall call) {
-		final ITypeConvertersRegistry converter = TypeConvertersProvider.INSTANCE.getConverter(Constants.ARCH_COMPUTER_CRAFT);
+		final IConverter converter = TypeConvertersProvider.INSTANCE.getConverter(Constants.ARCH_COMPUTER_CRAFT);
 		return call.setOptionalArg(Constants.ARG_CONVERTER, converter);
 	}
 

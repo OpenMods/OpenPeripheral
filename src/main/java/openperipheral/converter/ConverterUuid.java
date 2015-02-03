@@ -2,19 +2,18 @@ package openperipheral.converter;
 
 import java.util.UUID;
 
-import openperipheral.api.ITypeConverter;
-import openperipheral.api.ITypeConvertersRegistry;
+import openperipheral.api.converter.IConverter;
 
-public class ConverterUuid implements ITypeConverter {
+public class ConverterUuid extends GenericConverterAdapter {
 
 	@Override
-	public Object fromLua(ITypeConvertersRegistry registry, Object obj, Class<?> expected) {
+	public Object fromLua(IConverter registry, Object obj, Class<?> expected) {
 		if (expected == UUID.class && obj instanceof String) return UUID.fromString((String)obj);
 		return null;
 	}
 
 	@Override
-	public Object toLua(ITypeConvertersRegistry registry, Object obj) {
+	public Object toLua(IConverter registry, Object obj) {
 		if (obj instanceof UUID) return obj.toString();
 		return null;
 	}

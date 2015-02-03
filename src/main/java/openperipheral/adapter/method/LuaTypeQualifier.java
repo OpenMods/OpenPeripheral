@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import openmods.reflection.TypeUtils;
-import openperipheral.api.LuaArgType;
+import openperipheral.api.adapter.method.LuaArgType;
 
 import com.google.common.collect.Lists;
 

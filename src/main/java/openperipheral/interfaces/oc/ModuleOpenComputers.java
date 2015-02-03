@@ -3,12 +3,17 @@ package openperipheral.interfaces.oc;
 import li.cil.oc.api.Driver;
 import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.machine.Value;
+import openperipheral.ApiProvider;
 import openperipheral.adapter.AdapterRegistry;
 import openperipheral.adapter.composed.ComposedMethodsFactory;
 import openperipheral.adapter.composed.MethodSelector;
 import openperipheral.adapter.method.LuaTypeQualifier;
-import openperipheral.api.*;
+import openperipheral.api.Constants;
+import openperipheral.api.adapter.method.LuaArgType;
+import openperipheral.api.architecture.IArchitectureAccess;
+import openperipheral.api.converter.IConverter;
 import openperipheral.converter.TypeConvertersProvider;
+import openperipheral.interfaces.cc.providers.AdapterFactoryWrapperCC;
 import openperipheral.interfaces.oc.providers.DriverOpenPeripheral;
 
 public class ModuleOpenComputers {
@@ -33,7 +38,7 @@ public class ModuleOpenComputers {
 	}
 
 	public static void init() {
-		ITypeConvertersRegistry converter = new TypeConversionRegistryOC();
+		IConverter converter = new TypeConversionRegistryOC();
 		TypeConvertersProvider.INSTANCE.registerConverter(Constants.ARCH_OPEN_COMPUTERS, converter);
 
 		LuaTypeQualifier.registerType(Value.class, LuaArgType.OBJECT);
@@ -41,5 +46,9 @@ public class ModuleOpenComputers {
 
 	public static void registerProvider() {
 		Driver.add(new DriverOpenPeripheral());
+	}
+
+	public static void installAPI(ApiProvider apiProvider) {
+		apiProvider.registerClass(AdapterFactoryWrapperCC.class);
 	}
 }

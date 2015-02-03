@@ -6,12 +6,16 @@ import java.util.Map;
 
 import net.minecraft.tileentity.TileEntity;
 import openmods.Log;
+import openmods.utils.CachedFactory;
 import openperipheral.adapter.AdapterLogicException;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.WrappedEntityBase;
-import openperipheral.api.IAttachable;
-import openperipheral.api.IOpenPeripheral;
-import openperipheral.api.IWorldProvider;
+import openperipheral.api.adapter.IWorldProvider;
+import openperipheral.api.architecture.IArchitectureAccess;
+import openperipheral.api.architecture.IAttachable;
+import openperipheral.api.architecture.cc.IComputerCraftAttachable;
+import openperipheral.api.peripheral.IOpenPeripheral;
+import openperipheral.interfaces.cc.ComputerCraftEnv;
 import openperipheral.interfaces.cc.ResourceMount;
 import openperipheral.interfaces.cc.executors.*;
 import openperipheral.interfaces.cc.executors.SynchronousExecutor.TileEntityExecutor;
@@ -37,6 +41,13 @@ public class AdapterPeripheral extends WrappedEntityBase implements IPeripheral,
 	protected final String type;
 	protected final Object target;
 	private final List<PeripheralExecutor<?>> executors;
+
+	private final CachedFactory<IComputerAccess, IArchitectureAccess> accessCache = new CachedFactory<IComputerAccess, IArchitectureAccess>() {
+		@Override
+		protected IArchitectureAccess create(IComputerAccess computer) {
+			return ComputerCraftEnv.createAccess(computer);
+		}
+	};
 
 	public AdapterPeripheral(Map<String, IMethodExecutor> methods, Object target) {
 		super(methods);
@@ -99,12 +110,21 @@ public class AdapterPeripheral extends WrappedEntityBase implements IPeripheral,
 	@Override
 	public void attach(IComputerAccess computer) {
 		computer.mount(MOUNT_NAME, AdapterPeripheral.MOUNT);
-		if (target instanceof IAttachable) ((IAttachable)target).addComputer(computer);
+		if (target instanceof IAttachable) {
+			IArchitectureAccess access = accessCache.getOrCreate(computer);
+			((IAttachable)target).addComputer(access);
+		}
+		if (target instanceof IComputerCraftAttachable) ((IComputerCraftAttachable)target).addComputer(computer);
 	}
 
 	@Override
 	public void detach(IComputerAccess computer) {
-		if (target instanceof IAttachable) ((IAttachable)target).removeComputer(computer);
+		if (target instanceof IAttachable) {
+			IArchitectureAccess access = accessCache.remove(computer);
+			if (access != null) ((IAttachable)target).removeComputer(access);
+		}
+
+		if (target instanceof IComputerCraftAttachable) ((IComputerCraftAttachable)target).removeComputer(computer);
 	}
 
 	@Override

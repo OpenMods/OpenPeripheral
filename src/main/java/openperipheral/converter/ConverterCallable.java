@@ -2,13 +2,12 @@ package openperipheral.converter;
 
 import java.util.Map;
 
-import openperipheral.api.ITypeConverter;
-import openperipheral.api.ITypeConvertersRegistry;
-import openperipheral.api.LuaObject;
+import openperipheral.api.adapter.method.LuaObject;
+import openperipheral.api.converter.IConverter;
 
 import com.google.common.collect.Maps;
 
-public abstract class ConverterCallable implements ITypeConverter {
+public abstract class ConverterCallable extends GenericConverterAdapter {
 
 	private final Map<Class<?>, Boolean> cache = Maps.newHashMap();
 
@@ -24,14 +23,14 @@ public abstract class ConverterCallable implements ITypeConverter {
 	}
 
 	@Override
-	public Object fromLua(ITypeConvertersRegistry registry, Object obj, Class<?> expected) {
+	public Object fromLua(IConverter registry, Object obj, Class<?> expected) {
 		return null;
 	}
 
 	protected abstract Object wrap(Object o);
 
 	@Override
-	public Object toLua(ITypeConvertersRegistry registry, Object obj) {
+	public Object toLua(IConverter registry, Object obj) {
 		if (isCallable(obj.getClass())) return wrap(obj);
 
 		return null;

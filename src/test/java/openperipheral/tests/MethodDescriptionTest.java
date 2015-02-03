@@ -4,7 +4,8 @@ import java.lang.reflect.Method;
 import java.util.*;
 
 import openperipheral.adapter.method.MethodDeclaration;
-import openperipheral.api.*;
+import openperipheral.api.adapter.method.*;
+import openperipheral.api.helpers.MultiReturn;
 
 import org.junit.Assert;
 import org.junit.Test;

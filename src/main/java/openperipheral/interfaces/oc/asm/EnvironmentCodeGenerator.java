@@ -7,8 +7,11 @@ import java.util.Set;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
+import li.cil.oc.api.network.Node;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.WrappedEntityBase;
+import openperipheral.api.architecture.IAttachable;
+import openperipheral.api.architecture.oc.IOpenComputersAttachable;
 
 import org.objectweb.asm.*;
 import org.objectweb.asm.commons.Method;
@@ -35,6 +38,12 @@ public class EnvironmentCodeGenerator {
 
 	private static final Type CALLBACK_TYPE = Type.getType(Callback.class);
 
+	public static final Type ATTACHABLE_TYPE = Type.getType(IAttachable.class);
+
+	public static final Type NODE_TYPE = Type.getType(Node.class);
+
+	public static final Type OC_ATTACHABLE_TYPE = Type.getType(IOpenComputersAttachable.class);
+
 	public static final Type SUPER_CTOR_TYPE = Type.getMethodType(Type.VOID_TYPE, OBJECT_TYPE);
 
 	public static final Type GET_METHOD_TYPE = Type.getMethodType(EXECUTOR_TYPE, Type.INT_TYPE);
@@ -42,6 +51,12 @@ public class EnvironmentCodeGenerator {
 	public static final Type CALL_TYPE = Type.getMethodType(OBJECTS_TYPE, OBJECT_TYPE, EXECUTOR_TYPE, CONTEXT_TYPE, ARGUMENTS_TYPE);
 
 	public static final Type WRAP_TYPE = Type.getMethodType(OBJECTS_TYPE, CONTEXT_TYPE, ARGUMENTS_TYPE);
+
+	public static final Type ATTACHABLE_WRAP_TYPE = Type.getMethodType(Type.VOID_TYPE, ATTACHABLE_TYPE, NODE_TYPE);
+
+	public static final Type OC_ATTACHABLE_WRAP_TYPE = Type.getMethodType(Type.VOID_TYPE, OC_ATTACHABLE_TYPE, NODE_TYPE);
+
+	public static final Type CONNECTIVITY_METHOD_TYPE = Type.getMethodType(Type.VOID_TYPE, NODE_TYPE);
 
 	private static void visitIntConst(MethodVisitor mv, int value) {
 		switch (value) {
@@ -131,7 +146,10 @@ public class EnvironmentCodeGenerator {
 
 			av.visitEnd();
 
+			wrap.visitCode();
+
 			wrap.visitVarInsn(Opcodes.ALOAD, 0); // this
+			wrap.visitInsn(Opcodes.DUP);
 			wrap.visitFieldInsn(Opcodes.GETFIELD, clsName, TARGET_FIELD, targetType.getDescriptor());
 
 			wrap.visitFieldInsn(Opcodes.GETSTATIC, clsName, EnvironmentBase.METHODS_FIELD, EXECUTORS_TYPE.getDescriptor());
@@ -140,7 +158,7 @@ public class EnvironmentCodeGenerator {
 
 			wrap.visitVarInsn(Opcodes.ALOAD, 1); // context
 			wrap.visitVarInsn(Opcodes.ALOAD, 2); // args
-			wrap.visitMethodInsn(Opcodes.INVOKESTATIC, BASE_TYPE.getInternalName(), "call", CALL_TYPE.getDescriptor());
+			wrap.visitMethodInsn(Opcodes.INVOKEVIRTUAL, clsName, "call", CALL_TYPE.getDescriptor());
 			wrap.visitInsn(Opcodes.ARETURN);
 
 			wrap.visitMaxs(0, 0);
@@ -148,9 +166,44 @@ public class EnvironmentCodeGenerator {
 			wrap.visitEnd();
 		}
 
+		final boolean isAttachable = IAttachable.class.isAssignableFrom(targetClass);
+		final boolean isOcAttachable = IOpenComputersAttachable.class.isAssignableFrom(targetClass);
+
+		if (isAttachable || isOcAttachable) {
+			visitConnectivityMethod("onConnect", clsName, writer, targetType, isAttachable, isOcAttachable);
+			visitConnectivityMethod("onDisconnect", clsName, writer, targetType, isAttachable, isOcAttachable);
+		}
+
 		writer.visitEnd();
 
 		return writer.toByteArray();
+	}
+
+	@SuppressWarnings("deprecation")
+	protected void visitConnectivityMethod(String methodName, String clsName, ClassWriter writer, Type targetType, final boolean isAttachable, final boolean isOcAttachable) {
+		MethodVisitor onConnect = writer.visitMethod(Opcodes.ACC_PUBLIC | Opcodes.ACC_SYNTHETIC, methodName, CONNECTIVITY_METHOD_TYPE.getDescriptor(), null, null);
+
+		onConnect.visitCode();
+
+		if (isAttachable) {
+			onConnect.visitVarInsn(Opcodes.ALOAD, 0);
+			onConnect.visitInsn(Opcodes.DUP);
+			onConnect.visitFieldInsn(Opcodes.GETFIELD, clsName, TARGET_FIELD, targetType.getDescriptor());
+			onConnect.visitVarInsn(Opcodes.ALOAD, 1);
+			onConnect.visitMethodInsn(Opcodes.INVOKEVIRTUAL, clsName, methodName, ATTACHABLE_WRAP_TYPE.getDescriptor());
+		}
+
+		if (isOcAttachable) {
+			onConnect.visitVarInsn(Opcodes.ALOAD, 0);
+			onConnect.visitFieldInsn(Opcodes.GETFIELD, clsName, TARGET_FIELD, targetType.getDescriptor());
+			onConnect.visitVarInsn(Opcodes.ALOAD, 1);
+			onConnect.visitMethodInsn(Opcodes.INVOKESTATIC, clsName, methodName, OC_ATTACHABLE_WRAP_TYPE.getDescriptor());
+		}
+
+		onConnect.visitInsn(Opcodes.RETURN);
+
+		onConnect.visitMaxs(0, 0);
+		onConnect.visitEnd();
 	}
 
 	private static String[] getInterfaces(Set<Class<?>> exposedInterfaces) {

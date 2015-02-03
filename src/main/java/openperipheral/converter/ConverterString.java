@@ -1,19 +1,18 @@
 package openperipheral.converter;
 
-import openperipheral.api.ITypeConverter;
-import openperipheral.api.ITypeConvertersRegistry;
+import openperipheral.api.converter.IConverter;
 
-public class ConverterString implements ITypeConverter {
+public class ConverterString extends GenericConverterAdapter {
 
 	@Override
-	public Object fromLua(ITypeConvertersRegistry registry, Object obj, Class<?> expected) {
+	public Object fromLua(IConverter registry, Object obj, Class<?> expected) {
 		if (expected == String.class) return obj.toString();
 
 		return null;
 	}
 
 	@Override
-	public Object toLua(ITypeConvertersRegistry registry, Object obj) {
+	public Object toLua(IConverter registry, Object obj) {
 		return obj.toString(); // catch-all
 	}
 

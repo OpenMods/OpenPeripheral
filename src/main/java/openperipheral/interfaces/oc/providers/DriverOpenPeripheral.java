@@ -14,7 +14,7 @@ import com.google.common.collect.Maps;
 
 public class DriverOpenPeripheral implements li.cil.oc.api.driver.Block {
 
-	private final EnvironmentProvider provider = new EnvironmentProvider();
+	public static final EnvironmentProvider PROVIDER = new EnvironmentProvider();
 
 	private final Map<Class<?>, Boolean> cache = Maps.newHashMap();
 
@@ -49,7 +49,7 @@ public class DriverOpenPeripheral implements li.cil.oc.api.driver.Block {
 			return null;
 		}
 
-		return provider.createEnvironment(te);
+		return PROVIDER.createEnvironment(te);
 	}
 
 }

@@ -4,6 +4,7 @@ import java.util.Map;
 
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Context;
+import li.cil.oc.api.machine.Value;
 import li.cil.oc.api.network.ManagedPeripheral;
 import li.cil.oc.api.prefab.AbstractValue;
 import openperipheral.adapter.IMethodExecutor;
@@ -62,7 +63,7 @@ public class ManagedPeripheralWrapper {
 
 	}
 
-	public static ManagedPeripheral wrap(Object target) {
+	public static Value wrap(Object target) {
 		Preconditions.checkNotNull(target, "Can't wrap null");
 		Map<String, IMethodExecutor> methods = ModuleOpenComputers.OBJECT_METHODS_FACTORY.getAdaptedClass(target.getClass());
 		return methods.isEmpty()? null : new ObjectWrap(target, methods);

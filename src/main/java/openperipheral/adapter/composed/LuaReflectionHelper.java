@@ -5,7 +5,10 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Map;
 
-import openperipheral.api.*;
+import openperipheral.api.adapter.Asynchronous;
+import openperipheral.api.adapter.method.Env;
+import openperipheral.api.adapter.method.LuaCallable;
+import openperipheral.api.adapter.method.LuaReturnType;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;

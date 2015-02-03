@@ -1,5 +1,9 @@
 package openperipheral.api;
 
+import openperipheral.api.adapter.method.Env;
+import openperipheral.api.architecture.IArchitectureAccess;
+import openperipheral.api.converter.IConverter;
+
 /**
  * Various constants used in API methods.
  */
@@ -24,7 +28,7 @@ public class Constants {
 	public static final String ARG_COMPUTER = "computer";
 
 	/**
-	 * Environment variable (see {@link Env} for type converter ({@link ITypeConvertersRegistry}).
+	 * Environment variable (see {@link Env} for type converter ({@link IConverter}).
 	 * Returned instance will be valid for current architecture
 	 */
 	public static final String ARG_CONVERTER = "converter";

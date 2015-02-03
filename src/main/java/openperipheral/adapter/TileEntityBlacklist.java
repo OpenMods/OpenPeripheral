@@ -6,8 +6,8 @@ import openmods.Log;
 import openmods.config.properties.ConfigurationChange;
 import openperipheral.ApiSingleton;
 import openperipheral.Config;
-import openperipheral.api.IPeripheralBlacklist;
-import openperipheral.api.Ignore;
+import openperipheral.api.peripheral.IPeripheralBlacklist;
+import openperipheral.api.peripheral.Ignore;
 
 import com.google.common.collect.Sets;
 

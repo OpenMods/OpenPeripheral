@@ -12,7 +12,9 @@ import openmods.utils.AnnotationMap;
 import openperipheral.adapter.AdapterLogicException;
 import openperipheral.adapter.IDescriptable;
 import openperipheral.adapter.IMethodCall;
-import openperipheral.api.*;
+import openperipheral.api.Constants;
+import openperipheral.api.adapter.method.*;
+import openperipheral.api.converter.IConverter;
 
 import org.apache.logging.log4j.Level;
 
@@ -193,11 +195,11 @@ public class MethodDeclaration implements IDescriptable {
 		}
 	}
 
-	private static Object[] convertMultiResult(ITypeConvertersRegistry converter, IMultiReturn result) {
+	private static Object[] convertMultiResult(IConverter converter, IMultiReturn result) {
 		return convertVarResult(converter, result.getObjects());
 	}
 
-	private static Object[] convertCollectionResult(ITypeConvertersRegistry converter, Collection<?> result) {
+	private static Object[] convertCollectionResult(IConverter converter, Collection<?> result) {
 		Object[] tmp = new Object[result.size()];
 		int i = 0;
 		for (Object o : result)
@@ -206,7 +208,7 @@ public class MethodDeclaration implements IDescriptable {
 		return tmp;
 	}
 
-	private static Object[] convertArrayResult(ITypeConvertersRegistry converter, Object array) {
+	private static Object[] convertArrayResult(IConverter converter, Object array) {
 		int length = Array.getLength(array);
 		Object[] result = new Object[length];
 
@@ -216,14 +218,14 @@ public class MethodDeclaration implements IDescriptable {
 		return result;
 	}
 
-	private static Object[] convertVarResult(ITypeConvertersRegistry converter, Object... result) {
+	private static Object[] convertVarResult(IConverter converter, Object... result) {
 		for (int i = 0; i < result.length; i++)
 			result[i] = converter.toLua(result[i]);
 
 		return result;
 	}
 
-	private Object[] convertResult(ITypeConvertersRegistry converter, Object result) {
+	private Object[] convertResult(IConverter converter, Object result) {
 		if (result instanceof IMultiReturn) return convertMultiResult(converter, (IMultiReturn)result);
 
 		if (multipleReturn) {
@@ -239,7 +241,7 @@ public class MethodDeclaration implements IDescriptable {
 		private final boolean[] isSet = new boolean[argCount];
 		private final Object target;
 
-		private ITypeConvertersRegistry converter;
+		private IConverter converter;
 
 		public CallWrap(Object target) {
 			this.target = target;
@@ -256,7 +258,7 @@ public class MethodDeclaration implements IDescriptable {
 
 		@Override
 		public IMethodCall setOptionalArg(String name, Object value) {
-			if (Constants.ARG_CONVERTER.equals(name)) this.converter = (ITypeConvertersRegistry)value;
+			if (Constants.ARG_CONVERTER.equals(name)) this.converter = (IConverter)value;
 
 			OptionalArg arg = optionalArgs.get(name);
 			if (arg != null) {

@@ -4,20 +4,19 @@ import java.util.Map;
 
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-import openperipheral.api.ITypeConverter;
-import openperipheral.api.ITypeConvertersRegistry;
+import openperipheral.api.converter.IConverter;
 
 import com.google.common.collect.Maps;
 
-public class ConverterFluidStack implements ITypeConverter {
+public class ConverterFluidStack extends GenericConverterAdapter {
 
 	@Override
-	public Object fromLua(ITypeConvertersRegistry registry, Object obj, Class<?> expected) {
+	public Object fromLua(IConverter registry, Object obj, Class<?> expected) {
 		return null;
 	}
 
 	@Override
-	public Object toLua(ITypeConvertersRegistry registry, Object obj) {
+	public Object toLua(IConverter registry, Object obj) {
 		if (obj instanceof FluidStack) {
 			FluidStack fluidStack = (FluidStack)obj;
 			Map<String, Object> result = Maps.newHashMap();

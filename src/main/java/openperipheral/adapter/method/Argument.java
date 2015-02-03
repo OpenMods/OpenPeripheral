@@ -4,8 +4,8 @@ import java.util.Iterator;
 import java.util.Map;
 
 import openperipheral.adapter.IDescriptable;
-import openperipheral.api.ITypeConvertersRegistry;
-import openperipheral.api.LuaArgType;
+import openperipheral.api.adapter.method.LuaArgType;
+import openperipheral.api.converter.IConverter;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
@@ -29,14 +29,14 @@ public class Argument {
 		return javaArgClass;
 	}
 
-	public Object convert(ITypeConvertersRegistry converter, Iterator<Object> args) {
+	public Object convert(IConverter converter, Iterator<Object> args) {
 		Preconditions.checkArgument(args.hasNext(), "Not enough arguments, first missing: %s", name);
 		Object arg = args.next();
 		Preconditions.checkArgument(arg != null, "Argument %s cannot be null", name);
 		return convertSingleArg(converter, arg);
 	}
 
-	protected final Object convertSingleArg(ITypeConvertersRegistry converter, Object o) {
+	protected final Object convertSingleArg(IConverter converter, Object o) {
 		if (o == null) return null;
 		Object converted = converter.fromLua(o, javaType);
 		Preconditions.checkArgument(converted != null, "Failed to convert arg '%s' value '%s' to '%s'", name, o, javaType.getSimpleName());

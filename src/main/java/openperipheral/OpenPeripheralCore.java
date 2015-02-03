@@ -8,7 +8,7 @@ import net.minecraftforge.common.config.Configuration;
 import openmods.Mods;
 import openmods.config.properties.ConfigProcessing;
 import openperipheral.adapter.TileEntityBlacklist;
-import openperipheral.api.IOpenPeripheral;
+import openperipheral.api.peripheral.IOpenPeripheral;
 import openperipheral.interfaces.cc.ModuleComputerCraft;
 import openperipheral.interfaces.oc.ModuleOpenComputers;
 import cpw.mods.fml.common.Loader;

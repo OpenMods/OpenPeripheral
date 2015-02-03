@@ -4,8 +4,8 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.Set;
 
-import openperipheral.api.Asynchronous;
-import openperipheral.api.ExcludeArchitecture;
+import openperipheral.api.adapter.Asynchronous;
+import openperipheral.api.architecture.ExcludeArchitecture;
 
 import com.google.common.collect.ImmutableSet;
 

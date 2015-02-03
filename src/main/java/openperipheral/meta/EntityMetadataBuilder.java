@@ -5,8 +5,8 @@ import java.util.Map;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Vec3;
 import openperipheral.ApiImplementation;
-import openperipheral.api.IEntityMetaBuilder;
-import openperipheral.api.IEntityMetaProvider;
+import openperipheral.api.meta.IEntityMetaBuilder;
+import openperipheral.api.meta.IEntityMetaProvider;
 
 import com.google.common.collect.Maps;
 
