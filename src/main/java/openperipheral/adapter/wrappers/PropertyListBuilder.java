@@ -13,7 +13,7 @@ import openperipheral.api.Constants;
 import openperipheral.api.adapter.CallbackProperty;
 import openperipheral.api.adapter.IPropertyCallback;
 import openperipheral.api.adapter.Property;
-import openperipheral.api.adapter.method.LuaArgType;
+import openperipheral.api.adapter.method.ArgType;
 import openperipheral.api.converter.IConverter;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -110,11 +110,11 @@ public class PropertyListBuilder {
 	public abstract static class FieldContext implements IDescriptable {
 		private final String name;
 		protected final String description;
-		protected LuaArgType type;
+		protected ArgType type;
 		protected final Field field;
 		private final String source;
 
-		protected FieldContext(String name, String description, LuaArgType type, Field field, String source) {
+		protected FieldContext(String name, String description, ArgType type, Field field, String source) {
 			this.name = name;
 			this.description = description;
 			this.type = type;
@@ -150,7 +150,7 @@ public class PropertyListBuilder {
 
 	private abstract static class GetterContext extends FieldContext {
 
-		protected GetterContext(String capitalizedName, String description, LuaArgType type, Field field, String source) {
+		protected GetterContext(String capitalizedName, String description, ArgType type, Field field, String source) {
 			super("get" + capitalizedName, description, type, field, source);
 		}
 
@@ -182,7 +182,7 @@ public class PropertyListBuilder {
 
 	private abstract static class SetterContext extends FieldContext {
 
-		protected SetterContext(String capitalizedName, String description, LuaArgType type, Field field, String source) {
+		protected SetterContext(String capitalizedName, String description, ArgType type, Field field, String source) {
 			super("set" + capitalizedName, description, type, field, source);
 		}
 
@@ -221,7 +221,7 @@ public class PropertyListBuilder {
 	}
 
 	private static class DefaultGetterContext extends GetterContext {
-		protected DefaultGetterContext(String capitalizedName, String description, LuaArgType type, Field field, String source) {
+		protected DefaultGetterContext(String capitalizedName, String description, ArgType type, Field field, String source) {
 			super(capitalizedName, description, type, field, source);
 		}
 
@@ -232,7 +232,7 @@ public class PropertyListBuilder {
 	}
 
 	private static class DefaultSetterContext extends SetterContext {
-		protected DefaultSetterContext(String capitalizedName, String description, LuaArgType type, Field field, String source) {
+		protected DefaultSetterContext(String capitalizedName, String description, ArgType type, Field field, String source) {
 			super(capitalizedName, description, type, field, source);
 		}
 
@@ -244,7 +244,7 @@ public class PropertyListBuilder {
 
 	private static class DelegatingGetterContext extends GetterContext {
 
-		protected DelegatingGetterContext(String capitalizedName, String description, LuaArgType type, Field field, String source) {
+		protected DelegatingGetterContext(String capitalizedName, String description, ArgType type, Field field, String source) {
 			super(capitalizedName, description, type, field, source);
 		}
 
@@ -257,7 +257,7 @@ public class PropertyListBuilder {
 
 	private static class DelegatingSetterContext extends SetterContext {
 
-		protected DelegatingSetterContext(String capitalizedName, String description, LuaArgType type, Field field, String source) {
+		protected DelegatingSetterContext(String capitalizedName, String description, ArgType type, Field field, String source) {
 			super(capitalizedName, description, type, field, source);
 		}
 
@@ -272,12 +272,12 @@ public class PropertyListBuilder {
 		public IMethodExecutor createExecutor(FieldContext context);
 	}
 
-	private static ImmutablePair<GetterContext, SetterContext> createContexts(Field field, String source, String name, LuaArgType type, String getterDescription, String setterDescription, boolean isDelegating, boolean readOnly) {
+	private static ImmutablePair<GetterContext, SetterContext> createContexts(Field field, String source, String name, ArgType type, String getterDescription, String setterDescription, boolean isDelegating, boolean readOnly) {
 		int modifiers = field.getModifiers();
 		Preconditions.checkArgument((readOnly || !Modifier.isFinal(modifiers)) && !Modifier.isStatic(modifiers), "Field marked with @Property can't be either final or static");
 		field.setAccessible(true);
 
-		if (type == LuaArgType.AUTO) {
+		if (type == ArgType.AUTO) {
 			Class<?> fieldType = field.getType();
 			type = LuaTypeQualifier.qualifyArgType(fieldType);
 		}

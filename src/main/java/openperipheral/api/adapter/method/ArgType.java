@@ -1,6 +1,6 @@
 package openperipheral.api.adapter.method;
 
-public enum LuaArgType {
+public enum ArgType {
 
 	TABLE,
 	NUMBER,

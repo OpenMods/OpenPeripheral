@@ -2,7 +2,7 @@ package openperipheral.converter;
 
 import java.util.Map;
 
-import openperipheral.api.adapter.method.LuaObject;
+import openperipheral.api.adapter.method.ScriptObject;
 import openperipheral.api.converter.IConverter;
 
 import com.google.common.collect.Maps;
@@ -15,7 +15,7 @@ public abstract class ConverterCallable extends GenericConverterAdapter {
 		Boolean result = cache.get(cls);
 
 		if (result == null) {
-			result = cls.isAnnotationPresent(LuaObject.class);
+			result = cls.isAnnotationPresent(ScriptObject.class);
 			cache.put(cls, result);
 		}
 

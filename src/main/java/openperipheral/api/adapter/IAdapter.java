@@ -1,6 +1,6 @@
 package openperipheral.api.adapter;
 
-import openperipheral.api.adapter.method.LuaCallable;
+import openperipheral.api.adapter.method.ScriptCallable;
 
 /**
  * Base for peripheral and object adapters
@@ -14,7 +14,7 @@ public abstract interface IAdapter {
 
 	/**
 	 * Return target class for this adapter.
-	 * It will be used to determine if methods marked with {@link LuaCallable} in implementing class are applicable to instances of returned class.
+	 * It will be used to determine if methods marked with {@link ScriptCallable} in implementing class are applicable to instances of returned class.
 	 */
 	public Class<?> getTargetClass();
 }

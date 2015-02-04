@@ -9,7 +9,7 @@ import openperipheral.api.Constants;
  * Available variable names and expected types of argument depend on context. See {@link Constants} for possible values and type.
  *
  *
- * Selecting some values will exclude method from not supporting architectures (e.g. {@link Constants#ARG_COMPUTER} will hide this method from OpenComputers).
+ * Selecting some values will exclude method from not supporting architectures (e.g. using {@link Constants#ARG_COMPUTER} will hide this method from OpenComputers).
  *
  * @see Arg
  */

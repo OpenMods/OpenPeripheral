@@ -45,7 +45,7 @@ public class MethodDeclaration implements IDescriptable {
 	private final String source;
 	private final Method method;
 	private final String description;
-	private final LuaReturnType[] returnTypes;
+	private final ReturnType[] returnTypes;
 
 	private final boolean validateReturn;
 
@@ -59,12 +59,12 @@ public class MethodDeclaration implements IDescriptable {
 
 	private final int argCount;
 
-	private static List<String> getNames(Method method, LuaCallable meta) {
+	private static List<String> getNames(Method method, ScriptCallable meta) {
 		ImmutableList.Builder<String> names = ImmutableList.builder();
 
 		String mainName = meta.name();
 
-		if (LuaCallable.USE_METHOD_NAME.equals(mainName)) names.add(method.getName());
+		if (ScriptCallable.USE_METHOD_NAME.equals(mainName)) names.add(method.getName());
 		else names.add(mainName);
 
 		Alias alias = method.getAnnotation(Alias.class);
@@ -80,7 +80,7 @@ public class MethodDeclaration implements IDescriptable {
 
 	}
 
-	public MethodDeclaration(Method method, LuaCallable meta, String source) {
+	public MethodDeclaration(Method method, ScriptCallable meta, String source) {
 		this.method = method;
 		this.source = source;
 
@@ -159,8 +159,8 @@ public class MethodDeclaration implements IDescriptable {
 
 		final int returnLength = returnTypes.length;
 
-		for (LuaReturnType t : returnTypes) {
-			Preconditions.checkArgument(t != LuaReturnType.VOID, "Method '%s' declares Void as return type. Use empty list instead.", method);
+		for (ReturnType t : returnTypes) {
+			Preconditions.checkArgument(t != ReturnType.VOID, "Method '%s' declares Void as return type. Use empty list instead.", method);
 		}
 
 		if (javaReturn == void.class) {
@@ -180,7 +180,7 @@ public class MethodDeclaration implements IDescriptable {
 		}
 	}
 
-	private static void checkReturnType(int argIndex, LuaReturnType expected, Object actual) {
+	private static void checkReturnType(int argIndex, ReturnType expected, Object actual) {
 		final Class<?> expectedJava = expected.getJavaType();
 		Preconditions.checkArgument(actual == null || expectedJava.isInstance(actual) || TypeUtils.compareTypes(expectedJava, actual.getClass()), "Invalid type of return value %s: expected %s, got %s", argIndex, expected, actual);
 	}
@@ -377,7 +377,7 @@ public class MethodDeclaration implements IDescriptable {
 
 		{
 			List<String> returns = Lists.newArrayList();
-			for (LuaReturnType t : returnTypes)
+			for (ReturnType t : returnTypes)
 				returns.add(t.toString());
 			result.put(IDescriptable.RETURN_TYPES, returns);
 		}
@@ -426,7 +426,7 @@ public class MethodDeclaration implements IDescriptable {
 
 		List<String> returns = Lists.newArrayList();
 
-		for (LuaReturnType r : returnTypes)
+		for (ReturnType r : returnTypes)
 			returns.add(r.getName());
 
 		String ret = returns.size() == 1? returns.get(0) : ("(" + Joiner.on(',').join(returns) + ")");

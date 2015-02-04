@@ -6,7 +6,7 @@ import openperipheral.api.adapter.Asynchronous;
 import openperipheral.api.adapter.IAdapter;
 
 /**
- * Used to mark methods that should be visible in Lua.
+ * Used to mark methods that should be visible in script.
  *
  * When used in inline adapters (defined inside class), accepted arguments are
  * <ul>
@@ -28,7 +28,7 @@ import openperipheral.api.adapter.IAdapter;
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface LuaCallable {
+public @interface ScriptCallable {
 	public static final String USE_METHOD_NAME = "[none set]";
 
 	/**
@@ -39,9 +39,9 @@ public @interface LuaCallable {
 	String description() default "";
 
 	/**
-	 * List of types expected to be returned from call. Empty list marks no results. Using {@link LuaReturnType#VOID} in this list will cause error
+	 * List of types expected to be returned from call. Empty list marks no results. Using {@link ReturnType#VOID} in this list will cause error
 	 */
-	LuaReturnType[] returnTypes() default {};
+	ReturnType[] returnTypes() default {};
 
 	/**
 	 * Should return values be validated using types from {@link #returnTypes()}

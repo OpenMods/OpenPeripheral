@@ -24,7 +24,7 @@ public class MethodsListerHelper {
 		this.sources = sources;
 	}
 
-	@LuaCallable(returnTypes = LuaReturnType.STRING, description = "List all the methods available")
+	@ScriptCallable(returnTypes = ReturnType.STRING, description = "List all the methods available")
 	public String listMethods(@Optionals @Arg(name = "filterSource") String source) {
 		List<String> info = Lists.newArrayList();
 		for (Map.Entry<String, IMethodExecutor> e : methods.entrySet()) {
@@ -37,7 +37,7 @@ public class MethodsListerHelper {
 		return Joiner.on(", ").join(info);
 	}
 
-	@LuaCallable(returnTypes = LuaReturnType.TABLE, description = "List all method sources")
+	@ScriptCallable(returnTypes = ReturnType.TABLE, description = "List all method sources")
 	public Map<String, Boolean> listSources() {
 		Map<String, Boolean> result = Maps.newHashMap();
 		for (String source : sources) {
@@ -46,14 +46,14 @@ public class MethodsListerHelper {
 		return result;
 	}
 
-	@LuaCallable(returnTypes = LuaReturnType.STRING, description = "Brief description of method")
+	@ScriptCallable(returnTypes = ReturnType.STRING, description = "Brief description of method")
 	public String doc(@Arg(name = "method") String methodName) {
 		IMethodExecutor method = methods.get(methodName);
 		Preconditions.checkArgument(method != null, "Method not found");
 		return method.description().doc();
 	}
 
-	@LuaCallable(returnTypes = LuaReturnType.TABLE, description = "Get a complete table of information about all available methods")
+	@ScriptCallable(returnTypes = ReturnType.TABLE, description = "Get a complete table of information about all available methods")
 	public Map<?, ?> getAdvancedMethodsData(@Optionals @Arg(name = "method") String methodName) {
 		if (methodName != null) {
 			IMethodExecutor method = methods.get(methodName);

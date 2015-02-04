@@ -2,13 +2,13 @@ package openperipheral.adapter.method;
 
 import java.util.Map;
 
-import openperipheral.api.adapter.method.LuaArgType;
+import openperipheral.api.adapter.method.ArgType;
 
 import com.google.common.base.Preconditions;
 
 public class NullableVarArgument extends VarArgument {
 
-	public NullableVarArgument(String name, String description, LuaArgType luaType, Class<?> javaType, int javaArgIndex) {
+	public NullableVarArgument(String name, String description, ArgType luaType, Class<?> javaType, int javaArgIndex) {
 		super(name, description, luaType, javaType, javaArgIndex);
 	}
 

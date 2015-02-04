@@ -6,7 +6,7 @@ import java.util.List;
 import openmods.Log;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.method.MethodDeclaration;
-import openperipheral.api.adapter.method.LuaCallable;
+import openperipheral.api.adapter.method.ScriptCallable;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -73,7 +73,7 @@ public abstract class AdapterWrapper {
 
 		for (Method method : clsMethods) {
 			try {
-				LuaCallable callableAnn = method.getAnnotation(LuaCallable.class);
+				ScriptCallable callableAnn = method.getAnnotation(ScriptCallable.class);
 				if (callableAnn == null) continue;
 
 				final MethodDeclaration decl = new MethodDeclaration(method, callableAnn, source);

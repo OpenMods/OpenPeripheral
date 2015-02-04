@@ -1,9 +1,7 @@
 package openperipheral.api.adapter.method;
 
 /**
- * Used for returning multiple objects back to lua. Each object will
- * be individually passed through the type converters into a Lua friendly
- * format e.g. local x, y, z = p.getLocation()
+ * Used for returning multiple objects. Each object will be individually passed through the type converters
  *
  * @see MultipleReturn
  *

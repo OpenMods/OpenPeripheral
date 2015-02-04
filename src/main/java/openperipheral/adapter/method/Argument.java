@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import openperipheral.adapter.IDescriptable;
-import openperipheral.api.adapter.method.LuaArgType;
+import openperipheral.api.adapter.method.ArgType;
 import openperipheral.api.converter.IConverter;
 
 import com.google.common.base.Preconditions;
@@ -13,11 +13,11 @@ import com.google.common.collect.Maps;
 public class Argument {
 	public final String name;
 	public final String description;
-	public final LuaArgType luaType;
+	public final ArgType luaType;
 	public final Class<?> javaType;
 	final int javaArgIndex;
 
-	public Argument(String name, String description, LuaArgType luaType, Class<?> javaType, int javaArgIndex) {
+	public Argument(String name, String description, ArgType luaType, Class<?> javaType, int javaArgIndex) {
 		this.name = name;
 		this.description = description;
 		this.luaType = luaType;

@@ -9,7 +9,7 @@ import openperipheral.api.IApiInterface;
  * @see Constants
  *
  */
-public interface ITypeConvertersProvider extends IApiInterface {
+public interface IConverterManager extends IApiInterface {
 
 	public void register(IGenericTypeConverter converter);
 

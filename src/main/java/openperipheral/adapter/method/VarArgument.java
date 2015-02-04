@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import openperipheral.api.adapter.method.LuaArgType;
+import openperipheral.api.adapter.method.ArgType;
 import openperipheral.api.converter.IConverter;
 
 import com.google.common.base.Preconditions;
@@ -13,7 +13,7 @@ import com.google.common.collect.Lists;
 
 public class VarArgument extends Argument {
 
-	public VarArgument(String name, String description, LuaArgType luaType, Class<?> javaType, int javaArgIndex) {
+	public VarArgument(String name, String description, ArgType luaType, Class<?> javaType, int javaArgIndex) {
 		super(name, description, luaType, javaType, javaArgIndex);
 	}
 

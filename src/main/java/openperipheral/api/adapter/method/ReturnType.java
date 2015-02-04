@@ -2,7 +2,7 @@ package openperipheral.api.adapter.method;
 
 import java.util.Map;
 
-public enum LuaReturnType {
+public enum ReturnType {
 	TABLE(Map.class),
 	NUMBER(Double.class),
 	STRING(String.class),
@@ -12,7 +12,7 @@ public enum LuaReturnType {
 
 	private Class<?> javaType;
 
-	LuaReturnType(Class<?> javaType) {
+	ReturnType(Class<?> javaType) {
 		this.javaType = javaType;
 	}
 

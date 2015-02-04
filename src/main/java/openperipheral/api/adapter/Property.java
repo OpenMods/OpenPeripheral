@@ -2,7 +2,7 @@ package openperipheral.api.adapter;
 
 import java.lang.annotation.*;
 
-import openperipheral.api.adapter.method.LuaArgType;
+import openperipheral.api.adapter.method.ArgType;
 
 /**
  * This annotation is used to mark class fields that should be exposed in Lua as get/set accessors.
@@ -17,7 +17,7 @@ public @interface Property {
 	/**
 	 * Type of setter parameter and getter result. Used only for documentation
 	 */
-	public LuaArgType type() default LuaArgType.AUTO;
+	public ArgType type() default ArgType.AUTO;
 
 	/**
 	 * Field name used for naming get/set methods. If empty, original field name will be used.

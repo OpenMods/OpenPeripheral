@@ -9,7 +9,7 @@ import openperipheral.adapter.composed.ComposedMethodsFactory;
 import openperipheral.adapter.composed.MethodSelector;
 import openperipheral.adapter.method.LuaTypeQualifier;
 import openperipheral.api.Constants;
-import openperipheral.api.adapter.method.LuaArgType;
+import openperipheral.api.adapter.method.ArgType;
 import openperipheral.api.architecture.IArchitectureAccess;
 import openperipheral.api.converter.IConverter;
 import openperipheral.converter.TypeConvertersProvider;
@@ -41,7 +41,7 @@ public class ModuleOpenComputers {
 		IConverter converter = new TypeConversionRegistryOC();
 		TypeConvertersProvider.INSTANCE.registerConverter(Constants.ARCH_OPEN_COMPUTERS, converter);
 
-		LuaTypeQualifier.registerType(Value.class, LuaArgType.OBJECT);
+		LuaTypeQualifier.registerType(Value.class, ArgType.OBJECT);
 	}
 
 	public static void registerProvider() {

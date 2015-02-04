@@ -50,7 +50,7 @@ public class MethodDescriptionTest {
 	private static MethodDeclaration createMethodDecl(Class<?> cls) {
 		Method m = getMethod(cls);
 
-		return new MethodDeclaration(m, m.getAnnotation(LuaCallable.class), "test");
+		return new MethodDeclaration(m, m.getAnnotation(ScriptCallable.class), "test");
 	}
 
 	private static Map<String, Class<?>> singleArg(String name, Class<?> cls) {
@@ -62,7 +62,7 @@ public class MethodDescriptionTest {
 	}
 
 	public static class BaseTargetOnly {
-		@LuaCallable(returnTypes = LuaReturnType.BOOLEAN)
+		@ScriptCallable(returnTypes = ReturnType.BOOLEAN)
 		public boolean test(A target, @Env("env1") A e) {
 			return true;
 		}
@@ -77,7 +77,7 @@ public class MethodDescriptionTest {
 
 	public static class TargetOnly {
 		@Alias({ "aliasA", "aliasB" })
-		@LuaCallable(returnTypes = LuaReturnType.BOOLEAN)
+		@ScriptCallable(returnTypes = ReturnType.BOOLEAN)
 		public boolean test(B target) {
 			return true;
 		}
@@ -91,7 +91,7 @@ public class MethodDescriptionTest {
 	}
 
 	public static class SingleLuaArg {
-		@LuaCallable(returnTypes = LuaReturnType.BOOLEAN)
+		@ScriptCallable(returnTypes = ReturnType.BOOLEAN)
 		public boolean test(B target, @Arg(name = "a") int a) {
 			return true;
 		}
@@ -104,7 +104,7 @@ public class MethodDescriptionTest {
 	}
 
 	public static class SingleEnv {
-		@LuaCallable(returnTypes = LuaReturnType.STRING)
+		@ScriptCallable(returnTypes = ReturnType.STRING)
 		public String test(B target, @Env("env1") D access) {
 			return access.test();
 		}
@@ -144,7 +144,7 @@ public class MethodDescriptionTest {
 	}
 
 	public static class Empty {
-		@LuaCallable(returnTypes = LuaReturnType.STRING)
+		@ScriptCallable(returnTypes = ReturnType.STRING)
 		public String test() {
 			return "oops";
 		}
@@ -157,7 +157,7 @@ public class MethodDescriptionTest {
 	}
 
 	public static class TwoEnvOnly {
-		@LuaCallable(returnTypes = LuaReturnType.STRING)
+		@ScriptCallable(returnTypes = ReturnType.STRING)
 		public String test(@Env("env1") D access, @Env("target") Object target) {
 			return access.toString();
 		}
@@ -171,7 +171,7 @@ public class MethodDescriptionTest {
 	}
 
 	public static class SingleEnvOnly {
-		@LuaCallable(returnTypes = LuaReturnType.STRING)
+		@ScriptCallable(returnTypes = ReturnType.STRING)
 		public String test(@Env("env1") D access) {
 			return access.toString();
 		}
@@ -185,7 +185,7 @@ public class MethodDescriptionTest {
 	}
 
 	public static class SingleLuaOnly {
-		@LuaCallable(returnTypes = LuaReturnType.STRING)
+		@ScriptCallable(returnTypes = ReturnType.STRING)
 		public String test(@Arg(name = "a") int a) {
 			return "" + a;
 		}
@@ -198,7 +198,7 @@ public class MethodDescriptionTest {
 	}
 
 	public static class SingleOptionalLuaOnly {
-		@LuaCallable(returnTypes = LuaReturnType.STRING)
+		@ScriptCallable(returnTypes = ReturnType.STRING)
 		public String test(@Optionals @Arg(name = "a") Integer a) {
 			return "" + a;
 		}
@@ -211,7 +211,7 @@ public class MethodDescriptionTest {
 	}
 
 	public static class VarargLuaStart {
-		@LuaCallable(returnTypes = LuaReturnType.STRING)
+		@ScriptCallable(returnTypes = ReturnType.STRING)
 		public String test(@Arg(name = "a") int... a) {
 			return Arrays.toString(a);
 		}
@@ -224,7 +224,7 @@ public class MethodDescriptionTest {
 	}
 
 	public static class OptionalVararg {
-		@LuaCallable(returnTypes = LuaReturnType.STRING)
+		@ScriptCallable(returnTypes = ReturnType.STRING)
 		public String test(@Optionals @Arg(name = "a") Integer... a) {
 			return Arrays.toString(a);
 		}
@@ -237,7 +237,7 @@ public class MethodDescriptionTest {
 	}
 
 	public static class EnvLua {
-		@LuaCallable(returnTypes = LuaReturnType.STRING)
+		@ScriptCallable(returnTypes = ReturnType.STRING)
 		public String test(B target, @Env("env1") D access, @Arg(name = "a") Integer a) {
 			return access.toString();
 		}
@@ -251,7 +251,7 @@ public class MethodDescriptionTest {
 	}
 
 	public static class FullOptional {
-		@LuaCallable(returnTypes = LuaReturnType.STRING)
+		@ScriptCallable(returnTypes = ReturnType.STRING)
 		public String test(B target, @Arg(name = "a") int a, @Optionals @Arg(name = "b") String b) {
 			return "A";
 		}
@@ -264,7 +264,7 @@ public class MethodDescriptionTest {
 	}
 
 	public static class SingleOptional {
-		@LuaCallable(returnTypes = LuaReturnType.STRING)
+		@ScriptCallable(returnTypes = ReturnType.STRING)
 		public String test(B target, @Optionals @Arg(name = "a") String b) {
 			return "A";
 		}
@@ -277,7 +277,7 @@ public class MethodDescriptionTest {
 	}
 
 	public static class Vararg {
-		@LuaCallable(returnTypes = LuaReturnType.STRING)
+		@ScriptCallable(returnTypes = ReturnType.STRING)
 		public String test(B target, @Arg(name = "a") int... a) {
 			return Arrays.toString(a);
 		}
@@ -290,7 +290,7 @@ public class MethodDescriptionTest {
 	}
 
 	public static class Everything {
-		@LuaCallable(returnTypes = LuaReturnType.STRING)
+		@ScriptCallable(returnTypes = ReturnType.STRING)
 		public String test(B target, @Env("env1") D access, @Arg(name = "a") int a, @Optionals @Arg(name = "b") String b, @Arg(name = "var") Integer... v) {
 			return access.test();
 		}
@@ -304,7 +304,7 @@ public class MethodDescriptionTest {
 	}
 
 	public static class MultiDirect {
-		@LuaCallable(returnTypes = { LuaReturnType.NUMBER, LuaReturnType.NUMBER })
+		@ScriptCallable(returnTypes = { ReturnType.NUMBER, ReturnType.NUMBER })
 		public IMultiReturn test(B target, @Arg(name = "a") int a) {
 			return MultiReturn.wrap(a, a + 1);
 		}
@@ -317,7 +317,7 @@ public class MethodDescriptionTest {
 
 	public static class MultiArray {
 		@MultipleReturn
-		@LuaCallable(returnTypes = { LuaReturnType.NUMBER, LuaReturnType.NUMBER })
+		@ScriptCallable(returnTypes = { ReturnType.NUMBER, ReturnType.NUMBER })
 		public int[] test(B target, @Arg(name = "a") int a) {
 			return new int[] { a, a + 1 };
 		}
@@ -329,7 +329,7 @@ public class MethodDescriptionTest {
 	}
 
 	public static class NonMultiArray {
-		@LuaCallable(returnTypes = LuaReturnType.TABLE)
+		@ScriptCallable(returnTypes = ReturnType.TABLE)
 		public int[] test(B target, @Arg(name = "a") int a) {
 			return new int[] { a, a + 1 };
 		}
@@ -342,7 +342,7 @@ public class MethodDescriptionTest {
 
 	public static class MultiCollection {
 		@MultipleReturn
-		@LuaCallable(returnTypes = { LuaReturnType.NUMBER, LuaReturnType.NUMBER })
+		@ScriptCallable(returnTypes = { ReturnType.NUMBER, ReturnType.NUMBER })
 		public List<Integer> test(B target, @Arg(name = "a") int a) {
 			return Lists.newArrayList(a, a + 1);
 		}
@@ -354,7 +354,7 @@ public class MethodDescriptionTest {
 	}
 
 	public static class NonMultiCollection {
-		@LuaCallable(returnTypes = LuaReturnType.TABLE)
+		@ScriptCallable(returnTypes = ReturnType.TABLE)
 		public Collection<Integer> test(B target, @Arg(name = "a") int a) {
 			return Sets.newHashSet(a, a + a);
 		}
@@ -367,7 +367,7 @@ public class MethodDescriptionTest {
 
 	public static class MultiCollectionVoid {
 		@MultipleReturn
-		@LuaCallable(returnTypes = {})
+		@ScriptCallable(returnTypes = {})
 		public Collection<Integer> test(B target, @Arg(name = "a") int a) {
 			return Sets.newHashSet(a, a + a);
 		}
@@ -379,7 +379,7 @@ public class MethodDescriptionTest {
 	}
 
 	public static class MultiReturnVoid {
-		@LuaCallable(returnTypes = {})
+		@ScriptCallable(returnTypes = {})
 		public IMultiReturn test(B target, @Arg(name = "a") int a) {
 			return null;
 		}
@@ -391,7 +391,7 @@ public class MethodDescriptionTest {
 	}
 
 	public static class TwoUnnamed {
-		@LuaCallable(returnTypes = LuaReturnType.BOOLEAN)
+		@ScriptCallable(returnTypes = ReturnType.BOOLEAN)
 		public boolean test(B target, Object target2) {
 			return true;
 		}
@@ -403,7 +403,7 @@ public class MethodDescriptionTest {
 	}
 
 	public static class UnnamedAfterLua {
-		@LuaCallable(returnTypes = LuaReturnType.BOOLEAN)
+		@ScriptCallable(returnTypes = ReturnType.BOOLEAN)
 		public boolean test(@Arg(name = "foo") String arg, B target) {
 			return true;
 		}
@@ -415,7 +415,7 @@ public class MethodDescriptionTest {
 	}
 
 	public static class EnvAfterLua {
-		@LuaCallable(returnTypes = LuaReturnType.BOOLEAN)
+		@ScriptCallable(returnTypes = ReturnType.BOOLEAN)
 		public boolean test(@Arg(name = "foo") String arg, @Env("env1") D target) {
 			return true;
 		}
@@ -427,7 +427,7 @@ public class MethodDescriptionTest {
 	}
 
 	public static class UnamedAfterEnv {
-		@LuaCallable(returnTypes = LuaReturnType.BOOLEAN)
+		@ScriptCallable(returnTypes = ReturnType.BOOLEAN)
 		public boolean test(@Env("env1") D e1, B target) {
 			return true;
 		}
@@ -439,7 +439,7 @@ public class MethodDescriptionTest {
 	}
 
 	public static class OptionalUnnnamed {
-		@LuaCallable(returnTypes = LuaReturnType.BOOLEAN)
+		@ScriptCallable(returnTypes = ReturnType.BOOLEAN)
 		public boolean test(@Optionals B target) {
 			return true;
 		}
@@ -451,7 +451,7 @@ public class MethodDescriptionTest {
 	}
 
 	public static class OptionalEnv {
-		@LuaCallable(returnTypes = LuaReturnType.BOOLEAN)
+		@ScriptCallable(returnTypes = ReturnType.BOOLEAN)
 		public boolean test(@Optionals @Env("target") B target) {
 			return true;
 		}
@@ -463,7 +463,7 @@ public class MethodDescriptionTest {
 	}
 
 	public static class SameNamedEnv {
-		@LuaCallable(returnTypes = LuaReturnType.BOOLEAN)
+		@ScriptCallable(returnTypes = ReturnType.BOOLEAN)
 		public boolean test(@Env("target") B target, @Env("target") B target2) {
 			return true;
 		}
