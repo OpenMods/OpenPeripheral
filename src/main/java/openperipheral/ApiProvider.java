@@ -5,8 +5,7 @@ import java.util.*;
 
 import openmods.Log;
 import openmods.Mods;
-import openperipheral.adapter.ObjectAdapterRegistryWrapper;
-import openperipheral.adapter.PeripheralAdapterRegistryWrapper;
+import openperipheral.adapter.AdapterRegistryWrapper;
 import openperipheral.adapter.TileEntityBlacklist;
 import openperipheral.api.ApiAccess;
 import openperipheral.api.IApiInterface;
@@ -131,8 +130,8 @@ public class ApiProvider implements ApiAccess.ApiProvider {
 	}
 
 	private ApiProvider() {
-		registerClass(PeripheralAdapterRegistryWrapper.class);
-		registerClass(ObjectAdapterRegistryWrapper.class);
+		registerClass(AdapterRegistryWrapper.Peripherals.class);
+		registerClass(AdapterRegistryWrapper.Objects.class);
 		registerClass(EntityMetadataBuilder.class);
 		registerClass(ItemStackMetadataBuilder.class);
 
