@@ -13,7 +13,7 @@ import openperipheral.api.adapter.method.ArgType;
 import openperipheral.api.architecture.IArchitectureAccess;
 import openperipheral.api.converter.IConverter;
 import openperipheral.converter.TypeConvertersProvider;
-import openperipheral.interfaces.cc.providers.AdapterFactoryWrapperCC;
+import openperipheral.interfaces.oc.providers.AdapterFactoryWrapperOC;
 import openperipheral.interfaces.oc.providers.DriverOpenPeripheral;
 
 public class ModuleOpenComputers {
@@ -49,6 +49,6 @@ public class ModuleOpenComputers {
 	}
 
 	public static void installAPI(ApiProvider apiProvider) {
-		apiProvider.registerClass(AdapterFactoryWrapperCC.class);
+		apiProvider.registerClass(AdapterFactoryWrapperOC.class);
 	}
 }

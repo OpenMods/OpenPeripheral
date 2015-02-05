@@ -44,6 +44,12 @@ public class ApiProvider implements ApiAccess.ApiProvider {
 		public T getInterface() {
 			return instance;
 		}
+
+		@Override
+		public String toString() {
+			return "SingleInstanceProvider [instance=" + instance + "]";
+		}
+
 	}
 
 	private static class NewInstanceProvider<T extends IApiInterface> implements IApiInstanceProvider<T> {
@@ -61,6 +67,12 @@ public class ApiProvider implements ApiAccess.ApiProvider {
 				throw Throwables.propagate(t);
 			}
 		}
+
+		@Override
+		public String toString() {
+			return "NewInstanceProvider [cls=" + cls + "]";
+		}
+
 	}
 
 	private static class SingletonProvider<T extends IApiInterface> implements IApiInstanceProvider<T> {
@@ -74,6 +86,12 @@ public class ApiProvider implements ApiAccess.ApiProvider {
 		public T getInterface() {
 			return obj;
 		}
+
+		@Override
+		public String toString() {
+			return "SingletonProvider [obj=" + obj + "]";
+		}
+
 	}
 
 	private final Map<Class<? extends IApiInterface>, IApiInstanceProvider<?>> PROVIDERS = Maps.newHashMap();
@@ -104,7 +122,7 @@ public class ApiProvider implements ApiAccess.ApiProvider {
 
 		for (Class<? extends IApiInterface> impl : implemented) {
 			IApiInstanceProvider<?> prev = PROVIDERS.put(impl, provider);
-			Preconditions.checkState(prev == null, "Conflict on interface %s", impl);
+			Preconditions.checkState(prev == null, "Conflict on %s: %s -> %s", impl, prev, provider);
 		}
 	}
 
