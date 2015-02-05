@@ -1,11 +1,12 @@
-package openperipheral.converter;
+package openperipheral.converter.inbound;
 
 import openperipheral.api.converter.IConverter;
+import openperipheral.converter.GenericInboundConverterAdapter;
 
-public class ConverterNumber extends GenericConverterAdapter {
+public class ConverterNumberInbound extends GenericInboundConverterAdapter {
 
 	@Override
-	public Object fromLua(IConverter registry, Object o, Class<?> required) {
+	public Object toJava(IConverter registry, Object o, Class<?> required) {
 		final Double d;
 		if (o instanceof Double) {
 			d = (Double)o;
@@ -30,11 +31,6 @@ public class ConverterNumber extends GenericConverterAdapter {
 		if (required == Boolean.class || required == boolean.class) return d != 0;
 
 		return null;
-	}
-
-	@Override
-	public Object toLua(IConverter registry, Object o) {
-		return (o instanceof Number)? ((Number)o).doubleValue() : null;
 	}
 
 }

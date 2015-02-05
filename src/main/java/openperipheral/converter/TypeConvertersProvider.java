@@ -32,6 +32,24 @@ public class TypeConvertersProvider implements IConverterManager {
 	}
 
 	@Override
+	public void register(IInboundTypeConverter converter) {
+		for (IConverter c : converters.values())
+			c.register(converter);
+	}
+
+	@Override
+	public void register(IGenericInboundTypeConverter converter) {
+		for (IConverter c : converters.values())
+			c.register(converter);
+	}
+
+	@Override
+	public void register(IOutboundTypeConverter converter) {
+		for (IConverter c : converters.values())
+			c.register(converter);
+	}
+
+	@Override
 	public void register(IGenericTypeConverter converter) {
 		for (IConverter c : converters.values())
 			c.register(converter);

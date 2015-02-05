@@ -1,16 +1,17 @@
-package openperipheral.converter;
+package openperipheral.converter.inbound;
 
 import java.lang.reflect.Array;
 import java.util.Map;
 
 import openperipheral.api.converter.IConverter;
+import openperipheral.converter.GenericInboundConverterAdapter;
 
 import com.google.common.collect.Maps;
 
-public class ConverterArray extends GenericConverterAdapter {
+public class ConverterArrayInbound extends GenericInboundConverterAdapter {
 
 	@Override
-	public Object fromLua(IConverter registry, Object o, Class<?> required) {
+	public Object toJava(IConverter registry, Object o, Class<?> required) {
 		if (o instanceof Map && required.isArray()) {
 			@SuppressWarnings("unchecked")
 			Map<Object, Object> m = (Map<Object, Object>)o;
@@ -38,7 +39,7 @@ public class ConverterArray extends GenericConverterAdapter {
 			Object result = Array.newInstance(component, size);
 			for (int i = 0, index = indexMin; i < size; i++, index++) {
 				Object in = tmp.get(index);
-				Object out = registry.fromLua(in, component);
+				Object out = registry.toJava(in, component);
 				if (out == null) return null;
 				Array.set(result, i, out);
 			}
@@ -46,20 +47,6 @@ public class ConverterArray extends GenericConverterAdapter {
 			return result;
 		}
 
-		return null;
-	}
-
-	@Override
-	public Object toLua(IConverter registry, Object o) {
-		if (o.getClass().isArray()) {
-			Map<Object, Object> ret = Maps.newHashMap();
-			int length = Array.getLength(o);
-			for (int i = 0; i < length; i++) {
-				Object value = Array.get(o, i);
-				ret.put(i + 1, registry.toLua(value));
-			}
-			return ret;
-		}
 		return null;
 	}
 

@@ -158,7 +158,7 @@ public class PropertyListBuilder {
 		public Object[] call(IConverter converter, Object target, Object... args) {
 			Preconditions.checkArgument(args.length == 0, "Getter has no arguments");
 			Object result = getCallback(target).getField(field);
-			return ArrayUtils.toArray(converter.toLua(result));
+			return ArrayUtils.toArray(converter.fromJava(result));
 		}
 
 		@Override
@@ -190,7 +190,7 @@ public class PropertyListBuilder {
 		public Object[] call(IConverter converter, Object target, Object... args) {
 			Preconditions.checkArgument(args.length == 1, "Setter must have exactly one argument");
 			Object arg = args[0];
-			Object converted = converter.fromLua(arg, field.getType());
+			Object converted = converter.toJava(arg, field.getGenericType());
 			Preconditions.checkNotNull(converted, "Invalid value type");
 			getCallback(target).setField(field, converted);
 

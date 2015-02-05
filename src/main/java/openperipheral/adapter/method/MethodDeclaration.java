@@ -203,7 +203,7 @@ public class MethodDeclaration implements IDescriptable {
 		Object[] tmp = new Object[result.size()];
 		int i = 0;
 		for (Object o : result)
-			tmp[i++] = converter.toLua(o);
+			tmp[i++] = converter.fromJava(o);
 
 		return tmp;
 	}
@@ -213,14 +213,14 @@ public class MethodDeclaration implements IDescriptable {
 		Object[] result = new Object[length];
 
 		for (int i = 0; i < length; i++)
-			result[i] = converter.toLua(Array.get(array, i));
+			result[i] = converter.fromJava(Array.get(array, i));
 
 		return result;
 	}
 
 	private static Object[] convertVarResult(IConverter converter, Object... result) {
 		for (int i = 0; i < result.length; i++)
-			result[i] = converter.toLua(result[i]);
+			result[i] = converter.fromJava(result[i]);
 
 		return result;
 	}

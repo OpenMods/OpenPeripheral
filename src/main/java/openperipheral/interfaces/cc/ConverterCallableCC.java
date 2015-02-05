@@ -1,6 +1,6 @@
 package openperipheral.interfaces.cc;
 
-import openperipheral.converter.ConverterCallable;
+import openperipheral.converter.inbound.ConverterCallable;
 import openperipheral.interfaces.cc.wrappers.LuaObjectWrapper;
 
 public class ConverterCallableCC extends ConverterCallable {

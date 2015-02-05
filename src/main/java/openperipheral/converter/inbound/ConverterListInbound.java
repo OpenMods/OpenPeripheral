@@ -1,18 +1,19 @@
-package openperipheral.converter;
+package openperipheral.converter.inbound;
 
 import java.util.List;
 import java.util.Map;
 
 import openperipheral.api.converter.IConverter;
+import openperipheral.converter.GenericInboundConverterAdapter;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-public class ConverterList extends GenericConverterAdapter {
+public class ConverterListInbound extends GenericInboundConverterAdapter {
 
 	@Override
-	public Object fromLua(IConverter registry, Object obj, Class<?> expected) {
+	public Object toJava(IConverter registry, Object obj, Class<?> expected) {
 		if (obj instanceof Map && expected == List.class) {
 			@SuppressWarnings("unchecked")
 			Map<Object, Object> m = (Map<Object, Object>)obj;
@@ -45,22 +46,6 @@ public class ConverterList extends GenericConverterAdapter {
 			return result;
 		}
 
-		return null;
-	}
-
-	@Override
-	public Object toLua(IConverter registry, Object obj) {
-		if (obj instanceof List) {
-			Map<Integer, Object> ret = Maps.newHashMap();
-
-			@SuppressWarnings("unchecked")
-			List<Object> objList = (List<Object>)obj;
-
-			for (int i = 0; i < objList.size(); i++) {
-				ret.put(i + 1, registry.toLua(objList.get(i)));
-			}
-			return ret;
-		}
 		return null;
 	}
 

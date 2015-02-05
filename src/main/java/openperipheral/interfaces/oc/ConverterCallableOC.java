@@ -1,6 +1,6 @@
 package openperipheral.interfaces.oc;
 
-import openperipheral.converter.ConverterCallable;
+import openperipheral.converter.inbound.ConverterCallable;
 import openperipheral.interfaces.oc.wrappers.ManagedPeripheralWrapper;
 
 public class ConverterCallableOC extends ConverterCallable {

@@ -1,12 +1,13 @@
-package openperipheral.converter;
+package openperipheral.converter.inbound;
 
 import java.util.Arrays;
 
 import openperipheral.api.converter.IConverter;
+import openperipheral.converter.GenericInboundConverterAdapter;
 
-public class ConverterEnum extends GenericConverterAdapter {
+public class ConverterEnumInbound extends GenericInboundConverterAdapter {
 	@Override
-	public Object fromLua(IConverter registry, Object obj, Class<?> expected) {
+	public Object toJava(IConverter registry, Object obj, Class<?> expected) {
 		if (expected.isEnum() && obj instanceof String) {
 			String value = (String)obj;
 			Object[] constants = expected.getEnumConstants();
@@ -19,9 +20,4 @@ public class ConverterEnum extends GenericConverterAdapter {
 		return null;
 	}
 
-	@Override
-	public Object toLua(IConverter registry, Object obj) {
-		if (obj instanceof Enum) return obj.toString();
-		return null;
-	}
 }

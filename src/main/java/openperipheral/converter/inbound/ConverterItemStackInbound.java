@@ -1,22 +1,19 @@
-package openperipheral.converter;
+package openperipheral.converter.inbound;
 
 import java.util.Map;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import openperipheral.api.converter.IConverter;
-import openperipheral.meta.ItemStackMetadataBuilder;
+import openperipheral.converter.GenericInboundConverterAdapter;
 
 import com.google.common.base.Preconditions;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 
-public class ConverterItemStack extends GenericConverterAdapter {
-
-	private ItemStackMetadataBuilder BUILDER = new ItemStackMetadataBuilder();
-
+public class ConverterItemStackInbound extends GenericInboundConverterAdapter {
 	@Override
-	public Object fromLua(IConverter registry, Object o, Class<?> required) {
+	public Object toJava(IConverter registry, Object o, Class<?> required) {
 		if (required == ItemStack.class && o instanceof Map) {
 			Map<?, ?> m = (Map<?, ?>)o;
 
@@ -43,16 +40,6 @@ public class ConverterItemStack extends GenericConverterAdapter {
 		if (value instanceof Number) return ((Number)value).intValue();
 
 		return _default;
-	}
-
-	@Override
-	public Object toLua(IConverter registry, Object o) {
-		if (o instanceof ItemStack) {
-			Object meta = BUILDER.getItemStackMetadata((ItemStack)o);
-			return registry.toLua(meta);
-		}
-
-		return null;
 	}
 
 }

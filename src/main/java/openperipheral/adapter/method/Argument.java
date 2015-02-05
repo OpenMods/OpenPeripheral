@@ -1,5 +1,6 @@
 package openperipheral.adapter.method;
 
+import java.lang.reflect.Type;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -38,7 +39,7 @@ public class Argument {
 
 	protected final Object convertSingleArg(IConverter converter, Object o) {
 		if (o == null) return null;
-		Object converted = converter.fromLua(o, javaType);
+		Object converted = converter.toJava(o, (Type)javaType);
 		Preconditions.checkArgument(converted != null, "Failed to convert arg '%s' value '%s' to '%s'", name, o, javaType.getSimpleName());
 		return converted;
 	}
