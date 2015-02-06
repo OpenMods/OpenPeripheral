@@ -1,6 +1,5 @@
 package openperipheral.adapter.method;
 
-import java.lang.reflect.Type;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -10,15 +9,16 @@ import openperipheral.api.converter.IConverter;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
+import com.google.common.reflect.TypeToken;
 
 public class Argument {
 	public final String name;
 	public final String description;
 	public final ArgType luaType;
-	public final Class<?> javaType;
+	public final TypeToken<?> javaType;
 	final int javaArgIndex;
 
-	public Argument(String name, String description, ArgType luaType, Class<?> javaType, int javaArgIndex) {
+	public Argument(String name, String description, ArgType luaType, TypeToken<?> javaType, int javaArgIndex) {
 		this.name = name;
 		this.description = description;
 		this.luaType = luaType;
@@ -26,7 +26,7 @@ public class Argument {
 		this.javaType = getArgType(javaType);
 	}
 
-	protected Class<?> getArgType(Class<?> javaArgClass) {
+	protected TypeToken<?> getArgType(TypeToken<?> javaArgClass) {
 		return javaArgClass;
 	}
 
@@ -39,8 +39,8 @@ public class Argument {
 
 	protected final Object convertSingleArg(IConverter converter, Object o) {
 		if (o == null) return null;
-		Object converted = converter.toJava(o, (Type)javaType);
-		Preconditions.checkArgument(converted != null, "Failed to convert arg '%s' value '%s' to '%s'", name, o, javaType.getSimpleName());
+		Object converted = converter.toJava(o, javaType.getType());
+		Preconditions.checkArgument(converted != null, "Failed to convert arg '%s' value '%s' to '%s'", name, o, javaType);
 		return converted;
 	}
 

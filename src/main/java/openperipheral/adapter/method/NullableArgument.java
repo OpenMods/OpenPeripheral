@@ -7,15 +7,16 @@ import openperipheral.api.adapter.method.ArgType;
 import openperipheral.api.converter.IConverter;
 
 import com.google.common.base.Preconditions;
+import com.google.common.reflect.TypeToken;
 
 public class NullableArgument extends Argument {
 
-	public NullableArgument(String name, String description, ArgType luaType, Class<?> javaType, int javaArgIndex) {
+	public NullableArgument(String name, String description, ArgType luaType, TypeToken<?> javaType, int javaArgIndex) {
 		super(name, description, luaType, javaType, javaArgIndex);
 	}
 
 	@Override
-	protected Class<?> getArgType(Class<?> javaArgClass) {
+	protected TypeToken<?> getArgType(TypeToken<?> javaArgClass) {
 		Preconditions.checkArgument(!javaArgClass.isPrimitive(), "Nullable arguments can't be primitive");
 		return super.getArgType(javaArgClass);
 	}

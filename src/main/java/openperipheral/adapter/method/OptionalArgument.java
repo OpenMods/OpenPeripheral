@@ -7,15 +7,16 @@ import openperipheral.api.adapter.method.ArgType;
 import openperipheral.api.converter.IConverter;
 
 import com.google.common.base.Preconditions;
+import com.google.common.reflect.TypeToken;
 
 public class OptionalArgument extends Argument {
 
-	public OptionalArgument(String name, String description, ArgType luaType, Class<?> javaType, int javaArgIndex) {
+	public OptionalArgument(String name, String description, ArgType luaType, TypeToken<?> javaType, int javaArgIndex) {
 		super(name, description, luaType, javaType, javaArgIndex);
 	}
 
 	@Override
-	protected Class<?> getArgType(Class<?> javaArgClass) {
+	protected TypeToken<?> getArgType(TypeToken<?> javaArgClass) {
 		Preconditions.checkArgument(!javaArgClass.isPrimitive(), "Optional arguments can't be primitive");
 		return super.getArgType(javaArgClass);
 	}

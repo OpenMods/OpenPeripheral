@@ -1,9 +1,7 @@
 package openperipheral.adapter.method;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Array;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 import java.util.*;
 
 import openmods.Log;
@@ -20,6 +18,7 @@ import org.apache.logging.log4j.Level;
 
 import com.google.common.base.*;
 import com.google.common.collect.*;
+import com.google.common.reflect.TypeToken;
 
 public class MethodDeclaration implements IDescriptable {
 
@@ -94,7 +93,7 @@ public class MethodDeclaration implements IDescriptable {
 
 		if (validateReturn) validateResultCount();
 
-		final Class<?> methodArgs[] = method.getParameterTypes();
+		final Type methodArgs[] = method.getGenericParameterTypes();
 		final boolean isVarArg = method.isVarArgs();
 
 		ArgParseState state = ArgParseState.JAVA_POSITIONAL;
@@ -102,7 +101,7 @@ public class MethodDeclaration implements IDescriptable {
 		final Annotation[][] argsAnnotations = method.getParameterAnnotations();
 		for (int argIndex = 0; argIndex < methodArgs.length; argIndex++) {
 			try {
-				final Class<?> argType = methodArgs[argIndex];
+				final TypeToken<?> argType = TypeToken.of(methodArgs[argIndex]);
 
 				AnnotationMap argAnnotations = new AnnotationMap(argsAnnotations[argIndex]);
 
@@ -134,15 +133,16 @@ public class MethodDeclaration implements IDescriptable {
 					Preconditions.checkState(state == ArgParseState.JAVA_OPTIONAL || state == ArgParseState.JAVA_POSITIONAL, "Unannotated arg in Lua part (perhaps missing @Arg annotation?)");
 					Preconditions.checkState(!optionalStart, "@Optionals does not work for java arguments");
 
+					Class<?> rawArgType = argType.getRawType();
 					if (envArg != null) {
 						Preconditions.checkState(state == ArgParseState.JAVA_OPTIONAL || state == ArgParseState.JAVA_POSITIONAL, "@Env annotation used in Lua part of arguments");
 						final String envName = envArg.value();
-						OptionalArg prev = optionalArgs.put(envName, new OptionalArg(argType, argIndex));
+						OptionalArg prev = optionalArgs.put(envName, new OptionalArg(rawArgType, argIndex));
 						if (prev != null) { throw new IllegalStateException(String.format("Conflict on name %s, args: %s, %s", envArg, prev.index, argIndex)); }
 						state = ArgParseState.JAVA_OPTIONAL;
 					} else {
 						Preconditions.checkState(state == ArgParseState.JAVA_POSITIONAL, "Unnamed arg cannot occur after named");
-						positionalArgs.add(argType);
+						positionalArgs.add(rawArgType);
 					}
 				}
 			} catch (Throwable t) {
@@ -399,16 +399,6 @@ public class MethodDeclaration implements IDescriptable {
 	@Override
 	public List<String> getNames() {
 		return names;
-	}
-
-	public Class<?>[] getLuaArgTypes() {
-		Class<?>[] result = new Class<?>[luaArgs.size()];
-
-		int index = 0;
-		for (Argument arg : luaArgs)
-			result[index++] = arg.javaType;
-
-		return result;
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package openperipheral.adapter.method;
 import openperipheral.api.adapter.method.ArgType;
 
 import com.google.common.base.Preconditions;
+import com.google.common.reflect.TypeToken;
 
 public class ArgumentBuilder {
 
@@ -22,8 +23,8 @@ public class ArgumentBuilder {
 		this.isOptional = isOptional;
 	}
 
-	public Argument build(String name, String description, ArgType luaType, Class<?> javaType, int javaArgIndex) {
-		if (luaType == ArgType.AUTO) luaType = LuaTypeQualifier.qualifyArgType(javaType);
+	public Argument build(String name, String description, ArgType luaType, TypeToken<?> javaType, int javaArgIndex) {
+		if (luaType == ArgType.AUTO) luaType = LuaTypeQualifier.qualifyArgType(javaType.getRawType());
 
 		if (isVararg) {
 			if (isNullable) return new NullableVarArgument(name, description, luaType, javaType, javaArgIndex);

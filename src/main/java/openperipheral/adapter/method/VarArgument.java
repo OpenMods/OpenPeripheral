@@ -10,15 +10,16 @@ import openperipheral.api.converter.IConverter;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import com.google.common.reflect.TypeToken;
 
 public class VarArgument extends Argument {
 
-	public VarArgument(String name, String description, ArgType luaType, Class<?> javaType, int javaArgIndex) {
+	public VarArgument(String name, String description, ArgType luaType, TypeToken<?> javaType, int javaArgIndex) {
 		super(name, description, luaType, javaType, javaArgIndex);
 	}
 
 	@Override
-	protected Class<?> getArgType(Class<?> javaArgClass) {
+	protected TypeToken<?> getArgType(TypeToken<?> javaArgClass) {
 		// something went terribly wrong
 		Preconditions.checkArgument(javaArgClass.isArray(), "Vararg type must be array");
 		return javaArgClass.getComponentType();
@@ -32,7 +33,7 @@ public class VarArgument extends Argument {
 	public Object convert(IConverter converter, Iterator<Object> args) {
 		List<Object> allArgs = Lists.newArrayList(args);
 
-		Object vararg = Array.newInstance(javaType, allArgs.size());
+		Object vararg = Array.newInstance(javaType.getRawType(), allArgs.size());
 
 		for (int i = 0; i < allArgs.size(); i++) {
 			Object value = allArgs.get(i);
