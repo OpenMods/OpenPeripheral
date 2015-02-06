@@ -53,7 +53,7 @@ public class EnvironmentGeneratorTest {
 	private abstract static class AwareTargetClass implements IOpenComputersAttachable, IAttachable {
 
 	}
-	
+
 	private abstract static class SemiAwareTargetClass implements IOpenComputersAttachable {
 
 	}
@@ -195,7 +195,7 @@ public class EnvironmentGeneratorTest {
 			Assert.assertEquals(contextNode, node.getValue());
 		}
 	}
-	
+
 	@Test
 	public void testNodeConnectivity() throws Exception {
 		configureApi();
