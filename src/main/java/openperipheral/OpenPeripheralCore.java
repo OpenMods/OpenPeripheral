@@ -29,7 +29,7 @@ public class OpenPeripheralCore {
 	public void preInit(FMLPreInitializationEvent evt) {
 		final File configFile = evt.getSuggestedConfigurationFile();
 		Configuration config = new Configuration(configFile);
-		ConfigProcessing.processAnnotations(configFile, ModInfo.ID, config, Config.class);
+		ConfigProcessing.processAnnotations(ModInfo.ID, config, Config.class);
 		if (config.hasChanged()) config.save();
 
 		MinecraftForge.EVENT_BUS.register(TileEntityBlacklist.INSTANCE);
