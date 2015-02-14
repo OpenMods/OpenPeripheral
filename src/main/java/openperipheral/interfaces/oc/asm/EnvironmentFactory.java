@@ -7,7 +7,7 @@ import java.util.Set;
 
 import li.cil.oc.api.network.ManagedEnvironment;
 import openperipheral.adapter.IMethodExecutor;
-import openperipheral.adapter.WrappedEntityBase;
+import openperipheral.adapter.composed.IndexedMethodMap;
 
 import com.google.common.base.Throwables;
 
@@ -17,7 +17,7 @@ public class EnvironmentFactory {
 
 	private static Method defineClass;
 
-	public Class<? extends ManagedEnvironment> generateEnvironment(String name, Class<?> targetClass, Set<Class<?>> exposedInterfaces, WrappedEntityBase methods) {
+	public Class<? extends ManagedEnvironment> generateEnvironment(String name, Class<?> targetClass, Set<Class<?>> exposedInterfaces, IndexedMethodMap methods) {
 		try {
 			byte[] bytes = generator.generate(name, targetClass, exposedInterfaces, methods);
 			@SuppressWarnings("unchecked")

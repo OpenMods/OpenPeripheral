@@ -1,13 +1,15 @@
-package openperipheral.adapter;
+package openperipheral.adapter.composed;
 
 import java.util.Map;
 
-public class WrappedEntityBase {
+import openperipheral.adapter.IMethodExecutor;
+
+public class IndexedMethodMap implements IMethodMap {
 
 	protected final String[] names;
 	protected final IMethodExecutor[] methods;
 
-	public WrappedEntityBase(Map<String, IMethodExecutor> methods) {
+	public IndexedMethodMap(Map<String, IMethodExecutor> methods) {
 		final int methodCount = methods.size();
 		this.names = new String[methodCount];
 		this.methods = new IMethodExecutor[methodCount];
@@ -34,5 +36,16 @@ public class WrappedEntityBase {
 
 	public String getMethodName(int index) {
 		return names[index];
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return names.length == 0;
+	}
+
+	@Override
+	public void visitMethods(IMethodVisitor visitor) {
+		for (int i = 0; i < names.length; i++)
+			visitor.visit(names[i], methods[i]);
 	}
 }

@@ -16,6 +16,7 @@ import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.*;
 import openperipheral.adapter.*;
+import openperipheral.adapter.composed.IndexedMethodMap;
 import openperipheral.api.Constants;
 import openperipheral.api.architecture.IArchitectureAccess;
 import openperipheral.api.architecture.IAttachable;
@@ -131,7 +132,7 @@ public class EnvironmentGeneratorTest {
 
 		EnvironmentFactory generator = new EnvironmentFactory();
 
-		Class<?> cls = generator.generateEnvironment("TestClass\u2652", TargetClass.class, ImmutableSet.of(InterfaceA.class, InterfaceB.class), new WrappedEntityBase(methods));
+		Class<?> cls = generator.generateEnvironment("TestClass\u2652", TargetClass.class, ImmutableSet.of(InterfaceA.class, InterfaceB.class), new IndexedMethodMap(methods));
 
 		final TargetClass target = mock(TargetClass.class);
 		Object o = cls.getConstructor(TargetClass.class).newInstance(target);
@@ -161,7 +162,7 @@ public class EnvironmentGeneratorTest {
 		EnvironmentFactory generator = new EnvironmentFactory();
 
 		Map<String, IMethodExecutor> methods = Maps.newHashMap();
-		Class<? extends ManagedEnvironment> cls = generator.generateEnvironment("TestClass\u2653", AwareTargetClass.class, ImmutableSet.<Class<?>> of(), new WrappedEntityBase(methods));
+		Class<? extends ManagedEnvironment> cls = generator.generateEnvironment("TestClass\u2653", AwareTargetClass.class, ImmutableSet.<Class<?>> of(), new IndexedMethodMap(methods));
 
 		final AwareTargetClass target = mock(AwareTargetClass.class);
 		ManagedEnvironment o = cls.getConstructor(AwareTargetClass.class).newInstance(target);
@@ -203,7 +204,7 @@ public class EnvironmentGeneratorTest {
 		EnvironmentFactory generator = new EnvironmentFactory();
 
 		Map<String, IMethodExecutor> methods = Maps.newHashMap();
-		Class<? extends ManagedEnvironment> cls = generator.generateEnvironment("TestClass\u2654", SemiAwareTargetClass.class, ImmutableSet.<Class<?>> of(), new WrappedEntityBase(methods));
+		Class<? extends ManagedEnvironment> cls = generator.generateEnvironment("TestClass\u2654", SemiAwareTargetClass.class, ImmutableSet.<Class<?>> of(), new IndexedMethodMap(methods));
 
 		final SemiAwareTargetClass target = mock(SemiAwareTargetClass.class);
 		ManagedEnvironment o = cls.getConstructor(SemiAwareTargetClass.class).newInstance(target);

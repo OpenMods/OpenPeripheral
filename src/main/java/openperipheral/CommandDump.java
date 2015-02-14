@@ -11,14 +11,31 @@ import net.minecraft.util.ChatComponentText;
 import openmods.Log;
 import openmods.OpenMods;
 import openperipheral.adapter.AdapterRegistry;
-import openperipheral.adapter.IMethodExecutor;
+import openperipheral.adapter.composed.ComposedMethodsFactory;
+import openperipheral.adapter.composed.IMethodMap;
 import openperipheral.adapter.wrappers.AdapterWrapper;
-import openperipheral.interfaces.cc.ModuleComputerCraft;
 import openperipheral.util.DocBuilder;
+import openperipheral.util.DocBuilder.IClassDecorator;
 
 import com.google.common.collect.Lists;
 
 public class CommandDump implements ICommand {
+
+	private interface IArchSerializer {
+		public void serialize(DocBuilder builder);
+	}
+
+	private static final List<IArchSerializer> archSerializers = Lists.newArrayList();
+
+	public static void addArchSerializer(final String architecture, final String type, final IClassDecorator decorator, final ComposedMethodsFactory<? extends IMethodMap> methods) {
+		archSerializers.add(new IArchSerializer() {
+			@Override
+			public void serialize(DocBuilder builder) {
+				for (Map.Entry<Class<?>, ? extends IMethodMap> e : methods.listCollectedClasses().entrySet())
+					builder.createDocForClass(architecture, type, decorator, e.getKey(), e.getValue());
+			}
+		});
+	}
 
 	@Override
 	public int compareTo(Object o) {
@@ -66,13 +83,10 @@ public class CommandDump implements ICommand {
 
 			if (!output.isAbsolute()) output = new File(OpenMods.proxy.getMinecraftDir(), filename);
 
-			DocBuilder builder = new DocBuilder();
+			final DocBuilder builder = new DocBuilder();
 
-			for (Map.Entry<Class<?>, Map<String, IMethodExecutor>> e : ModuleComputerCraft.PERIPHERAL_METHODS_FACTORY.listCollectedClasses().entrySet())
-				builder.createDocForTe(e.getKey(), e.getValue());
-
-			for (Map.Entry<Class<?>, Map<String, IMethodExecutor>> e : ModuleComputerCraft.OBJECT_METHODS_FACTORY.listCollectedClasses().entrySet())
-				builder.createDocForObject(e.getKey(), e.getValue());
+			for (IArchSerializer serializer : archSerializers)
+				serializer.serialize(builder);
 
 			processExternalAdapters(builder, AdapterRegistry.PERIPHERAL_ADAPTERS, "peripheral");
 			processInternalAdapters(builder, AdapterRegistry.PERIPHERAL_ADAPTERS, "peripheral");

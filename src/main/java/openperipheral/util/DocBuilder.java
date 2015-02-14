@@ -15,6 +15,8 @@ import javax.xml.transform.stream.StreamSource;
 
 import openperipheral.adapter.IDescriptable;
 import openperipheral.adapter.IMethodExecutor;
+import openperipheral.adapter.composed.IMethodMap;
+import openperipheral.adapter.composed.IMethodMap.IMethodVisitor;
 import openperipheral.adapter.wrappers.AdapterWrapper;
 
 import org.w3c.dom.Document;
@@ -26,6 +28,24 @@ import com.google.common.base.Throwables;
 public class DocBuilder {
 	private final Document doc;
 	private final Element root;
+
+	public interface IClassDecorator {
+		public void decorateEntry(Element element, Class<?> cls);
+	}
+
+	public static final IClassDecorator NULL_DECORATOR = new IClassDecorator() {
+		@Override
+		public void decorateEntry(Element element, Class<?> cls) {}
+	};
+
+	public static final IClassDecorator TILE_ENTITY_DECORATOR = new IClassDecorator() {
+		@Override
+		public void decorateEntry(Element element, Class<?> cls) {
+			final String teName = Objects.firstNonNull(NameUtils.getClassToNameMap().get(cls), "null");
+			Document doc = element.getOwnerDocument();
+			element.appendChild(createProperty(doc, "name", teName));
+		}
+	};
 
 	public DocBuilder() {
 		try {
@@ -64,21 +84,13 @@ public class DocBuilder {
 		}
 	}
 
-	public void createDocForTe(Class<?> cls, Map<String, IMethodExecutor> methods) {
+	public void createDocForClass(String architecture, String type, IClassDecorator decorator, Class<?> cls, IMethodMap methods) {
 		if (methods.isEmpty()) return;
-		Element result = doc.createElement("peripheral");
+		Element result = doc.createElement("classMethods");
+		result.setAttribute("type", type);
+		result.setAttribute("architecture", architecture);
 		fillDocForClass(result, cls, methods);
-
-		final String teName = Objects.firstNonNull(NameUtils.getClassToNameMap().get(cls), "null");
-		result.appendChild(createProperty("name", teName));
-
-		root.appendChild(result);
-	}
-
-	public void createDocForObject(Class<?> cls, Map<String, IMethodExecutor> methods) {
-		if (methods.isEmpty()) return;
-		Element result = doc.createElement("luaObject");
-		fillDocForClass(result, cls, methods);
+		decorator.decorateEntry(result, cls);
 		root.appendChild(result);
 	}
 
@@ -111,17 +123,20 @@ public class DocBuilder {
 		}
 	}
 
-	private <E extends IMethodExecutor> void fillDocForClass(Element result, Class<?> cls, Map<String, E> list) {
+	private void fillDocForClass(final Element result, Class<?> cls, IMethodMap list) {
 		result.setAttribute("class", cls.getName());
 		result.appendChild(createProperty("simpleName", cls.getSimpleName()));
 
-		for (Map.Entry<String, E> entry : list.entrySet()) {
-			Element methodDoc = doc.createElement("method");
+		list.visitMethods(new IMethodVisitor() {
+			@Override
+			public void visit(String name, IMethodExecutor executor) {
+				Element methodDoc = doc.createElement("method");
 
-			methodDoc.setAttribute("name", entry.getKey());
-			fillDocForMethod(methodDoc, entry.getValue());
-			result.appendChild(methodDoc);
-		}
+				methodDoc.setAttribute("name", name);
+				fillDocForMethod(methodDoc, executor);
+				result.appendChild(methodDoc);
+			}
+		});
 	}
 
 	private void fillDocForMethod(Element result, IMethodExecutor method) {
@@ -160,6 +175,12 @@ public class DocBuilder {
 	}
 
 	private Element createProperty(String tag, String value) {
+		Element el = doc.createElement(tag);
+		el.appendChild(doc.createTextNode(value));
+		return el;
+	}
+
+	private static Element createProperty(Document doc, String tag, String value) {
 		Element el = doc.createElement(tag);
 		el.appendChild(doc.createTextNode(value));
 		return el;

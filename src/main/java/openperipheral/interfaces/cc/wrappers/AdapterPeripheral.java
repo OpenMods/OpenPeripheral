@@ -2,14 +2,13 @@ package openperipheral.interfaces.cc.wrappers;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import net.minecraft.tileentity.TileEntity;
 import openmods.Log;
 import openmods.utils.CachedFactory;
 import openperipheral.adapter.AdapterLogicException;
 import openperipheral.adapter.IMethodExecutor;
-import openperipheral.adapter.WrappedEntityBase;
+import openperipheral.adapter.composed.IndexedMethodMap;
 import openperipheral.api.adapter.IWorldProvider;
 import openperipheral.api.architecture.IArchitectureAccess;
 import openperipheral.api.architecture.IAttachable;
@@ -33,7 +32,7 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 
-public class AdapterPeripheral extends WrappedEntityBase implements IPeripheral, IOpenPeripheral {
+public class AdapterPeripheral implements IPeripheral, IOpenPeripheral {
 
 	private static final String MOUNT_NAME = "openp";
 	private static final IMount MOUNT = new ResourceMount();
@@ -42,6 +41,8 @@ public class AdapterPeripheral extends WrappedEntityBase implements IPeripheral,
 	protected final Object target;
 	private final List<PeripheralExecutor<?>> executors;
 
+	private final IndexedMethodMap methods;
+
 	private final CachedFactory<IComputerAccess, IArchitectureAccess> accessCache = new CachedFactory<IComputerAccess, IArchitectureAccess>() {
 		@Override
 		protected IArchitectureAccess create(IComputerAccess computer) {
@@ -49,14 +50,14 @@ public class AdapterPeripheral extends WrappedEntityBase implements IPeripheral,
 		}
 	};
 
-	public AdapterPeripheral(Map<String, IMethodExecutor> methods, Object target) {
-		super(methods);
+	public AdapterPeripheral(IndexedMethodMap methods, Object target) {
+		this.methods = methods;
 		this.type = NameUtils.getNameForTarget(target);
 		this.target = target;
 
 		ImmutableList.Builder<PeripheralExecutor<?>> executors = ImmutableList.builder();
 
-		for (IMethodExecutor method : this.methods)
+		for (IMethodExecutor method : methods.getMethods())
 			executors.add(selectExecutor(target, method));
 
 		this.executors = executors.build();
@@ -74,7 +75,7 @@ public class AdapterPeripheral extends WrappedEntityBase implements IPeripheral,
 
 	@Override
 	public String[] getMethodNames() {
-		return super.getMethodNames();
+		return methods.getMethodNames();
 	}
 
 	@Override
@@ -82,7 +83,7 @@ public class AdapterPeripheral extends WrappedEntityBase implements IPeripheral,
 		// this should throw if peripheral isn't attached
 		computer.getAttachmentName();
 
-		IMethodExecutor method = getMethod(index);
+		IMethodExecutor method = methods.getMethod(index);
 		Preconditions.checkNotNull(method, "Invalid method index: %d", index);
 
 		PeripheralExecutor<Object> executor = getExecutor(index);
@@ -95,12 +96,12 @@ public class AdapterPeripheral extends WrappedEntityBase implements IPeripheral,
 		} catch (LuaException e) {
 			throw e;
 		} catch (AdapterLogicException e) {
-			String methodName = getMethodName(index);
+			String methodName = methods.getMethodName(index);
 			Log.log(Level.DEBUG, e.getCause(), "Adapter error during method %s(%d) execution on peripheral %s, args: %s",
 					methodName, index, type, Arrays.toString(arguments));
 			throw new LuaException(e.getMessage());
 		} catch (Throwable e) {
-			String methodName = getMethodName(index);
+			String methodName = methods.getMethodName(index);
 			Log.log(Level.INFO, e, "Unwrapped error during method %s(%d) execution on peripheral %s, args: %s",
 					methodName, index, type, Arrays.toString(arguments));
 			throw new LuaException("Internal error. Check logs for info");

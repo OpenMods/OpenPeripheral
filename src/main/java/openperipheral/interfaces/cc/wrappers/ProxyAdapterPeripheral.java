@@ -3,9 +3,8 @@ package openperipheral.interfaces.cc.wrappers;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Map;
 
-import openperipheral.adapter.IMethodExecutor;
+import openperipheral.adapter.composed.IndexedMethodMap;
 
 import com.google.common.base.Throwables;
 
@@ -13,8 +12,8 @@ import dan200.computercraft.api.peripheral.IPeripheral;
 
 public class ProxyAdapterPeripheral extends AdapterPeripheral implements InvocationHandler {
 
-	public ProxyAdapterPeripheral(Map<String, IMethodExecutor> wrapper, Object targetObject) {
-		super(wrapper, targetObject);
+	public ProxyAdapterPeripheral(IndexedMethodMap methods, Object targetObject) {
+		super(methods, targetObject);
 	}
 
 	@Override

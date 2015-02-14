@@ -9,7 +9,7 @@ import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.Node;
 import openperipheral.adapter.IMethodExecutor;
-import openperipheral.adapter.WrappedEntityBase;
+import openperipheral.adapter.composed.IndexedMethodMap;
 import openperipheral.api.architecture.IAttachable;
 import openperipheral.api.architecture.oc.IOpenComputersAttachable;
 
@@ -75,7 +75,7 @@ public class EnvironmentCodeGenerator {
 	}
 
 	@SuppressWarnings("deprecation")
-	public byte[] generate(String clsName, Class<?> targetClass, Set<Class<?>> exposedInterfaces, WrappedEntityBase methods) {
+	public byte[] generate(String clsName, Class<?> targetClass, Set<Class<?>> exposedInterfaces, IndexedMethodMap methods) {
 		ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
 
 		writer.visit(Opcodes.V1_6,

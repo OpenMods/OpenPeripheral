@@ -1,12 +1,11 @@
 package openperipheral.interfaces.cc.wrappers;
 
 import java.util.Arrays;
-import java.util.Map;
 
 import openmods.Log;
 import openperipheral.adapter.AdapterLogicException;
 import openperipheral.adapter.IMethodExecutor;
-import openperipheral.adapter.WrappedEntityBase;
+import openperipheral.adapter.composed.IndexedMethodMap;
 import openperipheral.api.Constants;
 import openperipheral.interfaces.cc.ComputerCraftEnv;
 import openperipheral.interfaces.cc.ModuleComputerCraft;
@@ -21,22 +20,23 @@ import dan200.computercraft.api.lua.LuaException;
 
 public class LuaObjectWrapper {
 
-	private static class WrappedLuaObject extends WrappedEntityBase implements ILuaObject {
+	private static class WrappedLuaObject implements ILuaObject {
+		private final IndexedMethodMap methods;
 		private final Object target;
 
-		private WrappedLuaObject(Map<String, IMethodExecutor> methods, Object target) {
-			super(methods);
+		private WrappedLuaObject(IndexedMethodMap methods, Object target) {
+			this.methods = methods;
 			this.target = target;
 		}
 
 		@Override
 		public String[] getMethodNames() {
-			return super.getMethodNames();
+			return methods.getMethodNames();
 		}
 
 		@Override
 		public Object[] callMethod(ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
-			IMethodExecutor executor = getMethod(method);
+			IMethodExecutor executor = methods.getMethod(method);
 			Preconditions.checkNotNull(executor, "Invalid method index: %d", method);
 
 			try {
@@ -48,7 +48,7 @@ public class LuaObjectWrapper {
 			} catch (InterruptedException e) {
 				throw e;
 			} catch (Throwable t) {
-				String methodName = getMethodName(method);
+				String methodName = methods.getMethodName(method);
 				Log.log(Level.DEBUG, t.getCause(), "Internal error during method %s(%d) execution on object %s, args: %s",
 						methodName, method, target.getClass(), Arrays.toString(arguments));
 
@@ -59,7 +59,7 @@ public class LuaObjectWrapper {
 
 	public static ILuaObject wrap(Object target) {
 		Preconditions.checkNotNull(target, "Can't wrap null");
-		Map<String, IMethodExecutor> methods = ModuleComputerCraft.OBJECT_METHODS_FACTORY.getAdaptedClass(target.getClass());
+		IndexedMethodMap methods = ModuleComputerCraft.OBJECT_METHODS_FACTORY.getAdaptedClass(target.getClass());
 		return methods.isEmpty()? null : new WrappedLuaObject(methods, target);
 	}
 }

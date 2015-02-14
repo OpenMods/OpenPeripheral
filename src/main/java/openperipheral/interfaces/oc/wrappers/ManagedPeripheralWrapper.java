@@ -1,13 +1,12 @@
 package openperipheral.interfaces.oc.wrappers;
 
-import java.util.Map;
-
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.machine.Value;
 import li.cil.oc.api.network.ManagedPeripheral;
 import li.cil.oc.api.prefab.AbstractValue;
 import openperipheral.adapter.IMethodExecutor;
+import openperipheral.adapter.composed.NamedMethodMap;
 import openperipheral.api.Constants;
 import openperipheral.interfaces.oc.ModuleOpenComputers;
 import openperipheral.interfaces.oc.OpenComputersEnv;
@@ -22,33 +21,29 @@ public class ManagedPeripheralWrapper {
 
 		private final Object target;
 
-		private final Map<String, IMethodExecutor> methods;
+		private final NamedMethodMap methods;
 
-		private final String[] methodsNames;
-
-		public ObjectWrap(Object target, Map<String, IMethodExecutor> methods) {
+		public ObjectWrap(Object target, NamedMethodMap methods) {
 			this.target = target;
 			this.methods = methods;
-			this.methodsNames = methods.keySet().toArray(new String[methods.size()]);
 		}
 
 		public ObjectWrap() {
 			// stupid persistence...
 			this.target = null;
 			this.methods = null;
-			this.methodsNames = null;
 		}
 
 		@Override
 		public String[] methods() {
-			return methodsNames != null? methodsNames : ArrayUtils.EMPTY_STRING_ARRAY;
+			return methods != null? methods.getMethodNames() : ArrayUtils.EMPTY_STRING_ARRAY;
 		}
 
 		@Override
 		public Object[] invoke(String method, Context context, Arguments args) throws Exception {
 			Preconditions.checkArgument(method != null && target != null, "This object is no longer valid");
 
-			IMethodExecutor executor = methods.get(method);
+			IMethodExecutor executor = methods.getMethod(method);
 			Preconditions.checkArgument(executor != null, "Invalid method name: '%s'", method);
 
 			Object[] objArgs = args.toArray();
@@ -65,7 +60,7 @@ public class ManagedPeripheralWrapper {
 
 	public static Value wrap(Object target) {
 		Preconditions.checkNotNull(target, "Can't wrap null");
-		Map<String, IMethodExecutor> methods = ModuleOpenComputers.OBJECT_METHODS_FACTORY.getAdaptedClass(target.getClass());
+		NamedMethodMap methods = ModuleOpenComputers.OBJECT_METHODS_FACTORY.getAdaptedClass(target.getClass());
 		return methods.isEmpty()? null : new ObjectWrap(target, methods);
 	}
 

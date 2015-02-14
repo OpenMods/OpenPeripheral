@@ -9,8 +9,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import openmods.Log;
 import openmods.reflection.ReflectionHelper;
-import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.TileEntityBlacklist;
+import openperipheral.adapter.composed.IndexedMethodMap;
 import openperipheral.api.architecture.cc.ICustomPeripheralProvider;
 import openperipheral.api.peripheral.ExposeInterface;
 import openperipheral.api.peripheral.IOpenPeripheral;
@@ -114,7 +114,7 @@ public class PeripheralProvider implements IPeripheralProvider {
 
 	public static IPeripheral createAdaptedPeripheral(Object target) {
 		Class<?> targetClass = target.getClass();
-		Map<String, IMethodExecutor> methods = ModuleComputerCraft.PERIPHERAL_METHODS_FACTORY.getAdaptedClass(targetClass);
+		IndexedMethodMap methods = ModuleComputerCraft.PERIPHERAL_METHODS_FACTORY.getAdaptedClass(targetClass);
 		if (methods.isEmpty()) return null;
 
 		ExposeInterface proxyAnn = targetClass.getAnnotation(ExposeInterface.class);

@@ -5,8 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 import li.cil.oc.api.network.ManagedEnvironment;
-import openperipheral.adapter.IMethodExecutor;
-import openperipheral.adapter.WrappedEntityBase;
+import openperipheral.adapter.composed.IndexedMethodMap;
 import openperipheral.api.peripheral.ExposeInterface;
 import openperipheral.interfaces.oc.ModuleOpenComputers;
 import openperipheral.interfaces.oc.asm.EnvironmentFactory;
@@ -27,14 +26,14 @@ public class EnvironmentProvider {
 		Constructor<? extends ManagedEnvironment> envCtor = generatedClasses.get(targetCls);
 
 		if (envCtor == null) {
-			Map<String, IMethodExecutor> methods = ModuleOpenComputers.PERIPHERAL_METHODS_FACTORY.getAdaptedClass(targetCls);
+			IndexedMethodMap methods = ModuleOpenComputers.PERIPHERAL_METHODS_FACTORY.getAdaptedClass(targetCls);
 
 			ExposeInterface intfAnnotation = targetCls.getAnnotation(ExposeInterface.class);
 
 			Set<Class<?>> exposedInterfaces = intfAnnotation != null? getInterfaces(targetCls, intfAnnotation.value()) : ImmutableSet.<Class<?>> of();
 
 			String name = "OpEnvironment$$" + NameUtils.grumize(targetCls);
-			Class<? extends ManagedEnvironment> cls = evnClassFactory.generateEnvironment(name, targetCls, exposedInterfaces, new WrappedEntityBase(methods));
+			Class<? extends ManagedEnvironment> cls = evnClassFactory.generateEnvironment(name, targetCls, exposedInterfaces, methods);
 
 			try {
 				envCtor = cls.getConstructor(targetCls);

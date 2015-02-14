@@ -11,7 +11,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-public class ComposedMethodsFactory {
+public abstract class ComposedMethodsFactory<T extends IMethodMap> {
 
 	public static class InvalidClassException extends RuntimeException {
 		private static final long serialVersionUID = 5722017683388067641L;
@@ -25,7 +25,7 @@ public class ComposedMethodsFactory {
 		}
 	}
 
-	private final Map<Class<?>, Map<String, IMethodExecutor>> classes = Maps.newHashMap();
+	private final Map<Class<?>, T> classes = Maps.newHashMap();
 
 	private final Set<Class<?>> invalidClasses = Sets.newHashSet();
 
@@ -38,17 +38,18 @@ public class ComposedMethodsFactory {
 		this.composer = new ClassMethodsComposer(selector);
 	}
 
-	public Map<Class<?>, Map<String, IMethodExecutor>> listCollectedClasses() {
+	public Map<Class<?>, T> listCollectedClasses() {
 		return Collections.unmodifiableMap(classes);
 	}
 
-	public Map<String, IMethodExecutor> getAdaptedClass(Class<?> targetCls) {
+	public T getAdaptedClass(Class<?> targetCls) {
 		if (invalidClasses.contains(targetCls)) throw new InvalidClassException();
 
-		Map<String, IMethodExecutor> value = classes.get(targetCls);
+		T value = classes.get(targetCls);
 		if (value == null) {
 			try {
-				value = composer.createMethodsList(targetCls, adapters);
+				Map<String, IMethodExecutor> methods = composer.createMethodsList(targetCls, adapters);
+				value = wrapMethods(methods);
 			} catch (Throwable t) {
 				invalidClasses.add(targetCls);
 				throw new InvalidClassException(t);
@@ -59,4 +60,6 @@ public class ComposedMethodsFactory {
 
 		return value;
 	}
+
+	protected abstract T wrapMethods(Map<String, IMethodExecutor> methods);
 }
