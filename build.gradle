@@ -187,7 +187,15 @@ task apiJar(type: Jar) {
     include 'openperipheral/api/**'
 }
 
-task javadocJar(type: Jar, dependsOn: javadoc) {
+task apiSrcJar(type: Zip) {
+    classifier 'api-src'
+
+    from sourceSets.main.java
+
+    include 'openperipheral/api/**'
+}
+
+task javadocJar(type: Zip, dependsOn: javadoc) {
     classifier 'javadoc'
 
     from 'build/docs/javadoc'
@@ -197,5 +205,6 @@ artifacts {
     archives deobfJar
     archives sourcesJar
     archives apiJar
+    archives apiSrcJar
     archives javadocJar
 }

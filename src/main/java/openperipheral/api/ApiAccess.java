@@ -4,7 +4,6 @@ import openperipheral.api.adapter.IObjectAdapterRegistry;
 import openperipheral.api.adapter.IPeripheralAdapterRegistry;
 import openperipheral.api.architecture.cc.IComputerCraftObjectsFactory;
 import openperipheral.api.architecture.oc.IOpenComputersObjectsFactory;
-import openperipheral.api.converter.IConverter;
 import openperipheral.api.converter.IConverterManager;
 import openperipheral.api.meta.IEntityMetaBuilder;
 import openperipheral.api.meta.IItemStackMetaBuilder;
@@ -21,7 +20,6 @@ import openperipheral.api.peripheral.IPeripheralBlacklist;
  * <li>{@link IObjectAdapterRegistry} - for registering object adapters</li>
  * <li>{@link IEntityMetaBuilder} - for registering metadata providers and getting metadata for in-game entitites</li>
  * <li>{@link IItemStackMetaBuilder} - for registering metadata providers and getting metadata for in-game items</li>
- * <li>{@link IConverter} - for registering type converters and converting values from and to Lua. <strong>Object returned for this interface should not be used for conversion</strong></li>
  * <li>{@link IConverterManager} - for getting architecture-specific type converters</li>
  * <li>{@link IPeripheralBlacklist} - for checking if class is blacklisted (i.e. will not generate peripheral)</li>
  * </ul>
