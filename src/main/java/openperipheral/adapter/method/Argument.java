@@ -38,10 +38,11 @@ public class Argument {
 	}
 
 	protected final Object convertSingleArg(IConverter converter, Object o) {
-		if (o == null) return null;
-		Object converted = converter.toJava(o, javaType.getType());
-		Preconditions.checkArgument(converted != null, "Failed to convert arg '%s' value '%s' to '%s'", name, o, javaType);
-		return converted;
+		try {
+			return converter.toJava(o, javaType.getType());
+		} catch (Exception e) {
+			throw new IllegalArgumentException(String.format("Failed to convert arg '%s'", name), e);
+		}
 	}
 
 	public Map<String, Object> describe() {

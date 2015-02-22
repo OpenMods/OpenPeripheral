@@ -191,7 +191,6 @@ public class PropertyListBuilder {
 			Preconditions.checkArgument(args.length == 1, "Setter must have exactly one argument");
 			Object arg = args[0];
 			Object converted = converter.toJava(arg, field.getGenericType());
-			Preconditions.checkNotNull(converted, "Invalid value type");
 			getCallback(target).setField(field, converted);
 
 			return ArrayUtils.EMPTY_OBJECT_ARRAY;

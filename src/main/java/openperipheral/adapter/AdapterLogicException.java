@@ -20,7 +20,7 @@ public class AdapterLogicException extends RuntimeException {
 
 		if (firstEmpty && secondEmpty) {
 			return String.format("Caught exception %s without any info", e.getClass());
-		} else if (!firstEmpty && !secondEmpty) return String.format("%s, caused by %s", firstMessage, secondMessage);
+		} else if (!firstEmpty && !secondEmpty) return String.format("%s, caused by: '%s'", firstMessage, secondMessage);
 
 		return firstEmpty? secondMessage : firstMessage;
 	}

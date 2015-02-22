@@ -47,11 +47,8 @@ public class ConverterListInbound implements IGenericInboundTypeConverter {
 
 				for (int index = indexMin; index <= indexMax; index++) {
 					Object o = tmp.get(index);
-					if (o != null) {
-						final Object converted = registry.toJava(o, valueType);
-						if (converted == null) return null;
-						result.add(converted);
-					} else result.add(null);
+					final Object converted = registry.toJava(o, valueType);
+					result.add(converted);
 				}
 
 				return result;

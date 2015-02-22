@@ -49,7 +49,6 @@ public class ConverterArrayInbound implements IGenericInboundTypeConverter {
 					Object in = tmp.get(index);
 					if (in == null) continue;
 					Object out = registry.toJava(in, genericComponent);
-					if (out == null) return null;
 					Array.set(result, i, out);
 				}
 
