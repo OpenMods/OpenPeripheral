@@ -7,7 +7,6 @@ import openperipheral.api.Constants;
 import openperipheral.api.architecture.IArchitectureAccess;
 import openperipheral.api.converter.IConverter;
 import openperipheral.converter.TypeConvertersProvider;
-import openperipheral.interfaces.oc.wrappers.ManagedPeripheralWrapper;
 
 public class OpenComputersEnv {
 
@@ -35,18 +34,20 @@ public class OpenComputersEnv {
 
 			@Override
 			public Object wrapObject(Object target) {
-				return ManagedPeripheralWrapper.wrap(target);
+				return ModuleOpenComputers.wrapObject(target);
 			}
 		};
 	}
 
-	public static IMethodCall addCommonArgs(IMethodCall call) {
+	public static IMethodCall addCommonArgs(IMethodCall call, Context context) {
 		final IConverter converter = TypeConvertersProvider.INSTANCE.getConverter(Constants.ARCH_OPEN_COMPUTERS);
-		return call.setOptionalArg(Constants.ARG_CONVERTER, converter);
+		return call
+				.setOptionalArg(Constants.ARG_CONVERTER, converter)
+				.setOptionalArg(Constants.ARG_CONTEXT, context);
 	}
 
 	public static IMethodCall addPeripheralArgs(IMethodCall call, Node node, Context context) {
 		final IArchitectureAccess wrappedAccess = createAccess(node, context);
-		return addCommonArgs(call).setOptionalArg(Constants.ARG_ACCESS, wrappedAccess);
+		return addCommonArgs(call, context).setOptionalArg(Constants.ARG_ACCESS, wrappedAccess);
 	}
 }

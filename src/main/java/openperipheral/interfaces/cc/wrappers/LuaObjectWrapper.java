@@ -6,7 +6,6 @@ import openmods.Log;
 import openperipheral.adapter.AdapterLogicException;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.composed.IndexedMethodMap;
-import openperipheral.api.Constants;
 import openperipheral.interfaces.cc.ComputerCraftEnv;
 import openperipheral.interfaces.cc.ModuleComputerCraft;
 
@@ -40,9 +39,7 @@ public class LuaObjectWrapper {
 			Preconditions.checkNotNull(executor, "Invalid method index: %d", method);
 
 			try {
-				return ComputerCraftEnv.addCommonArgs(executor.startCall(target))
-						.setOptionalArg(Constants.ARG_CONTEXT, context)
-						.call(arguments);
+				return ComputerCraftEnv.addCommonArgs(executor.startCall(target), context).call(arguments);
 			} catch (LuaException e) {
 				throw e;
 			} catch (InterruptedException e) {

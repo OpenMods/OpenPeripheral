@@ -31,6 +31,11 @@ public class NamedMethodMap implements IMethodMap {
 	}
 
 	@Override
+	public int size() {
+		return methods.size();
+	}
+
+	@Override
 	public void visitMethods(IMethodVisitor visitor) {
 		for (Map.Entry<String, IMethodExecutor> e : methods.entrySet())
 			visitor.visit(e.getKey(), e.getValue());

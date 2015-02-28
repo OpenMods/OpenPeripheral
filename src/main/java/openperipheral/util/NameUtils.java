@@ -93,4 +93,8 @@ public class NameUtils {
 	public static String grumize(Class<?> targetCls) {
 		return targetCls.getName().replace('.', '\u2603');
 	}
+
+	public static String degrumize(String obfClsName) {
+		return obfClsName.replace('\u2603', '.');
+	}
 }

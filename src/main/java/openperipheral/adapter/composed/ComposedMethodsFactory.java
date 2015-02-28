@@ -49,7 +49,7 @@ public abstract class ComposedMethodsFactory<T extends IMethodMap> {
 		if (value == null) {
 			try {
 				Map<String, IMethodExecutor> methods = composer.createMethodsList(targetCls, adapters);
-				value = wrapMethods(methods);
+				value = wrapMethods(targetCls, methods);
 			} catch (Throwable t) {
 				invalidClasses.add(targetCls);
 				throw new InvalidClassException(t);
@@ -61,5 +61,5 @@ public abstract class ComposedMethodsFactory<T extends IMethodMap> {
 		return value;
 	}
 
-	protected abstract T wrapMethods(Map<String, IMethodExecutor> methods);
+	protected abstract T wrapMethods(Class<?> targetCls, Map<String, IMethodExecutor> methods);
 }

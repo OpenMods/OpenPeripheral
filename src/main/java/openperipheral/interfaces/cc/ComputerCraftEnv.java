@@ -6,6 +6,7 @@ import openperipheral.api.architecture.IArchitectureAccess;
 import openperipheral.api.converter.IConverter;
 import openperipheral.converter.TypeConvertersProvider;
 import openperipheral.interfaces.cc.wrappers.LuaObjectWrapper;
+import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 
 public class ComputerCraftEnv {
@@ -40,13 +41,17 @@ public class ComputerCraftEnv {
 		};
 	}
 
-	public static IMethodCall addCommonArgs(IMethodCall call) {
+	public static IMethodCall addCommonArgs(IMethodCall call, ILuaContext context) {
 		final IConverter converter = TypeConvertersProvider.INSTANCE.getConverter(Constants.ARCH_COMPUTER_CRAFT);
-		return call.setOptionalArg(Constants.ARG_CONVERTER, converter);
+		return call
+				.setOptionalArg(Constants.ARG_CONVERTER, converter)
+				.setOptionalArg(Constants.ARG_CONTEXT, context);
 	}
 
-	public static IMethodCall addPeripheralArgs(IMethodCall call, IComputerAccess access) {
+	public static IMethodCall addPeripheralArgs(IMethodCall call, IComputerAccess access, ILuaContext context) {
 		final IArchitectureAccess wrappedAccess = createAccess(access);
-		return addCommonArgs(call).setOptionalArg(Constants.ARG_ACCESS, wrappedAccess);
+		return addCommonArgs(call, context)
+				.setOptionalArg(Constants.ARG_ACCESS, wrappedAccess)
+				.setOptionalArg(Constants.ARG_COMPUTER, access);
 	}
 }

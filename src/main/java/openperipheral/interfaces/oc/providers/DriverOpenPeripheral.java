@@ -7,14 +7,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import openmods.Log;
 import openperipheral.adapter.TileEntityBlacklist;
-import openperipheral.adapter.composed.IndexedMethodMap;
 import openperipheral.interfaces.oc.ModuleOpenComputers;
 
 import com.google.common.collect.Maps;
 
 public class DriverOpenPeripheral implements li.cil.oc.api.driver.Block {
-
-	public static final EnvironmentProvider PROVIDER = new EnvironmentProvider();
 
 	private final Map<Class<?>, Boolean> cache = Maps.newHashMap();
 
@@ -37,8 +34,8 @@ public class DriverOpenPeripheral implements li.cil.oc.api.driver.Block {
 
 	private static boolean shouldProvide(Class<?> cls) {
 		if (TileEntityBlacklist.INSTANCE.isBlacklisted(cls)) return false;
-		IndexedMethodMap methods = ModuleOpenComputers.PERIPHERAL_METHODS_FACTORY.getAdaptedClass(cls);
-		return !methods.isEmpty();
+		IEnviromentInstanceWrapper<?> factory = ModuleOpenComputers.PERIPHERAL_METHODS_FACTORY.getAdaptedClass(cls);
+		return !factory.isEmpty();
 	}
 
 	@Override
@@ -49,7 +46,8 @@ public class DriverOpenPeripheral implements li.cil.oc.api.driver.Block {
 			return null;
 		}
 
-		return PROVIDER.createEnvironment(te);
+		final IEnviromentInstanceWrapper<ManagedEnvironment> adaptedClass = ModuleOpenComputers.PERIPHERAL_METHODS_FACTORY.getAdaptedClass(te.getClass());
+		return adaptedClass.createEnvironment(te);
 	}
 
 }

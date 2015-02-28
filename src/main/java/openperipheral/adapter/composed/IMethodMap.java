@@ -8,6 +8,8 @@ public interface IMethodMap {
 		public void visit(String name, IMethodExecutor executor);
 	}
 
+	public int size();
+
 	public boolean isEmpty();
 
 	public void visitMethods(IMethodVisitor visitor);

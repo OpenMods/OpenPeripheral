@@ -1,4 +1,4 @@
-package openperipheral.interfaces.oc.asm;
+package openperipheral.interfaces.oc.asm.peripheral;
 
 import li.cil.oc.api.Network;
 import li.cil.oc.api.driver.NamedBlock;
@@ -9,22 +9,14 @@ import li.cil.oc.api.network.Visibility;
 import li.cil.oc.api.prefab.ManagedEnvironment;
 import openmods.utils.CachedFactory;
 import openperipheral.adapter.IMethodExecutor;
-import openperipheral.api.Constants;
 import openperipheral.api.architecture.IArchitectureAccess;
 import openperipheral.api.architecture.IAttachable;
 import openperipheral.api.architecture.oc.IOpenComputersAttachable;
 import openperipheral.interfaces.oc.OpenComputersEnv;
+import openperipheral.interfaces.oc.asm.ICallerBase;
 import openperipheral.util.NameUtils;
 
-/**
- * Warning: don't change method names or arguments, used in {@link EnvironmentCodeGenerator}
- *
- * @author boq
- *
- */
-public abstract class EnvironmentBase extends ManagedEnvironment implements NamedBlock {
-
-	public static final String METHODS_FIELD = "methods";
+public class PeripheralEnvironmentBase extends ManagedEnvironment implements NamedBlock, ICallerBase {
 
 	private final String type;
 
@@ -35,7 +27,7 @@ public abstract class EnvironmentBase extends ManagedEnvironment implements Name
 		}
 	};
 
-	public EnvironmentBase(Object target) {
+	public PeripheralEnvironmentBase(Object target) {
 		this.type = NameUtils.getNameForTarget(target);
 
 		setNode(Network.newNode(this, Visibility.Network).
@@ -43,11 +35,10 @@ public abstract class EnvironmentBase extends ManagedEnvironment implements Name
 				create());
 	}
 
-	protected Object[] call(Object target, IMethodExecutor executor, Context context, Arguments arguments) throws Exception {
+	@Override
+	public Object[] call(Object target, IMethodExecutor executor, Context context, Arguments arguments) throws Exception {
 		Object[] args = arguments.toArray();
-		return OpenComputersEnv.addPeripheralArgs(executor.startCall(target), node(), context)
-				.setOptionalArg(Constants.ARG_CONTEXT, context)
-				.call(args);
+		return OpenComputersEnv.addPeripheralArgs(executor.startCall(target), node(), context).call(args);
 	}
 
 	protected void onConnect(IAttachable target, Node node) {
@@ -80,6 +71,11 @@ public abstract class EnvironmentBase extends ManagedEnvironment implements Name
 	@Override
 	public int priority() {
 		return -1; // DriverPeripheral is at 0, but we blacklist OP peripherals
+	}
+
+	@Override
+	public Object[] invalidState() {
+		throw new IllegalStateException("Peripheral is no longer valid");
 	}
 
 }

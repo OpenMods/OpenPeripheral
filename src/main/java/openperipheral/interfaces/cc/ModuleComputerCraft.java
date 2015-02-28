@@ -38,7 +38,7 @@ public class ModuleComputerCraft {
 
 		PERIPHERAL_METHODS_FACTORY = new ComposedMethodsFactory<IndexedMethodMap>(AdapterRegistry.PERIPHERAL_ADAPTERS, peripheralSelector) {
 			@Override
-			protected IndexedMethodMap wrapMethods(Map<String, IMethodExecutor> methods) {
+			protected IndexedMethodMap wrapMethods(Class<?> targetCls, Map<String, IMethodExecutor> methods) {
 				return new IndexedMethodMap(methods);
 			}
 		};
@@ -49,7 +49,7 @@ public class ModuleComputerCraft {
 
 		OBJECT_METHODS_FACTORY = new ComposedMethodsFactory<IndexedMethodMap>(AdapterRegistry.OBJECT_ADAPTERS, objectSelector) {
 			@Override
-			protected IndexedMethodMap wrapMethods(Map<String, IMethodExecutor> methods) {
+			protected IndexedMethodMap wrapMethods(Class<?> targetCls, Map<String, IMethodExecutor> methods) {
 				return new IndexedMethodMap(methods);
 			}
 		};

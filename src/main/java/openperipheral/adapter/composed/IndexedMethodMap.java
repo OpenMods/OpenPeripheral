@@ -39,6 +39,11 @@ public class IndexedMethodMap implements IMethodMap {
 	}
 
 	@Override
+	public int size() {
+		return names.length;
+	}
+
+	@Override
 	public boolean isEmpty() {
 		return names.length == 0;
 	}
