@@ -10,6 +10,8 @@ public class AdapterLogicException extends RuntimeException {
 	}
 
 	public static String getMessageForThrowable(Throwable e) {
+		if (e instanceof AdapterLogicException) return e.getMessage();
+
 		Throwable cause = e.getCause();
 
 		String firstMessage = e.getMessage();

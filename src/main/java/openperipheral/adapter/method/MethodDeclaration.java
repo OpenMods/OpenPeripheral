@@ -4,7 +4,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.*;
 
-import openmods.Log;
 import openmods.reflection.TypeUtils;
 import openmods.utils.AnnotationMap;
 import openperipheral.adapter.AdapterLogicException;
@@ -13,8 +12,6 @@ import openperipheral.adapter.IMethodCall;
 import openperipheral.api.Constants;
 import openperipheral.api.adapter.method.*;
 import openperipheral.api.converter.IConverter;
-
-import org.apache.logging.log4j.Level;
 
 import com.google.common.base.*;
 import com.google.common.collect.*;
@@ -293,7 +290,6 @@ public class MethodDeclaration implements IDescriptable {
 
 					Preconditions.checkArgument(!it.hasNext(), "Too many arguments!");
 				} catch (ArrayIndexOutOfBoundsException e) {
-					Log.log(Level.TRACE, e, "Trying to access arg index, args = %s", Arrays.toString(luaValues));
 					throw new IllegalArgumentException(String.format("Invalid Lua parameter count, needs %s, got %s", luaArgs.size(), luaValues.length));
 				}
 			} catch (IllegalArgumentException e) {

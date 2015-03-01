@@ -8,6 +8,7 @@ import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.composed.IndexedMethodMap;
 import openperipheral.interfaces.cc.ComputerCraftEnv;
 import openperipheral.interfaces.cc.ModuleComputerCraft;
+import openperipheral.interfaces.cc.SynchronousExecutor;
 
 import org.apache.logging.log4j.Level;
 
@@ -33,23 +34,35 @@ public class LuaObjectWrapper {
 			return methods.getMethodNames();
 		}
 
-		@Override
-		public Object[] callMethod(ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
-			IMethodExecutor executor = methods.getMethod(method);
-			Preconditions.checkNotNull(executor, "Invalid method index: %d", method);
-
+		private Object[] call(int methodIndex, IMethodExecutor executor, ILuaContext context, Object[] arguments) throws LuaException, InterruptedException {
 			try {
 				return ComputerCraftEnv.addCommonArgs(executor.startCall(target), context).call(arguments);
-			} catch (LuaException e) {
-				throw e;
 			} catch (InterruptedException e) {
 				throw e;
-			} catch (Throwable t) {
-				String methodName = methods.getMethodName(method);
-				Log.log(Level.DEBUG, t.getCause(), "Internal error during method %s(%d) execution on object %s, args: %s",
-						methodName, method, target.getClass(), Arrays.toString(arguments));
+			} catch (LuaException e) {
+				throw e;
+			} catch (Throwable e) {
+				String methodName = methods.getMethodName(methodIndex);
+				Log.log(Level.DEBUG, e.getCause(), "Internal error during method %s(%d) execution on object %s, args: %s",
+						methodName, methodIndex, target.getClass(), Arrays.toString(arguments));
+				throw new LuaException(AdapterLogicException.getMessageForThrowable(e));
+			}
+		}
 
-				throw new LuaException(AdapterLogicException.getMessageForThrowable(t));
+		@Override
+		public Object[] callMethod(final ILuaContext context, final int index, final Object[] arguments) throws LuaException, InterruptedException {
+			final IMethodExecutor method = methods.getMethod(index);
+			Preconditions.checkNotNull(method, "Invalid method index: %d", index);
+
+			if (method.isAsynchronous()) return call(index, method, context, arguments);
+			else {
+				Object[] result = SynchronousExecutor.executeInMainThread(context, new SynchronousExecutor.Task() {
+					@Override
+					public Object[] execute() throws LuaException, InterruptedException {
+						return call(index, method, context, arguments);
+					}
+				});
+				return result;
 			}
 		}
 	}

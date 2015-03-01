@@ -1,30 +1,24 @@
 package openperipheral.interfaces.cc.wrappers;
 
 import java.util.Arrays;
-import java.util.List;
 
-import net.minecraft.tileentity.TileEntity;
 import openmods.Log;
 import openmods.utils.CachedFactory;
 import openperipheral.adapter.AdapterLogicException;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.composed.IndexedMethodMap;
-import openperipheral.api.adapter.IWorldProvider;
 import openperipheral.api.architecture.IArchitectureAccess;
 import openperipheral.api.architecture.IAttachable;
 import openperipheral.api.architecture.cc.IComputerCraftAttachable;
 import openperipheral.api.peripheral.IOpenPeripheral;
 import openperipheral.interfaces.cc.ComputerCraftEnv;
 import openperipheral.interfaces.cc.ResourceMount;
-import openperipheral.interfaces.cc.executors.*;
-import openperipheral.interfaces.cc.executors.SynchronousExecutor.TileEntityExecutor;
-import openperipheral.interfaces.cc.executors.SynchronousExecutor.WorldProviderExecutor;
+import openperipheral.interfaces.cc.SynchronousExecutor;
 import openperipheral.util.NameUtils;
 
 import org.apache.logging.log4j.Level;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
 
 import dan200.computercraft.api.filesystem.IMount;
 import dan200.computercraft.api.lua.ILuaContext;
@@ -39,7 +33,6 @@ public class AdapterPeripheral implements IPeripheral, IOpenPeripheral {
 
 	protected final String type;
 	protected final Object target;
-	private final List<PeripheralExecutor<?>> executors;
 
 	private final IndexedMethodMap methods;
 
@@ -54,18 +47,6 @@ public class AdapterPeripheral implements IPeripheral, IOpenPeripheral {
 		this.methods = methods;
 		this.type = NameUtils.getNameForTarget(target);
 		this.target = target;
-
-		ImmutableList.Builder<PeripheralExecutor<?>> executors = ImmutableList.builder();
-
-		for (IMethodExecutor method : methods.getMethods())
-			executors.add(selectExecutor(target, method));
-
-		this.executors = executors.build();
-	}
-
-	@SuppressWarnings("unchecked")
-	private PeripheralExecutor<Object> getExecutor(int index) {
-		return (PeripheralExecutor<Object>)executors.get(index);
 	}
 
 	@Override
@@ -78,33 +59,38 @@ public class AdapterPeripheral implements IPeripheral, IOpenPeripheral {
 		return methods.getMethodNames();
 	}
 
-	@Override
-	public Object[] callMethod(final IComputerAccess computer, ILuaContext context, int index, Object[] arguments) throws LuaException, InterruptedException {
-		// this should throw if peripheral isn't attached
-		computer.getAttachmentName();
-
-		IMethodExecutor method = methods.getMethod(index);
-		Preconditions.checkNotNull(method, "Invalid method index: %d", index);
-
-		PeripheralExecutor<Object> executor = getExecutor(index);
-
+	private Object[] call(int methodIndex, IMethodExecutor executor, IComputerAccess computer, ILuaContext context, Object[] arguments) throws LuaException, InterruptedException {
 		try {
-			return executor.execute(method, target, computer, context, arguments);
+			return ComputerCraftEnv.addPeripheralArgs(executor.startCall(target), computer, context).call(arguments);
 		} catch (InterruptedException e) {
-			// not our problem
 			throw e;
 		} catch (LuaException e) {
 			throw e;
-		} catch (AdapterLogicException e) {
-			String methodName = methods.getMethodName(index);
-			Log.log(Level.DEBUG, e.getCause(), "Adapter error during method %s(%d) execution on peripheral %s, args: %s",
-					methodName, index, type, Arrays.toString(arguments));
-			throw new LuaException(e.getMessage());
 		} catch (Throwable e) {
-			String methodName = methods.getMethodName(index);
-			Log.log(Level.INFO, e, "Unwrapped error during method %s(%d) execution on peripheral %s, args: %s",
-					methodName, index, type, Arrays.toString(arguments));
-			throw new LuaException("Internal error. Check logs for info");
+			String methodName = methods.getMethodName(methodIndex);
+			Log.log(Level.DEBUG, e, "Error during method %s(%d) execution on peripheral %s, args: %s",
+					methodName, methodIndex, type, Arrays.toString(arguments));
+			throw new LuaException(AdapterLogicException.getMessageForThrowable(e));
+		}
+	}
+
+	@Override
+	public Object[] callMethod(final IComputerAccess computer, final ILuaContext context, final int index, final Object[] arguments) throws LuaException, InterruptedException {
+		// this should throw if peripheral isn't attached
+		computer.getAttachmentName();
+
+		final IMethodExecutor method = methods.getMethod(index);
+		Preconditions.checkNotNull(method, "Invalid method index: %d", index);
+
+		if (method.isAsynchronous()) return call(index, method, computer, context, arguments);
+		else {
+			Object[] results = SynchronousExecutor.executeInMainThread(context, new SynchronousExecutor.Task() {
+				@Override
+				public Object[] execute() throws LuaException, InterruptedException {
+					return call(index, method, computer, context, arguments);
+				}
+			});
+			return results;
 		}
 	}
 
@@ -131,13 +117,5 @@ public class AdapterPeripheral implements IPeripheral, IOpenPeripheral {
 	@Override
 	public boolean equals(IPeripheral other) {
 		return other == this;
-	}
-
-	private static PeripheralExecutor<?> selectExecutor(Object target, IMethodExecutor method) {
-		if (method.isAsynchronous()) return AsynchronousExecutor.INSTANCE;
-		if (target instanceof TileEntity) return TileEntityExecutor.INSTANCE;
-		if (target instanceof IWorldProvider) return WorldProviderExecutor.INSTANCE;
-
-		throw new IllegalArgumentException(String.format("Class %s is not valid target for synchronized methods", target.getClass()));
 	}
 }
