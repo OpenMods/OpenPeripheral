@@ -1,8 +1,6 @@
 package openperipheral.meta;
 
-import java.util.Arrays;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
@@ -26,9 +24,7 @@ public class MetaProvidersRegistry<P extends IMetaProvider<?>> {
 
 	private final Multimap<Class<?>, P> directProviders = ArrayListMultimap.create();
 
-	private final Multimap<Class<?>, P> providersCache = ArrayListMultimap.create();
-
-	private final Set<Class<?>> inCache = Sets.newHashSet();
+	private final Map<Class<?>, Map<String, P>> providersCache = Maps.newHashMap();
 
 	private final String type;
 
@@ -49,34 +45,32 @@ public class MetaProvidersRegistry<P extends IMetaProvider<?>> {
 
 		Log.trace("Registering %s metadata provider '%s' for '%s'", type, provider.getClass(), targetClass);
 		providersCache.clear();
-		inCache.clear();
 	}
 
-	public Iterable<P> getProviders(Class<?> cls) {
-		Iterable<P> all;
+	public Map<String, P> getProviders(Class<?> cls) {
+		Map<String, P> providerMap = providersCache.get(cls);
 
-		if (!inCache.contains(cls)) {
-			all = collectAllProviders(cls);
-			providersCache.putAll(cls, all);
-			inCache.add(cls);
-		} else {
-			all = providersCache.get(cls);
+		if (providerMap == null) {
+			Set<P> providers = collectAllProviders(cls);
+
+			providerMap = Maps.newHashMap();
+			for (P provider : providers) {
+				final String key = provider.getKey();
+				P previous = providerMap.put(key, provider);
+				Preconditions.checkState(previous == null, "Duplicate meta provider for key %s on class %s: %s -> %s", key, cls, previous, provider);
+			}
+
+			providerMap = ImmutableMap.copyOf(providerMap);
+			providersCache.put(cls, providerMap);
 		}
 
-		return all;
+		return providerMap;
 	}
 
 	private Set<P> collectAllProviders(Class<?> targetCls) {
 		Set<P> providers = Sets.newIdentityHashSet();
 		for (Class<?> cls : getAllImplementedClasses(targetCls))
 			providers.addAll(directProviders.get(cls));
-
-		Set<String> keys = Sets.newHashSet();
-		for (P provider : providers) {
-			final String key = provider.getKey();
-			boolean isNew = keys.add(key);
-			Preconditions.checkState(isNew, "Meta provider key %s is duplicated for class %s", key, targetCls);
-		}
 
 		return providers;
 	}
