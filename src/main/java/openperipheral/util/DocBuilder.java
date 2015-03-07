@@ -2,6 +2,8 @@ package openperipheral.util;
 
 import java.io.File;
 import java.io.InputStream;
+import java.net.URL;
+import java.security.ProtectionDomain;
 import java.util.Collection;
 import java.util.Map;
 
@@ -13,6 +15,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import openmods.Log;
 import openperipheral.adapter.IDescriptable;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.composed.IMethodMap;
@@ -96,7 +99,9 @@ public class DocBuilder {
 
 	public void createDocForAdapter(String type, String location, Class<?> targetClass, AdapterWrapper adapter) {
 		Element result = doc.createElement("adapter");
-		result.setAttribute("class", adapter.getAdapterClass().getName());
+		final Class<?> adapterClass = adapter.getAdapterClass();
+		result.setAttribute("class", adapterClass.getName());
+		result.setAttribute("source", getSourceFile(adapterClass));
 		result.setAttribute("type", type);
 		result.setAttribute("location", location);
 
@@ -105,6 +110,18 @@ public class DocBuilder {
 
 		fillMethods(result, adapter.getMethods());
 		root.appendChild(result);
+	}
+
+	private static String getSourceFile(Class<?> adapterClass) {
+		try {
+			final ProtectionDomain protectionDomain = adapterClass.getProtectionDomain();
+			if (protectionDomain == null) return "none";
+			URL sourceUrl = protectionDomain.getCodeSource().getLocation();
+			return sourceUrl != null? sourceUrl.toString() : "none";
+		} catch (Throwable e) {
+			Log.warn(e, "Failed to get source for class %s", adapterClass);
+		}
+		return "unknown";
 	}
 
 	protected void fillMethods(Element result, Collection<? extends IMethodExecutor> methods) {

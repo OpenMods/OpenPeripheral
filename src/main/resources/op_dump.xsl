@@ -25,7 +25,7 @@ body {
             border-right-color: gray;
             border-bottom-color: gray;
             padding: 3px;
-            background-color: #faf0e6;
+            background-color: #C7E5ED;
 }
 
 .method {
@@ -34,6 +34,7 @@ body {
             border-style: solid;
             border-color: gray;
             padding: 2px;
+            background-color: #A2DFEF;
 }
 
 .arguments {
@@ -43,7 +44,8 @@ body {
   </head>
   <body>
   <h1>Your OpenPeripherals API Documentation</h1>
-  <p>This documentation is specific to your mods.  If it seems empty, try using peripheral.wrap() on a few things and running some code (any code) on the terminal glasses.  This will generate more peripherals for you to use.</p>
+  <p><strong>This documentation is specific to your mods.</strong> It is not complete - it will grow every time you attach new peripheral or call method with previously unseen type.</p>
+  <p>If it seems empty, try using peripheral.wrap() on a few things and running some code (any code) on the terminal glasses. This will generate more peripherals for you to use.</p>
 
   <!-- Table of contents -->
   <h2>Table of Contents:</h2>
@@ -80,7 +82,7 @@ body {
       </ul>
       <h4>Objects:</h4>
       <ul>
-      <xsl:for-each select="key('architectures', @architecture)[@type='objectr']">
+      <xsl:for-each select="key('architectures', @architecture)[@type='object']">
         <xsl:sort select="simpleName/text()"/>
         <li><a href="#lua.{@architecture}.{@class}"><xsl:value-of select="simpleName/text()" /></a></li>
       </xsl:for-each>
@@ -95,8 +97,10 @@ body {
   <xsl:for-each select="adapter">
     <div class="major" id="adapt.{@class}">
     <h1><xsl:value-of select="source/text()" /></h1>
-    <xsl:if test="target/text()"><p>Target: <code><xsl:value-of select="target/text()" /></code></p></xsl:if>
     <p>An Adapter</p>
+    <p>Target class: <code><xsl:value-of select="target/text()" /></code></p>
+    <p>Source class: <code><xsl:value-of select="@class" /></code></p>
+    <p>Defined in: <code><xsl:value-of select="@source" /></code></p>
     <p>Location: <xsl:value-of select="@location" /></p>
     <p>Type: <xsl:value-of select="@type" /></p>
     <xsl:for-each select="method">
@@ -130,6 +134,7 @@ body {
     <h1><xsl:value-of select="simpleName/text()" /><xsl:text> - </xsl:text><xsl:value-of select="name/text()" /></h1>
     <p>A peripheral</p>
     <p>Architecture: <xsl:value-of select="@architecture" /></p>
+    <p>Generated for class <code><xsl:value-of select="@class" /></code></p>
     <xsl:for-each select="method">
       <xsl:sort select="@name"/>
       <div class="method">
@@ -158,6 +163,7 @@ body {
     <h1><xsl:value-of select="simpleName/text()" /></h1>
     <p>A Script Object</p>
     <p>Architecture: <xsl:value-of select="@architecture" /></p>
+    <p>Generated for class <code><xsl:value-of select="@class" /></code></p>
     <xsl:for-each select="method">
       <xsl:sort select="@name"/>
       <div class="method">
