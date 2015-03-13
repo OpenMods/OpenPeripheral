@@ -15,8 +15,15 @@ public class ConverterEnumInbound extends GenericInboundConverterAdapter {
 				for (Object o : constants) {
 					if (o.toString().equalsIgnoreCase(value)) return o;
 				}
+			} else if (obj instanceof Number) {
+				int value = ((Number)obj).intValue() - 1;
+				try {
+					return constants[value];
+				} catch (IndexOutOfBoundsException e) {
+					// ignore, will fail anyway with more descriptive exception
+				}
 			}
-			throw new IllegalArgumentException(String.format("'%s' is not valid enum value, must be %s", obj, Arrays.toString(constants)));
+			throw new IllegalArgumentException(String.format("'%s' is not valid enum value, must be %s or 1..%d", obj, Arrays.toString(constants), constants.length));
 		}
 
 		return null;
