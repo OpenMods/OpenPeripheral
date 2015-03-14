@@ -11,9 +11,8 @@ import openperipheral.api.architecture.IArchitectureAccess;
 import openperipheral.api.architecture.IAttachable;
 import openperipheral.api.architecture.cc.IComputerCraftAttachable;
 import openperipheral.api.peripheral.IOpenPeripheral;
-import openperipheral.interfaces.cc.ComputerCraftEnv;
-import openperipheral.interfaces.cc.ResourceMount;
-import openperipheral.interfaces.cc.SynchronousExecutor;
+import openperipheral.interfaces.cc.*;
+import openperipheral.util.DocUtils;
 import openperipheral.util.NameUtils;
 
 import org.apache.logging.log4j.Level;
@@ -29,10 +28,11 @@ import dan200.computercraft.api.peripheral.IPeripheral;
 public class AdapterPeripheral implements IPeripheral, IOpenPeripheral {
 
 	private static final String MOUNT_NAME = "openp";
-	private static final IMount MOUNT = new ResourceMount();
+	private static final IMount MOUNT = new UtilsResourceMount();
 
 	protected final String type;
 	protected final Object target;
+	private final IMount docMount;
 
 	private final IndexedMethodMap methods;
 
@@ -47,6 +47,7 @@ public class AdapterPeripheral implements IPeripheral, IOpenPeripheral {
 		this.methods = methods;
 		this.type = NameUtils.getNameForTarget(target);
 		this.target = target;
+		this.docMount = new StringMount(DocUtils.createPeripheralHelpText(target.getClass(), type, methods));
 	}
 
 	@Override
@@ -97,6 +98,7 @@ public class AdapterPeripheral implements IPeripheral, IOpenPeripheral {
 	@Override
 	public void attach(IComputerAccess computer) {
 		computer.mount(MOUNT_NAME, AdapterPeripheral.MOUNT);
+		computer.mount("rom/help/" + computer.getAttachmentName(), docMount);
 		if (target instanceof IAttachable) {
 			IArchitectureAccess access = accessCache.getOrCreate(computer);
 			((IAttachable)target).addComputer(access);

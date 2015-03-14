@@ -404,7 +404,17 @@ public class MethodDeclaration implements IDescriptable {
 
 	@Override
 	public String doc() {
-		// function(arg:type[, optionArg:type]):resultType -- Description
+		return "function" + createDocString();
+	}
+
+	@Override
+	public String doc(String name) {
+		return "function " + name + createDocString();
+	}
+
+	private String createDocString() {
+		// (arg:type[, optionArg:type]):resultType -- Description
+
 		List<String> args = Lists.newArrayList();
 
 		for (Argument arg : luaArgs)
@@ -417,10 +427,8 @@ public class MethodDeclaration implements IDescriptable {
 
 		String ret = returns.size() == 1? returns.get(0) : ("(" + Joiner.on(',').join(returns) + ")");
 
-		String result = String.format("function(%s):%s", Joiner.on(',').join(args), ret);
+		String argsAndResult = String.format("(%s):%s", Joiner.on(',').join(args), ret);
 
-		if (!Strings.isNullOrEmpty(description)) result += " -- " + description;
-
-		return result;
+		return !Strings.isNullOrEmpty(description)? argsAndResult + " -- " + description : argsAndResult;
 	}
 }

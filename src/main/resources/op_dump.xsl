@@ -135,6 +135,10 @@ body {
     <p>A peripheral</p>
     <p>Architecture: <xsl:value-of select="@architecture" /></p>
     <p>Generated for class <code><xsl:value-of select="@class" /></code></p>
+    <xsl:if test="docText">
+      <p>Included documentation: </p>
+      <pre><xsl:value-of select="docText" /></pre>
+    </xsl:if>
     <xsl:for-each select="method">
       <xsl:sort select="@name"/>
       <div class="method">

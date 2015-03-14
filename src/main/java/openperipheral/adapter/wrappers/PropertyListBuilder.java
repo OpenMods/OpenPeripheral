@@ -172,6 +172,11 @@ public class PropertyListBuilder {
 		}
 
 		@Override
+		public String doc(String name) {
+			return String.format("function %s():%s -- %s", name, type.name(), description);
+		}
+
+		@Override
 		public Map<String, Object> describe() {
 			Map<String, Object> result = super.describe();
 			result.put(IDescriptable.ARGS, EMPTY_ARGS);
@@ -204,6 +209,11 @@ public class PropertyListBuilder {
 		@Override
 		public String doc() {
 			return String.format("function(%s) -- %s", type.name(), description);
+		}
+
+		@Override
+		public String doc(String name) {
+			return String.format("function %s(%s) -- %s", name, type.name(), description);
 		}
 
 		@Override

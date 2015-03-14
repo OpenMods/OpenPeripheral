@@ -10,12 +10,12 @@ import com.google.common.collect.ImmutableSortedSet;
 
 import dan200.computercraft.api.filesystem.IMount;
 
-public class ResourceMount implements IMount {
+public class UtilsResourceMount implements IMount {
 
 	private static final String RESOURCE_PATH = "/openperipheral/lua/";
 	private final SortedSet<String> files;
 
-	public ResourceMount() {
+	public UtilsResourceMount() {
 		ImmutableSortedSet.Builder<String> files = ImmutableSortedSet.naturalOrder();
 		InputStream fileList = getClass().getResourceAsStream(RESOURCE_PATH + "files.lst");
 		if (fileList != null) {

@@ -26,6 +26,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import com.google.common.base.Objects;
+import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
 
 public class DocBuilder {
@@ -42,11 +43,15 @@ public class DocBuilder {
 	};
 
 	public static final IClassDecorator TILE_ENTITY_DECORATOR = new IClassDecorator() {
+
 		@Override
 		public void decorateEntry(Element element, Class<?> cls) {
 			final String teName = Objects.firstNonNull(NameUtils.getClassToNameMap().get(cls), "null");
 			Document doc = element.getOwnerDocument();
 			element.appendChild(createProperty(doc, "name", teName));
+
+			String docText = DocUtils.DOC_TEXT_CACHE.getOrCreate(cls);
+			if (!Strings.isNullOrEmpty(docText)) element.appendChild(createCDataProperty(doc, "docText", docText));
 		}
 	};
 
@@ -192,14 +197,18 @@ public class DocBuilder {
 	}
 
 	private Element createProperty(String tag, String value) {
-		Element el = doc.createElement(tag);
-		el.appendChild(doc.createTextNode(value));
-		return el;
+		return createProperty(doc, tag, value);
 	}
 
 	private static Element createProperty(Document doc, String tag, String value) {
 		Element el = doc.createElement(tag);
 		el.appendChild(doc.createTextNode(value));
+		return el;
+	}
+
+	private static Element createCDataProperty(Document doc, String tag, String value) {
+		Element el = doc.createElement(tag);
+		el.appendChild(doc.createCDATASection(value));
 		return el;
 	}
 }
