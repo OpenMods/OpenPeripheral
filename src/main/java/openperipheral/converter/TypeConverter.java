@@ -41,6 +41,11 @@ public abstract class TypeConverter implements IConverter {
 	}
 
 	protected TypeConverter() {
+		inbound.add(new ConverterRawInbound());
+
+		inbound.add(new ConverterItemStackInbound());
+		inbound.add(new ConverterUuid());
+
 		inbound.add(new ConverterNumberInbound());
 		inbound.add(new ConverterEnumInbound());
 		inbound.add(new ConverterStringInbound());
@@ -51,9 +56,6 @@ public abstract class TypeConverter implements IConverter {
 		inbound.add(new ConverterSetInbound());
 
 		inbound.add(new ConverterBypass());
-
-		inbound.add(new ConverterItemStackInbound());
-		inbound.add(new ConverterUuid());
 
 		outbound.add(new ConverterBoolean());
 		outbound.add(new ConverterNumberOutbound());
