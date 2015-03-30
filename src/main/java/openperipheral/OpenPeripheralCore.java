@@ -2,7 +2,6 @@ package openperipheral;
 
 import java.io.File;
 
-import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import openmods.Mods;
@@ -42,8 +41,6 @@ public class OpenPeripheralCore {
 
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent evt) {
-		ClientCommandHandler.instance.registerCommand(new CommandDump());
-
 		if (Loader.isModLoaded(Mods.OPENCOMPUTERS)) ModuleOpenComputers.registerProvider();
 	}
 
@@ -61,4 +58,10 @@ public class OpenPeripheralCore {
 			}
 		}
 	}
+
+	@EventHandler
+	public void severStart(FMLServerStartingEvent evt) {
+		evt.registerServerCommand(new CommandDump("op_dump", evt.getServer().isDedicatedServer()));
+	}
+
 }

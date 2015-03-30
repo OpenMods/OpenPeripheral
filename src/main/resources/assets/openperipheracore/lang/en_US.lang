@@ -1,0 +1,2 @@
+openperipheralcore.dump.done=Done! Created %s file in %s (%s ms)
+openperipheralcore.dump.fail=Failed to execute! Check logs

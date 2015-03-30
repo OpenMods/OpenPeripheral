@@ -5,11 +5,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
 import openmods.Log;
 import openmods.OpenMods;
+import openmods.utils.SidedCommand;
 import openperipheral.adapter.AdapterRegistry;
 import openperipheral.adapter.composed.ComposedMethodsFactory;
 import openperipheral.adapter.composed.IMethodMap;
@@ -19,7 +20,11 @@ import openperipheral.util.DocBuilder.IClassDecorator;
 
 import com.google.common.collect.Lists;
 
-public class CommandDump implements ICommand {
+public class CommandDump extends SidedCommand {
+
+	public CommandDump(String name, boolean restricted) {
+		super(name, restricted);
+	}
 
 	private interface IArchSerializer {
 		public void serialize(DocBuilder builder);
@@ -38,23 +43,8 @@ public class CommandDump implements ICommand {
 	}
 
 	@Override
-	public int compareTo(Object o) {
-		return getCommandName().compareTo(((ICommand)o).getCommandName());
-	}
-
-	@Override
-	public String getCommandName() {
-		return "op_dump";
-	}
-
-	@Override
 	public String getCommandUsage(ICommandSender sender) {
-		return "op_dump <type> <file>";
-	}
-
-	@Override
-	public List<?> getCommandAliases() {
-		return null;
+		return name + " <type> <file>";
 	}
 
 	private static void processExternalAdapters(DocBuilder builder, AdapterRegistry registry, String type) {
@@ -79,6 +69,7 @@ public class CommandDump implements ICommand {
 		final String filename = name + '.' + format;
 
 		try {
+			final long start = System.currentTimeMillis();
 			File output = new File(filename);
 
 			if (!output.isAbsolute()) output = new File(OpenMods.proxy.getMinecraftDir(), filename);
@@ -100,16 +91,12 @@ public class CommandDump implements ICommand {
 				return;
 			}
 
-			sender.addChatMessage(new ChatComponentText("Done! Created " + format + " file in " + output.getAbsolutePath()));
+			long duration = System.currentTimeMillis() - start;
+			sender.addChatMessage(new ChatComponentTranslation("openperipheralcore.dump.done", format, output.getAbsolutePath(), duration));
 		} catch (Throwable t) {
 			Log.warn(t, "Failed to execute dump command");
-			sender.addChatMessage(new ChatComponentText("Failed to execute! Check logs"));
+			sender.addChatMessage(new ChatComponentTranslation("openperipheralcore.dump.fail"));
 		}
-	}
-
-	@Override
-	public boolean canCommandSenderUseCommand(ICommandSender icommandsender) {
-		return true;
 	}
 
 	@Override
