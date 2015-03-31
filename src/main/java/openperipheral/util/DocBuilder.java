@@ -117,6 +117,10 @@ public class DocBuilder {
 		root.appendChild(result);
 	}
 
+	public void setRootAttribute(String name, String value) {
+		root.setAttribute(name, value);
+	}
+
 	private static String getSourceFile(Class<?> adapterClass) {
 		try {
 			final ProtectionDomain protectionDomain = adapterClass.getProtectionDomain();

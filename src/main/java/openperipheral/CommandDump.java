@@ -1,9 +1,8 @@
 package openperipheral;
 
 import java.io.File;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentText;
@@ -19,6 +18,8 @@ import openperipheral.util.DocBuilder;
 import openperipheral.util.DocBuilder.IClassDecorator;
 
 import com.google.common.collect.Lists;
+
+import cpw.mods.fml.common.Loader;
 
 public class CommandDump extends SidedCommand {
 
@@ -76,6 +77,11 @@ public class CommandDump extends SidedCommand {
 
 			final DocBuilder builder = new DocBuilder();
 
+			builder.setRootAttribute("generatedIn", getModVersion());
+
+			builder.setRootAttribute("generatedOn", getCurrentTime());
+			builder.setRootAttribute("generatedBy", sender.getCommandSenderName());
+
 			for (IArchSerializer serializer : archSerializers)
 				serializer.serialize(builder);
 
@@ -97,6 +103,22 @@ public class CommandDump extends SidedCommand {
 			Log.warn(t, "Failed to execute dump command");
 			sender.addChatMessage(new ChatComponentTranslation("openperipheralcore.dump.fail"));
 		}
+	}
+
+	private static String getCurrentTime() {
+		final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
+		final TimeZone tz = Calendar.getInstance().getTimeZone();
+		dateFormat.setTimeZone(tz);
+		return dateFormat.format(new Date());
+	}
+
+	private static String getModVersion() {
+		try {
+			return Loader.instance().getIndexedModList().get(ModInfo.ID).getDisplayVersion();
+		} catch (Exception e) {
+			Log.info(e, "Failed to get OpenPeripheral version");
+		}
+		return "unknown";
 	}
 
 	@Override

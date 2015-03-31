@@ -46,6 +46,7 @@ body {
   <h1>Your OpenPeripherals API Documentation</h1>
   <p><strong>This documentation is specific to your mods.</strong> It is not complete - it will grow every time you attach new peripheral or call method with previously unseen type.</p>
   <p>If it seems empty, try using peripheral.wrap() on a few things and running some code (any code) on the terminal glasses. This will generate more peripherals for you to use.</p>
+  <p><small>Generated in OpenPeripheralCore <xsl:value-of select="@generatedIn" /> by <xsl:value-of select="@generatedBy" /> on <xsl:value-of select="@generatedOn" /></small></p>
 
   <!-- Table of contents -->
   <h2>Table of Contents:</h2>
