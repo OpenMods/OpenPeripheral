@@ -4,6 +4,7 @@ import li.cil.oc.api.Network;
 import li.cil.oc.api.driver.NamedBlock;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Context;
+import li.cil.oc.api.network.Environment;
 import li.cil.oc.api.network.Node;
 import li.cil.oc.api.network.Visibility;
 import li.cil.oc.api.prefab.ManagedEnvironment;
@@ -42,15 +43,17 @@ public class PeripheralEnvironmentBase extends ManagedEnvironment implements Nam
 	}
 
 	protected void onConnect(IAttachable target, Node node) {
-		if (node instanceof Context) {
-			IArchitectureAccess access = accessCache.getOrCreate((Context)node);
+		final Environment host = node.host();
+		if (host instanceof Context) {
+			IArchitectureAccess access = accessCache.getOrCreate((Context)host);
 			target.addComputer(access);
 		}
 	}
 
 	protected void onDisconnect(IAttachable target, Node node) {
-		if (node instanceof Context) {
-			IArchitectureAccess access = accessCache.remove((Context)node);
+		final Environment host = node.host();
+		if (host instanceof Context) {
+			IArchitectureAccess access = accessCache.remove((Context)host);
 			if (access != null) target.removeComputer(access);
 		}
 	}

@@ -87,6 +87,8 @@ public class EnvironmentGeneratorTest {
 
 	private abstract static class SemiAwareTargetClass implements IOpenComputersAttachable {}
 
+	private abstract static class CommonAwareTargetClass implements IAttachable {}
+
 	private static Method getMethod(Class<?> cls, String prefix) {
 		for (Method m : cls.getMethods())
 			if (m.getName().startsWith(prefix)) return m;
@@ -108,7 +110,7 @@ public class EnvironmentGeneratorTest {
 
 		methods.put(name, Pair.of(executor, call));
 	}
-	
+
 	private static void testMethods(Map<String, Pair<IMethodExecutor, IMethodCall>> executorMocks, Class<?> generatedClass, final TargetClass target, Object wrapper) throws Exception {
 		for (Map.Entry<String, Pair<IMethodExecutor, IMethodCall>> method : executorMocks.entrySet()) {
 			final Pair<IMethodExecutor, IMethodCall> value = method.getValue();
@@ -286,7 +288,32 @@ public class EnvironmentGeneratorTest {
 		}
 	}
 
-	private interface ContextNode extends Context, Node {}
+	private interface ContextEnvironment extends Context, Environment {}
+
+	private static IArchitectureAccess verifyCommonConnectCall(IAttachable target, String nodeAddress) {
+		ArgumentCaptor<IArchitectureAccess> connectAccess = ArgumentCaptor.forClass(IArchitectureAccess.class);
+		verify(target).addComputer(connectAccess.capture());
+		Assert.assertEquals(nodeAddress, connectAccess.getValue().callerName());
+		return connectAccess.getValue();
+	}
+
+	private static void verifyCommonDisconnectCall(IAttachable target, IArchitectureAccess connectAccess) {
+		ArgumentCaptor<IArchitectureAccess> disconnectAccess = ArgumentCaptor.forClass(IArchitectureAccess.class);
+		verify(target).removeComputer(disconnectAccess.capture());
+		Assert.assertEquals(connectAccess, disconnectAccess.getValue()); // must be same object
+	}
+
+	private static void verifyOcSpecificConnectCall(IOpenComputersAttachable target, Node node) {
+		ArgumentCaptor<Node> capuredNode = ArgumentCaptor.forClass(Node.class);
+		verify(target).onConnect(capuredNode.capture());
+		Assert.assertEquals(node, capuredNode.getValue());
+	}
+
+	private static void verifyOcSpecificDisconnectCall(IOpenComputersAttachable target, Node node) {
+		ArgumentCaptor<Node> capuredNode = ArgumentCaptor.forClass(Node.class);
+		verify(target).onConnect(capuredNode.capture());
+		Assert.assertEquals(node, capuredNode.getValue());
+	}
 
 	@Test
 	public void testConnectivity() throws Exception {
@@ -300,34 +327,20 @@ public class EnvironmentGeneratorTest {
 		final AwareTargetClass target = mock(AwareTargetClass.class);
 		ManagedEnvironment o = cls.getConstructor(AwareTargetClass.class).newInstance(target);
 
-		ContextNode contextNode = mock(ContextNode.class);
+		Environment environment = mock(ContextEnvironment.class);
+		Node node = mock(Node.class);
 		final String nodeAddress = "node_11";
-		when(contextNode.address()).thenReturn(nodeAddress);
-		when(contextNode.node()).thenReturn(contextNode);
+		when(node.address()).thenReturn(nodeAddress);
+		when(node.host()).thenReturn(environment);
+		when(environment.node()).thenReturn(node);
 
-		o.onConnect(contextNode);
+		o.onConnect(node);
+		final IArchitectureAccess connectAccess = verifyCommonConnectCall(target, nodeAddress);
+		verifyOcSpecificConnectCall(target, node);
 
-		ArgumentCaptor<IArchitectureAccess> connectAccess = ArgumentCaptor.forClass(IArchitectureAccess.class);
-		verify(target).addComputer(connectAccess.capture());
-		Assert.assertEquals(nodeAddress, connectAccess.getValue().callerName());
-
-		{
-			ArgumentCaptor<Node> node = ArgumentCaptor.forClass(Node.class);
-			verify(target).onConnect(node.capture());
-			Assert.assertEquals(contextNode, node.getValue());
-		}
-
-		o.onDisconnect(contextNode);
-
-		ArgumentCaptor<IArchitectureAccess> disconnectAccess = ArgumentCaptor.forClass(IArchitectureAccess.class);
-		verify(target).removeComputer(disconnectAccess.capture());
-		Assert.assertEquals(connectAccess.getValue(), disconnectAccess.getValue()); // must be same object
-
-		{
-			ArgumentCaptor<Node> node = ArgumentCaptor.forClass(Node.class);
-			verify(target).onConnect(node.capture());
-			Assert.assertEquals(contextNode, node.getValue());
-		}
+		o.onDisconnect(node);
+		verifyCommonDisconnectCall(target, connectAccess);
+		verifyOcSpecificDisconnectCall(target, node);
 	}
 
 	@Test
@@ -342,26 +355,39 @@ public class EnvironmentGeneratorTest {
 		final SemiAwareTargetClass target = mock(SemiAwareTargetClass.class);
 		ManagedEnvironment o = cls.getConstructor(SemiAwareTargetClass.class).newInstance(target);
 
-		ContextNode contextNode = mock(ContextNode.class);
-		final String nodeAddress = "node_12";
-		when(contextNode.address()).thenReturn(nodeAddress);
-		when(contextNode.node()).thenReturn(contextNode);
+		Node node = mock(Node.class);
 
-		o.onConnect(contextNode);
+		o.onConnect(node);
+		verifyOcSpecificConnectCall(target, node);
 
-		{
-			ArgumentCaptor<Node> node = ArgumentCaptor.forClass(Node.class);
-			verify(target).onConnect(node.capture());
-			Assert.assertEquals(contextNode, node.getValue());
-		}
+		o.onDisconnect(node);
+		verifyOcSpecificDisconnectCall(target, node);
+	}
 
-		o.onDisconnect(contextNode);
+	@Test
+	public void testCommonConnectivity() throws Exception {
+		setupOpenComputersApiMock();
 
-		{
-			ArgumentCaptor<Node> node = ArgumentCaptor.forClass(Node.class);
-			verify(target).onConnect(node.capture());
-			Assert.assertEquals(contextNode, node.getValue());
-		}
+		ICodeGenerator generator = new PeripheralCodeGenerator();
+
+		Map<String, IMethodExecutor> methods = Maps.newHashMap();
+		Class<? extends ManagedEnvironment> cls = generateClass("TestClass\u2658", CommonAwareTargetClass.class, ImmutableSet.<Class<?>> of(), methods, generator);
+
+		final CommonAwareTargetClass target = mock(CommonAwareTargetClass.class);
+		ManagedEnvironment o = cls.getConstructor(CommonAwareTargetClass.class).newInstance(target);
+
+		Environment environment = mock(ContextEnvironment.class);
+		Node node = mock(Node.class);
+		final String nodeAddress = "node_13";
+		when(node.address()).thenReturn(nodeAddress);
+		when(node.host()).thenReturn(environment);
+		when(environment.node()).thenReturn(node);
+
+		o.onConnect(node);
+		IArchitectureAccess connectAccess = verifyCommonConnectCall(target, nodeAddress);
+
+		o.onDisconnect(node);
+		verifyCommonDisconnectCall(target, connectAccess);
 	}
 
 	private static void setupOpenComputersApiMock() {
