@@ -1,8 +1,6 @@
 package openperipheral.adapter.composed;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import openperipheral.adapter.IDescriptable;
 import openperipheral.adapter.IMethodExecutor;
@@ -34,15 +32,15 @@ public class MethodsListerHelper {
 			final IDescriptable m = executor.description();
 			if (source == null || source.equals(m.source())) info.add(name + m.signature());
 		}
+		Collections.sort(info);
 		return Joiner.on(", ").join(info);
 	}
 
 	@ScriptCallable(returnTypes = ReturnType.TABLE, description = "List all method sources")
 	public Map<String, Boolean> listSources() {
-		Map<String, Boolean> result = Maps.newHashMap();
-		for (String source : sources) {
+		Map<String, Boolean> result = Maps.newTreeMap();
+		for (String source : sources)
 			result.put(source, Boolean.TRUE);
-		}
 		return result;
 	}
 
