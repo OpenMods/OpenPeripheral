@@ -4,10 +4,12 @@ import java.util.Map;
 import java.util.Set;
 
 import openperipheral.api.adapter.AdapterSourceName;
+import openperipheral.api.adapter.Asynchronous;
 import openperipheral.api.adapter.method.Arg;
 import openperipheral.api.adapter.method.ReturnType;
 import openperipheral.api.adapter.method.ScriptCallable;
 
+@Asynchronous
 @AdapterSourceName("properties")
 public interface IMetaProviderProxy {
 	@ScriptCallable(returnTypes = ReturnType.TABLE, description = "Returns all properties as table")
