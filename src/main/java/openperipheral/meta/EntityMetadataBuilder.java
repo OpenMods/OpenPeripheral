@@ -38,14 +38,13 @@ public class EntityMetadataBuilder implements IEntityPartialMetaBuilder {
 		@Override
 		public Map<String, Object> all() {
 			Map<String, Object> map = basic();
-			final Iterable<IEntityMetaProvider<?>> providers = getProviders(entity).values();
-			addCustomProperties(map, providers, entity, relativePos);
+			fillCustomProperties(map, providers.values(), entity, relativePos);
 			return map;
 		}
 
 		@Override
 		public Set<String> keys() {
-			return ImmutableSet.copyOf(getProviders(entity).keySet());
+			return ImmutableSet.copyOf(providers.keySet());
 		}
 
 		@Override
@@ -70,7 +69,7 @@ public class EntityMetadataBuilder implements IEntityPartialMetaBuilder {
 		}
 	}
 
-	private static void addCustomProperties(Map<String, Object> map, final Iterable<IEntityMetaProvider<?>> providers, Entity entity, Vec3 relativePos) {
+	private static void fillCustomProperties(Map<String, Object> map, final Iterable<IEntityMetaProvider<?>> providers, Entity entity, Vec3 relativePos) {
 		for (IEntityMetaProvider<?> provider : providers) {
 			Object converted = getProperty(entity, relativePos, provider);
 			if (converted != null) {
@@ -142,7 +141,7 @@ public class EntityMetadataBuilder implements IEntityPartialMetaBuilder {
 		Map<String, Object> map = createBasicProperties(entity, relativePos);
 
 		final Iterable<IEntityMetaProvider<?>> providers = getProviders(entity).values();
-		addCustomProperties(map, providers, entity, relativePos);
+		fillCustomProperties(map, providers, entity, relativePos);
 		return map;
 	}
 
