@@ -1,5 +1,6 @@
 package openperipheral.meta;
 
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -7,9 +8,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.Vec3;
 import openperipheral.ApiImplementation;
 import openperipheral.api.adapter.method.ScriptObject;
-import openperipheral.api.meta.IEntityMetaProvider;
-import openperipheral.api.meta.IEntityPartialMetaBuilder;
-import openperipheral.api.meta.IMetaProviderProxy;
+import openperipheral.api.meta.*;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -25,7 +24,7 @@ public class EntityMetadataBuilder implements IEntityPartialMetaBuilder {
 		private final Entity entity;
 
 		private Proxy(Map<String, IEntityMetaProvider<?>> providers, Vec3 relativePos, Entity entity) {
-			this.providers = providers;
+			this.providers = ImmutableMap.copyOf(providers);
 			this.relativePos = relativePos;
 			this.entity = entity;
 		}
@@ -122,11 +121,25 @@ public class EntityMetadataBuilder implements IEntityPartialMetaBuilder {
 	}
 
 	protected static Map<String, IEntityMetaProvider<?>> getProviders(Entity entity) {
-		return MetaProvidersRegistry.ENITITES.getProviders(entity.getClass());
+		final Map<String, IEntityMetaProvider<?>> immutableProviders = MetaProvidersRegistry.ENITITES.getProviders(entity.getClass());
+		final Map<String, IEntityMetaProvider<?>> providers = Maps.newHashMap(immutableProviders);
+		filterCustomProviders(providers, entity);
+		return providers;
+	}
+
+	@SuppressWarnings("unchecked")
+	protected static void filterCustomProviders(Map<String, IEntityMetaProvider<?>> providers, Entity entity) {
+		Iterator<IEntityMetaProvider<?>> it = providers.values().iterator();
+
+		while (it.hasNext()) {
+			final IEntityMetaProvider<?> provider = it.next();
+			if ((provider instanceof IEntityCustomMetaProvider) &&
+					((IEntityCustomMetaProvider<Entity>)provider).canApply(entity)) it.remove();
+		}
 	}
 
 	@Override
-	public IMetaProviderProxy createProxy(final Entity entity, final Vec3 relativePos) {
+	public IMetaProviderProxy createProxy(Entity entity, Vec3 relativePos) {
 		final Map<String, IEntityMetaProvider<?>> providers = getProviders(entity);
 		return new Proxy(providers, relativePos, entity);
 	}

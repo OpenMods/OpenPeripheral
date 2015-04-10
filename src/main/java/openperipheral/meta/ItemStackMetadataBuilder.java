@@ -1,5 +1,6 @@
 package openperipheral.meta;
 
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -7,9 +8,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import openperipheral.ApiImplementation;
 import openperipheral.api.adapter.method.ScriptObject;
-import openperipheral.api.meta.IItemStackMetaProvider;
-import openperipheral.api.meta.IItemStackPartialMetaBuilder;
-import openperipheral.api.meta.IMetaProviderProxy;
+import openperipheral.api.meta.*;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -28,7 +27,7 @@ public class ItemStackMetadataBuilder implements IItemStackPartialMetaBuilder {
 		private final Item item;
 
 		private Proxy(Map<String, IItemStackMetaProvider<?>> providers, ItemStack stack, Item item) {
-			this.providers = providers;
+			this.providers = ImmutableMap.copyOf(providers);
 			this.stack = stack;
 			this.item = item;
 		}
@@ -128,8 +127,22 @@ public class ItemStackMetadataBuilder implements IItemStackPartialMetaBuilder {
 		return provider.getMeta(item, stack);
 	}
 
-	private static Map<String, IItemStackMetaProvider<?>> getProviders(Item item) {
-		return MetaProvidersRegistry.ITEMS.getProviders(item.getClass());
+	private static Map<String, IItemStackMetaProvider<?>> getProviders(Item item, ItemStack stack) {
+		final Map<String, IItemStackMetaProvider<?>> immutableProviders = MetaProvidersRegistry.ITEMS.getProviders(item.getClass());
+		final Map<String, IItemStackMetaProvider<?>> providers = Maps.newHashMap(immutableProviders);
+		filterCustomProviders(providers, item, stack);
+		return providers;
+	}
+
+	@SuppressWarnings("unchecked")
+	private static void filterCustomProviders(Map<String, IItemStackMetaProvider<?>> providers, Item item, ItemStack stack) {
+		Iterator<IItemStackMetaProvider<?>> it = providers.values().iterator();
+
+		while (it.hasNext()) {
+			final IItemStackMetaProvider<?> provider = it.next();
+			if ((provider instanceof IItemStackCustomMetaProvider) &&
+					!((IItemStackCustomMetaProvider<Item>)provider).canApply(item, stack)) it.remove();
+		}
 	}
 
 	public static String getRawNameForStack(ItemStack is) {
@@ -145,7 +158,7 @@ public class ItemStackMetadataBuilder implements IItemStackPartialMetaBuilder {
 		final Item item = stack.getItem();
 		if (item == null) return null;
 
-		final Map<String, IItemStackMetaProvider<?>> providers = getProviders(item);
+		final Map<String, IItemStackMetaProvider<?>> providers = getProviders(item, stack);
 		return new Proxy(providers, stack, item);
 	}
 
@@ -164,7 +177,7 @@ public class ItemStackMetadataBuilder implements IItemStackPartialMetaBuilder {
 
 		Map<String, Object> map = createBasicProperties(item, itemstack);
 
-		final Iterable<IItemStackMetaProvider<?>> providers = getProviders(item).values();
+		final Iterable<IItemStackMetaProvider<?>> providers = getProviders(item, itemstack).values();
 		fillCustomProperties(map, providers, item, itemstack);
 		return map;
 	}
@@ -174,7 +187,7 @@ public class ItemStackMetadataBuilder implements IItemStackPartialMetaBuilder {
 		Item item = stack.getItem();
 		if (item == null) return null;
 
-		Map<String, IItemStackMetaProvider<?>> providers = getProviders(item);
+		Map<String, IItemStackMetaProvider<?>> providers = getProviders(item, stack);
 
 		IItemStackMetaProvider<?> provider = providers.get(key);
 		return provider != null? getProperty(stack, item, provider) : null;
@@ -182,7 +195,7 @@ public class ItemStackMetadataBuilder implements IItemStackPartialMetaBuilder {
 
 	@Override
 	public Set<String> getKeys(ItemStack target) {
-		return ImmutableSet.copyOf(getProviders(target.getItem()).keySet());
+		return ImmutableSet.copyOf(getProviders(target.getItem(), target).keySet());
 	}
 
 	@Override
