@@ -16,7 +16,7 @@ public class AdapterFactoryWrapperCC implements IComputerCraftObjectsFactory {
 
 	@Override
 	public IPeripheral createPeripheral(Object target) {
-		return PeripheralProvider.createAdaptedPeripheralSafe(target);
+		return PeripheralProvider.createAdaptedPeripheralWrapped(target);
 	}
 
 }

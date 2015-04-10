@@ -11,6 +11,7 @@ import openmods.Log;
 import openmods.reflection.ReflectionHelper;
 import openperipheral.adapter.TileEntityBlacklist;
 import openperipheral.adapter.composed.IndexedMethodMap;
+import openperipheral.api.adapter.GenerationFailedException;
 import openperipheral.api.architecture.cc.ICustomPeripheralProvider;
 import openperipheral.api.peripheral.ExposeInterface;
 import openperipheral.api.peripheral.IOpenPeripheral;
@@ -102,13 +103,12 @@ public class PeripheralProvider implements IPeripheralProvider {
 		return factory;
 	}
 
-	public static IPeripheral createAdaptedPeripheralSafe(Object target) {
+	public static IPeripheral createAdaptedPeripheralWrapped(Object target) {
 		Preconditions.checkNotNull(target, "Null target");
 		try {
 			return createAdaptedPeripheral(target);
 		} catch (Throwable t) {
-			Log.warn(t, "Failed to create peripheral for object '%s'", target);
-			return SafePeripheralFactory.PLACEHOLDER;
+			throw new GenerationFailedException(String.format("%s (%s)", target, target.getClass()), t);
 		}
 	}
 

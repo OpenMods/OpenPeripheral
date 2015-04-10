@@ -6,6 +6,7 @@ import openmods.Log;
 import openperipheral.adapter.AdapterLogicException;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.composed.IndexedMethodMap;
+import openperipheral.api.adapter.GenerationFailedException;
 import openperipheral.interfaces.cc.ComputerCraftEnv;
 import openperipheral.interfaces.cc.ModuleComputerCraft;
 import openperipheral.interfaces.cc.SynchronousExecutor;
@@ -69,7 +70,12 @@ public class LuaObjectWrapper {
 
 	public static ILuaObject wrap(Object target) {
 		Preconditions.checkNotNull(target, "Can't wrap null");
-		IndexedMethodMap methods = ModuleComputerCraft.OBJECT_METHODS_FACTORY.getAdaptedClass(target.getClass());
-		return methods.isEmpty()? null : new WrappedLuaObject(methods, target);
+
+		try {
+			IndexedMethodMap methods = ModuleComputerCraft.OBJECT_METHODS_FACTORY.getAdaptedClass(target.getClass());
+			return methods.isEmpty()? null : new WrappedLuaObject(methods, target);
+		} catch (Throwable t) {
+			throw new GenerationFailedException(String.format("%s (%s)", target, target.getClass()), t);
+		}
 	}
 }

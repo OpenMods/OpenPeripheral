@@ -5,6 +5,7 @@ import java.util.Random;
 import net.minecraft.tileentity.TileEntity;
 import openmods.Log;
 import openperipheral.adapter.composed.ComposedMethodsFactory.InvalidClassException;
+import openperipheral.api.peripheral.IBrokenOpenPeripheral;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -13,6 +14,7 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 
 abstract class SafePeripheralFactory implements IPeripheralFactory<TileEntity> {
+
 	private static final Random RANDOM = new Random();
 
 	private static final String[] BOGUS_METODS = new String[] {
@@ -31,8 +33,7 @@ abstract class SafePeripheralFactory implements IPeripheralFactory<TileEntity> {
 			"abort_retry_fail_continue"
 	};
 
-	public static final IPeripheral PLACEHOLDER = new IPeripheral() {
-
+	private static class BrokenPeripheral implements IPeripheral, IBrokenOpenPeripheral {
 		@Override
 		public String getType() {
 			return "broken_peripheral";
@@ -58,8 +59,9 @@ abstract class SafePeripheralFactory implements IPeripheralFactory<TileEntity> {
 		public boolean equals(IPeripheral other) {
 			return other == this;
 		}
+	}
 
-	};
+	private static final IPeripheral PLACEHOLDER = new BrokenPeripheral();
 
 	@Override
 	public IPeripheral getPeripheral(TileEntity tile, int side) {
