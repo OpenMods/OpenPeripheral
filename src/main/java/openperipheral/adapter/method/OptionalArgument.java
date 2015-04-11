@@ -26,7 +26,7 @@ public class OptionalArgument extends Argument {
 		if (!args.hasNext()) return null;
 
 		Object arg = args.next();
-		return convertSingleArg(converter, arg);
+		return arg != null? convertSingleArg(converter, arg) : null;
 	}
 
 	@Override
