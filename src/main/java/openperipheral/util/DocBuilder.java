@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.security.ProtectionDomain;
 import java.util.Collection;
-import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -16,11 +15,13 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import openmods.Log;
-import openperipheral.adapter.IDescriptable;
+import openperipheral.adapter.IMethodDescription;
+import openperipheral.adapter.IMethodDescription.IArgumentDescription;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.composed.IMethodMap;
 import openperipheral.adapter.composed.IMethodMap.IMethodVisitor;
 import openperipheral.adapter.wrappers.AdapterWrapper;
+import openperipheral.api.adapter.method.ReturnType;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -137,7 +138,7 @@ public class DocBuilder {
 		for (IMethodExecutor method : methods) {
 			Element methodDoc = doc.createElement("method");
 
-			final IDescriptable description = method.description();
+			final IMethodDescription description = method.description();
 
 			Element names = doc.createElement("names");
 			for (String name : description.getNames())
@@ -167,37 +168,41 @@ public class DocBuilder {
 
 	private void fillDocForMethod(Element result, IMethodExecutor method) {
 		result.setAttribute("asynchronous", Boolean.toString(method.isAsynchronous()));
-		IDescriptable description = method.description();
-		result.appendChild(createProperty("signature", description.signature()));
-		Element extra = doc.createElement("extra");
-		serializeMap(extra, description.describe());
-		result.appendChild(extra);
-	}
+		IMethodDescription description = method.description();
+		result.appendChild(createProperty("signature", DocUtils.signature(description)));
+		result.appendChild(createProperty("source", description.source()));
 
-	private void serializeValue(Element output, Object value) {
-		if (value == null) output.appendChild(doc.createTextNode("null"));
-		else if (value instanceof Map) serializeMap(output, (Map<?, ?>)value);
-		else if (value instanceof Collection) serializeCollection(output, (Collection<?>)value);
-		else output.appendChild(doc.createTextNode(value.toString()));
-	}
+		final String desc = description.description();
+		if (!desc.isEmpty()) result.appendChild(createProperty("description", desc));
 
-	private void serializeCollection(Element output, Collection<?> list) {
-		int index = 0;
-		for (Object o : list) {
-			Element e = doc.createElement("e");
-			e.setAttribute("index", Integer.toString(index++));
-			serializeValue(e, o);
-			output.appendChild(e);
+		{
+			Element args = doc.createElement("arguments");
+			for (IArgumentDescription arg : description.arguments())
+				args.appendChild(fillDocForArg(arg));
+			result.appendChild(args);
+		}
+
+		{
+			Element returns = doc.createElement("returns");
+			for (ReturnType ret : description.returnTypes())
+				returns.appendChild(createProperty("type", ret.getName()));
+			result.appendChild(returns);
 		}
 	}
 
-	private void serializeMap(Element output, Map<?, ?> map) {
-		for (Map.Entry<?, ?> e : map.entrySet()) {
-			Object key = e.getKey();
-			Element entry = doc.createElement(key == null? "null" : key.toString());
-			serializeValue(entry, e.getValue());
-			output.appendChild(entry);
-		}
+	private Element fillDocForArg(IArgumentDescription arg) {
+		Element result = doc.createElement("arg");
+
+		result.appendChild(createProperty("name", arg.name()));
+		final String description = arg.description();
+		if (!description.isEmpty()) result.appendChild(createProperty("description", description));
+		result.appendChild(createProperty("type", arg.type().getName()));
+
+		result.setAttribute("nullable", Boolean.toString(arg.nullable()));
+		result.setAttribute("optional", Boolean.toString(arg.optional()));
+		result.setAttribute("variadic", Boolean.toString(arg.variadic()));
+
+		return result;
 	}
 
 	private Element createProperty(String tag, String value) {

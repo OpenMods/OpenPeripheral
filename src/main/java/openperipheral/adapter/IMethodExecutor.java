@@ -3,7 +3,7 @@ package openperipheral.adapter;
 import java.util.Map;
 
 public interface IMethodExecutor {
-	public IDescriptable description();
+	public IMethodDescription description();
 
 	public IMethodCall startCall(Object target);
 

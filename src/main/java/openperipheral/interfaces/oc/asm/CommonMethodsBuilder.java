@@ -4,6 +4,7 @@ import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
 import openperipheral.adapter.IMethodExecutor;
+import openperipheral.util.DocUtils;
 
 import org.objectweb.asm.*;
 import org.objectweb.asm.commons.Method;
@@ -88,7 +89,7 @@ public class CommonMethodsBuilder {
 		AnnotationVisitor av = wrap.visitAnnotation(CALLBACK_TYPE.getDescriptor(), true);
 		av.visit("value", methodName);
 		av.visit("direct", executor.isAsynchronous());
-		av.visit("doc", executor.description().doc());
+		av.visit("doc", DocUtils.doc(executor.description()));
 		av.visitEnd();
 		// TODO: getter/setter
 

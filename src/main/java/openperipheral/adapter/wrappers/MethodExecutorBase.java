@@ -4,8 +4,8 @@ import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Set;
 
-import openperipheral.adapter.IDescriptable;
 import openperipheral.adapter.IMethodCall;
+import openperipheral.adapter.IMethodDescription;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.method.MethodDeclaration;
 
@@ -24,7 +24,7 @@ public abstract class MethodExecutorBase implements IMethodExecutor {
 	}
 
 	@Override
-	public IDescriptable description() {
+	public IMethodDescription description() {
 		return decl;
 	}
 

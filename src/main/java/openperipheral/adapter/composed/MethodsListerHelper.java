@@ -2,10 +2,11 @@ package openperipheral.adapter.composed;
 
 import java.util.*;
 
-import openperipheral.adapter.IDescriptable;
+import openperipheral.adapter.IMethodDescription;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.api.adapter.Asynchronous;
 import openperipheral.api.adapter.method.*;
+import openperipheral.util.DocUtils;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
@@ -29,8 +30,8 @@ public class MethodsListerHelper {
 			final String name = e.getKey();
 			final IMethodExecutor executor = e.getValue();
 
-			final IDescriptable m = executor.description();
-			if (source == null || source.equals(m.source())) info.add(name + m.signature());
+			final IMethodDescription desc = executor.description();
+			if (source == null || source.equals(desc.source())) info.add(name + DocUtils.signature(desc));
 		}
 		Collections.sort(info);
 		return Joiner.on(", ").join(info);
@@ -48,7 +49,7 @@ public class MethodsListerHelper {
 	public String doc(@Arg(name = "method") String methodName) {
 		IMethodExecutor method = methods.get(methodName);
 		Preconditions.checkArgument(method != null, "Method not found");
-		return method.description().doc();
+		return DocUtils.doc(method.description());
 	}
 
 	@ScriptCallable(returnTypes = ReturnType.TABLE, description = "Get a complete table of information about all available methods")
@@ -56,12 +57,12 @@ public class MethodsListerHelper {
 		if (methodName != null) {
 			IMethodExecutor method = methods.get(methodName);
 			Preconditions.checkArgument(method != null, "Method not found");
-			return method.description().describe();
+			return DocUtils.describe(method.description());
 		} else {
 			Map<String, Object> info = Maps.newHashMap();
 			for (Map.Entry<String, IMethodExecutor> e : methods.entrySet()) {
-				final IDescriptable m = e.getValue().description();
-				info.put(e.getKey(), m.describe());
+				final IMethodDescription desc = e.getValue().description();
+				info.put(e.getKey(), DocUtils.describe(desc));
 			}
 			return info;
 		}

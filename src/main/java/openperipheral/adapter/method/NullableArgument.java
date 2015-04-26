@@ -1,7 +1,6 @@
 package openperipheral.adapter.method;
 
 import java.util.Iterator;
-import java.util.Map;
 
 import openperipheral.api.adapter.method.ArgType;
 import openperipheral.api.converter.IConverter;
@@ -29,9 +28,8 @@ public class NullableArgument extends Argument {
 	}
 
 	@Override
-	public Map<String, Object> describe() {
-		Map<String, Object> result = super.describe();
-		result.put("nullable", true);
-		return result;
+	public boolean nullable() {
+		return true;
 	}
+
 }

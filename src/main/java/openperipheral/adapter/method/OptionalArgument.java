@@ -1,7 +1,6 @@
 package openperipheral.adapter.method;
 
 import java.util.Iterator;
-import java.util.Map;
 
 import openperipheral.api.adapter.method.ArgType;
 import openperipheral.api.converter.IConverter;
@@ -30,19 +29,13 @@ public class OptionalArgument extends Argument {
 	}
 
 	@Override
-	public Map<String, Object> describe() {
-		Map<String, Object> result = super.describe();
-		result.put("optional", true);
-		return result;
-	}
-
-	@Override
 	public String toString() {
 		return name + "?";
 	}
 
 	@Override
-	public String doc() {
-		return super.doc() + "?";
+	public boolean optional() {
+		return true;
 	}
+
 }

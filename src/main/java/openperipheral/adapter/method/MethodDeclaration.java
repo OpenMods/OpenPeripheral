@@ -7,17 +7,18 @@ import java.util.*;
 import openmods.reflection.TypeUtils;
 import openmods.utils.AnnotationMap;
 import openperipheral.adapter.AdapterLogicException;
-import openperipheral.adapter.IDescriptable;
 import openperipheral.adapter.IMethodCall;
+import openperipheral.adapter.IMethodDescription;
 import openperipheral.api.Constants;
 import openperipheral.api.adapter.method.*;
 import openperipheral.api.converter.IConverter;
 
-import com.google.common.base.*;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Throwables;
 import com.google.common.collect.*;
 import com.google.common.reflect.TypeToken;
 
-public class MethodDeclaration implements IDescriptable {
+public class MethodDeclaration implements IMethodDescription {
 
 	public static class ArgumentDefinitionException extends IllegalStateException {
 		private static final long serialVersionUID = -6428721405547878927L;
@@ -41,7 +42,7 @@ public class MethodDeclaration implements IDescriptable {
 	private final String source;
 	private final Method method;
 	private final String description;
-	private final ReturnType[] returnTypes;
+	private final List<ReturnType> returnTypes;
 
 	private final boolean validateReturn;
 
@@ -83,7 +84,7 @@ public class MethodDeclaration implements IDescriptable {
 		this.names = getNames(method, meta);
 
 		this.description = meta.description();
-		this.returnTypes = meta.returnTypes();
+		this.returnTypes = ImmutableList.copyOf(meta.returnTypes());
 		this.validateReturn = meta.validateReturn();
 
 		this.multipleReturn = method.isAnnotationPresent(MultipleReturn.class);
@@ -154,7 +155,7 @@ public class MethodDeclaration implements IDescriptable {
 	private void validateResultCount() {
 		Class<?> javaReturn = method.getReturnType();
 
-		final int returnLength = returnTypes.length;
+		final int returnLength = returnTypes.size();
 
 		for (ReturnType t : returnTypes) {
 			Preconditions.checkArgument(t != ReturnType.VOID, "Method '%s' declares Void as return type. Use empty list instead.", method);
@@ -183,12 +184,12 @@ public class MethodDeclaration implements IDescriptable {
 	}
 
 	private void validateResult(Object... result) {
-		if (returnTypes.length == 0) {
+		if (returnTypes.isEmpty()) {
 			Preconditions.checkArgument(result.length == 1 && result[0] == null, "Returning value from null method");
 		} else {
-			Preconditions.checkArgument(result.length == returnTypes.length, "Returning invalid number of values from method %s, expected %s, got %s", method, returnTypes.length, result.length);
+			Preconditions.checkArgument(result.length == returnTypes.size(), "Returning invalid number of values from method %s, expected %s, got %s", method, returnTypes.size(), result.length);
 			for (int i = 0; i < result.length; i++)
-				checkReturnType(i, returnTypes[i], result[i]);
+				checkReturnType(i, returnTypes.get(i), result[i]);
 		}
 	}
 
@@ -366,33 +367,6 @@ public class MethodDeclaration implements IDescriptable {
 	}
 
 	@Override
-	public Map<String, Object> describe() {
-		Map<String, Object> result = Maps.newHashMap();
-		result.put(IDescriptable.DESCRIPTION, description);
-		result.put(IDescriptable.SOURCE, source);
-
-		{
-			List<String> returns = Lists.newArrayList();
-			for (ReturnType t : returnTypes)
-				returns.add(t.toString());
-			result.put(IDescriptable.RETURN_TYPES, returns);
-		}
-
-		{
-			List<Map<String, Object>> args = Lists.newArrayList();
-			for (Argument arg : luaArgs)
-				args.add(arg.describe());
-			result.put(IDescriptable.ARGS, args);
-		}
-		return result;
-	}
-
-	@Override
-	public String signature() {
-		return "(" + Joiner.on(",").join(luaArgs) + ")";
-	}
-
-	@Override
 	public List<String> getNames() {
 		return names;
 	}
@@ -403,32 +377,23 @@ public class MethodDeclaration implements IDescriptable {
 	}
 
 	@Override
-	public String doc() {
-		return "function" + createDocString();
+	public List<IArgumentDescription> arguments() {
+		List<? extends IArgumentDescription> cast = luaArgs;
+		return ImmutableList.copyOf(cast);
 	}
 
 	@Override
-	public String doc(String name) {
-		return "function " + name + createDocString();
+	public List<ReturnType> returnTypes() {
+		return returnTypes;
 	}
 
-	private String createDocString() {
-		// (arg:type[, optionArg:type]):resultType -- Description
+	@Override
+	public Set<String> attributes() {
+		return Sets.newHashSet();
+	}
 
-		List<String> args = Lists.newArrayList();
-
-		for (Argument arg : luaArgs)
-			args.add(arg.name + ":" + arg.doc());
-
-		List<String> returns = Lists.newArrayList();
-
-		for (ReturnType r : returnTypes)
-			returns.add(r.getName());
-
-		String ret = returns.size() == 1? returns.get(0) : ("(" + Joiner.on(',').join(returns) + ")");
-
-		String argsAndResult = String.format("(%s):%s", Joiner.on(',').join(args), ret);
-
-		return !Strings.isNullOrEmpty(description)? argsAndResult + " -- " + description : argsAndResult;
+	@Override
+	public String description() {
+		return description;
 	}
 }

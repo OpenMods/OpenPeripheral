@@ -6,7 +6,7 @@ import java.util.Set;
 
 import openmods.Log;
 import openperipheral.adapter.AdapterRegistry;
-import openperipheral.adapter.IDescriptable;
+import openperipheral.adapter.IMethodDescription;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.wrappers.AdapterWrapper;
 import openperipheral.adapter.wrappers.TechnicalAdapterWrapper;
@@ -43,7 +43,7 @@ public class ClassMethodsListBuilder {
 
 	public void addMethods(AdapterWrapper wrapper) {
 		for (IMethodExecutor executor : wrapper.getMethods()) {
-			final IDescriptable descriptable = executor.description();
+			final IMethodDescription descriptable = executor.description();
 			if (selector.apply(executor)) {
 				sources.add(descriptable.source());
 				for (String name : descriptable.getNames()) {

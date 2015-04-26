@@ -4,16 +4,17 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import openperipheral.adapter.IDescriptable;
-import openperipheral.adapter.IMethodCall;
-import openperipheral.adapter.IMethodExecutor;
+import openperipheral.adapter.*;
+import openperipheral.adapter.IMethodDescription.IArgumentDescription;
 import openperipheral.adapter.method.LuaTypeQualifier;
 import openperipheral.api.Constants;
 import openperipheral.api.adapter.CallbackProperty;
 import openperipheral.api.adapter.IPropertyCallback;
 import openperipheral.api.adapter.Property;
 import openperipheral.api.adapter.method.ArgType;
+import openperipheral.api.adapter.method.ReturnType;
 import openperipheral.api.converter.IConverter;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -26,11 +27,26 @@ import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 public class PropertyListBuilder {
 
 	private static final ImmutableMap<String, Class<?>> NEEDED_ENV = ImmutableMap.<String, Class<?>> builder().put(Constants.ARG_CONVERTER, IConverter.class).build();
+
+	private static ReturnType convert(ArgType type) {
+		switch (type) {
+			case BOOLEAN:
+				return ReturnType.BOOLEAN;
+			case NUMBER:
+				return ReturnType.NUMBER;
+			case STRING:
+				return ReturnType.STRING;
+			case TABLE:
+				return ReturnType.TABLE;
+			default:
+				return ReturnType.OBJECT;
+		}
+	}
 
 	private static IPropertyCallback createDefaultCallback(final Object owner) {
 		return new IPropertyCallback() {
@@ -63,7 +79,7 @@ public class PropertyListBuilder {
 		}
 
 		@Override
-		public IDescriptable description() {
+		public IMethodDescription description() {
 			return context;
 		}
 
@@ -107,7 +123,7 @@ public class PropertyListBuilder {
 		}
 	}
 
-	public abstract static class FieldContext implements IDescriptable {
+	public abstract static class FieldContext implements IMethodDescription {
 		private final String name;
 		protected final String description;
 		protected ArgType type;
@@ -137,16 +153,18 @@ public class PropertyListBuilder {
 		}
 
 		@Override
-		public Map<String, Object> describe() {
-			Map<String, Object> result = Maps.newHashMap();
-			result.put(IDescriptable.DESCRIPTION, description);
-			result.put(IDescriptable.SOURCE, source);
-			return result;
+		public String description() {
+			return description;
+		}
+
+		@Override
+		public Set<String> attributes() {
+			return Sets.newHashSet();
 		}
 	}
 
-	private static final List<Object> EMPTY_ARGS = ImmutableList.of();
-	private static final List<Object> NO_RETURNS = ImmutableList.of();
+	private static final List<IArgumentDescription> EMPTY_ARGS = ImmutableList.of();
+	private static final List<ReturnType> NO_RETURNS = ImmutableList.of();
 
 	private abstract static class GetterContext extends FieldContext {
 
@@ -162,26 +180,13 @@ public class PropertyListBuilder {
 		}
 
 		@Override
-		public String signature() {
-			return "()";
+		public List<IArgumentDescription> arguments() {
+			return EMPTY_ARGS;
 		}
 
 		@Override
-		public String doc() {
-			return String.format("function():%s -- %s", type.name(), description);
-		}
-
-		@Override
-		public String doc(String name) {
-			return String.format("function %s():%s -- %s", name, type.name(), description);
-		}
-
-		@Override
-		public Map<String, Object> describe() {
-			Map<String, Object> result = super.describe();
-			result.put(IDescriptable.ARGS, EMPTY_ARGS);
-			result.put(IDescriptable.RETURN_TYPES, ImmutableList.of(type.toString()));
-			return result;
+		public List<ReturnType> returnTypes() {
+			return ImmutableList.of(convert(type));
 		}
 	}
 
@@ -202,31 +207,15 @@ public class PropertyListBuilder {
 		}
 
 		@Override
-		public String signature() {
-			return "(value)";
+		public List<IArgumentDescription> arguments() {
+			return ImmutableList.<IArgumentDescription> of(new ArgumentDescriptionBase("value", type, description));
 		}
 
 		@Override
-		public String doc() {
-			return String.format("function(%s) -- %s", type.name(), description);
+		public List<ReturnType> returnTypes() {
+			return NO_RETURNS;
 		}
 
-		@Override
-		public String doc(String name) {
-			return String.format("function %s(%s) -- %s", name, type.name(), description);
-		}
-
-		@Override
-		public Map<String, Object> describe() {
-			Map<String, Object> args = Maps.newHashMap();
-			args.put(IDescriptable.NAME, "value");
-			args.put(IDescriptable.TYPE, type.toString());
-
-			Map<String, Object> result = super.describe();
-			result.put(IDescriptable.ARGS, args);
-			result.put(IDescriptable.RETURN_TYPES, NO_RETURNS);
-			return result;
-		}
 	}
 
 	private static class DefaultGetterContext extends GetterContext {

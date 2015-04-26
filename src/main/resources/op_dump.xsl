@@ -111,17 +111,31 @@ body {
         <h2><code><xsl:value-of select="text()"/><xsl:value-of select="../../signature/text()" /></code></h2>
       </xsl:for-each>
       <xsl:if test="@asynchronous = 'false'"><p><strong>Synchronized</strong></p></xsl:if>
-      <xsl:if test="extra/description"><p><xsl:value-of select="extra/description/text()" /></p></xsl:if>
-      <xsl:if test="extra/source"><p>Source: <xsl:value-of select="extra/source/text()" /></p></xsl:if>
-      <xsl:if test="extra/args/e">
+      <xsl:if test="description"><p><xsl:value-of select="description/text()" /></p></xsl:if>
+      <xsl:if test="source"><p>Source: <xsl:value-of select="source/text()" /></p></xsl:if>
+      <xsl:if test="arguments/arg">
         <p>Arguments:</p>
         <div class="arguments">
-        <xsl:for-each select="extra/args/e">
-        <p><code><xsl:value-of select="name" /></code>: <xsl:if test="optional">(Optional: <xsl:value-of select="optional/text()" />)</xsl:if> (<xsl:value-of select="type/text()"/>) <xsl:value-of select="description/text()" /></p>
+        <xsl:for-each select="arguments/arg">
+          <p>
+            <code><xsl:value-of select="name/text()" /></code>
+            (<xsl:if test="@optional='true'">optional </xsl:if>
+             <xsl:if test="@nullable='true'">nullable </xsl:if>
+             <xsl:if test="@variadic='true'">variadic </xsl:if>
+             <xsl:value-of select="type/text()"/>)
+             <xsl:if test="description">: <xsl:value-of select="description/text()" /></xsl:if>
+          </p>
         </xsl:for-each>
         </div>
       </xsl:if>
-      <xsl:if test="extra/returnTypes/e"><p>Returns:<xsl:for-each select="extra/returnTypes/e"><xsl:text> (</xsl:text><xsl:value-of select="text()" />)</xsl:for-each></p></xsl:if>
+      <xsl:if test="returns/type">
+        <p>Returns:
+          <xsl:for-each select="returns/type">
+            <xsl:value-of select="text()" />
+            <xsl:if test="not(position() = last())">, </xsl:if>
+          </xsl:for-each>
+        </p>
+      </xsl:if>
       </div>
     </xsl:for-each>
     </div>
@@ -145,17 +159,31 @@ body {
       <div class="method">
       <h2><code><xsl:value-of select="@name" /><xsl:value-of select="signature/text()" /></code></h2>
       <xsl:if test="@asynchronous = 'false'"><p><strong>Synchronized</strong></p></xsl:if>
-      <xsl:if test="extra/description"><p><xsl:value-of select="extra/description/text()" /></p></xsl:if>
-      <xsl:if test="extra/source"><p>Source: <xsl:value-of select="extra/source/text()" /></p></xsl:if>
-      <xsl:if test="extra/args/e">
+      <xsl:if test="description"><p><xsl:value-of select="description/text()" /></p></xsl:if>
+      <xsl:if test="source"><p>Source: <xsl:value-of select="source/text()" /></p></xsl:if>
+       <xsl:if test="arguments/arg">
         <p>Arguments:</p>
         <div class="arguments">
-        <xsl:for-each select="extra/args/e">
-        <p><code><xsl:value-of select="name" /></code>: <xsl:if test="optional">(Optional: <xsl:value-of select="optional/text()" />)</xsl:if> (<xsl:value-of select="type/text()"/>) <xsl:value-of select="description/text()" /></p>
+        <xsl:for-each select="arguments/arg">
+          <p>
+            <code><xsl:value-of select="name/text()" /></code>
+            (<xsl:if test="@optional='true'">optional </xsl:if>
+             <xsl:if test="@nullable='true'">nullable </xsl:if>
+             <xsl:if test="@variadic='true'">variadic </xsl:if>
+             <xsl:value-of select="type/text()"/>)
+             <xsl:if test="description">: <xsl:value-of select="description/text()" /></xsl:if>
+          </p>
         </xsl:for-each>
         </div>
       </xsl:if>
-      <xsl:if test="extra/returnTypes/e"><p>Returns:<xsl:for-each select="extra/returnTypes/e"><xsl:text> (</xsl:text><xsl:value-of select="text()" />)</xsl:for-each></p></xsl:if>
+      <xsl:if test="returns/type">
+        <p>Returns:
+          <xsl:for-each select="returns/type">
+            <xsl:value-of select="text()" />
+            <xsl:if test="not(position() = last())">, </xsl:if>
+          </xsl:for-each>
+        </p>
+      </xsl:if>
       </div>
     </xsl:for-each>
     </div>
@@ -174,17 +202,31 @@ body {
       <div class="method">
       <h2><code><xsl:value-of select="@name" /><xsl:value-of select="signature/text()" /></code></h2>
       <xsl:if test="@asynchronous = 'false'"><p><strong>Synchronized</strong></p></xsl:if>
-      <xsl:if test="extra/description"><p><xsl:value-of select="extra/description/text()" /></p></xsl:if>
-      <xsl:if test="extra/source"><p>Source: <xsl:value-of select="extra/source/text()" /></p></xsl:if>
-      <xsl:if test="extra/args/e">
+      <xsl:if test="description"><p><xsl:value-of select="description/text()" /></p></xsl:if>
+      <xsl:if test="source"><p>Source: <xsl:value-of select="source/text()" /></p></xsl:if>
+      <xsl:if test="arguments/arg">
         <p>Arguments:</p>
         <div class="arguments">
-        <xsl:for-each select="extra/args/e">
-        <p><code><xsl:value-of select="name" /></code>: <xsl:if test="optional">(Optional: <xsl:value-of select="optional/text()" />)</xsl:if> (<xsl:value-of select="type/text()"/>) <xsl:value-of select="description/text()" /></p>
+        <xsl:for-each select="arguments/arg">
+          <p>
+            <code><xsl:value-of select="name/text()" /></code>
+            (<xsl:if test="@optional='true'">optional </xsl:if>
+             <xsl:if test="@nullable='true'">nullable </xsl:if>
+             <xsl:if test="@variadic='true'">variadic </xsl:if>
+             <xsl:value-of select="type/text()"/>)
+             <xsl:if test="description">: <xsl:value-of select="description/text()" /></xsl:if>
+          </p>
         </xsl:for-each>
         </div>
       </xsl:if>
-      <xsl:if test="extra/returnTypes/e"><p>Returns:<xsl:for-each select="extra/returnTypes/e"><xsl:text> (</xsl:text><xsl:value-of select="text()" />)</xsl:for-each></p></xsl:if>
+      <xsl:if test="returns/type">
+        <p>Returns:
+          <xsl:for-each select="returns/type">
+            <xsl:value-of select="text()" />
+            <xsl:if test="not(position() = last())">, </xsl:if>
+          </xsl:for-each>
+        </p>
+      </xsl:if>
       </div>
     </xsl:for-each>
     </div>

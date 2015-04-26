@@ -1,27 +1,21 @@
 package openperipheral.adapter.method;
 
 import java.util.Iterator;
-import java.util.Map;
 
-import openperipheral.adapter.IDescriptable;
+import openperipheral.adapter.ArgumentDescriptionBase;
 import openperipheral.api.adapter.method.ArgType;
 import openperipheral.api.converter.IConverter;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Maps;
 import com.google.common.reflect.TypeToken;
 
-public class Argument {
-	public final String name;
-	public final String description;
-	public final ArgType luaType;
+public class Argument extends ArgumentDescriptionBase {
+
 	public final TypeToken<?> javaType;
 	final int javaArgIndex;
 
-	public Argument(String name, String description, ArgType luaType, TypeToken<?> javaType, int javaArgIndex) {
-		this.name = name;
-		this.description = description;
-		this.luaType = luaType;
+	public Argument(String name, String description, ArgType type, TypeToken<?> javaType, int javaArgIndex) {
+		super(name, type, description);
 		this.javaArgIndex = javaArgIndex;
 		this.javaType = getArgType(javaType);
 	}
@@ -45,20 +39,8 @@ public class Argument {
 		}
 	}
 
-	public Map<String, Object> describe() {
-		Map<String, Object> result = Maps.newHashMap();
-		result.put(IDescriptable.TYPE, luaType.toString());
-		result.put(IDescriptable.NAME, name);
-		result.put(IDescriptable.DESCRIPTION, description);
-		return result;
-	}
-
 	@Override
 	public String toString() {
 		return name;
-	}
-
-	public String doc() {
-		return luaType.getName();
 	}
 }

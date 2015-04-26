@@ -15,11 +15,11 @@ import li.cil.oc.api.detail.Builder.NodeBuilder;
 import li.cil.oc.api.detail.NetworkAPI;
 import li.cil.oc.api.machine.*;
 import li.cil.oc.api.network.*;
-import openperipheral.adapter.IDescriptable;
-import openperipheral.adapter.IMethodCall;
-import openperipheral.adapter.IMethodExecutor;
+import openperipheral.adapter.*;
+import openperipheral.adapter.IMethodDescription.IArgumentDescription;
 import openperipheral.adapter.composed.IndexedMethodMap;
 import openperipheral.api.Constants;
+import openperipheral.api.adapter.method.ReturnType;
 import openperipheral.api.architecture.IArchitectureAccess;
 import openperipheral.api.architecture.IAttachable;
 import openperipheral.api.architecture.oc.IOpenComputersAttachable;
@@ -36,6 +36,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 import com.google.common.base.Throwables;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 
@@ -101,8 +102,12 @@ public class EnvironmentGeneratorTest {
 
 		when(executor.isAsynchronous()).thenReturn(isAsynchronous);
 
-		IDescriptable descriptable = mock(IDescriptable.class);
-		when(descriptable.doc()).thenReturn(desc);
+		IMethodDescription descriptable = mock(IMethodDescription.class);
+
+		when(descriptable.arguments()).thenReturn(ImmutableList.<IArgumentDescription> of());
+		when(descriptable.returnTypes()).thenReturn(ImmutableList.<ReturnType> of());
+		when(descriptable.description()).thenReturn("");
+
 		when(executor.description()).thenReturn(descriptable);
 
 		IMethodCall call = mock(IMethodCall.class);
@@ -125,7 +130,9 @@ public class EnvironmentGeneratorTest {
 		Assert.assertNotNull(callback);
 
 		Assert.assertEquals(executor.isAsynchronous(), callback.direct());
-		Assert.assertEquals(executor.description().doc(), callback.doc());
+
+		// that's what I get for not injecting ...
+		Assert.assertEquals("function()", callback.doc());
 
 		Arguments args = mock(Arguments.class);
 		final Object[] argArray = new Object[] { 1, 2, 3 };
