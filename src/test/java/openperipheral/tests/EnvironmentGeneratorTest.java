@@ -137,8 +137,8 @@ public class EnvironmentGeneratorTest {
 		Arguments args = mock(Arguments.class);
 		final Object[] argArray = new Object[] { 1, 2, 3 };
 		when(args.toArray()).thenReturn(argArray);
-		when(call.setOptionalArg(eq(Constants.ARG_CONVERTER), anyObject())).thenReturn(call);
-		when(call.setOptionalArg(anyString(), anyObject())).thenReturn(call);
+		when(call.setEnv(eq(Constants.ARG_CONVERTER), anyObject())).thenReturn(call);
+		when(call.setEnv(anyString(), anyObject())).thenReturn(call);
 		Context context = mock(Context.class);
 
 		m.invoke(wrapper, context, args);
@@ -146,7 +146,7 @@ public class EnvironmentGeneratorTest {
 		verify(executor).startCall(target);
 
 		verify(args).toArray();
-		verify(call).setOptionalArg(Constants.ARG_CONTEXT, context);
+		verify(call).setEnv(Constants.ARG_CONTEXT, context);
 		verify(call).call(argArray);
 	}
 

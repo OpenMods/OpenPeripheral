@@ -57,7 +57,7 @@ public abstract class AdapterWrapper {
 
 	public abstract IMethodExecutor createExecutor(Method method, MethodDeclaration decl);
 
-	protected abstract void verifyArguments(MethodDeclaration decl);
+	protected abstract void prepareDeclaration(MethodDeclaration decl);
 
 	protected List<IMethodExecutor> buildMethodList() {
 		List<IMethodExecutor> result = Lists.newArrayList();
@@ -77,7 +77,9 @@ public abstract class AdapterWrapper {
 				if (callableAnn == null) continue;
 
 				final MethodDeclaration decl = new MethodDeclaration(method, callableAnn, source);
-				verifyArguments(decl);
+				prepareDeclaration(decl);
+				decl.verifyAllParamsNamed();
+
 				IMethodExecutor exec = createExecutor(method, decl);
 				result.add(exec);
 			} catch (Throwable e) {

@@ -89,12 +89,7 @@ public class PropertyListBuilder {
 				private IConverter converter;
 
 				@Override
-				public IMethodCall setPositionalArg(int index, Object value) {
-					return this; // NO-OP
-				}
-
-				@Override
-				public IMethodCall setOptionalArg(String name, Object value) {
+				public IMethodCall setEnv(String name, Object value) {
 					if (Constants.ARG_CONVERTER.equals(name)) this.converter = (IConverter)value;
 
 					return this; // NO-OP

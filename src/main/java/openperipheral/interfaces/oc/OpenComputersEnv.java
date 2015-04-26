@@ -42,12 +42,12 @@ public class OpenComputersEnv {
 	public static IMethodCall addCommonArgs(IMethodCall call, Context context) {
 		final IConverter converter = TypeConvertersProvider.INSTANCE.getConverter(Constants.ARCH_OPEN_COMPUTERS);
 		return call
-				.setOptionalArg(Constants.ARG_CONVERTER, converter)
-				.setOptionalArg(Constants.ARG_CONTEXT, context);
+				.setEnv(Constants.ARG_CONVERTER, converter)
+				.setEnv(Constants.ARG_CONTEXT, context);
 	}
 
 	public static IMethodCall addPeripheralArgs(IMethodCall call, Node node, Context context) {
 		final IArchitectureAccess wrappedAccess = createAccess(node, context);
-		return addCommonArgs(call, context).setOptionalArg(Constants.ARG_ACCESS, wrappedAccess);
+		return addCommonArgs(call, context).setEnv(Constants.ARG_ACCESS, wrappedAccess);
 	}
 }

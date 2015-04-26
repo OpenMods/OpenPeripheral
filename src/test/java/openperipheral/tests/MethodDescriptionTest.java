@@ -38,13 +38,13 @@ public class MethodDescriptionTest {
 	}
 
 	private static void checkNoArgs(MethodDeclaration decl) {
-		decl.validatePositionalArgs();
-		decl.validateOptionalArgs(NO_OPTIONALS);
+		decl.validateUnnamedEnvArgs();
+		decl.validateEnvArgs(NO_OPTIONALS);
 	}
 
 	private static void checkTargetOnly(MethodDeclaration decl) {
-		decl.validatePositionalArgs(B.class);
-		decl.validateOptionalArgs(NO_OPTIONALS);
+		decl.validateUnnamedEnvArgs(B.class);
+		decl.validateEnvArgs(NO_OPTIONALS);
 	}
 
 	private static MethodDeclaration createMethodDecl(Class<?> cls) {
@@ -71,8 +71,8 @@ public class MethodDescriptionTest {
 	@Test
 	public void testBaseTargetOnly() {
 		MethodDeclaration decl = createMethodDecl(BaseTargetOnly.class);
-		decl.validatePositionalArgs(B.class);
-		decl.validateOptionalArgs(singleArg("env1", B.class));
+		decl.validateUnnamedEnvArgs(B.class);
+		decl.validateEnvArgs(singleArg("env1", B.class));
 	}
 
 	public static class TargetOnly {
@@ -113,34 +113,34 @@ public class MethodDescriptionTest {
 	@Test
 	public void testSingleEnv() {
 		MethodDeclaration decl = createMethodDecl(SingleEnv.class);
-		decl.validatePositionalArgs(B.class);
-		decl.validateOptionalArgs(singleArg("env1", D.class));
+		decl.validateUnnamedEnvArgs(B.class);
+		decl.validateEnvArgs(singleArg("env1", D.class));
 	}
 
 	@Test(expected = Exception.class)
 	public void testMissingEnvName() {
 		MethodDeclaration decl = createMethodDecl(SingleEnv.class);
-		decl.validatePositionalArgs(B.class);
-		decl.validateOptionalArgs(singleArg("env2", D.class));
+		decl.validateUnnamedEnvArgs(B.class);
+		decl.validateEnvArgs(singleArg("env2", D.class));
 	}
 
 	@Test(expected = Exception.class)
 	public void testMissingEnvType() {
 		MethodDeclaration decl = createMethodDecl(SingleEnv.class);
-		decl.validatePositionalArgs(B.class);
-		decl.validateOptionalArgs(singleArg("env1", B.class));
+		decl.validateUnnamedEnvArgs(B.class);
+		decl.validateEnvArgs(singleArg("env1", B.class));
 	}
 
 	@Test(expected = Exception.class)
 	public void testMissingPositioned() {
 		MethodDeclaration decl = createMethodDecl(SingleEnv.class);
-		decl.validatePositionalArgs(B.class, B.class);
+		decl.validateUnnamedEnvArgs(B.class, B.class);
 	}
 
 	@Test(expected = Exception.class)
 	public void testInvalidTypePositioned() {
 		MethodDeclaration decl = createMethodDecl(SingleEnv.class);
-		decl.validatePositionalArgs(D.class);
+		decl.validateUnnamedEnvArgs(D.class);
 	}
 
 	public static class Empty {
@@ -166,8 +166,8 @@ public class MethodDescriptionTest {
 	@Test
 	public void testTwoEnvOnly() {
 		MethodDeclaration decl = createMethodDecl(TwoEnvOnly.class);
-		decl.validatePositionalArgs();
-		decl.validateOptionalArgs(twoArgs("env1", D.class, "target", Object.class));
+		decl.validateUnnamedEnvArgs();
+		decl.validateEnvArgs(twoArgs("env1", D.class, "target", Object.class));
 	}
 
 	public static class SingleEnvOnly {
@@ -180,8 +180,8 @@ public class MethodDescriptionTest {
 	@Test
 	public void testSingleEnvOnly() {
 		MethodDeclaration decl = createMethodDecl(SingleEnvOnly.class);
-		decl.validatePositionalArgs();
-		decl.validateOptionalArgs(singleArg("env1", D.class));
+		decl.validateUnnamedEnvArgs();
+		decl.validateEnvArgs(singleArg("env1", D.class));
 	}
 
 	public static class SingleLuaOnly {
@@ -246,8 +246,8 @@ public class MethodDescriptionTest {
 	@Test
 	public void testEnvLua() {
 		MethodDeclaration decl = createMethodDecl(EnvLua.class);
-		decl.validatePositionalArgs(B.class);
-		decl.validateOptionalArgs(singleArg("env1", D.class));
+		decl.validateUnnamedEnvArgs(B.class);
+		decl.validateEnvArgs(singleArg("env1", D.class));
 	}
 
 	public static class FullOptional {
@@ -299,8 +299,8 @@ public class MethodDescriptionTest {
 	@Test
 	public void testEverything() {
 		MethodDeclaration decl = createMethodDecl(Everything.class);
-		decl.validatePositionalArgs(B.class);
-		decl.validateOptionalArgs(singleArg("env1", D.class));
+		decl.validateUnnamedEnvArgs(B.class);
+		decl.validateEnvArgs(singleArg("env1", D.class));
 	}
 
 	public static class MultiDirect {

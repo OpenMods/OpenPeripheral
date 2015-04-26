@@ -44,14 +44,14 @@ public class ComputerCraftEnv {
 	public static IMethodCall addCommonArgs(IMethodCall call, ILuaContext context) {
 		final IConverter converter = TypeConvertersProvider.INSTANCE.getConverter(Constants.ARCH_COMPUTER_CRAFT);
 		return call
-				.setOptionalArg(Constants.ARG_CONVERTER, converter)
-				.setOptionalArg(Constants.ARG_CONTEXT, context);
+				.setEnv(Constants.ARG_CONVERTER, converter)
+				.setEnv(Constants.ARG_CONTEXT, context);
 	}
 
 	public static IMethodCall addPeripheralArgs(IMethodCall call, IComputerAccess access, ILuaContext context) {
 		final IArchitectureAccess wrappedAccess = createAccess(access);
 		return addCommonArgs(call, context)
-				.setOptionalArg(Constants.ARG_ACCESS, wrappedAccess)
-				.setOptionalArg(Constants.ARG_COMPUTER, access);
+				.setEnv(Constants.ARG_ACCESS, wrappedAccess)
+				.setEnv(Constants.ARG_COMPUTER, access);
 	}
 }

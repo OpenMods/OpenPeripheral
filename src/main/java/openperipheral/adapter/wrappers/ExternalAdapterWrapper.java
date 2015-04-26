@@ -1,10 +1,12 @@
 package openperipheral.adapter.wrappers;
 
 import java.lang.reflect.Method;
+import java.util.Map;
 
 import openperipheral.adapter.IMethodCall;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.method.MethodDeclaration;
+import openperipheral.api.Constants;
 import openperipheral.api.adapter.IAdapter;
 import openperipheral.api.adapter.IAdapterWithConstraints;
 
@@ -48,8 +50,8 @@ public class ExternalAdapterWrapper extends AdapterWrapper {
 	}
 
 	@Override
-	protected void verifyArguments(MethodDeclaration decl) {
-		decl.validatePositionalArgs(targetClass);
+	protected void prepareDeclaration(MethodDeclaration decl) {
+		decl.nameEnv(0, Constants.ARG_TARGET, targetClass);
 	}
 
 	@Override
@@ -57,7 +59,14 @@ public class ExternalAdapterWrapper extends AdapterWrapper {
 		return new MethodExecutorBase(decl, method, metaInfo) {
 			@Override
 			public IMethodCall startCall(Object target) {
-				return super.startCall(adapter).setPositionalArg(0, target);
+				return super.startCall(adapter).setEnv(Constants.ARG_TARGET, target);
+			}
+
+			@Override
+			public Map<String, Class<?>> requiredEnv() {
+				final Map<String, Class<?>> requiredEnv = super.requiredEnv();
+				requiredEnv.remove(Constants.ARG_TARGET);
+				return requiredEnv;
 			}
 		};
 	}

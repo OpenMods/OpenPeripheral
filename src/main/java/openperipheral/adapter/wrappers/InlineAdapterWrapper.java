@@ -24,7 +24,7 @@ public class InlineAdapterWrapper extends AdapterWrapper {
 	}
 
 	@Override
-	protected void verifyArguments(MethodDeclaration decl) {}
+	protected void prepareDeclaration(MethodDeclaration decl) {}
 
 	@Override
 	public IMethodExecutor createExecutor(Method method, MethodDeclaration decl) {

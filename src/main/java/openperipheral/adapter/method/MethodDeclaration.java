@@ -28,11 +28,11 @@ public class MethodDeclaration implements IMethodDescription {
 		}
 	}
 
-	private static class OptionalArg {
+	private static class EnvArg {
 		public final Class<?> cls;
 		public final int index;
 
-		public OptionalArg(Class<?> cls, int index) {
+		public EnvArg(Class<?> cls, int index) {
 			this.cls = cls;
 			this.index = index;
 		}
@@ -48,11 +48,11 @@ public class MethodDeclaration implements IMethodDescription {
 
 	private final boolean multipleReturn;
 
-	private final List<Class<?>> positionalArgs = Lists.newArrayList();
+	private final Map<Integer, Class<?>> unnamedEnvArg = Maps.newHashMap();
 
-	private final Map<String, OptionalArg> optionalArgs = Maps.newHashMap();
+	private final Map<String, EnvArg> envArgs = Maps.newHashMap();
 
-	private final List<Argument> luaArgs = Lists.newArrayList();
+	private final List<Argument> callArgs = Lists.newArrayList();
 
 	private final int argCount;
 
@@ -70,10 +70,10 @@ public class MethodDeclaration implements IMethodDescription {
 	}
 
 	private static enum ArgParseState {
-		JAVA_POSITIONAL,
-		JAVA_OPTIONAL,
-		LUA_REQUIRED,
-		LUA_OPTIONAL,
+		ENV_UNNAMED,
+		ENV_NAMED,
+		ARG_REQUIRED,
+		ARG_OPTIONAL,
 
 	}
 
@@ -94,7 +94,7 @@ public class MethodDeclaration implements IMethodDescription {
 		final Type methodArgs[] = method.getGenericParameterTypes();
 		final boolean isVarArg = method.isVarArgs();
 
-		ArgParseState state = ArgParseState.JAVA_POSITIONAL;
+		ArgParseState state = ArgParseState.ENV_UNNAMED;
 
 		final Annotation[][] argsAnnotations = method.getParameterAnnotations();
 		for (int argIndex = 0; argIndex < methodArgs.length; argIndex++) {
@@ -111,36 +111,36 @@ public class MethodDeclaration implements IMethodDescription {
 				Preconditions.checkState(envArg == null || luaArg == null, "@Arg and @Env are mutually exclusive");
 				if (luaArg != null) {
 
-					if (state != ArgParseState.LUA_OPTIONAL) state = ArgParseState.LUA_REQUIRED;
+					if (state != ArgParseState.ARG_OPTIONAL) state = ArgParseState.ARG_REQUIRED;
 
 					if (optionalStart) {
-						Preconditions.checkState(state != ArgParseState.JAVA_OPTIONAL, "@Optional used more than once");
-						state = ArgParseState.LUA_OPTIONAL;
+						Preconditions.checkState(state != ArgParseState.ENV_NAMED, "@Optional used more than once");
+						state = ArgParseState.ARG_OPTIONAL;
 					}
 
 					boolean isLastArg = argIndex == (methodArgs.length - 1);
 
 					ArgumentBuilder builder = new ArgumentBuilder();
 					builder.setVararg(isLastArg && isVarArg);
-					builder.setOptional(state == ArgParseState.LUA_OPTIONAL);
+					builder.setOptional(state == ArgParseState.ARG_OPTIONAL);
 					builder.setNullable(luaArg.isNullable());
 
 					final Argument arg = builder.build(luaArg.name(), luaArg.description(), luaArg.type(), argType, argIndex);
-					luaArgs.add(arg);
+					callArgs.add(arg);
 				} else {
-					Preconditions.checkState(state == ArgParseState.JAVA_OPTIONAL || state == ArgParseState.JAVA_POSITIONAL, "Unannotated arg in Lua part (perhaps missing @Arg annotation?)");
-					Preconditions.checkState(!optionalStart, "@Optionals does not work for java arguments");
+					Preconditions.checkState(state == ArgParseState.ENV_NAMED || state == ArgParseState.ENV_UNNAMED, "Unannotated arg in script part (perhaps missing @Arg annotation?)");
+					Preconditions.checkState(!optionalStart, "@Optionals does not work for env arguments");
 
 					Class<?> rawArgType = argType.getRawType();
 					if (envArg != null) {
-						Preconditions.checkState(state == ArgParseState.JAVA_OPTIONAL || state == ArgParseState.JAVA_POSITIONAL, "@Env annotation used in Lua part of arguments");
+						Preconditions.checkState(state == ArgParseState.ENV_NAMED || state == ArgParseState.ENV_UNNAMED, "@Env annotation used in script part of arguments");
 						final String envName = envArg.value();
-						OptionalArg prev = optionalArgs.put(envName, new OptionalArg(rawArgType, argIndex));
+						EnvArg prev = envArgs.put(envName, new EnvArg(rawArgType, argIndex));
 						if (prev != null) { throw new IllegalStateException(String.format("Conflict on name %s, args: %s, %s", envArg, prev.index, argIndex)); }
-						state = ArgParseState.JAVA_OPTIONAL;
+						state = ArgParseState.ENV_NAMED;
 					} else {
-						Preconditions.checkState(state == ArgParseState.JAVA_POSITIONAL, "Unnamed arg cannot occur after named");
-						positionalArgs.add(rawArgType);
+						Preconditions.checkState(state == ArgParseState.ENV_UNNAMED, "Unnamed env cannot occur after named");
+						unnamedEnvArg.put(argIndex, rawArgType);
 					}
 				}
 			} catch (Throwable t) {
@@ -148,7 +148,7 @@ public class MethodDeclaration implements IMethodDescription {
 			}
 		}
 
-		this.argCount = positionalArgs.size() + optionalArgs.size() + luaArgs.size();
+		this.argCount = unnamedEnvArg.size() + envArgs.size() + callArgs.size();
 		Preconditions.checkState(this.argCount == methodArgs.length, "Internal error for method %s", method);
 	}
 
@@ -255,10 +255,10 @@ public class MethodDeclaration implements IMethodDescription {
 		}
 
 		@Override
-		public IMethodCall setOptionalArg(String name, Object value) {
+		public IMethodCall setEnv(String name, Object value) {
 			if (Constants.ARG_CONVERTER.equals(name)) this.converter = (IConverter)value;
 
-			OptionalArg arg = optionalArgs.get(name);
+			EnvArg arg = envArgs.get(name);
 			if (arg != null) {
 				Preconditions.checkState(value == null || arg.cls.isInstance(value),
 						"Object of type %s cannot be used as argument %s (name: %s) in method %s",
@@ -268,30 +268,19 @@ public class MethodDeclaration implements IMethodDescription {
 			return this;
 		}
 
-		@Override
-		public IMethodCall setPositionalArg(int index, Object value) {
-			Preconditions.checkElementIndex(index, positionalArgs.size(), "argument index");
-			Preconditions.checkState(value == null || positionalArgs.get(index).isInstance(value),
-					"Object of type %s cannot be used as argument %s in method %s",
-					value != null? value.getClass() : "<null>", index, method);
-
-			setArg(index, value);
-			return this;
-		}
-
 		private CallWrap setCallArgs(Object[] luaValues) {
 			Preconditions.checkState(converter != null, "Converter not set!");
 			try {
 				Iterator<Object> it = Iterators.forArray(luaValues);
 				try {
-					for (Argument arg : luaArgs) {
+					for (Argument arg : callArgs) {
 						Object value = arg.convert(converter, it);
 						setArg(arg.javaArgIndex, value);
 					}
 
 					Preconditions.checkArgument(!it.hasNext(), "Too many arguments!");
 				} catch (ArrayIndexOutOfBoundsException e) {
-					throw new IllegalArgumentException(String.format("Invalid Lua parameter count, needs %s, got %s", luaArgs.size(), luaValues.length));
+					throw new IllegalArgumentException(String.format("Invalid Lua parameter count, needs %s, got %s", callArgs.size(), luaValues.length));
 				}
 			} catch (IllegalArgumentException e) {
 				throw e;
@@ -331,19 +320,31 @@ public class MethodDeclaration implements IMethodDescription {
 		return new CallWrap(target);
 	}
 
-	public void validatePositionalArgs(Class<?>... providedArgs) {
-		Preconditions.checkState(providedArgs.length == positionalArgs.size());
+	public void nameEnv(int index, String name, Class<?> expectedType) {
+		Class<?> actualType = unnamedEnvArg.remove(index);
+		Preconditions.checkState(actualType != null, "Argument at index %s not present or already named, can't name as %s");
+		Preconditions.checkState(actualType.isAssignableFrom(expectedType), "Field %s (new name: %s) is expected to be %s, but has %s", index, name, expectedType, actualType);
+		EnvArg prev = envArgs.put(name, new EnvArg(actualType, index));
+		if (prev != null) throw new IllegalStateException(String.format("Name %s is already used: prev index: %d, new index: %d", name, prev.index, index));
+	}
+
+	public void verifyAllParamsNamed() {
+		Preconditions.checkState(unnamedEnvArg.isEmpty(), "Env parameters not named: %s", unnamedEnvArg);
+	}
+
+	public void validateUnnamedEnvArgs(Class<?>... providedArgs) {
+		Preconditions.checkState(providedArgs.length == unnamedEnvArg.size());
 		for (int i = 0; i < providedArgs.length; i++) {
-			final Class<?> needed = positionalArgs.get(i);
+			final Class<?> needed = unnamedEnvArg.get(i);
 			final Class<?> provided = providedArgs[i];
 			Preconditions.checkState(needed.isAssignableFrom(provided),
 					"Argument %s needs type %s, but %s provided", i, needed, provided);
 		}
 	}
 
-	public void validateOptionalArgs(Map<String, Class<?>> providedArgs) {
-		for (Map.Entry<String, OptionalArg> e : optionalArgs.entrySet()) {
-			final OptionalArg needed = e.getValue();
+	public void validateEnvArgs(Map<String, Class<?>> providedArgs) {
+		for (Map.Entry<String, EnvArg> e : envArgs.entrySet()) {
+			final EnvArg needed = e.getValue();
 			final String name = e.getKey();
 			final Class<?> provided = providedArgs.get(name);
 			Preconditions.checkState(provided != null, "Method needs argument named %s (position %s) but it's not provided",
@@ -360,7 +361,7 @@ public class MethodDeclaration implements IMethodDescription {
 	public Map<String, Class<?>> getOptionalArgs() {
 		Map<String, Class<?>> result = Maps.newHashMap();
 
-		for (Map.Entry<String, OptionalArg> e : optionalArgs.entrySet())
+		for (Map.Entry<String, EnvArg> e : envArgs.entrySet())
 			result.put(e.getKey(), e.getValue().cls);
 
 		return result;
@@ -378,7 +379,7 @@ public class MethodDeclaration implements IMethodDescription {
 
 	@Override
 	public List<IArgumentDescription> arguments() {
-		List<? extends IArgumentDescription> cast = luaArgs;
+		List<? extends IArgumentDescription> cast = callArgs;
 		return ImmutableList.copyOf(cast);
 	}
 
