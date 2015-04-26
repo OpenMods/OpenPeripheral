@@ -172,8 +172,7 @@ public class DocBuilder {
 		result.appendChild(createProperty("signature", DocUtils.signature(description)));
 		result.appendChild(createProperty("source", description.source()));
 
-		final String desc = description.description();
-		if (!desc.isEmpty()) result.appendChild(createProperty("description", desc));
+		addOptionalTag(result, "description", description.description());
 
 		{
 			Element args = doc.createElement("arguments");
@@ -192,17 +191,21 @@ public class DocBuilder {
 
 	private Element fillDocForArg(IArgumentDescription arg) {
 		Element result = doc.createElement("arg");
-
 		result.appendChild(createProperty("name", arg.name()));
-		final String description = arg.description();
-		if (!description.isEmpty()) result.appendChild(createProperty("description", description));
 		result.appendChild(createProperty("type", arg.type().getName()));
+
+		addOptionalTag(result, "description", arg.description());
+		addOptionalTag(result, "range", arg.range());
 
 		result.setAttribute("nullable", Boolean.toString(arg.nullable()));
 		result.setAttribute("optional", Boolean.toString(arg.optional()));
 		result.setAttribute("variadic", Boolean.toString(arg.variadic()));
 
 		return result;
+	}
+
+	private void addOptionalTag(Element parent, final String tag, final String value) {
+		if (!value.isEmpty()) parent.appendChild(createProperty(tag, value));
 	}
 
 	private Element createProperty(String tag, String value) {

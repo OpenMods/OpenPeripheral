@@ -13,12 +13,19 @@ public class ArgumentDescriptionBase implements IArgumentDescription {
 
 	protected final ArgType type;
 
-	protected final String description;
+	protected String range;
 
-	public ArgumentDescriptionBase(String name, ArgType type, String description) {
+	protected String description;
+
+	public ArgumentDescriptionBase(String name, ArgType type, String range, String description) {
 		this.name = name;
 		this.type = type;
+		this.range = range;
 		this.description = description;
+	}
+
+	public ArgumentDescriptionBase(String name, ArgType type, String description) {
+		this(name, type, "", description);
 	}
 
 	@Override
@@ -29,6 +36,11 @@ public class ArgumentDescriptionBase implements IArgumentDescription {
 	@Override
 	public ArgType type() {
 		return type;
+	}
+
+	@Override
+	public String range() {
+		return range;
 	}
 
 	@Override

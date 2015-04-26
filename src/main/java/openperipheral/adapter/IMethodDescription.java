@@ -12,6 +12,8 @@ public interface IMethodDescription {
 
 		public ArgType type();
 
+		public String range();
+
 		public String description();
 
 		public boolean nullable();
