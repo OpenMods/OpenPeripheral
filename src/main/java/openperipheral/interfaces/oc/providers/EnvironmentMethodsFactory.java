@@ -4,6 +4,7 @@ import java.lang.reflect.Constructor;
 import java.util.Map;
 import java.util.Set;
 
+import openmods.Log;
 import openmods.injector.InjectedClassesManager;
 import openperipheral.adapter.AdapterRegistry;
 import openperipheral.adapter.IMethodExecutor;
@@ -18,8 +19,29 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Maps;
 
 public class EnvironmentMethodsFactory<T> extends ComposedMethodsFactory<IEnviromentInstanceWrapper<T>> {
+
+	private static final BytecodeClassLoader fallbackClassLoader = new BytecodeClassLoader();
+
+	private static class BytecodeClassLoader extends ClassLoader {
+		private final Map<String, Class<?>> cache = Maps.newHashMap();
+
+		private BytecodeClassLoader() {
+			super(BytecodeClassLoader.class.getClassLoader());
+		}
+
+		public synchronized Class<?> define(String name, byte[] data) {
+			Class<?> cls = cache.get(name);
+			if (cls == null) {
+				cls = defineClass(name, data, 0, data.length);
+				cache.put(name, cls);
+			}
+
+			return cls;
+		}
+	}
 
 	private static class Wrapper<T> implements IEnviromentInstanceWrapper<T> {
 		private final String generatedClsName;
@@ -36,11 +58,21 @@ public class EnvironmentMethodsFactory<T> extends ComposedMethodsFactory<IEnviro
 			this.methods = methods;
 		}
 
+		private Class<?> defineClass() throws Exception {
+			try {
+				return Class.forName(generatedClsName);
+			} catch (ClassNotFoundException e) {
+				// NOTE: if we have report from this place, that probably means some class transformer before OM is throwing on null bytes
+				Log.severe(e, "Failed to load %s via transformer injection, will use class loader. State restoring may be broken", generatedClsName);
+				return fallbackClassLoader.define(generatedClsName, bytes);
+			}
+		}
+
 		private Constructor<? extends T> getConstructor() {
 			if (ctor == null) {
 				try {
 					@SuppressWarnings("unchecked")
-					Class<? extends T> cls = (Class<? extends T>)Class.forName(generatedClsName);
+					Class<? extends T> cls = (Class<? extends T>)defineClass();
 					ctor = cls.getConstructor(targetCls);
 				} catch (Throwable t) {
 					throw Throwables.propagate(t);
