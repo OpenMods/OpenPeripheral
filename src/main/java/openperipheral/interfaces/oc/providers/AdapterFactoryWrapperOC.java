@@ -2,7 +2,7 @@ package openperipheral.interfaces.oc.providers;
 
 import li.cil.oc.api.machine.Value;
 import li.cil.oc.api.network.ManagedEnvironment;
-import openperipheral.ApiImplementation;
+import openmods.access.ApiImplementation;
 import openperipheral.adapter.composed.ComposedMethodsFactory;
 import openperipheral.api.adapter.GenerationFailedException;
 import openperipheral.api.architecture.oc.IOpenComputersObjectsFactory;

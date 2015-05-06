@@ -1,6 +1,6 @@
 package openperipheral.adapter;
 
-import openperipheral.ApiImplementation;
+import openmods.access.ApiImplementation;
 import openperipheral.api.adapter.*;
 
 public class AdapterRegistryWrapper<T extends IAdapter> implements IAdapterRegistry<T> {

@@ -2,7 +2,7 @@ package openperipheral.converter;
 
 import java.util.Map;
 
-import openperipheral.ApiSingleton;
+import openmods.access.ApiSingleton;
 import openperipheral.api.converter.*;
 
 import com.google.common.base.Preconditions;

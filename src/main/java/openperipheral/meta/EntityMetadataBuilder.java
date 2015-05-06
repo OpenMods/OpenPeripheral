@@ -6,7 +6,7 @@ import java.util.Set;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Vec3;
-import openperipheral.ApiImplementation;
+import openmods.access.ApiImplementation;
 import openperipheral.api.adapter.method.ScriptObject;
 import openperipheral.api.meta.*;
 

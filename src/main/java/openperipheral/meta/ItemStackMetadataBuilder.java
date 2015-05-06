@@ -6,7 +6,7 @@ import java.util.Set;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import openperipheral.ApiImplementation;
+import openmods.access.ApiImplementation;
 import openperipheral.api.adapter.method.ScriptObject;
 import openperipheral.api.meta.*;
 

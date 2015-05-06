@@ -3,8 +3,8 @@ package openperipheral.adapter;
 import java.util.Set;
 
 import openmods.Log;
+import openmods.access.ApiSingleton;
 import openmods.config.properties.ConfigurationChange;
-import openperipheral.ApiSingleton;
 import openperipheral.Config;
 import openperipheral.api.peripheral.IPeripheralBlacklist;
 import openperipheral.api.peripheral.Ignore;

@@ -1,6 +1,6 @@
 package openperipheral.interfaces.cc.providers;
 
-import openperipheral.ApiImplementation;
+import openmods.access.ApiImplementation;
 import openperipheral.api.architecture.cc.IComputerCraftObjectsFactory;
 import openperipheral.interfaces.cc.wrappers.LuaObjectWrapper;
 import dan200.computercraft.api.lua.ILuaObject;
