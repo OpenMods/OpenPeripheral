@@ -177,6 +177,10 @@ task sourcesJar(type: Jar, dependsOn: classes) {
     classifier 'src'
 
     from sourceSets.main.java
+
+    manifest {
+        from gitManifest, fmlManifest
+    }
 }
 
 task apiJar(type: Jar) {
@@ -186,6 +190,10 @@ task apiJar(type: Jar) {
     from sourceSets.main.java
 
     include 'openperipheral/api/**'
+
+    manifest {
+        from gitManifest, fmlManifest
+    }
 }
 
 task apiSrcJar(type: Zip) {
@@ -194,12 +202,20 @@ task apiSrcJar(type: Zip) {
     from sourceSets.main.java
 
     include 'openperipheral/api/**'
+
+    manifest {
+        from gitManifest, fmlManifest
+    }
 }
 
 task javadocJar(type: Zip, dependsOn: javadoc) {
     classifier 'javadoc'
 
     from 'build/docs/javadoc'
+
+    manifest {
+        from gitManifest, fmlManifest
+    }
 }
 
 artifacts {
