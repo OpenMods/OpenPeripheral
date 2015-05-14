@@ -147,8 +147,9 @@ body {
   <xsl:for-each select="classMethods[@type='peripheral']">
     <xsl:sort select="@architecture"/>
     <div class="major" id="periph.{@architecture}.{@class}">
-    <h1><xsl:value-of select="simpleName/text()" /><xsl:text> - </xsl:text><xsl:value-of select="name/text()" /></h1>
-    <p>A peripheral</p>
+    <h1><xsl:value-of select="name/text()" /></h1>
+    <p>A peripheral of type <code><xsl:value-of select="name/text()" /></code></p>
+    <p>TileEntity id: <code><xsl:value-of select="teName/text()" /></code></p>
     <p>Architecture: <xsl:value-of select="@architecture" /></p>
     <p>Generated for class <code><xsl:value-of select="@class" /></code></p>
     <xsl:if test="docText">
@@ -197,6 +198,7 @@ body {
     <div class="major" id="lua.{@architecture}.{@class}">
     <h1><xsl:value-of select="simpleName/text()" /></h1>
     <p>A Script Object</p>
+    <xsl:if test="name"><p>Name: <code><xsl:value-of select="name/text()" /></code></p></xsl:if>
     <p>Architecture: <xsl:value-of select="@architecture" /></p>
     <p>Generated for class <code><xsl:value-of select="@class" /></code></p>
     <xsl:for-each select="method">

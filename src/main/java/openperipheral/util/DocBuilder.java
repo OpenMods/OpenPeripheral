@@ -15,9 +15,8 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import openmods.Log;
-import openperipheral.adapter.IMethodDescription;
+import openperipheral.adapter.*;
 import openperipheral.adapter.IMethodDescription.IArgumentDescription;
-import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.composed.IMethodMap;
 import openperipheral.adapter.composed.IMethodMap.IMethodVisitor;
 import openperipheral.adapter.wrappers.AdapterWrapper;
@@ -49,7 +48,7 @@ public class DocBuilder {
 		public void decorateEntry(Element element, Class<?> cls) {
 			final String teName = Objects.firstNonNull(NameUtils.getClassToNameMap().get(cls), "null");
 			Document doc = element.getOwnerDocument();
-			element.appendChild(createProperty(doc, "name", teName));
+			element.appendChild(createProperty(doc, "teName", teName));
 
 			String docText = DocUtils.DOC_TEXT_CACHE.getOrCreate(cls);
 			if (!Strings.isNullOrEmpty(docText)) element.appendChild(createCDataProperty(doc, "docText", docText));
@@ -153,6 +152,8 @@ public class DocBuilder {
 	private void fillDocForClass(final Element result, Class<?> cls, IMethodMap list) {
 		result.setAttribute("class", cls.getName());
 		result.appendChild(createProperty("simpleName", cls.getSimpleName()));
+		final String userName = NameProvider.instance.getNameByClass(cls);
+		if (!Strings.isNullOrEmpty(userName)) result.appendChild(createProperty("name", userName));
 
 		list.visitMethods(new IMethodVisitor() {
 			@Override

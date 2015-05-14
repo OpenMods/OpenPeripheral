@@ -6,6 +6,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import openmods.Mods;
 import openmods.config.properties.ConfigProcessing;
+import openperipheral.adapter.NameProvider;
 import openperipheral.adapter.TileEntityBlacklist;
 import openperipheral.api.peripheral.IOpenPeripheral;
 import openperipheral.interfaces.cc.ModuleComputerCraft;
@@ -26,6 +27,8 @@ public class OpenPeripheralCore {
 
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent evt) {
+		NameProvider.instance.initialize(evt.getModConfigurationDirectory());
+
 		final File configFile = evt.getSuggestedConfigurationFile();
 		Configuration config = new Configuration(configFile);
 		ConfigProcessing.processAnnotations(ModInfo.ID, config, Config.class);
