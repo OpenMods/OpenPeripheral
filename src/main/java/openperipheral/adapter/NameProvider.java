@@ -85,6 +85,7 @@ public class NameProvider {
 	}
 
 	private void writeOverlayFile() {
+		if (file == null) return;
 		try {
 			Closer closer = Closer.create();
 			try {
@@ -115,6 +116,7 @@ public class NameProvider {
 	}
 
 	public String getName(Object obj) {
+		if (obj == null) return "invalid";
 		final Class<?> cls = obj.getClass();
 		final String clsName = cls.getName();
 		String name = names.get(clsName);
