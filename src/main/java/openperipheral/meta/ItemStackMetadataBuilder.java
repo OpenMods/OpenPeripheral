@@ -6,7 +6,6 @@ import java.util.Set;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import openmods.access.ApiImplementation;
 import openperipheral.api.adapter.method.ScriptObject;
 import openperipheral.api.meta.*;
 
@@ -17,7 +16,6 @@ import com.google.common.collect.Maps;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
 
-@ApiImplementation
 public class ItemStackMetadataBuilder implements IItemStackPartialMetaBuilder {
 
 	@ScriptObject

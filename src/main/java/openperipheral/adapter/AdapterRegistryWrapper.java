@@ -1,18 +1,15 @@
 package openperipheral.adapter;
 
-import openmods.access.ApiImplementation;
 import openperipheral.api.adapter.*;
 
 public class AdapterRegistryWrapper<T extends IAdapter> implements IAdapterRegistry<T> {
 
-	@ApiImplementation
 	public static class Objects extends AdapterRegistryWrapper<IObjectAdapter> implements IObjectAdapterRegistry {
 		public Objects() {
 			super(AdapterRegistry.OBJECT_ADAPTERS);
 		}
 	}
 
-	@ApiImplementation
 	public static class Peripherals extends AdapterRegistryWrapper<IPeripheralAdapter> implements IPeripheralAdapterRegistry {
 		public Peripherals() {
 			super(AdapterRegistry.PERIPHERAL_ADAPTERS);

@@ -3,7 +3,6 @@ package openperipheral.adapter;
 import java.util.Set;
 
 import openmods.Log;
-import openmods.access.ApiSingleton;
 import openmods.config.properties.ConfigurationChange;
 import openperipheral.Config;
 import openperipheral.api.peripheral.IPeripheralBlacklist;
@@ -13,7 +12,6 @@ import com.google.common.collect.Sets;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
-@ApiSingleton
 public class TileEntityBlacklist implements IPeripheralBlacklist {
 
 	public static final TileEntityBlacklist INSTANCE = new TileEntityBlacklist();

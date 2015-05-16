@@ -6,7 +6,6 @@ import java.util.Set;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Vec3;
-import openmods.access.ApiImplementation;
 import openperipheral.api.adapter.method.ScriptObject;
 import openperipheral.api.meta.*;
 
@@ -14,7 +13,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 
-@ApiImplementation
 public class EntityMetadataBuilder implements IEntityPartialMetaBuilder {
 
 	@ScriptObject

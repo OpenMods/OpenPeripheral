@@ -2,13 +2,11 @@ package openperipheral.converter;
 
 import java.util.Map;
 
-import openmods.access.ApiSingleton;
 import openperipheral.api.converter.*;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 
-@ApiSingleton
 public class TypeConvertersProvider implements IConverterManager {
 
 	public static final TypeConvertersProvider INSTANCE = new TypeConvertersProvider();

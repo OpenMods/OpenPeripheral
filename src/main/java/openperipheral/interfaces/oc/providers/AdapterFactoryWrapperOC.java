@@ -2,7 +2,6 @@ package openperipheral.interfaces.oc.providers;
 
 import li.cil.oc.api.machine.Value;
 import li.cil.oc.api.network.ManagedEnvironment;
-import openmods.access.ApiImplementation;
 import openperipheral.adapter.composed.ComposedMethodsFactory;
 import openperipheral.api.adapter.GenerationFailedException;
 import openperipheral.api.architecture.oc.IOpenComputersObjectsFactory;
@@ -10,7 +9,6 @@ import openperipheral.interfaces.oc.ModuleOpenComputers;
 
 import com.google.common.base.Preconditions;
 
-@ApiImplementation
 public class AdapterFactoryWrapperOC implements IOpenComputersObjectsFactory {
 
 	private static <T> T wrap(Object target, final ComposedMethodsFactory<IEnviromentInstanceWrapper<T>> factory) {
