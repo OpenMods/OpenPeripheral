@@ -6,12 +6,12 @@ import openmods.Log;
 import openmods.utils.CachedFactory;
 import openperipheral.adapter.AdapterLogicException;
 import openperipheral.adapter.IMethodExecutor;
-import openperipheral.adapter.NameProvider;
 import openperipheral.adapter.composed.IndexedMethodMap;
 import openperipheral.api.architecture.IArchitectureAccess;
 import openperipheral.api.architecture.IAttachable;
 import openperipheral.api.architecture.cc.IComputerCraftAttachable;
 import openperipheral.api.peripheral.IOpenPeripheral;
+import openperipheral.api.peripheral.PeripheralTypeProvider;
 import openperipheral.interfaces.cc.*;
 import openperipheral.util.DocUtils;
 
@@ -45,7 +45,7 @@ public class AdapterPeripheral implements IPeripheral, IOpenPeripheral {
 
 	public AdapterPeripheral(IndexedMethodMap methods, Object target) {
 		this.methods = methods;
-		this.type = NameProvider.instance.getName(target);
+		this.type = PeripheralTypeProvider.INSTANCE.generateType(target);
 		this.target = target;
 		this.docMount = new StringMount(DocUtils.createPeripheralHelpText(target.getClass(), type, methods));
 	}

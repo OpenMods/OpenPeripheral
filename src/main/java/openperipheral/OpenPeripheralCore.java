@@ -4,11 +4,13 @@ import java.io.File;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
+import openmods.Log;
 import openmods.Mods;
 import openmods.config.properties.ConfigProcessing;
-import openperipheral.adapter.NameProvider;
 import openperipheral.adapter.TileEntityBlacklist;
+import openperipheral.api.Constants;
 import openperipheral.api.peripheral.IOpenPeripheral;
+import openperipheral.api.peripheral.PeripheralTypeProvider;
 import openperipheral.interfaces.cc.ModuleComputerCraft;
 import openperipheral.interfaces.oc.ModuleOpenComputers;
 import cpw.mods.fml.common.Loader;
@@ -27,7 +29,7 @@ public class OpenPeripheralCore {
 
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent evt) {
-		NameProvider.instance.initialize(evt.getModConfigurationDirectory());
+		PeripheralTypeProvider.INSTANCE.initialize(evt.getModConfigurationDirectory());
 
 		final File configFile = evt.getSuggestedConfigurationFile();
 		Configuration config = new Configuration(configFile);
@@ -56,8 +58,18 @@ public class OpenPeripheralCore {
 	@EventHandler
 	public void processMessage(FMLInterModComms.IMCEvent event) {
 		for (FMLInterModComms.IMCMessage m : event.getMessages()) {
-			if (m.isStringMessage() && "ignoreTileEntity".equalsIgnoreCase(m.key)) {
-				TileEntityBlacklist.INSTANCE.addToBlacklist(m.getStringValue());
+			if (m.isStringMessage()) {
+				if (Constants.IMC_IGNORE.equalsIgnoreCase(m.key)) {
+					TileEntityBlacklist.INSTANCE.addToBlacklist(m.getStringValue());
+				} else if (Constants.IMC_NAME_CLASS.equalsIgnoreCase(m.key)) {
+					String value = m.getStringValue();
+					String[] fields = value.split("\\s+");
+					if (fields.length != 2) {
+						Log.warn("Invalid IMC from %s: can't decode type '%s'", m.getSender(), value);
+					} else {
+						PeripheralTypeProvider.INSTANCE.setType(fields[0], fields[1]);
+					}
+				}
 			}
 		}
 	}

@@ -10,10 +10,10 @@ import li.cil.oc.api.network.Visibility;
 import li.cil.oc.api.prefab.ManagedEnvironment;
 import openmods.utils.CachedFactory;
 import openperipheral.adapter.IMethodExecutor;
-import openperipheral.adapter.NameProvider;
 import openperipheral.api.architecture.IArchitectureAccess;
 import openperipheral.api.architecture.IAttachable;
 import openperipheral.api.architecture.oc.IOpenComputersAttachable;
+import openperipheral.api.peripheral.PeripheralTypeProvider;
 import openperipheral.interfaces.oc.OpenComputersEnv;
 import openperipheral.interfaces.oc.asm.ICallerBase;
 
@@ -29,7 +29,7 @@ public class PeripheralEnvironmentBase extends ManagedEnvironment implements Nam
 	};
 
 	public PeripheralEnvironmentBase(Object target) {
-		this.type = NameProvider.instance.getName(target);
+		this.type = PeripheralTypeProvider.INSTANCE.generateType(target);
 
 		setNode(Network.newNode(this, Visibility.Network).
 				withComponent(this.type).

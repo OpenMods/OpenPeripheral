@@ -1,4 +1,4 @@
-package openperipheral.adapter;
+package openperipheral.api.peripheral;
 
 import java.io.*;
 import java.util.List;
@@ -9,7 +9,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import openmods.Log;
-import openperipheral.api.peripheral.PeripheralTypeId;
+import openperipheral.api.adapter.IPeripheralTypeProvider;
 import openperipheral.util.NameUtils;
 
 import org.apache.commons.lang3.StringUtils;
@@ -19,13 +19,13 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.google.common.io.Closer;
 
-public class NameProvider {
+public class PeripheralTypeProvider implements IPeripheralTypeProvider {
 
 	private static final String DEFAULTS_FILE = "/default_names.txt";
 
 	private final Splitter lineSplitter = Splitter.onPattern("\\s+");
 
-	public static final NameProvider instance = new NameProvider();
+	public static final PeripheralTypeProvider INSTANCE = new PeripheralTypeProvider();
 
 	private final Map<String, String> names = Maps.newTreeMap();
 
@@ -111,11 +111,23 @@ public class NameProvider {
 		}
 	}
 
-	public String getNameByClass(Class<?> cls) {
+	@Override
+	public void setType(Class<?> cls, String type) {
+		setType(cls.getName(), type);
+	}
+
+	public void setType(String key, String type) {
+		names.put(key, type);
+		writeOverlayFile();
+	}
+
+	@Override
+	public String getType(Class<?> cls) {
 		return names.get(cls.getName());
 	}
 
-	public String getName(Object obj) {
+	@Override
+	public String generateType(Object obj) {
 		if (obj == null) return "invalid";
 		final Class<?> cls = obj.getClass();
 		final String clsName = cls.getName();

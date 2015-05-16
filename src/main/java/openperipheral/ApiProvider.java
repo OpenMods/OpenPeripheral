@@ -7,6 +7,7 @@ import openperipheral.adapter.AdapterRegistryWrapper;
 import openperipheral.adapter.TileEntityBlacklist;
 import openperipheral.api.ApiAccess;
 import openperipheral.api.IApiInterface;
+import openperipheral.api.peripheral.PeripheralTypeProvider;
 import openperipheral.converter.TypeConvertersProvider;
 import openperipheral.interfaces.cc.ModuleComputerCraft;
 import openperipheral.interfaces.oc.ModuleOpenComputers;
@@ -27,6 +28,7 @@ public class ApiProvider extends ApiProviderBase<IApiInterface> implements ApiAc
 
 		registerInstance(TypeConvertersProvider.INSTANCE);
 		registerInstance(TileEntityBlacklist.INSTANCE);
+		registerInstance(PeripheralTypeProvider.INSTANCE);
 
 		if (Loader.isModLoaded(Mods.COMPUTERCRAFT)) ModuleComputerCraft.installAPI(this);
 		if (Loader.isModLoaded(Mods.OPENCOMPUTERS)) ModuleOpenComputers.installAPI(this);
