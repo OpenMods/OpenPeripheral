@@ -36,6 +36,11 @@ public class OpenComputersEnv {
 			public Object wrapObject(Object target) {
 				return ModuleOpenComputers.wrapObject(target);
 			}
+
+			@Override
+			public boolean canSignal() {
+				return context.isRunning() || context.isPaused();
+			}
 		};
 	}
 

@@ -1,11 +1,15 @@
 package openperipheral.interfaces.cc;
 
+import openmods.Log;
 import openperipheral.adapter.IMethodCall;
 import openperipheral.api.Constants;
 import openperipheral.api.architecture.IArchitectureAccess;
 import openperipheral.api.converter.IConverter;
 import openperipheral.converter.TypeConvertersProvider;
 import openperipheral.interfaces.cc.wrappers.LuaObjectWrapper;
+
+import org.apache.logging.log4j.Level;
+
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 
@@ -30,13 +34,29 @@ public class ComputerCraftEnv {
 
 			@Override
 			public boolean signal(String name, Object... args) {
-				access.queueEvent(name, args);
-				return true;
+				try {
+					access.queueEvent(name, args);
+					return true;
+				} catch (Exception e) {
+					Log.log(Level.DEBUG, e, "Failed to send signal: %s", name);
+				}
+				return false;
 			}
 
 			@Override
 			public Object wrapObject(Object target) {
 				return LuaObjectWrapper.wrap(target);
+			}
+
+			@Override
+			public boolean canSignal() {
+				try {
+					// this should throw if peripheral isn't attached
+					access.getAttachmentName();
+					return true;
+				} catch (Exception e) {
+					return false;
+				}
 			}
 		};
 	}

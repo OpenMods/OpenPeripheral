@@ -14,6 +14,11 @@ public interface IArchitectureAccess {
 
 	public String peripheralName();
 
+	/**
+	 * Checks if peripheral is attached to valid, running computer.
+	 */
+	public boolean canSignal();
+
 	public boolean signal(String name, Object... args);
 
 	/**
