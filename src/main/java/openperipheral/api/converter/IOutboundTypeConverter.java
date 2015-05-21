@@ -10,7 +10,7 @@ public interface IOutboundTypeConverter {
 	 * Return only types understood by underlying architecture (i.e. primitives, String, Maps), otherwise it will be converted to null values on script side.
 	 * Return null to ignore value. Converter will continue to next handler.
 	 *
-	 * @param registry
+	 * @param converter
 	 *            caller of this method. May be used to recursively convert values
 	 * @param obj
 	 *            value to be converted
