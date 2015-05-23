@@ -12,11 +12,11 @@ public class SetterExecutor implements IPropertyExecutor {
 
 	private final Field field;
 
-	private final ICallbackProvider provider;
+	private final IFieldManipulator manipulator;
 
-	public SetterExecutor(Field field, ICallbackProvider provider) {
+	public SetterExecutor(Field field, IFieldManipulator manipulator) {
 		this.field = field;
-		this.provider = provider;
+		this.manipulator = manipulator;
 	}
 
 	@Override
@@ -24,7 +24,7 @@ public class SetterExecutor implements IPropertyExecutor {
 		Preconditions.checkArgument(args.length == 1, "Setter must have exactly one argument");
 		Object arg = args[0];
 		Object converted = converter.toJava(arg, field.getGenericType());
-		provider.getCallback(target).setField(field, converted);
+		manipulator.setField(target, field, converted);
 
 		return ArrayUtils.EMPTY_OBJECT_ARRAY;
 	}

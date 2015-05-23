@@ -12,17 +12,17 @@ public class GetterExecutor implements IPropertyExecutor {
 
 	private final Field field;
 
-	private final ICallbackProvider provider;
+	private final IFieldManipulator manipulator;
 
-	public GetterExecutor(Field field, ICallbackProvider provider) {
+	public GetterExecutor(Field field, IFieldManipulator manipulator) {
 		this.field = field;
-		this.provider = provider;
+		this.manipulator = manipulator;
 	}
 
 	@Override
 	public Object[] call(IConverter converter, Object target, Object... args) {
 		Preconditions.checkArgument(args.length == 0, "Getter has no arguments");
-		Object result = provider.getCallback(target).getField(field);
+		Object result = manipulator.getField(target, field);
 		return ArrayUtils.toArray(converter.fromJava(result));
 	}
 }

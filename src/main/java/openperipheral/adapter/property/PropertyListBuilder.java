@@ -35,18 +35,18 @@ public class PropertyListBuilder {
 		if (Strings.isNullOrEmpty(getterDescription)) getterDescription = "Get field '" + name + "' value";
 		if (Strings.isNullOrEmpty(setterDescription)) setterDescription = "Set field '" + name + "' value";
 
-		final ICallbackProvider callbackProvider = CallbackProviders.getProvider(isDelegating);
+		final IFieldManipulator fieldManipulator = FieldManipulatorProviders.getProvider(isDelegating);
 
 		{
 			final IMethodDescription description = new GetterDescription(capitalizedName, getterDescription, type, source);
-			final IPropertyExecutor caller = new GetterExecutor(field, callbackProvider);
+			final IPropertyExecutor caller = new GetterExecutor(field, fieldManipulator);
 			final PropertyExecutor executor = new PropertyExecutor(description, caller);
 			output.add(executor);
 		}
 
 		if (!readOnly) {
 			final IMethodDescription description = new SetterDescription(capitalizedName, setterDescription, type, source);
-			final IPropertyExecutor caller = new SetterExecutor(field, callbackProvider);
+			final IPropertyExecutor caller = new SetterExecutor(field, fieldManipulator);
 			final PropertyExecutor executor = new PropertyExecutor(description, caller);
 			output.add(executor);
 		}
