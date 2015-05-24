@@ -20,8 +20,9 @@ import openperipheral.adapter.IMethodDescription.IArgumentDescription;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.composed.IMethodMap;
 import openperipheral.adapter.composed.IMethodMap.IMethodVisitor;
+import openperipheral.adapter.types.IReturnType;
+import openperipheral.adapter.types.TypeHelper;
 import openperipheral.adapter.wrappers.AdapterWrapper;
-import openperipheral.api.adapter.method.ReturnType;
 import openperipheral.api.peripheral.PeripheralTypeProvider;
 
 import org.w3c.dom.Document;
@@ -188,10 +189,11 @@ public class DocBuilder {
 		}
 
 		{
-			Element returns = doc.createElement("returns");
-			for (ReturnType ret : description.returnTypes())
-				returns.appendChild(createProperty("type", ret.getName()));
-			result.appendChild(returns);
+			final IReturnType returnType = description.returnTypes();
+			if (!TypeHelper.isVoid(returnType)) {
+				final String returnTypes = returnType.describe();
+				result.appendChild(createProperty("returns", returnTypes));
+			}
 		}
 	}
 

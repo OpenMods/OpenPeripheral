@@ -2,6 +2,8 @@ package openperipheral.adapter.property;
 
 import java.util.List;
 
+import openperipheral.adapter.types.IReturnType;
+import openperipheral.adapter.types.SingleReturnType;
 import openperipheral.api.adapter.method.ArgType;
 import openperipheral.api.adapter.method.ReturnType;
 
@@ -11,7 +13,7 @@ public class GetterDescription extends PropertyDescriptionBase {
 
 	public static final List<IArgumentDescription> EMPTY_ARGS = ImmutableList.of();
 
-	private final List<ReturnType> returnTypes;
+	private final IReturnType returnType;
 
 	static ReturnType convert(ArgType type) {
 		switch (type) {
@@ -31,7 +33,7 @@ public class GetterDescription extends PropertyDescriptionBase {
 	protected GetterDescription(String capitalizedName, String description, ArgType type, String source) {
 		super("get" + capitalizedName, description, source);
 		final ReturnType returnType = convert(type);
-		this.returnTypes = ImmutableList.of(returnType);
+		this.returnType = new SingleReturnType(returnType);
 	}
 
 	@Override
@@ -40,7 +42,7 @@ public class GetterDescription extends PropertyDescriptionBase {
 	}
 
 	@Override
-	public List<ReturnType> returnTypes() {
-		return returnTypes;
+	public IReturnType returnTypes() {
+		return returnType;
 	}
 }

@@ -3,14 +3,12 @@ package openperipheral.adapter.property;
 import java.util.List;
 
 import openperipheral.adapter.ArgumentDescriptionBase;
+import openperipheral.adapter.types.IReturnType;
 import openperipheral.api.adapter.method.ArgType;
-import openperipheral.api.adapter.method.ReturnType;
 
 import com.google.common.collect.ImmutableList;
 
 public class SetterDescription extends PropertyDescriptionBase {
-
-	public static final List<ReturnType> NO_RETURNS = ImmutableList.of();
 
 	private final List<IArgumentDescription> arguments;
 
@@ -27,8 +25,8 @@ public class SetterDescription extends PropertyDescriptionBase {
 	}
 
 	@Override
-	public List<ReturnType> returnTypes() {
-		return NO_RETURNS;
+	public IReturnType returnTypes() {
+		return IReturnType.VOID;
 	}
 
 }

@@ -3,8 +3,8 @@ package openperipheral.adapter;
 import java.util.List;
 import java.util.Set;
 
+import openperipheral.adapter.types.IReturnType;
 import openperipheral.api.adapter.method.ArgType;
-import openperipheral.api.adapter.method.ReturnType;
 
 public interface IMethodDescription {
 	public interface IArgumentDescription {
@@ -33,7 +33,7 @@ public interface IMethodDescription {
 
 	public List<IArgumentDescription> arguments();
 
-	public List<ReturnType> returnTypes();
+	public IReturnType returnTypes();
 
 	public Set<String> attributes();
 }

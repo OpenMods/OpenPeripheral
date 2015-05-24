@@ -9,6 +9,8 @@ import openmods.utils.AnnotationMap;
 import openperipheral.adapter.AdapterLogicException;
 import openperipheral.adapter.IMethodCall;
 import openperipheral.adapter.IMethodDescription;
+import openperipheral.adapter.types.IReturnType;
+import openperipheral.adapter.types.TypeHelper;
 import openperipheral.api.Constants;
 import openperipheral.api.adapter.method.*;
 import openperipheral.api.converter.IConverter;
@@ -43,6 +45,7 @@ public class MethodDeclaration implements IMethodDescription {
 	private final Method method;
 	private final String description;
 	private final List<ReturnType> returnTypes;
+	private final IReturnType wrappedReturn;
 
 	private final boolean validateReturn;
 
@@ -88,6 +91,8 @@ public class MethodDeclaration implements IMethodDescription {
 		this.validateReturn = meta.validateReturn();
 
 		this.multipleReturn = method.isAnnotationPresent(MultipleReturn.class);
+
+		this.wrappedReturn = TypeHelper.create(returnTypes);
 
 		if (validateReturn) validateResultCount();
 
@@ -384,8 +389,8 @@ public class MethodDeclaration implements IMethodDescription {
 	}
 
 	@Override
-	public List<ReturnType> returnTypes() {
-		return returnTypes;
+	public IReturnType returnTypes() {
+		return wrappedReturn;
 	}
 
 	@Override

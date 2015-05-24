@@ -10,8 +10,9 @@ import openperipheral.adapter.IMethodDescription.IArgumentDescription;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.composed.IMethodMap;
 import openperipheral.adapter.composed.IMethodMap.IMethodVisitor;
+import openperipheral.adapter.types.IReturnType;
+import openperipheral.adapter.types.TypeHelper;
 import openperipheral.api.adapter.Doc;
-import openperipheral.api.adapter.method.ReturnType;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
@@ -41,7 +42,7 @@ public class DocUtils {
 		result.put(DESCRIPTION, desc.description());
 		result.put(SOURCE, desc.source());
 
-		result.put(RETURN_TYPES, desc.returnTypes());
+		result.put(RETURN_TYPES, desc.returnTypes().describe());
 
 		{
 			List<Map<String, Object>> args = Lists.newArrayList();
@@ -83,18 +84,14 @@ public class DocUtils {
 		for (IArgumentDescription arg : desc.arguments())
 			args.add(arg.name() + ":" + decorate(arg.type().getName(), arg));
 
-		List<String> returns = Lists.newArrayList();
-
-		for (ReturnType r : desc.returnTypes())
-			returns.add(r.getName());
+		final IReturnType returnTypes = desc.returnTypes();
 
 		String argsJoined = Joiner.on(',').join(args);
 		String argsAndResult;
-		if (returns.isEmpty()) {
+		if (TypeHelper.isVoid(returnTypes)) {
 			argsAndResult = String.format("(%s)", argsJoined);
 		} else {
-			String ret = returns.size() == 1? returns.get(0) : ("(" + Joiner.on(',').join(returns) + ")");
-
+			final String ret = returnTypes.describe();
 			argsAndResult = String.format("(%s):%s", argsJoined, ret);
 		}
 
