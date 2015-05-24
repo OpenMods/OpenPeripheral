@@ -12,8 +12,6 @@ import openperipheral.api.adapter.IPropertyCallback;
 import openperipheral.api.adapter.Property;
 import openperipheral.api.adapter.method.ArgType;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
@@ -30,22 +28,23 @@ public class PropertyListBuilder {
 		}
 
 		if (Strings.isNullOrEmpty(name)) name = field.getName();
-		String capitalizedName = StringUtils.capitalize(name);
-
-		if (Strings.isNullOrEmpty(getterDescription)) getterDescription = "Get field '" + name + "' value";
-		if (Strings.isNullOrEmpty(setterDescription)) setterDescription = "Set field '" + name + "' value";
 
 		final IFieldManipulator fieldManipulator = FieldManipulatorProviders.getProvider(isDelegating);
 
+		final PropertyDescriptionBuilder descriptionBuilder = new PropertyDescriptionBuilder(name, source, type);
+		if (!Strings.isNullOrEmpty(getterDescription)) descriptionBuilder.setGetterDescription(getterDescription);
+		if (!Strings.isNullOrEmpty(setterDescription)) descriptionBuilder.setSetterDescription(setterDescription);
+		descriptionBuilder.allowValueOnly();
+
 		{
-			final IMethodDescription description = new GetterDescription(capitalizedName, getterDescription, type, source);
+			final IMethodDescription description = descriptionBuilder.buildGetter();
 			final IPropertyExecutor caller = new GetterExecutor(field, fieldManipulator);
 			final PropertyExecutor executor = new PropertyExecutor(description, caller);
 			output.add(executor);
 		}
 
 		if (!readOnly) {
-			final IMethodDescription description = new SetterDescription(capitalizedName, setterDescription, type, source);
+			final IMethodDescription description = descriptionBuilder.buildSetter();
 			final IPropertyExecutor caller = new SetterExecutor(field, fieldManipulator);
 			final PropertyExecutor executor = new PropertyExecutor(description, caller);
 			output.add(executor);

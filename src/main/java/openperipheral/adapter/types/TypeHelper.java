@@ -3,6 +3,7 @@ package openperipheral.adapter.types;
 import java.util.Arrays;
 import java.util.List;
 
+import openperipheral.api.adapter.method.ArgType;
 import openperipheral.api.adapter.method.ReturnType;
 
 import com.google.common.collect.Lists;
@@ -38,5 +39,20 @@ public class TypeHelper {
 
 	public static boolean isVoid(IReturnType type) {
 		return type == IReturnType.VOID;
+	}
+
+	public static ReturnType convert(ArgType type) {
+		switch (type) {
+			case BOOLEAN:
+				return ReturnType.BOOLEAN;
+			case NUMBER:
+				return ReturnType.NUMBER;
+			case STRING:
+				return ReturnType.STRING;
+			case TABLE:
+				return ReturnType.TABLE;
+			default:
+				return ReturnType.OBJECT;
+		}
 	}
 }
