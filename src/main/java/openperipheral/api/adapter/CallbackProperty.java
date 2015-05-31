@@ -40,4 +40,5 @@ public @interface CallbackProperty {
 	 * If true, only getter will be generated
 	 */
 	public boolean readOnly() default false;
+
 }

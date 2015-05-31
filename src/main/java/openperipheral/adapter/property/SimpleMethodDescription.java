@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import openperipheral.adapter.IMethodDescription;
-import openperipheral.adapter.types.IReturnType;
+import openperipheral.adapter.types.IType;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Sets;
@@ -14,9 +14,9 @@ public class SimpleMethodDescription implements IMethodDescription {
 	private final String description;
 	private final String source;
 	private final List<IArgumentDescription> arguments;
-	private final IReturnType returnType;
+	private final IType returnType;
 
-	public SimpleMethodDescription(String name, String description, String source, List<IArgumentDescription> arguments, IReturnType returnType) {
+	public SimpleMethodDescription(String name, String description, String source, List<IArgumentDescription> arguments, IType returnType) {
 		this.names = ImmutableList.of(name);
 		this.description = description;
 		this.source = source;
@@ -50,7 +50,7 @@ public class SimpleMethodDescription implements IMethodDescription {
 	}
 
 	@Override
-	public IReturnType returnTypes() {
+	public IType returnTypes() {
 		return returnType;
 	}
 }

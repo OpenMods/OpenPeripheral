@@ -10,7 +10,7 @@ import openperipheral.adapter.IMethodDescription.IArgumentDescription;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.composed.IMethodMap;
 import openperipheral.adapter.composed.IMethodMap.IMethodVisitor;
-import openperipheral.adapter.types.IReturnType;
+import openperipheral.adapter.types.IType;
 import openperipheral.adapter.types.TypeHelper;
 import openperipheral.api.adapter.Doc;
 
@@ -82,9 +82,9 @@ public class DocUtils {
 		List<String> args = Lists.newArrayList();
 
 		for (IArgumentDescription arg : desc.arguments())
-			args.add(arg.name() + ":" + decorate(arg.type().getName(), arg));
+			args.add(arg.name() + ":" + decorate(arg.type().describe(), arg));
 
-		final IReturnType returnTypes = desc.returnTypes();
+		final IType returnTypes = desc.returnTypes();
 
 		String argsJoined = Joiner.on(',').join(args);
 		String argsAndResult;

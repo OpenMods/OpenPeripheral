@@ -1,10 +1,10 @@
 package openperipheral.converter.inbound;
 
 import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
 import java.util.List;
 import java.util.Map;
 
+import openmods.reflection.TypeUtils;
 import openperipheral.api.converter.IConverter;
 import openperipheral.api.converter.IGenericInboundTypeConverter;
 
@@ -15,14 +15,12 @@ import com.google.common.reflect.TypeToken;
 
 public class ConverterListInbound implements IGenericInboundTypeConverter {
 
-	private static final TypeVariable<?> TYPE_PARAM = List.class.getTypeParameters()[0];
-
 	@Override
 	public Object toJava(IConverter registry, Object obj, Type expected) {
 		if (obj instanceof Map) {
 			final TypeToken<?> type = TypeToken.of(expected);
 			if (type.getRawType() == List.class) {
-				final Type valueType = type.resolveType(TYPE_PARAM).getType();
+				final Type valueType = type.resolveType(TypeUtils.LIST_VALUE_PARAM).getType();
 
 				final Map<?, ?> m = (Map<?, ?>)obj;
 

@@ -1,8 +1,6 @@
 package openperipheral.adapter.method;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import openmods.reflection.TypeUtils;
 import openperipheral.api.adapter.method.ArgType;
@@ -39,6 +37,7 @@ public class LuaTypeQualifier {
 		if (cls == Void.class) return ArgType.VOID;
 		if (Number.class.isAssignableFrom(cls)) return ArgType.NUMBER;
 		if (Collection.class.isAssignableFrom(cls)) return ArgType.TABLE;
+		if (Map.class.isAssignableFrom(cls)) return ArgType.TABLE;
 		if (cls.isArray()) return ArgType.TABLE;
 		if (cls.isEnum()) return ArgType.STRING;
 

@@ -22,7 +22,8 @@ public class GetterExecutor implements IPropertyExecutor {
 	@Override
 	public Object[] call(IConverter converter, Object target, Object... args) {
 		Preconditions.checkArgument(args.length == 0, "Getter has no arguments");
-		Object result = manipulator.getField(target, field);
-		return ArrayUtils.toArray(converter.fromJava(result));
+		final Object result = manipulator.getField(target, field);
+		final Object converted = converter.fromJava(result);
+		return ArrayUtils.toArray(converted);
 	}
 }

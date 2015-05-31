@@ -2,7 +2,7 @@ package openperipheral.adapter.types;
 
 import openperipheral.api.adapter.method.ReturnType;
 
-public class SingleReturnType implements IReturnType {
+public class SingleReturnType implements IType {
 
 	private final ReturnType type;
 

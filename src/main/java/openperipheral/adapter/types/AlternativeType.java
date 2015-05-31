@@ -7,17 +7,17 @@ import java.util.List;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 
-public class AlternativeReturnType implements IReturnType {
+public class AlternativeType implements IType {
 
 	private final String description;
 
-	public AlternativeReturnType(IReturnType... returnTypes) {
+	public AlternativeType(IType... returnTypes) {
 		this(Arrays.asList(returnTypes));
 	}
 
-	public AlternativeReturnType(Collection<IReturnType> returnTypes) {
+	public AlternativeType(Collection<IType> returnTypes) {
 		List<String> returns = Lists.newArrayList();
-		for (IReturnType r : returnTypes)
+		for (IType r : returnTypes)
 			returns.add(r.describe());
 		this.description = Joiner.on('|').join(returns);
 	}

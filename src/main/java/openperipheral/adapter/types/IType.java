@@ -1,7 +1,7 @@
 package openperipheral.adapter.types;
 
-public interface IReturnType {
-	public static IReturnType VOID = new IReturnType() {
+public interface IType {
+	public static IType VOID = new IType() {
 		@Override
 		public String describe() {
 			return "()";

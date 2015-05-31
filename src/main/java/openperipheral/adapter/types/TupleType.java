@@ -7,17 +7,17 @@ import java.util.List;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 
-public class TupleReturnType implements IReturnType {
+public class TupleType implements IType {
 	private final String description;
 
-	public TupleReturnType(IReturnType... returnTypes) {
+	public TupleType(IType... returnTypes) {
 		this(Arrays.asList(returnTypes));
 	}
 
-	public TupleReturnType(Collection<IReturnType> returnTypes) {
+	public TupleType(Collection<IType> returnTypes) {
 
 		List<String> returns = Lists.newArrayList();
-		for (IReturnType r : returnTypes)
+		for (IType r : returnTypes)
 			returns.add(r.describe());
 		this.description = "(" + Joiner.on(',').join(returns) + ")";
 	}

@@ -20,7 +20,7 @@ import openperipheral.adapter.IMethodDescription.IArgumentDescription;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.composed.IMethodMap;
 import openperipheral.adapter.composed.IMethodMap.IMethodVisitor;
-import openperipheral.adapter.types.IReturnType;
+import openperipheral.adapter.types.IType;
 import openperipheral.adapter.types.TypeHelper;
 import openperipheral.adapter.wrappers.AdapterWrapper;
 import openperipheral.api.peripheral.PeripheralTypeProvider;
@@ -189,7 +189,7 @@ public class DocBuilder {
 		}
 
 		{
-			final IReturnType returnType = description.returnTypes();
+			final IType returnType = description.returnTypes();
 			if (!TypeHelper.isVoid(returnType)) {
 				final String returnTypes = returnType.describe();
 				result.appendChild(createProperty("returns", returnTypes));
@@ -200,7 +200,7 @@ public class DocBuilder {
 	private Element fillDocForArg(IArgumentDescription arg) {
 		Element result = doc.createElement("arg");
 		result.appendChild(createProperty("name", arg.name()));
-		result.appendChild(createProperty("type", arg.type().getName()));
+		result.appendChild(createProperty("type", arg.type().describe()));
 
 		addOptionalTag(result, "description", arg.description());
 		addOptionalTag(result, "range", arg.range());

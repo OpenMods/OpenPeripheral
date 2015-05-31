@@ -3,7 +3,7 @@ package openperipheral.adapter.method;
 import java.util.Iterator;
 
 import openperipheral.adapter.ArgumentDescriptionBase;
-import openperipheral.api.adapter.method.ArgType;
+import openperipheral.adapter.types.IType;
 import openperipheral.api.converter.IConverter;
 import openperipheral.util.DocUtils;
 
@@ -15,7 +15,7 @@ public class Argument extends ArgumentDescriptionBase {
 	public final TypeToken<?> javaType;
 	final int javaArgIndex;
 
-	public Argument(String name, String description, ArgType type, TypeToken<?> javaType, int javaArgIndex) {
+	public Argument(String name, String description, IType type, TypeToken<?> javaType, int javaArgIndex) {
 		super(name, type, description);
 		this.javaArgIndex = javaArgIndex;
 		this.javaType = getArgType(javaType);
