@@ -13,6 +13,7 @@ import openperipheral.adapter.method.LuaTypeQualifier;
 import openperipheral.api.adapter.*;
 import openperipheral.api.adapter.IndexedCallbackProperty.GetFromFieldType;
 import openperipheral.api.adapter.method.ArgType;
+import openperipheral.api.helpers.Index;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -36,8 +37,8 @@ public class PropertyListBuilder {
 		if (Map.class.isAssignableFrom(rawType)) {
 			return type.resolveType(TypeUtils.MAP_KEY_PARAM).getType();
 		} else if (List.class.isAssignableFrom(rawType)) {
-			return int.class;
-		} else if (rawType.isArray()) { return int.class; }
+			return Index.class;
+		} else if (rawType.isArray()) { return Index.class; }
 
 		// TODO structs
 

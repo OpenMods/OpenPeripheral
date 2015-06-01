@@ -147,7 +147,7 @@ public class ConverterTests {
 		IConverter converter = mock(IConverter.class);
 		when(converter.toJava(anyString(), any(Type.class))).thenReturn(DUMMY);
 
-		ConverterListInbound sut = new ConverterListInbound();
+		ConverterListInbound sut = new ConverterListInbound(1);
 
 		Map<Integer, String> obj = ImmutableMap.of(1, "a", 3, "b");
 
@@ -156,7 +156,12 @@ public class ConverterTests {
 		Object result = sut.toJava(converter, obj, expected);
 
 		Assert.assertTrue(result instanceof List);
-		Assert.assertEquals(3, ((List<?>)result).size());
+		final List<?> tmp = (List<?>)result;
+		Assert.assertEquals(3, tmp.size());
+
+		Assert.assertEquals(DUMMY, tmp.get(0));
+		Assert.assertNull(tmp.get(1));
+		Assert.assertEquals(DUMMY, tmp.get(2));
 
 		verify(converter).toJava("a", (Type)String.class);
 		verify(converter).toJava("b", (Type)String.class);
@@ -169,16 +174,21 @@ public class ConverterTests {
 		IConverter converter = mock(IConverter.class);
 		when(converter.toJava(anyString(), any(Type.class))).thenReturn(DUMMY);
 
-		ConverterListInbound sut = new ConverterListInbound();
+		ConverterListInbound sut = new ConverterListInbound(0);
 
-		Map<Integer, String> obj = ImmutableMap.of(0, "a", 1, "b");
+		Map<Integer, String> obj = ImmutableMap.of(0, "a", 2, "b");
 
 		Type expected = getVarType("listBounded");
 
 		Object result = sut.toJava(converter, obj, expected);
 
 		Assert.assertTrue(result instanceof List);
-		Assert.assertEquals(2, ((List<?>)result).size());
+		final List<?> tmp = (List<?>)result;
+		Assert.assertEquals(3, tmp.size());
+
+		Assert.assertEquals(DUMMY, tmp.get(0));
+		Assert.assertNull(tmp.get(1));
+		Assert.assertEquals(DUMMY, tmp.get(2));
 
 		verify(converter).toJava(eq("a"), argThat(isClass(Boolean.class)));
 		verify(converter).toJava(eq("b"), argThat(isClass(Boolean.class)));
@@ -192,7 +202,7 @@ public class ConverterTests {
 		IConverter converter = mock(IConverter.class);
 		when(converter.toJava(anyString(), any(Type.class))).thenReturn(DUMMY);
 
-		ConverterListInbound sut = new ConverterListInbound();
+		ConverterListInbound sut = new ConverterListInbound(0);
 
 		Map<Integer, String> obj = ImmutableMap.of(0, "a", 1, "b");
 
@@ -275,11 +285,37 @@ public class ConverterTests {
 	public Generic<Integer>[] genericParametrizedArray;
 
 	@Test
+	public void ArrayPrimitiveTest() {
+		IConverter converter = mock(IConverter.class);
+		when(converter.toJava(anyString(), any(Type.class))).thenReturn(5);
+
+		ConverterArrayInbound sut = new ConverterArrayInbound(1);
+
+		Map<Integer, String> obj = ImmutableMap.of(1, "a", 3, "b");
+
+		Type expected = int[].class;
+
+		Type component = int.class;
+
+		Object result = sut.toJava(converter, obj, expected);
+
+		Assert.assertTrue(result instanceof int[]);
+		int[] tmp = (int[])result;
+		Assert.assertEquals(tmp.length, 3);
+		Assert.assertEquals(tmp[0], 5);
+		Assert.assertEquals(tmp[1], 0);
+		Assert.assertEquals(tmp[2], 5);
+
+		verify(converter).toJava("a", component);
+		verify(converter).toJava("b", component);
+	}
+
+	@Test
 	public void ArrayParametrizerTest() {
 		IConverter converter = mock(IConverter.class);
 		when(converter.toJava(anyString(), any(Type.class))).thenReturn(new Generic<Integer>());
 
-		ConverterArrayInbound sut = new ConverterArrayInbound();
+		ConverterArrayInbound sut = new ConverterArrayInbound(1);
 
 		Map<Integer, String> obj = ImmutableMap.of(1, "a", 3, "b");
 
@@ -290,6 +326,12 @@ public class ConverterTests {
 		Object result = sut.toJava(converter, obj, expected);
 
 		Assert.assertTrue(result instanceof Generic[]);
+
+		Generic<?>[] tmp = (Generic[])result;
+		Assert.assertEquals(tmp.length, 3);
+		Assert.assertNotNull(tmp[0]);
+		Assert.assertNull(tmp[1]);
+		Assert.assertNotNull(tmp[2]);
 
 		verify(converter).toJava("a", component);
 		verify(converter).toJava("b", component);

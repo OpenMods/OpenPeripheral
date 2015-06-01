@@ -21,6 +21,7 @@ import openperipheral.api.adapter.IPropertyCallback;
 import openperipheral.api.adapter.IndexedCallbackProperty.GetFromFieldType;
 import openperipheral.api.adapter.method.ArgType;
 import openperipheral.api.converter.IConverter;
+import openperipheral.api.helpers.Index;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -313,14 +314,14 @@ public class PropertyBuilderTest {
 			IMethodExecutor executor = findAndVerifyExecutor("getHello", output);
 			checkDescription(executor, "string", ArgType.NUMBER);
 			checkParamOptionality(executor, 0, false);
-			verifyIndexedGetterExecution(executor, listField, int.class);
+			verifyIndexedGetterExecution(executor, listField, Index.class);
 		}
 
 		{
 			IMethodExecutor executor = findAndVerifyExecutor("setHello", output);
 			checkDescription(executor, "()", ArgType.STRING, ArgType.NUMBER);
 			checkParamOptionality(executor, 1, false);
-			verifyIndexedSetterExecution(executor, listField, int.class, String.class);
+			verifyIndexedSetterExecution(executor, listField, Index.class, String.class);
 		}
 	}
 
@@ -456,7 +457,7 @@ public class PropertyBuilderTest {
 			IMethodExecutor executor = findAndVerifyExecutor("getHi", output);
 			checkDescription(executor, "string", ArgType.NUMBER);
 			checkParamOptionality(executor, 0, false);
-			verifyIndexedGetterExecution(executor, listField, int.class);
+			verifyIndexedGetterExecution(executor, listField, Index.class);
 		}
 	}
 
@@ -484,7 +485,7 @@ public class PropertyBuilderTest {
 			IMethodExecutor executor = findAndVerifyExecutor("getHi", output);
 			checkDescription(executor, "string", ArgType.NUMBER);
 			checkParamOptionality(executor, 0, false);
-			verifyIndexedGetterExecution(executor, listField, int.class);
+			verifyIndexedGetterExecution(executor, listField, Index.class);
 		}
 	}
 
@@ -506,14 +507,14 @@ public class PropertyBuilderTest {
 			IMethodExecutor executor = findAndVerifyExecutor("getHi", output);
 			checkDescription(executor, "boolean", ArgType.NUMBER);
 			checkParamOptionality(executor, 0, false);
-			verifyIndexedGetterExecution(executor, arrayField, int.class);
+			verifyIndexedGetterExecution(executor, arrayField, Index.class);
 		}
 
 		{
 			IMethodExecutor executor = findAndVerifyExecutor("setHi", output);
 			checkDescription(executor, "()", ArgType.BOOLEAN, ArgType.NUMBER);
 			checkParamOptionality(executor, 1, false);
-			verifyIndexedSetterExecution(executor, arrayField, int.class, boolean.class);
+			verifyIndexedSetterExecution(executor, arrayField, Index.class, boolean.class);
 		}
 	}
 
@@ -541,14 +542,14 @@ public class PropertyBuilderTest {
 			IMethodExecutor executor = findAndVerifyExecutor("getHi", output);
 			checkDescription(executor, "boolean", ArgType.NUMBER);
 			checkParamOptionality(executor, 0, false);
-			verifyIndexedGetterExecution(executor, arrayField, int.class);
+			verifyIndexedGetterExecution(executor, arrayField, Index.class);
 		}
 
 		{
 			IMethodExecutor executor = findAndVerifyExecutor("setHi", output);
 			checkDescription(executor, "()", ArgType.BOOLEAN, ArgType.NUMBER);
 			checkParamOptionality(executor, 1, false);
-			verifyIndexedSetterExecution(executor, arrayField, int.class, boolean.class);
+			verifyIndexedSetterExecution(executor, arrayField, Index.class, boolean.class);
 		}
 	}
 }

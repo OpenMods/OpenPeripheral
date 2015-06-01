@@ -7,6 +7,7 @@ import java.util.Map;
 
 import openperipheral.api.adapter.IIndexedPropertyCallback;
 import openperipheral.api.adapter.IPropertyCallback;
+import openperipheral.api.helpers.Index;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
@@ -33,8 +34,8 @@ public class FieldManipulatorProviders {
 	}
 
 	public static int getIndex(Object index) {
-		Preconditions.checkArgument(index instanceof Number, "Invalid index type, expecting number");
-		return ((Number)index).intValue() - 1; // Lua indices
+		Preconditions.checkArgument(index instanceof Index, "Invalid index type, expecting number");
+		return ((Index)index).unbox();
 	}
 
 	public static final IFieldManipulator DEFAULT = new IFieldManipulator() {

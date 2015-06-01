@@ -41,7 +41,7 @@ public class PropertyExecutor implements IMethodExecutor {
 			}
 
 			@Override
-			public Object[] call(Object[] args) {
+			public Object[] call(Object... args) {
 				Preconditions.checkNotNull(converter, "Converter not provided");
 				return caller.call(converter, target, args);
 			}

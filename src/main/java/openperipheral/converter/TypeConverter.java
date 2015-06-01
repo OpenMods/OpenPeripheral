@@ -40,18 +40,18 @@ public abstract class TypeConverter implements IConverter {
 		return false;
 	}
 
-	protected TypeConverter() {
+	protected TypeConverter(int collectionOffset) {
 		inbound.add(new ConverterRawInbound());
 
 		inbound.add(new ConverterItemStackInbound());
 		inbound.add(new ConverterUuid());
 
-		inbound.add(new ConverterNumberInbound());
+		inbound.add(new ConverterNumberInbound(collectionOffset));
 		inbound.add(new ConverterEnumInbound());
 		inbound.add(new ConverterStringInbound());
 
-		inbound.add(new ConverterArrayInbound());
-		inbound.add(new ConverterListInbound());
+		inbound.add(new ConverterArrayInbound(collectionOffset));
+		inbound.add(new ConverterListInbound(collectionOffset));
 		inbound.add(new ConverterMapInbound());
 		inbound.add(new ConverterSetInbound());
 
@@ -61,8 +61,8 @@ public abstract class TypeConverter implements IConverter {
 		outbound.add(new ConverterNumberOutbound());
 		outbound.add(new ConverterEnumOutbound());
 
-		outbound.add(new ConverterArrayOutbound());
-		outbound.add(new ConverterListOutbound());
+		outbound.add(new ConverterArrayOutbound(collectionOffset));
+		outbound.add(new ConverterListOutbound(collectionOffset));
 		outbound.add(new ConverterMapOutbound());
 		outbound.add(new ConverterSetOutbound());
 
