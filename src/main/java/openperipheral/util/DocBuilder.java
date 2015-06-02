@@ -203,7 +203,6 @@ public class DocBuilder {
 		result.appendChild(createProperty("type", arg.type().describe()));
 
 		addOptionalTag(result, "description", arg.description());
-		addOptionalTag(result, "range", arg.range());
 
 		result.setAttribute("nullable", Boolean.toString(arg.nullable()));
 		result.setAttribute("optional", Boolean.toString(arg.optional()));

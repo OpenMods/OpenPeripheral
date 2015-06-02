@@ -17,7 +17,6 @@ import openperipheral.api.adapter.Doc;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.reflect.TypeToken;
 
 public class DocUtils {
 
@@ -27,7 +26,6 @@ public class DocUtils {
 	public static final String SOURCE = "source";
 	public static final String NAME = "name";
 	public static final String TYPE = "type";
-	public static final String RANGE = "range";
 
 	public static final CachedFactory<Class<?>, String> DOC_TEXT_CACHE = new CachedFactory<Class<?>, String>() {
 		@Override
@@ -59,7 +57,6 @@ public class DocUtils {
 		result.put(TYPE, arg.type());
 		result.put(NAME, arg.name());
 		result.put(DESCRIPTION, arg.description());
-		result.put(RANGE, arg.range());
 
 		if (arg.nullable()) result.put("nullable", true);
 		if (arg.optional()) result.put("optional", true);
@@ -141,11 +138,5 @@ public class DocUtils {
 		listMethods(builder, methods);
 
 		return builder.toString();
-	}
-
-	public static String createRangeString(TypeToken<?> genericCls) {
-		Class<?> cls = genericCls.getRawType();
-		if (cls.isEnum()) return "{" + Joiner.on(",").join(cls.getEnumConstants()) + "}";
-		return "";
 	}
 }

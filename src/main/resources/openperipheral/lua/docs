@@ -49,7 +49,7 @@ else --must be 2 or more
       if #data.args > 0 then
         print("args: ")
         for _,arg in ipairs(data.args) do
-          print(" - ("..arg.type:lower() .. arg.range ..")"..argName(arg)..": "..arg.description)
+          print(" - ("..arg.type:lower() .. ")"..argName(arg)..": "..arg.description)
         end
       end
     end

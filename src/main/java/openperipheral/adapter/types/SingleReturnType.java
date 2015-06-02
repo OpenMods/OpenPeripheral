@@ -4,7 +4,7 @@ import openperipheral.api.adapter.method.ReturnType;
 
 public class SingleReturnType implements IType {
 
-	private final ReturnType type;
+	public final ReturnType type;
 
 	public SingleReturnType(ReturnType type) {
 		this.type = type;

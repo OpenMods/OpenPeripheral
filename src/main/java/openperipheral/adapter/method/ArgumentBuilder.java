@@ -26,8 +26,7 @@ public class ArgumentBuilder {
 	}
 
 	public Argument build(String name, String description, ArgType luaType, TypeToken<?> javaType, int javaArgIndex) {
-		if (luaType == ArgType.AUTO) luaType = LuaTypeQualifier.qualifyArgType(javaType.getRawType());
-		final IType wrappedType = TypeHelper.single(luaType);
+		final IType wrappedType = TypeHelper.interpretArgType(luaType, javaType.getRawType());
 
 		if (isVararg) {
 			if (isNullable) return new NullableVarArgument(name, description, wrappedType, javaType, javaArgIndex);

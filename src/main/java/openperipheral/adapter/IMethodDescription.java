@@ -11,8 +11,6 @@ public interface IMethodDescription {
 
 		public IType type();
 
-		public String range();
-
 		public String description();
 
 		public boolean nullable();

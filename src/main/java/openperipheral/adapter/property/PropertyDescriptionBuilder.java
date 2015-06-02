@@ -8,7 +8,6 @@ import openperipheral.adapter.IMethodDescription.IArgumentDescription;
 import openperipheral.adapter.types.AlternativeType;
 import openperipheral.adapter.types.IType;
 import openperipheral.adapter.types.TypeHelper;
-import openperipheral.api.adapter.method.ArgType;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -16,6 +15,9 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
 public class PropertyDescriptionBuilder {
+	private static final String ARG_VALUE = "value";
+	private static final String ARG_INDEX = "index";
+
 	private static class IndexArgumentDescription extends ArgumentDescriptionBase {
 		private final boolean isOptional;
 
@@ -34,9 +36,9 @@ public class PropertyDescriptionBuilder {
 	private final String capitalizedName;
 	private final String source;
 
-	private ArgType singleValueType;
-	private ArgType indexKeyType;
-	private ArgType indexValueType;
+	private IType singleValueType;
+	private IType indexKeyType;
+	private IType indexValueType;
 
 	private boolean buildIndexedProperty;
 	private boolean buildSingleProperty;
@@ -49,12 +51,12 @@ public class PropertyDescriptionBuilder {
 		this.source = source;
 	}
 
-	public void addSingleParameter(ArgType singleType) {
+	public void addSingleParameter(IType singleType) {
 		this.singleValueType = singleType;
 		this.buildSingleProperty = true;
 	}
 
-	public void addIndexParameter(ArgType keyType, ArgType valueType) {
+	public void addIndexParameter(IType keyType, IType valueType) {
 		this.indexKeyType = keyType;
 		this.indexValueType = valueType;
 		this.buildIndexedProperty = true;
@@ -71,7 +73,7 @@ public class PropertyDescriptionBuilder {
 
 		final IType valueType = calculateValueType();
 
-		arguments.add(new ArgumentDescriptionBase("value", valueType, ""));
+		arguments.add(new ArgumentDescriptionBase(ARG_VALUE, valueType, ""));
 		if (buildIndexedProperty) arguments.add(createIndexArgument());
 
 		return new SimpleMethodDescription(methodName, description, source, arguments, IType.VOID);
@@ -91,22 +93,20 @@ public class PropertyDescriptionBuilder {
 
 	private IType calculateValueType() {
 		if (buildIndexedProperty && buildSingleProperty) {
-			if (singleValueType == indexValueType) {
-				return TypeHelper.single(singleValueType);
+			if (TypeHelper.compareTypes(singleValueType, indexValueType)) {
+				return singleValueType;
 			} else {
-				final IType singleType = TypeHelper.single(singleValueType);
-				final IType indexedType = TypeHelper.single(indexValueType);
-				return new AlternativeType(singleType, indexedType);
+				return new AlternativeType(singleValueType, indexValueType);
 			}
 		}
 
-		if (buildSingleProperty) return TypeHelper.single(singleValueType);
-		if (buildIndexedProperty) return TypeHelper.single(indexValueType);
+		if (buildSingleProperty) return singleValueType;
+		if (buildIndexedProperty) return indexValueType;
 		throw new IllegalStateException("DERP?");
 	}
 
 	private IndexArgumentDescription createIndexArgument() {
-		return new IndexArgumentDescription("index", TypeHelper.single(indexKeyType), "", buildSingleProperty);
+		return new IndexArgumentDescription(ARG_INDEX, indexKeyType, "", buildSingleProperty);
 	}
 
 }

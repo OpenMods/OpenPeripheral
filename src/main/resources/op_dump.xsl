@@ -125,8 +125,7 @@ body {
             (<xsl:if test="@optional='true'">optional </xsl:if>
              <xsl:if test="@nullable='true'">nullable </xsl:if>
              <xsl:if test="@variadic='true'">variadic </xsl:if>
-             <xsl:value-of select="type/text()"/>
-             <xsl:value-of select="range/text()"/>)
+             <xsl:value-of select="type/text()"/>)
              <xsl:if test="description">: <xsl:value-of select="description/text()" /></xsl:if>
           </p>
         </xsl:for-each>
@@ -170,8 +169,7 @@ body {
             (<xsl:if test="@optional='true'">optional </xsl:if>
              <xsl:if test="@nullable='true'">nullable </xsl:if>
              <xsl:if test="@variadic='true'">variadic </xsl:if>
-             <xsl:value-of select="type/text()"/>
-             <xsl:value-of select="range/text()"/>)
+             <xsl:value-of select="type/text()"/>)
              <xsl:if test="description">: <xsl:value-of select="description/text()" /></xsl:if>
           </p>
         </xsl:for-each>
@@ -210,8 +208,7 @@ body {
             (<xsl:if test="@optional='true'">optional </xsl:if>
              <xsl:if test="@nullable='true'">nullable </xsl:if>
              <xsl:if test="@variadic='true'">variadic </xsl:if>
-             <xsl:value-of select="type/text()"/>
-             <xsl:value-of select="range/text()"/>)
+             <xsl:value-of select="type/text()"/>)
              <xsl:if test="description">: <xsl:value-of select="description/text()" /></xsl:if>
           </p>
         </xsl:for-each>

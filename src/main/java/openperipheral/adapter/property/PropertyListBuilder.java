@@ -9,7 +9,8 @@ import java.util.Map;
 import openmods.reflection.TypeUtils;
 import openperipheral.adapter.IMethodDescription;
 import openperipheral.adapter.IMethodExecutor;
-import openperipheral.adapter.method.LuaTypeQualifier;
+import openperipheral.adapter.types.IType;
+import openperipheral.adapter.types.TypeHelper;
 import openperipheral.api.adapter.*;
 import openperipheral.api.adapter.IndexedCallbackProperty.GetFromFieldType;
 import openperipheral.api.adapter.method.ArgType;
@@ -45,15 +46,6 @@ public class PropertyListBuilder {
 		throw new IllegalArgumentException("Failed to deduce key type from " + genericType);
 	}
 
-	private static ArgType interpretDocType(ArgType givenType, Class<?> targetType) {
-		return givenType == ArgType.AUTO? LuaTypeQualifier.qualifyArgType(targetType) : givenType;
-	}
-
-	private static ArgType interpretDocType(ArgType givenType, Type type) {
-		final Class<?> rawType = TypeToken.of(type).getRawType();
-		return givenType == ArgType.AUTO? LuaTypeQualifier.qualifyArgType(rawType) : givenType;
-	}
-
 	private static Type getBasicValueType(Type genericType) {
 		final TypeToken<?> type = TypeToken.of(genericType);
 		final Class<?> rawType = type.getRawType();
@@ -85,20 +77,20 @@ public class PropertyListBuilder {
 
 	private class SingleParameters extends Parameters {
 
-		public final ArgType valueType;
+		public final IType valueType;
 
 		public SingleParameters(String name, String getterDescription, String setterDescription, boolean isDelegating, boolean readOnly, ArgType valueType) {
 			super(name, getterDescription, setterDescription, isDelegating, readOnly);
-			this.valueType = interpretDocType(valueType, field.getType());
+			this.valueType = TypeHelper.interpretArgType(valueType, field.getType());
 		}
 	}
 
 	private class IndexedParameters extends Parameters {
 		public final boolean expandable;
 		public final Type keyType;
-		public final ArgType docKeyType;
+		public final IType docKeyType;
 		public final IValueTypeProvider valueTypeProvider;
-		public final ArgType docValueType;
+		public final IType docValueType;
 
 		public IndexedParameters(String name, String getterDescription, String setterDescription, boolean isDelegating, boolean readOnly, boolean expandable, Class<?> keyType, ArgType keyDocType, Class<?> valueType, ArgType valueDocType) {
 			super(name, getterDescription, setterDescription, isDelegating, readOnly);
@@ -106,7 +98,7 @@ public class PropertyListBuilder {
 
 			this.keyType = keyType == GetFromFieldType.class? getIndexType(field.getGenericType()) : keyType;
 			Class<?> rawIndexType = TypeToken.of(this.keyType).getRawType();
-			this.docKeyType = interpretDocType(keyDocType, rawIndexType);
+			this.docKeyType = TypeHelper.interpretArgType(keyDocType, rawIndexType);
 
 			Type basicReturnType = valueType == GetFromFieldType.class? getBasicValueType(field.getGenericType()) : valueType;
 
@@ -114,7 +106,7 @@ public class PropertyListBuilder {
 			if (basicReturnType == null) throw new IllegalArgumentException("Failed to find return type for field of type " + valueType);
 
 			this.valueTypeProvider = createConstantTypeProvider(basicReturnType);
-			this.docValueType = interpretDocType(valueDocType, basicReturnType);
+			this.docValueType = TypeHelper.interpretArgType(valueDocType, basicReturnType);
 		}
 	}
 

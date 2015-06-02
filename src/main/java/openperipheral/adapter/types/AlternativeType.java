@@ -1,30 +1,31 @@
 package openperipheral.adapter.types;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
 public class AlternativeType implements IType {
 
-	private final String description;
+	public final List<IType> types;
 
-	public AlternativeType(IType... returnTypes) {
-		this(Arrays.asList(returnTypes));
+	public AlternativeType(IType... types) {
+		this.types = ImmutableList.copyOf(types);
 	}
 
-	public AlternativeType(Collection<IType> returnTypes) {
-		List<String> returns = Lists.newArrayList();
-		for (IType r : returnTypes)
-			returns.add(r.describe());
-		this.description = Joiner.on('|').join(returns);
+	public AlternativeType(Collection<IType> types) {
+		this.types = ImmutableList.copyOf(types);
 	}
 
 	@Override
 	public String describe() {
-		return description;
+		List<String> returns = Lists.newArrayList();
+		for (IType r : types)
+			returns.add(r.describe());
+
+		return Joiner.on('|').join(returns);
 	}
 
 }
