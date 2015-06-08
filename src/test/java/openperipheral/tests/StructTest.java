@@ -39,8 +39,22 @@ public class StructTest {
 		verify(converter).toJava(input, (Type)cls);
 	}
 
-	protected void verifyOutboundConversion(Object input) {
+	private void verifyOutboundConversion(Object input) {
 		verify(converter).fromJava(input);
+	}
+
+	private void assertInboundConversionFail(IStructConverter structConverter, Map<Object, Object> input, int indexOffset) {
+		try {
+			structConverter.toJava(converter, input, indexOffset);
+			Assert.fail("Exception not thrown");
+		} catch (RuntimeException e) {}
+	}
+
+	private void assertOutboundConversionFail(IStructConverter structConverter, Map<Object, Object> input, int indexOffset) {
+		try {
+			structConverter.toJava(converter, input, indexOffset);
+			Assert.fail("Exception not thrown");
+		} catch (IllegalArgumentException e) {}
 	}
 
 	public static final String SKIP_VALUE = "skip!";
@@ -59,8 +73,7 @@ public class StructTest {
 
 	@Test
 	public void testNamedOutboundConversion() {
-		StructCache cache = new StructCache();
-		IStructConverter c = cache.getConverter(SimpleStruct.class);
+		final IStructConverter c = getConverter(SimpleStruct.class);
 
 		SimpleStruct struct = new SimpleStruct();
 		struct.a = "aaaa";
@@ -72,7 +85,7 @@ public class StructTest {
 		final String resultB = "cb";
 		setupOutboundConverter(struct.b, resultB);
 
-		Map<?, ?> fromJava = c.fromJava(converter, struct);
+		Map<?, ?> fromJava = c.fromJava(converter, struct, 0);
 
 		Map<Object, Object> result = Maps.newHashMap();
 		result.put("a", resultA);
@@ -84,10 +97,15 @@ public class StructTest {
 		verifyOutboundConversion(struct.b);
 	}
 
+	protected IStructConverter getConverter(Class<?> cls) {
+		StructCache cache = new StructCache();
+		IStructConverter c = cache.getConverter(cls);
+		return c;
+	}
+
 	@Test
 	public void testNamedInboundConversion() {
-		StructCache cache = new StructCache();
-		IStructConverter c = cache.getConverter(SimpleStruct.class);
+		final IStructConverter c = getConverter(SimpleStruct.class);
 
 		final String inputA = "ca";
 		final String inputB = "zzzz";
@@ -102,7 +120,7 @@ public class StructTest {
 		setupInboundConverter(inputA, String.class, resultA);
 		setupInboundConverter(inputB, int.class, resultB);
 
-		Object o = c.toJava(converter, input);
+		Object o = c.toJava(converter, input, 1);
 
 		verifyInboundConversion(inputA, String.class);
 		verifyInboundConversion(inputB, int.class);
@@ -118,8 +136,7 @@ public class StructTest {
 
 	@Test
 	public void testNamedInboundConversionExtraFields() {
-		StructCache cache = new StructCache();
-		IStructConverter c = cache.getConverter(SimpleStruct.class);
+		final IStructConverter c = getConverter(SimpleStruct.class);
 
 		final String inputA = "ca";
 		final String inputB = "zzzz";
@@ -136,16 +153,12 @@ public class StructTest {
 		setupInboundConverter(inputA, String.class, resultA);
 		setupInboundConverter(inputB, int.class, resultB);
 
-		try {
-			c.toJava(converter, input);
-			Assert.fail("Exception not thrown");
-		} catch (RuntimeException e) {}
+		assertInboundConversionFail(c, input, 3);
 	}
 
 	@Test
 	public void testNamedInboundConversionInvalidKey() {
-		StructCache cache = new StructCache();
-		IStructConverter c = cache.getConverter(SimpleStruct.class);
+		final IStructConverter c = getConverter(SimpleStruct.class);
 
 		final String inputA = "ca";
 		final String inputB = "zzzz";
@@ -154,16 +167,12 @@ public class StructTest {
 		input.put('a', inputA);
 		input.put("b", inputB);
 
-		try {
-			c.toJava(converter, input);
-			Assert.fail("Exception not thrown");
-		} catch (RuntimeException e) {}
+		assertInboundConversionFail(c, input, 4);
 	}
 
 	@Test
 	public void testNamedInboundConversionMissingFields() {
-		StructCache cache = new StructCache();
-		IStructConverter c = cache.getConverter(SimpleStruct.class);
+		final IStructConverter c = getConverter(SimpleStruct.class);
 
 		final String inputA = "ca";
 
@@ -174,10 +183,7 @@ public class StructTest {
 
 		setupInboundConverter(inputA, String.class, resultA);
 
-		try {
-			c.toJava(converter, input);
-			Assert.fail("Exception not thrown");
-		} catch (RuntimeException e) {}
+		assertInboundConversionFail(c, input, 5);
 	}
 
 	@ScriptStruct
@@ -192,8 +198,7 @@ public class StructTest {
 
 	@Test
 	public void testNamedInboundConversionOptionalFields() {
-		StructCache cache = new StructCache();
-		IStructConverter c = cache.getConverter(SimpleStructOptional.class);
+		final IStructConverter c = getConverter(SimpleStructOptional.class);
 
 		final String inputB = "ca";
 
@@ -204,7 +209,7 @@ public class StructTest {
 
 		setupInboundConverter(inputB, int.class, resultB);
 
-		Object o = c.toJava(converter, input);
+		Object o = c.toJava(converter, input, 6);
 
 		verifyInboundConversion(inputB, int.class);
 
@@ -230,9 +235,8 @@ public class StructTest {
 	}
 
 	@Test
-	public void testDefaultOrderedOutboundConversion() {
-		StructCache cache = new StructCache();
-		IStructConverter c = cache.getConverter(SimpleTableDefaultOrdering.class);
+	public void testDefaultOrderedOutboundConversionOneIndexed() {
+		final IStructConverter c = getConverter(SimpleTableDefaultOrdering.class);
 
 		SimpleTableDefaultOrdering struct = new SimpleTableDefaultOrdering();
 		struct.a = "aaaa";
@@ -245,7 +249,7 @@ public class StructTest {
 		final String resultB = "cb";
 		setupOutboundConverter(struct.b, resultB);
 
-		Map<?, ?> fromJava = c.fromJava(converter, struct);
+		Map<?, ?> fromJava = c.fromJava(converter, struct, 1);
 
 		Map<Object, Object> result = Maps.newHashMap();
 		result.put(1, resultA);
@@ -258,9 +262,95 @@ public class StructTest {
 	}
 
 	@Test
+	public void testDefaultOrderedOutboundConversionZeroIndexed() {
+		final IStructConverter c = getConverter(SimpleTableDefaultOrdering.class);
+
+		SimpleTableDefaultOrdering struct = new SimpleTableDefaultOrdering();
+		struct.a = "aaaa";
+		struct.b = 2;
+		struct.skip = "zzzz";
+
+		final int resultA = 5;
+		setupOutboundConverter(struct.a, resultA);
+
+		final String resultB = "cb";
+		setupOutboundConverter(struct.b, resultB);
+
+		Map<?, ?> fromJava = c.fromJava(converter, struct, 0);
+
+		Map<Object, Object> result = Maps.newHashMap();
+		result.put(0, resultA);
+		result.put(1, resultB);
+
+		Assert.assertEquals(result, fromJava);
+
+		verifyOutboundConversion(struct.a);
+		verifyOutboundConversion(struct.b);
+	}
+
+	@Test
+	public void testDefaultOrderedInboundConversionZeroIndexed() {
+		final IStructConverter c = getConverter(SimpleTableDefaultOrdering.class);
+
+		final String inputA = "ca";
+		final String inputB = "zzzz";
+
+		Map<Object, Object> input = Maps.newHashMap();
+		input.put(0, inputA);
+		input.put(1, inputB);
+
+		final String resultA = "ca";
+		final int resultB = 2;
+
+		setupInboundConverter(inputA, String.class, resultA);
+		setupInboundConverter(inputB, int.class, resultB);
+
+		Object o = c.toJava(converter, input, 0);
+
+		verifyInboundConversion(inputA, String.class);
+		verifyInboundConversion(inputB, int.class);
+
+		Assert.assertTrue(o instanceof SimpleTableDefaultOrdering);
+
+		SimpleTableDefaultOrdering converted = (SimpleTableDefaultOrdering)o;
+
+		Assert.assertEquals(resultA, converted.a);
+		Assert.assertEquals(resultB, converted.b);
+	}
+
+	@Test
+	public void testDefaultOrderedInboundConversionOneIndexed() {
+		final IStructConverter c = getConverter(SimpleTableDefaultOrdering.class);
+
+		final String inputA = "ca";
+		final String inputB = "zzzz";
+
+		Map<Object, Object> input = Maps.newHashMap();
+		input.put(1, inputA);
+		input.put(2, inputB);
+
+		final String resultA = "ca";
+		final int resultB = 2;
+
+		setupInboundConverter(inputA, String.class, resultA);
+		setupInboundConverter(inputB, int.class, resultB);
+
+		Object o = c.toJava(converter, input, 1);
+
+		verifyInboundConversion(inputA, String.class);
+		verifyInboundConversion(inputB, int.class);
+
+		Assert.assertTrue(o instanceof SimpleTableDefaultOrdering);
+
+		SimpleTableDefaultOrdering converted = (SimpleTableDefaultOrdering)o;
+
+		Assert.assertEquals(resultA, converted.a);
+		Assert.assertEquals(resultB, converted.b);
+	}
+
+	@Test
 	public void testDefaultOrderedInboundConversionExtraFields() {
-		StructCache cache = new StructCache();
-		IStructConverter c = cache.getConverter(SimpleTableDefaultOrdering.class);
+		final IStructConverter c = getConverter(SimpleTableDefaultOrdering.class);
 
 		final String inputA = "ca";
 		final String inputB = "zzzz";
@@ -276,10 +366,7 @@ public class StructTest {
 		setupInboundConverter(inputA, String.class, resultA);
 		setupInboundConverter(inputB, int.class, resultB);
 
-		try {
-			c.toJava(converter, input);
-			Assert.fail("Exception not thrown");
-		} catch (IllegalArgumentException e) {}
+		assertOutboundConversionFail(c, input, 1);
 	}
 
 	@ScriptStruct(defaultOutput = Output.TABLE)
@@ -296,9 +383,8 @@ public class StructTest {
 	}
 
 	@Test
-	public void testCustomOrderedOutboundConversion() {
-		StructCache cache = new StructCache();
-		IStructConverter c = cache.getConverter(SimpleTableForcedOrdering.class);
+	public void testCustomOrderedOutboundConversionZeroIndexed() {
+		final IStructConverter c = getConverter(SimpleTableForcedOrdering.class);
 
 		SimpleTableForcedOrdering struct = new SimpleTableForcedOrdering();
 		struct.a = "aaaa";
@@ -314,7 +400,7 @@ public class StructTest {
 		final float resultC = 0.2f;
 		setupOutboundConverter(struct.c, resultC);
 
-		Map<?, ?> fromJava = c.fromJava(converter, struct);
+		Map<?, ?> fromJava = c.fromJava(converter, struct, 1);
 
 		// Lua ordering
 		Map<Object, Object> result = Maps.newHashMap();
@@ -330,9 +416,41 @@ public class StructTest {
 	}
 
 	@Test
+	public void testCustomOrderedOutboundConversionOneIndexed() {
+		final IStructConverter c = getConverter(SimpleTableForcedOrdering.class);
+
+		SimpleTableForcedOrdering struct = new SimpleTableForcedOrdering();
+		struct.a = "aaaa";
+		struct.b = 2;
+		struct.c = 4.0f;
+
+		final int resultA = 5;
+		setupOutboundConverter(struct.a, resultA);
+
+		final String resultB = "cb";
+		setupOutboundConverter(struct.b, resultB);
+
+		final float resultC = 0.2f;
+		setupOutboundConverter(struct.c, resultC);
+
+		Map<?, ?> fromJava = c.fromJava(converter, struct, 0);
+
+		// Java ordering
+		Map<Object, Object> result = Maps.newHashMap();
+		result.put(0, resultB);
+		result.put(2, resultA);
+		result.put(4, resultC);
+
+		Assert.assertEquals(result, fromJava);
+
+		verifyOutboundConversion(struct.a);
+		verifyOutboundConversion(struct.b);
+		verifyOutboundConversion(struct.c);
+	}
+
+	@Test
 	public void testCustomOrderedInboundConversion() {
-		StructCache cache = new StructCache();
-		IStructConverter c = cache.getConverter(SimpleTableForcedOrdering.class);
+		final IStructConverter c = getConverter(SimpleTableForcedOrdering.class);
 
 		final String inputA = "ca";
 		final String inputB = "zzzz";
@@ -351,7 +469,7 @@ public class StructTest {
 		setupInboundConverter(inputB, int.class, resultB);
 		setupInboundConverter(inputC, Float.class, resultC);
 
-		Object o = c.toJava(converter, input);
+		Object o = c.toJava(converter, input, 1);
 
 		verifyInboundConversion(inputA, String.class);
 		verifyInboundConversion(inputB, int.class);
@@ -378,8 +496,7 @@ public class StructTest {
 
 	@Test
 	public void testStructOnly() {
-		StructCache cache = new StructCache();
-		IStructConverter c = cache.getConverter(StructOnly.class);
+		final IStructConverter c = getConverter(StructOnly.class);
 
 		final String inputA = "ca";
 		final String inputB = "zzzz";
@@ -388,10 +505,7 @@ public class StructTest {
 		input.put(1, inputB);
 		input.put(2, inputA);
 
-		try {
-			c.toJava(converter, input);
-			Assert.fail("Exception not thrown");
-		} catch (RuntimeException e) {}
+		assertInboundConversionFail(c, input, 1);
 
 	}
 

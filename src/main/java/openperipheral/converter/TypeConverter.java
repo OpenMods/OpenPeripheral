@@ -40,20 +40,21 @@ public abstract class TypeConverter implements IConverter {
 		return false;
 	}
 
-	protected TypeConverter(int collectionOffset) {
+	protected TypeConverter(int indexOffset) {
 		inbound.add(new ConverterRawInbound());
 
 		inbound.add(new ConverterItemStackInbound());
 		inbound.add(new ConverterUuid());
 
-		inbound.add(new ConverterNumberInbound(collectionOffset));
+		inbound.add(new ConverterNumberInbound(indexOffset));
 		inbound.add(new ConverterEnumInbound());
 		inbound.add(new ConverterStringInbound());
 
-		inbound.add(new ConverterArrayInbound(collectionOffset));
-		inbound.add(new ConverterListInbound(collectionOffset));
+		inbound.add(new ConverterArrayInbound(indexOffset));
+		inbound.add(new ConverterListInbound(indexOffset));
 		inbound.add(new ConverterMapInbound());
 		inbound.add(new ConverterSetInbound());
+		inbound.add(new ConverterStructInbound(indexOffset));
 
 		inbound.add(new ConverterBypass());
 
@@ -61,10 +62,11 @@ public abstract class TypeConverter implements IConverter {
 		outbound.add(new ConverterNumberOutbound());
 		outbound.add(new ConverterEnumOutbound());
 
-		outbound.add(new ConverterArrayOutbound(collectionOffset));
-		outbound.add(new ConverterListOutbound(collectionOffset));
+		outbound.add(new ConverterArrayOutbound(indexOffset));
+		outbound.add(new ConverterListOutbound(indexOffset));
 		outbound.add(new ConverterMapOutbound());
 		outbound.add(new ConverterSetOutbound());
+		outbound.add(new ConverterStructOutbound(indexOffset));
 
 		outbound.add(new ConverterItemStackOutbound());
 		outbound.add(new ConverterGameProfileOutbound());

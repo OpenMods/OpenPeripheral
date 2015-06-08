@@ -19,20 +19,22 @@ import com.google.common.collect.*;
 
 public class StructCache {
 
-	public interface IStructConverter {
-		public Object toJava(IConverter converter, Map<?, ?> obj);
+	public static final StructCache instance = new StructCache();
 
-		public Map<?, ?> fromJava(IConverter converter, Object obj);
+	public interface IStructConverter {
+		public Object toJava(IConverter converter, Map<?, ?> obj, int indexOffset);
+
+		public Map<?, ?> fromJava(IConverter converter, Object obj, int indexOffset);
 	}
 
 	private static final IStructConverter DUMMY_CONVERTER = new IStructConverter() {
 		@Override
-		public Object toJava(IConverter converter, Map<?, ?> obj) {
+		public Object toJava(IConverter converter, Map<?, ?> obj, int indexOffset) {
 			return null;
 		}
 
 		@Override
-		public Map<?, ?> fromJava(IConverter converter, Object obj) {
+		public Map<?, ?> fromJava(IConverter converter, Object obj, int indexOffset) {
 			return ImmutableMap.of();
 		}
 	};
@@ -81,7 +83,7 @@ public class StructCache {
 
 				int index = fieldMarker.index();
 				if (index == StructField.AUTOASSIGN) index = autoIndex;
-				indexedFields.put(index + 1, f);
+				indexedFields.put(index, f);
 
 				if (fieldMarker.isOptional()) optionalFields.add(f);
 
@@ -94,7 +96,7 @@ public class StructCache {
 		}
 
 		@Override
-		public Object toJava(IConverter converter, Map<?, ?> obj) {
+		public Object toJava(IConverter converter, Map<?, ?> obj, int indexOffset) {
 			final Object result;
 			try {
 				result = ctor.newInstance();
@@ -116,7 +118,8 @@ public class StructCache {
 
 				} else if (key instanceof Number) {
 					Preconditions.checkArgument(tryIndexed, "Can't convert from table");
-					final Field f = indexedFields.get(((Number)key).intValue());
+					final int index = ((Number)key).intValue() - indexOffset;
+					final Field f = indexedFields.get(index);
 					Preconditions.checkArgument(f != null, "Extraneous field: %s = %s", key, value);
 
 					setField(converter, result, key, f, value);
@@ -142,7 +145,7 @@ public class StructCache {
 		}
 
 		@Override
-		public Map<?, ?> fromJava(IConverter converter, Object obj) {
+		public Map<?, ?> fromJava(IConverter converter, Object obj, int indexOffset) {
 			if (output == Output.OBJECT) {
 				Map<String, Object> result = Maps.newHashMap();
 				for (Map.Entry<String, Field> e : namedFields.entrySet())
@@ -152,7 +155,7 @@ public class StructCache {
 			} else {
 				Map<Integer, Object> result = Maps.newHashMap();
 				for (Map.Entry<Integer, Field> e : indexedFields.entrySet())
-					addFieldFromJava(converter, obj, result, e.getKey(), e.getValue());
+					addFieldFromJava(converter, obj, result, e.getKey() + indexOffset, e.getValue());
 				return result;
 			}
 
@@ -168,6 +171,13 @@ public class StructCache {
 			}
 		}
 	}
+
+	private final CachedFactory<Class<?>, Boolean> checkedClasses = new CachedFactory<Class<?>, Boolean>() {
+		@Override
+		protected Boolean create(Class<?> key) {
+			return key.getAnnotation(ScriptStruct.class) != null;
+		}
+	};
 
 	private final CachedFactory<Class<?>, IStructConverter> converters = new CachedFactory<Class<?>, IStructConverter>() {
 		@Override
@@ -187,6 +197,10 @@ public class StructCache {
 			}
 		}
 	};
+
+	public boolean isStruct(Class<?> cls) {
+		return checkedClasses.getOrCreate(cls);
+	}
 
 	public IStructConverter getConverter(Class<?> cls) {
 		return converters.getOrCreate(cls);
