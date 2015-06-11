@@ -119,7 +119,7 @@ public abstract class TypeConverter implements IConverter {
 		}
 
 		final TypeToken<?> type = TypeToken.of(expected);
-		throw new IllegalArgumentException(String.format("Failed to convert value %s to %s", obj, type.getRawType().getSimpleName()));
+		throw new IllegalArgumentException(String.format("No known conversion of value %s to %s", obj, type.getRawType().getSimpleName()));
 	}
 
 	@Override

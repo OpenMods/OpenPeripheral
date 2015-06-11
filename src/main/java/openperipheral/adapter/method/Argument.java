@@ -35,7 +35,7 @@ public class Argument extends ArgumentDescriptionBase {
 		try {
 			return converter.toJava(o, javaType.getType());
 		} catch (Exception e) {
-			throw new IllegalArgumentException(String.format("Failed to convert arg '%s'", name), e);
+			throw new IllegalArgumentException(String.format("Failed to convert arg '%s', cause: '%s'", name, e.getMessage()));
 		}
 	}
 
