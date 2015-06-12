@@ -39,4 +39,6 @@ public @interface Property {
 	 * If true, only getter will be generated
 	 */
 	public boolean readOnly() default false;
+
+	public boolean nullable() default false;
 }

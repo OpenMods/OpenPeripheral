@@ -143,4 +143,17 @@ public abstract class TypeConverter implements IConverter {
 		throw new IllegalArgumentException("Conversion failed on value " + obj);
 	}
 
+	public static Object nullableToJava(IConverter converter, Object value, Type expectedType) {
+		return (value != null)? converter.toJava(value, expectedType) : null;
+	}
+
+	public static Object nullableToJava(IConverter converter, boolean nullable, Object value, Type expectedType) {
+		if (value == null) {
+			Preconditions.checkArgument(nullable, "This field cannot be null");
+			return null;
+		}
+
+		return converter.toJava(value, expectedType);
+	}
+
 }

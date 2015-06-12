@@ -6,6 +6,7 @@ import java.util.Map;
 import openmods.reflection.TypeUtils;
 import openperipheral.api.converter.IConverter;
 import openperipheral.api.converter.IGenericInboundTypeConverter;
+import openperipheral.converter.TypeConverter;
 
 import com.google.common.collect.Maps;
 import com.google.common.reflect.TypeToken;
@@ -24,8 +25,8 @@ public class ConverterMapInbound implements IGenericInboundTypeConverter {
 				Map<Object, Object> result = Maps.newHashMap();
 
 				for (Map.Entry<?, ?> e : ((Map<?, ?>)obj).entrySet()) {
-					Object key = registry.toJava(e.getKey(), keyType);
-					Object value = registry.toJava(e.getValue(), valueType);
+					Object key = TypeConverter.nullableToJava(registry, e.getKey(), keyType);
+					Object value = TypeConverter.nullableToJava(registry, e.getValue(), valueType);
 					result.put(key, value);
 				}
 

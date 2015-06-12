@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 
 import openperipheral.api.converter.IConverter;
+import openperipheral.converter.TypeConverter;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -17,10 +18,13 @@ public class SetterExecutor implements IPropertyExecutor {
 
 	private final Type expectedType;
 
-	public SetterExecutor(Field field, IFieldManipulator manipulator) {
+	private final boolean nullable;
+
+	public SetterExecutor(Field field, IFieldManipulator manipulator, boolean nullable) {
 		this.field = field;
 		this.expectedType = field.getGenericType();
 		this.manipulator = manipulator;
+		this.nullable = nullable;
 	}
 
 	@Override
@@ -28,9 +32,7 @@ public class SetterExecutor implements IPropertyExecutor {
 		Preconditions.checkArgument(args.length == 1, "Setter must have exactly one argument");
 		final Object arg = args[0];
 
-		final Object converted = converter.toJava(arg, expectedType);
-		Preconditions.checkArgument(converted != null, "Failed to convert to type %s", expectedType);
-
+		final Object converted = TypeConverter.nullableToJava(converter, nullable, arg, expectedType);
 		manipulator.setField(target, field, converted);
 
 		return ArrayUtils.EMPTY_OBJECT_ARRAY;

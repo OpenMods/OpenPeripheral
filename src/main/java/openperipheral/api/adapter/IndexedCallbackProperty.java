@@ -29,6 +29,8 @@ public @interface IndexedCallbackProperty {
 	 */
 	public boolean readOnly() default false;
 
+	public boolean nullable() default false;
+
 	public boolean expandable() default false;
 
 	public static final class GetFromFieldType {}

@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 
 import openperipheral.api.converter.IConverter;
+import openperipheral.converter.TypeConverter;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -13,7 +14,11 @@ public class MergedSetterExecutor implements IPropertyExecutor {
 
 	private final Field field;
 
+	private final boolean singleNullable;
+
 	private final IFieldManipulator singleManipulator;
+
+	private final boolean indexedNullable;
 
 	private final IIndexedFieldManipulator indexedManipulator;
 
@@ -23,10 +28,12 @@ public class MergedSetterExecutor implements IPropertyExecutor {
 
 	private final IValueTypeProvider valueTypeProvider;
 
-	public MergedSetterExecutor(Field field, IFieldManipulator singleManipulator, IIndexedFieldManipulator indexedManipulator, Type keyType, IValueTypeProvider valueTypeProvider) {
+	public MergedSetterExecutor(Field field, boolean singleNullable, IFieldManipulator singleManipulator, boolean indexedNullable, IIndexedFieldManipulator indexedManipulator, Type keyType, IValueTypeProvider valueTypeProvider) {
 		this.field = field;
+		this.singleNullable = singleNullable;
 		this.singleManipulator = singleManipulator;
 		this.fieldValueType = field.getGenericType();
+		this.indexedNullable = indexedNullable;
 		this.indexedManipulator = indexedManipulator;
 		this.keyType = keyType;
 		this.valueTypeProvider = valueTypeProvider;
@@ -43,16 +50,14 @@ public class MergedSetterExecutor implements IPropertyExecutor {
 			Preconditions.checkArgument(convertedKey != null, "Failed to convert index to type %s", keyType);
 
 			final Type valueType = valueTypeProvider.getType(convertedKey);
-			final Object convertedValue = converter.toJava(value, valueType);
-			Preconditions.checkArgument(convertedValue != null, "Failed to convert value to type %s", valueType);
+			final Object convertedValue = TypeConverter.nullableToJava(converter, indexedNullable, value, valueType);
 
 			indexedManipulator.setField(target, field, convertedKey, convertedValue);
 
 		} else if (args.length == 1) {
 			final Object value = args[0];
 
-			final Object converted = converter.toJava(value, fieldValueType);
-			Preconditions.checkArgument(converted != null, "Failed to convert to type %s", fieldValueType);
+			final Object converted = TypeConverter.nullableToJava(converter, singleNullable, value, fieldValueType);
 
 			singleManipulator.setField(target, field, converted);
 

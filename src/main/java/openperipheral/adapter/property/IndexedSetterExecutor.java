@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 
 import openperipheral.api.converter.IConverter;
+import openperipheral.converter.TypeConverter;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -19,11 +20,14 @@ public class IndexedSetterExecutor implements IPropertyExecutor {
 
 	private final IValueTypeProvider valueTypeProvider;
 
-	public IndexedSetterExecutor(Field field, IIndexedFieldManipulator manipulator, Type keyType, IValueTypeProvider valueTypeProvider) {
+	private final boolean nullable;
+
+	public IndexedSetterExecutor(Field field, IIndexedFieldManipulator manipulator, Type keyType, IValueTypeProvider valueTypeProvider, boolean nullable) {
 		this.field = field;
 		this.manipulator = manipulator;
 		this.keyType = keyType;
 		this.valueTypeProvider = valueTypeProvider;
+		this.nullable = nullable;
 	}
 
 	@Override
@@ -36,8 +40,7 @@ public class IndexedSetterExecutor implements IPropertyExecutor {
 		Preconditions.checkArgument(convertedKey != null, "Failed to convert index to type %s", keyType);
 
 		final Type valueType = valueTypeProvider.getType(convertedKey);
-		final Object convertedValue = converter.toJava(value, valueType);
-		Preconditions.checkArgument(convertedValue != null, "Failed to convert value to type %s", valueType);
+		final Object convertedValue = TypeConverter.nullableToJava(converter, nullable, value, valueType);
 
 		manipulator.setField(target, field, convertedKey, convertedValue);
 

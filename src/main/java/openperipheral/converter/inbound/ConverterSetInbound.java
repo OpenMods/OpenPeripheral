@@ -8,6 +8,7 @@ import java.util.Set;
 
 import openperipheral.api.converter.IConverter;
 import openperipheral.api.converter.IGenericInboundTypeConverter;
+import openperipheral.converter.TypeConverter;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
@@ -42,7 +43,7 @@ public class ConverterSetInbound implements IGenericInboundTypeConverter {
 
 					Object marker = e.getValue();
 					if (isTruthish(marker)) {
-						Object converted = registry.toJava(value, valueType);
+						Object converted = TypeConverter.nullableToJava(registry, value, valueType);
 						result.add(converted);
 					}
 				}

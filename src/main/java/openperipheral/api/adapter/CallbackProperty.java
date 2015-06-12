@@ -41,4 +41,6 @@ public @interface CallbackProperty {
 	 */
 	public boolean readOnly() default false;
 
+	public boolean nullable() default false;
+
 }

@@ -4,6 +4,7 @@ import java.lang.reflect.Type;
 import java.util.Map;
 
 import openperipheral.api.converter.IConverter;
+import openperipheral.converter.TypeConverter;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
@@ -18,8 +19,6 @@ public abstract class ContainerConverterHelper<R> {
 
 	public R convertToContainer(IConverter registry, Object obj, TypeToken<?> type) {
 		final TypeToken<?> componentType = getComponentType(type);
-
-		final Type valueType = componentType.getType();
 
 		final Map<?, ?> m = (Map<?, ?>)obj;
 
@@ -39,13 +38,17 @@ public abstract class ContainerConverterHelper<R> {
 			tmp.put(index, e.getValue());
 		}
 
+		final Type valueType = componentType.getType();
+
+		final boolean isNullable = componentType.isPrimitive();
+
 		final int size = indexMax + 1;
 		R result = createNewContainer(componentType, size);
 
 		for (int i = 0; i < size; i++) {
 			Object o = tmp.get(i);
 			if (o != null) {
-				final Object converted = registry.toJava(o, valueType);
+				final Object converted = TypeConverter.nullableToJava(registry, isNullable, o, valueType);
 				setResult(result, i, converted);
 			}
 		}

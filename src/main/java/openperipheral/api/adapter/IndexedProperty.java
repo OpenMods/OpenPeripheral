@@ -29,6 +29,8 @@ public @interface IndexedProperty {
 	 */
 	public boolean readOnly() default false;
 
+	public boolean nullable() default false;
+
 	public boolean expandable() default false;
 
 	public ArgType indexType() default ArgType.AUTO;

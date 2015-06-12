@@ -65,13 +65,15 @@ public class PropertyListBuilder {
 		public final String setterDescription;
 		public final boolean isDelegating;
 		public final boolean readOnly;
+		public final boolean valueNullable;
 
-		public Parameters(String name, String getterDescription, String setterDescription, boolean isDelegating, boolean readOnly) {
+		public Parameters(String name, String getterDescription, String setterDescription, boolean isDelegating, boolean readOnly, boolean valueNullable) {
 			this.name = Strings.isNullOrEmpty(name)? field.getName() : name;
 			this.getterDescription = getterDescription;
 			this.setterDescription = setterDescription;
 			this.isDelegating = isDelegating;
 			this.readOnly = readOnly;
+			this.valueNullable = valueNullable;
 		}
 	}
 
@@ -79,8 +81,8 @@ public class PropertyListBuilder {
 
 		public final IType valueType;
 
-		public SingleParameters(String name, String getterDescription, String setterDescription, boolean isDelegating, boolean readOnly, ArgType valueType) {
-			super(name, getterDescription, setterDescription, isDelegating, readOnly);
+		public SingleParameters(String name, String getterDescription, String setterDescription, boolean isDelegating, boolean readOnly, boolean valueNullable, ArgType valueType) {
+			super(name, getterDescription, setterDescription, isDelegating, readOnly, valueNullable);
 			this.valueType = TypeHelper.interpretArgType(valueType, field.getType());
 		}
 	}
@@ -92,8 +94,8 @@ public class PropertyListBuilder {
 		public final IValueTypeProvider valueTypeProvider;
 		public final IType docValueType;
 
-		public IndexedParameters(String name, String getterDescription, String setterDescription, boolean isDelegating, boolean readOnly, boolean expandable, Class<?> keyType, ArgType keyDocType, Class<?> valueType, ArgType valueDocType) {
-			super(name, getterDescription, setterDescription, isDelegating, readOnly);
+		public IndexedParameters(String name, String getterDescription, String setterDescription, boolean isDelegating, boolean readOnly, boolean valueNullable, boolean expandable, Class<?> keyType, ArgType keyDocType, Class<?> valueType, ArgType valueDocType) {
+			super(name, getterDescription, setterDescription, isDelegating, readOnly, valueNullable);
 			this.expandable = expandable;
 
 			this.keyType = keyType == GetFromFieldType.class? getIndexType(field.getGenericType()) : keyType;
@@ -120,30 +122,30 @@ public class PropertyListBuilder {
 		this.source = source;
 	}
 
-	public void addSingle(String name, String getterDescription, String setterDescription, boolean isDelegating, boolean readOnly, ArgType type) {
-		this.singleParameters = new SingleParameters(name, getterDescription, setterDescription, isDelegating, readOnly, type);
+	public void addSingle(String name, String getterDescription, String setterDescription, boolean isDelegating, boolean readOnly, boolean valueNullable, ArgType type) {
+		this.singleParameters = new SingleParameters(name, getterDescription, setterDescription, isDelegating, readOnly, valueNullable, type);
 	}
 
 	public void addProperty(Property property) {
-		addSingle(property.name(), property.getterDesc(), property.setterDesc(), false, property.readOnly(), property.type());
+		addSingle(property.name(), property.getterDesc(), property.setterDesc(), false, property.readOnly(), property.nullable(), property.type());
 	}
 
 	public void addProperty(CallbackProperty property) {
 		Preconditions.checkArgument(IPropertyCallback.class.isAssignableFrom(field.getDeclaringClass()));
-		addSingle(property.name(), property.getterDesc(), property.setterDesc(), true, property.readOnly(), property.type());
+		addSingle(property.name(), property.getterDesc(), property.setterDesc(), true, property.readOnly(), property.nullable(), property.type());
 	}
 
-	public void addIndexed(String name, String getterDescription, String setterDescription, boolean isDelegating, boolean readOnly, boolean expandable, Class<?> keyType, ArgType keyDocType, Class<?> valueType, ArgType valueDocType) {
-		this.indexedParameters = new IndexedParameters(name, getterDescription, setterDescription, isDelegating, readOnly, expandable, keyType, keyDocType, valueType, valueDocType);
+	public void addIndexed(String name, String getterDescription, String setterDescription, boolean isDelegating, boolean readOnly, boolean valueNullable, boolean expandable, Class<?> keyType, ArgType keyDocType, Class<?> valueType, ArgType valueDocType) {
+		this.indexedParameters = new IndexedParameters(name, getterDescription, setterDescription, isDelegating, readOnly, valueNullable, expandable, keyType, keyDocType, valueType, valueDocType);
 	}
 
 	public void addProperty(IndexedProperty property) {
-		addIndexed(property.name(), property.getterDesc(), property.setterDesc(), false, property.readOnly(), property.expandable(), GetFromFieldType.class, property.indexType(), GetFromFieldType.class, ArgType.AUTO);
+		addIndexed(property.name(), property.getterDesc(), property.setterDesc(), false, property.readOnly(), property.nullable(), property.expandable(), GetFromFieldType.class, property.indexType(), GetFromFieldType.class, ArgType.AUTO);
 	}
 
 	public void addProperty(IndexedCallbackProperty property) {
 		Preconditions.checkArgument(IIndexedPropertyCallback.class.isAssignableFrom(field.getDeclaringClass()));
-		addIndexed(property.name(), property.getterDesc(), property.setterDesc(), true, property.readOnly(), property.expandable(), property.keyType(), property.keyDocType(), property.valueType(), property.valueDocType());
+		addIndexed(property.name(), property.getterDesc(), property.setterDesc(), true, property.readOnly(), property.nullable(), property.expandable(), property.keyType(), property.keyDocType(), property.valueType(), property.valueDocType());
 	}
 
 	public PropertyListBuilder configureFromFieldProperties() {
@@ -223,7 +225,7 @@ public class PropertyListBuilder {
 		descriptionBuilder.addSingleParameter(params.valueType);
 		if (!Strings.isNullOrEmpty(params.setterDescription)) descriptionBuilder.overrideDescription(params.setterDescription);
 		final IMethodDescription description = descriptionBuilder.buildSetter();
-		final IPropertyExecutor caller = new SetterExecutor(field, fieldManipulator);
+		final IPropertyExecutor caller = new SetterExecutor(field, fieldManipulator, params.valueNullable);
 		return new PropertyExecutor(description, caller);
 	}
 
@@ -245,7 +247,7 @@ public class PropertyListBuilder {
 		if (!Strings.isNullOrEmpty(params.setterDescription)) descriptionBuilder.overrideDescription(params.setterDescription);
 
 		final IMethodDescription description = descriptionBuilder.buildSetter();
-		final IPropertyExecutor caller = new IndexedSetterExecutor(field, fieldManipulator, params.keyType, params.valueTypeProvider);
+		final IPropertyExecutor caller = new IndexedSetterExecutor(field, fieldManipulator, params.keyType, params.valueTypeProvider, params.valueNullable);
 		return new PropertyExecutor(description, caller);
 	}
 
@@ -269,7 +271,7 @@ public class PropertyListBuilder {
 		if (!Strings.isNullOrEmpty(singleParameters.setterDescription)) descriptionBuilder.overrideDescription(singleParameters.setterDescription);
 		else if (!Strings.isNullOrEmpty(singleParameters.setterDescription)) descriptionBuilder.overrideDescription(singleParameters.setterDescription);
 		final IMethodDescription description = descriptionBuilder.buildSetter();
-		final IPropertyExecutor caller = new MergedSetterExecutor(field, singleFieldManipulator, indexedFieldManipulator, indexedParameters.keyType, indexedParameters.valueTypeProvider);
+		final IPropertyExecutor caller = new MergedSetterExecutor(field, singleParameters.valueNullable, singleFieldManipulator, indexedParameters.valueNullable, indexedFieldManipulator, indexedParameters.keyType, indexedParameters.valueTypeProvider);
 		return new PropertyExecutor(description, caller);
 	}
 
@@ -277,6 +279,7 @@ public class PropertyListBuilder {
 		final int modifiers = field.getModifiers();
 		Preconditions.checkArgument(!Modifier.isStatic(modifiers), "Field marked with @Property can't be static");
 		Preconditions.checkArgument(params.readOnly || !Modifier.isFinal(modifiers), "Only fields marked with @Property(readOnly = true) can be marked final");
+		Preconditions.checkArgument(!(params.valueNullable && field.getType().isPrimitive()), "Fields with primitive types can't be nullable");
 	}
 
 	private void precheckIndexedField(IndexedParameters params) {

@@ -92,6 +92,7 @@ public class ItemStackMetadataBuilder implements IItemStackPartialMetaBuilder {
 		map.put("raw_name", getRawNameForStack(itemstack));
 		map.put("qty", itemstack.stackSize);
 		map.put("dmg", itemstack.getItemDamage());
+
 		map.put("max_dmg", itemstack.getMaxDamage());
 		map.put("max_size", itemstack.getMaxStackSize());
 
