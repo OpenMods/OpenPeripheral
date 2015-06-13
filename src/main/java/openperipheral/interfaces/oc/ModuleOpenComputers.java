@@ -67,7 +67,7 @@ public class ModuleOpenComputers {
 		IConverter converter = new TypeConversionRegistryOC();
 		TypeConvertersProvider.INSTANCE.registerConverter(Constants.ARCH_OPEN_COMPUTERS, converter);
 
-		TypeQualifier.registerType(Value.class, TypeHelper.ARG_OBJECT);
+		TypeQualifier.instance.registerType(Value.class, TypeHelper.ARG_OBJECT);
 	}
 
 	public static void registerProvider() {

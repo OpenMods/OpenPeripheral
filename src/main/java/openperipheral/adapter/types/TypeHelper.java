@@ -10,7 +10,6 @@ import openperipheral.api.adapter.method.ReturnType;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import com.google.common.reflect.TypeToken;
 
 public class TypeHelper {
 
@@ -116,13 +115,8 @@ public class TypeHelper {
 		return leftDescription.equals(rightDescription);
 	}
 
-	public static IType interpretArgType(ArgType givenType, Class<?> targetType) {
-		return givenType == ArgType.AUTO? TypeQualifier.qualifyArgType(targetType) : TypeHelper.single(givenType);
-	}
-
-	public static IType interpretArgType(ArgType givenType, Type type) {
-		final Class<?> rawType = TypeToken.of(type).getRawType();
-		return interpretArgType(givenType, rawType);
+	public static IType interpretArgType(ArgType givenType, Type targetType) {
+		return givenType == ArgType.AUTO? TypeQualifier.instance.qualifyType(targetType) : TypeHelper.single(givenType);
 	}
 
 }

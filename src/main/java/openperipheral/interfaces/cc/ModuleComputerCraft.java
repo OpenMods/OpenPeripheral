@@ -63,7 +63,7 @@ public class ModuleComputerCraft {
 		// CC converter is default one (legacy behaviour)
 		TypeConvertersProvider.INSTANCE.registerConverter(Constants.ARCH_COMPUTER_CRAFT, converter);
 
-		TypeQualifier.registerType(ILuaObject.class, TypeHelper.ARG_OBJECT);
+		TypeQualifier.instance.registerType(ILuaObject.class, TypeHelper.ARG_OBJECT);
 	}
 
 	public static void registerProvider() {

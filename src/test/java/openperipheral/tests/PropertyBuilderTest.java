@@ -430,7 +430,7 @@ public class PropertyBuilderTest {
 
 		{
 			IMethodExecutor executor = findAndVerifyExecutor("getHello", output);
-			checkDescription(executor, "table|number", ArgType.STRING);
+			checkDescription(executor, "{string->number}|number", ArgType.STRING);
 			checkParamOptionality(executor, 0, true);
 			verifySingleGetterExecution(executor, mapField);
 			verifyIndexedGetterExecution(executor, mapField, String.class);
@@ -447,7 +447,7 @@ public class PropertyBuilderTest {
 
 		{
 			IMethodExecutor executor = findAndVerifyExecutor("getHello", output);
-			checkDescription(executor, "table|number", ArgType.STRING);
+			checkDescription(executor, "{string->number}|number", ArgType.STRING);
 			checkParamOptionality(executor, 0, true);
 			verifySingleGetterExecution(executor, mapField);
 			verifyIndexedGetterExecution(executor, mapField, String.class);
@@ -455,7 +455,7 @@ public class PropertyBuilderTest {
 
 		{
 			IMethodExecutor executor = findAndVerifyExecutor("setHello", output);
-			checkDescription(executor, "()", ArgType.TABLE);
+			checkDescriptionRaw(executor, "()", "{string->number}");
 			verifySingleSetterExecution(executor, mapField);
 		}
 	}
@@ -470,7 +470,7 @@ public class PropertyBuilderTest {
 
 		{
 			IMethodExecutor executor = findAndVerifyExecutor("getHello", output);
-			checkDescription(executor, "table|number", ArgType.STRING);
+			checkDescription(executor, "{string->number}|number", ArgType.STRING);
 			checkParamOptionality(executor, 0, true);
 			verifySingleGetterExecution(executor, mapField);
 			verifyIndexedGetterExecution(executor, mapField, String.class);
@@ -494,7 +494,7 @@ public class PropertyBuilderTest {
 
 		{
 			IMethodExecutor executor = findAndVerifyExecutor("getHello", output);
-			checkDescription(executor, "table|number", ArgType.STRING);
+			checkDescription(executor, "{string->number}|number", ArgType.STRING);
 			checkParamOptionality(executor, 0, true);
 			verifySingleGetterExecution(executor, mapField);
 			verifyIndexedGetterExecution(executor, mapField, String.class);
@@ -502,7 +502,7 @@ public class PropertyBuilderTest {
 
 		{
 			IMethodExecutor executor = findAndVerifyExecutor("setHello", output);
-			checkDescriptionRaw(executor, "()", "table|number", "string");
+			checkDescriptionRaw(executor, "()", "{string->number}|number", "string");
 			checkParamOptionality(executor, 1, true);
 			verifySingleSetterExecution(executor, mapField);
 			verifyIndexedSetterExecution(executor, mapField, String.class, Integer.class);
@@ -544,7 +544,7 @@ public class PropertyBuilderTest {
 
 		{
 			IMethodExecutor executor = findAndVerifyExecutor("getHello", output);
-			checkDescription(executor, "table");
+			checkDescription(executor, "[string]");
 			verifySingleGetterExecution(executor, listField);
 		}
 
@@ -566,13 +566,13 @@ public class PropertyBuilderTest {
 
 		{
 			IMethodExecutor executor = findAndVerifyExecutor("getHello", output);
-			checkDescription(executor, "table");
+			checkDescription(executor, "[string]");
 			verifySingleGetterExecution(executor, listField);
 		}
 
 		{
 			IMethodExecutor executor = findAndVerifyExecutor("setHello", output);
-			checkDescription(executor, "()", ArgType.TABLE);
+			checkDescriptionRaw(executor, "()", "[string]");
 			verifySingleSetterExecution(executor, listField);
 		}
 
@@ -594,7 +594,7 @@ public class PropertyBuilderTest {
 
 		{
 			IMethodExecutor executor = findAndVerifyExecutor("getHello", output);
-			checkDescription(executor, "table");
+			checkDescription(executor, "[boolean]");
 			verifySingleGetterExecution(executor, arrayField);
 		}
 
@@ -623,13 +623,13 @@ public class PropertyBuilderTest {
 
 		{
 			IMethodExecutor executor = findAndVerifyExecutor("getHello", output);
-			checkDescription(executor, "table");
+			checkDescription(executor, "[boolean]");
 			verifySingleGetterExecution(executor, arrayField);
 		}
 
 		{
 			IMethodExecutor executor = findAndVerifyExecutor("setHello", output);
-			checkDescription(executor, "()", ArgType.TABLE);
+			checkDescriptionRaw(executor, "()", "[boolean]");
 			verifySingleSetterExecution(executor, arrayField);
 		}
 

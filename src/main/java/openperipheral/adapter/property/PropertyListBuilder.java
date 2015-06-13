@@ -4,7 +4,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.List;
-import java.util.Map;
 
 import openmods.reflection.TypeUtils;
 import openperipheral.adapter.IMethodDescription;
@@ -33,13 +32,12 @@ public class PropertyListBuilder {
 
 	private static Type getIndexType(Type genericType) {
 		final TypeToken<?> type = TypeToken.of(genericType);
-		final Class<?> rawType = type.getRawType();
 
-		if (Map.class.isAssignableFrom(rawType)) {
+		if (TypeUtils.MAP_TOKEN.isAssignableFrom(type)) {
 			return type.resolveType(TypeUtils.MAP_KEY_PARAM).getType();
-		} else if (List.class.isAssignableFrom(rawType)) {
+		} else if (TypeUtils.LIST_TOKEN.isAssignableFrom(type)) {
 			return Index.class;
-		} else if (rawType.isArray()) { return Index.class; }
+		} else if (type.isArray()) { return Index.class; }
 
 		// TODO structs
 
@@ -48,14 +46,13 @@ public class PropertyListBuilder {
 
 	private static Type getBasicValueType(Type genericType) {
 		final TypeToken<?> type = TypeToken.of(genericType);
-		final Class<?> rawType = type.getRawType();
 
-		if (Map.class.isAssignableFrom(rawType)) {
+		if (TypeUtils.MAP_TOKEN.isAssignableFrom(type)) {
 			return type.resolveType(TypeUtils.MAP_VALUE_PARAM).getType();
-		} else if (List.class.isAssignableFrom(rawType)) {
+		} else if (TypeUtils.LIST_TOKEN.isAssignableFrom(type)) {
 			return type.resolveType(TypeUtils.LIST_VALUE_PARAM).getType();
-		} else if (rawType.isArray()) {
-			return rawType.getComponentType();
+		} else if (type.isArray()) {
+			return type.getComponentType().getType();
 		} else return null;
 	}
 
@@ -83,7 +80,7 @@ public class PropertyListBuilder {
 
 		public SingleParameters(String name, String getterDescription, String setterDescription, boolean isDelegating, boolean readOnly, boolean valueNullable, ArgType valueType) {
 			super(name, getterDescription, setterDescription, isDelegating, readOnly, valueNullable);
-			this.valueType = TypeHelper.interpretArgType(valueType, field.getType());
+			this.valueType = TypeHelper.interpretArgType(valueType, field.getGenericType());
 		}
 	}
 
@@ -99,8 +96,7 @@ public class PropertyListBuilder {
 			this.expandable = expandable;
 
 			this.keyType = keyType == GetFromFieldType.class? getIndexType(field.getGenericType()) : keyType;
-			Class<?> rawIndexType = TypeToken.of(this.keyType).getRawType();
-			this.docKeyType = TypeHelper.interpretArgType(keyDocType, rawIndexType);
+			this.docKeyType = TypeHelper.interpretArgType(keyDocType, this.keyType);
 
 			Type basicReturnType = valueType == GetFromFieldType.class? getBasicValueType(field.getGenericType()) : valueType;
 
