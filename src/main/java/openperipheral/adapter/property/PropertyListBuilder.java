@@ -177,14 +177,14 @@ public class PropertyListBuilder {
 
 	private void addSinglePropertyMethods(List<IMethodExecutor> output, SingleParameters params) {
 		precheckSingleField(params);
-		final IFieldManipulator fieldManipulator = FieldManipulatorProviders.getProvider(params.isDelegating);
+		final IFieldManipulator fieldManipulator = SingleManipulatorProvider.getProvider(params.isDelegating);
 		output.add(createSinglePropertyGetter(params, fieldManipulator));
 		if (!params.readOnly) output.add(createSinglePropertySetter(params, fieldManipulator));
 	}
 
 	private void addIndexedPropertyMethods(List<IMethodExecutor> output, IndexedParameters params) {
 		precheckIndexedField(params);
-		final IIndexedFieldManipulator fieldManipulator = FieldManipulatorProviders.getIndexedProvider(field.getType(), params.isDelegating, params.expandable);
+		final IIndexedFieldManipulator fieldManipulator = IndexedManipulatorProvider.getProvider(field.getType(), params.isDelegating, params.expandable);
 		output.add(createIndexedPropertyGetter(params, fieldManipulator));
 		if (!params.readOnly) output.add(createIndexedPropertySetter(params, fieldManipulator));
 	}
@@ -193,8 +193,8 @@ public class PropertyListBuilder {
 		precheckSingleField(singleParameters);
 		precheckIndexedField(indexedParameters);
 
-		final IFieldManipulator singleFieldManipulator = FieldManipulatorProviders.getProvider(singleParameters.isDelegating);
-		final IIndexedFieldManipulator indexedFieldManipulator = FieldManipulatorProviders.getIndexedProvider(field.getType(), indexedParameters.isDelegating, indexedParameters.expandable);
+		final IFieldManipulator singleFieldManipulator = SingleManipulatorProvider.getProvider(singleParameters.isDelegating);
+		final IIndexedFieldManipulator indexedFieldManipulator = IndexedManipulatorProvider.getProvider(field.getType(), indexedParameters.isDelegating, indexedParameters.expandable);
 
 		output.add(createMergedPropertyGetter(singleParameters, singleFieldManipulator, indexedParameters, indexedFieldManipulator));
 

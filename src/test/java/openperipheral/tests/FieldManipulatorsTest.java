@@ -5,8 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import openperipheral.adapter.property.FieldManipulatorProviders;
 import openperipheral.adapter.property.IIndexedFieldManipulator;
+import openperipheral.adapter.property.IndexedManipulatorProvider;
 import openperipheral.api.helpers.Index;
 
 import org.junit.Assert;
@@ -84,99 +84,99 @@ public class FieldManipulatorsTest {
 	@Test
 	public void testArrayManipulatorGetPrimitive() {
 		int[] target = new int[] { 5, 6, 8, 9 };
-		Assert.assertEquals(5, testGetIndexedField(FieldManipulatorProviders.ARRAY_MANIPULATOR, target, 1));
-		Assert.assertEquals(8, testGetIndexedField(FieldManipulatorProviders.ARRAY_MANIPULATOR, target, 3));
-		Assert.assertEquals(9, testGetIndexedField(FieldManipulatorProviders.ARRAY_MANIPULATOR, target, 4));
+		Assert.assertEquals(5, testGetIndexedField(IndexedManipulatorProvider.ARRAY_MANIPULATOR, target, 1));
+		Assert.assertEquals(8, testGetIndexedField(IndexedManipulatorProvider.ARRAY_MANIPULATOR, target, 3));
+		Assert.assertEquals(9, testGetIndexedField(IndexedManipulatorProvider.ARRAY_MANIPULATOR, target, 4));
 
-		Assert.assertEquals(null, testGetIndexedField(FieldManipulatorProviders.ARRAY_MANIPULATOR, target, -1));
-		Assert.assertEquals(null, testGetIndexedField(FieldManipulatorProviders.ARRAY_MANIPULATOR, target, 5));
+		Assert.assertEquals(null, testGetIndexedField(IndexedManipulatorProvider.ARRAY_MANIPULATOR, target, -1));
+		Assert.assertEquals(null, testGetIndexedField(IndexedManipulatorProvider.ARRAY_MANIPULATOR, target, 5));
 	}
 
 	@Test
 	public void testArrayManipulatorGetObject() {
 		String[] target = new String[] { "a", "bb", null, "ccc" };
-		Assert.assertEquals("a", testGetIndexedField(FieldManipulatorProviders.ARRAY_MANIPULATOR, target, 1));
-		Assert.assertEquals(null, testGetIndexedField(FieldManipulatorProviders.ARRAY_MANIPULATOR, target, 3));
-		Assert.assertEquals("ccc", testGetIndexedField(FieldManipulatorProviders.ARRAY_MANIPULATOR, target, 4));
+		Assert.assertEquals("a", testGetIndexedField(IndexedManipulatorProvider.ARRAY_MANIPULATOR, target, 1));
+		Assert.assertEquals(null, testGetIndexedField(IndexedManipulatorProvider.ARRAY_MANIPULATOR, target, 3));
+		Assert.assertEquals("ccc", testGetIndexedField(IndexedManipulatorProvider.ARRAY_MANIPULATOR, target, 4));
 
-		Assert.assertEquals(null, testGetIndexedField(FieldManipulatorProviders.ARRAY_MANIPULATOR, target, -1));
-		Assert.assertEquals(null, testGetIndexedField(FieldManipulatorProviders.ARRAY_MANIPULATOR, target, 5));
+		Assert.assertEquals(null, testGetIndexedField(IndexedManipulatorProvider.ARRAY_MANIPULATOR, target, -1));
+		Assert.assertEquals(null, testGetIndexedField(IndexedManipulatorProvider.ARRAY_MANIPULATOR, target, 5));
 	}
 
 	@Test
 	public void testArrayManipulatorSetPrimitive() {
 		int[] target = new int[] { 5, 6, 8, 9 };
-		target = testIntArray(FieldManipulatorProviders.ARRAY_MANIPULATOR, 1, 4, target, 4, 6, 8, 9);
-		target = testIntArray(FieldManipulatorProviders.ARRAY_MANIPULATOR, 4, 12, target, 4, 6, 8, 12);
+		target = testIntArray(IndexedManipulatorProvider.ARRAY_MANIPULATOR, 1, 4, target, 4, 6, 8, 9);
+		target = testIntArray(IndexedManipulatorProvider.ARRAY_MANIPULATOR, 4, 12, target, 4, 6, 8, 12);
 
-		testSetFieldFail(FieldManipulatorProviders.ARRAY_MANIPULATOR, target, -1, 2);
-		testSetFieldFail(FieldManipulatorProviders.ARRAY_MANIPULATOR, target, 5, 2);
+		testSetFieldFail(IndexedManipulatorProvider.ARRAY_MANIPULATOR, target, -1, 2);
+		testSetFieldFail(IndexedManipulatorProvider.ARRAY_MANIPULATOR, target, 5, 2);
 	}
 
 	@Test
 	public void testArrayManipulatorSetObject() {
 		String[] target = new String[] { "a", "bb", null, "ccc" };
-		target = testObjectArray(FieldManipulatorProviders.ARRAY_MANIPULATOR, 1, ":D", target, ":D", "bb", null, "ccc");
-		target = testObjectArray(FieldManipulatorProviders.ARRAY_MANIPULATOR, 3, "XD", target, ":D", "bb", "XD", "ccc");
+		target = testObjectArray(IndexedManipulatorProvider.ARRAY_MANIPULATOR, 1, ":D", target, ":D", "bb", null, "ccc");
+		target = testObjectArray(IndexedManipulatorProvider.ARRAY_MANIPULATOR, 3, "XD", target, ":D", "bb", "XD", "ccc");
 
-		testSetFieldFail(FieldManipulatorProviders.ARRAY_MANIPULATOR, target, -1, "nope");
-		testSetFieldFail(FieldManipulatorProviders.ARRAY_MANIPULATOR, target, 5, "nope");
+		testSetFieldFail(IndexedManipulatorProvider.ARRAY_MANIPULATOR, target, -1, "nope");
+		testSetFieldFail(IndexedManipulatorProvider.ARRAY_MANIPULATOR, target, 5, "nope");
 	}
 
 	@Test
 	public void testExpandingArrayManipulatorGetPrimitive() {
 		int[] target = new int[] { 5, 6, 8, 9 };
-		Assert.assertEquals(5, testGetIndexedField(FieldManipulatorProviders.ARRAY_EXPANDING_MANIPULATOR, target, 1));
-		Assert.assertEquals(8, testGetIndexedField(FieldManipulatorProviders.ARRAY_EXPANDING_MANIPULATOR, target, 3));
-		Assert.assertEquals(9, testGetIndexedField(FieldManipulatorProviders.ARRAY_EXPANDING_MANIPULATOR, target, 4));
+		Assert.assertEquals(5, testGetIndexedField(IndexedManipulatorProvider.ARRAY_EXPANDING_MANIPULATOR, target, 1));
+		Assert.assertEquals(8, testGetIndexedField(IndexedManipulatorProvider.ARRAY_EXPANDING_MANIPULATOR, target, 3));
+		Assert.assertEquals(9, testGetIndexedField(IndexedManipulatorProvider.ARRAY_EXPANDING_MANIPULATOR, target, 4));
 
-		Assert.assertEquals(null, testGetIndexedField(FieldManipulatorProviders.ARRAY_EXPANDING_MANIPULATOR, target, -1));
-		Assert.assertEquals(null, testGetIndexedField(FieldManipulatorProviders.ARRAY_EXPANDING_MANIPULATOR, target, 5));
+		Assert.assertEquals(null, testGetIndexedField(IndexedManipulatorProvider.ARRAY_EXPANDING_MANIPULATOR, target, -1));
+		Assert.assertEquals(null, testGetIndexedField(IndexedManipulatorProvider.ARRAY_EXPANDING_MANIPULATOR, target, 5));
 	}
 
 	@Test
 	public void testExpandingArrayManipulatorGetObject() {
 		String[] target = new String[] { "a", "bb", null, "ccc" };
-		Assert.assertEquals("a", testGetIndexedField(FieldManipulatorProviders.ARRAY_EXPANDING_MANIPULATOR, target, 1));
-		Assert.assertEquals(null, testGetIndexedField(FieldManipulatorProviders.ARRAY_EXPANDING_MANIPULATOR, target, 3));
-		Assert.assertEquals("ccc", testGetIndexedField(FieldManipulatorProviders.ARRAY_EXPANDING_MANIPULATOR, target, 4));
+		Assert.assertEquals("a", testGetIndexedField(IndexedManipulatorProvider.ARRAY_EXPANDING_MANIPULATOR, target, 1));
+		Assert.assertEquals(null, testGetIndexedField(IndexedManipulatorProvider.ARRAY_EXPANDING_MANIPULATOR, target, 3));
+		Assert.assertEquals("ccc", testGetIndexedField(IndexedManipulatorProvider.ARRAY_EXPANDING_MANIPULATOR, target, 4));
 
-		Assert.assertEquals(null, testGetIndexedField(FieldManipulatorProviders.ARRAY_EXPANDING_MANIPULATOR, target, -1));
-		Assert.assertEquals(null, testGetIndexedField(FieldManipulatorProviders.ARRAY_EXPANDING_MANIPULATOR, target, 5));
+		Assert.assertEquals(null, testGetIndexedField(IndexedManipulatorProvider.ARRAY_EXPANDING_MANIPULATOR, target, -1));
+		Assert.assertEquals(null, testGetIndexedField(IndexedManipulatorProvider.ARRAY_EXPANDING_MANIPULATOR, target, 5));
 	}
 
 	@Test
 	public void testExpandingArrayManipulatorSetPrimitive() {
 		int[] target = new int[] { 5, 6, 8, 9 };
-		target = testIntArray(FieldManipulatorProviders.ARRAY_EXPANDING_MANIPULATOR, 1, 4, target, 4, 6, 8, 9);
-		target = testIntArray(FieldManipulatorProviders.ARRAY_EXPANDING_MANIPULATOR, 4, 12, target, 4, 6, 8, 12);
-		target = testIntArray(FieldManipulatorProviders.ARRAY_EXPANDING_MANIPULATOR, 5, 32, target, 4, 6, 8, 12, 32);
-		target = testIntArray(FieldManipulatorProviders.ARRAY_EXPANDING_MANIPULATOR, 7, 44, target, 4, 6, 8, 12, 32, 0, 44);
+		target = testIntArray(IndexedManipulatorProvider.ARRAY_EXPANDING_MANIPULATOR, 1, 4, target, 4, 6, 8, 9);
+		target = testIntArray(IndexedManipulatorProvider.ARRAY_EXPANDING_MANIPULATOR, 4, 12, target, 4, 6, 8, 12);
+		target = testIntArray(IndexedManipulatorProvider.ARRAY_EXPANDING_MANIPULATOR, 5, 32, target, 4, 6, 8, 12, 32);
+		target = testIntArray(IndexedManipulatorProvider.ARRAY_EXPANDING_MANIPULATOR, 7, 44, target, 4, 6, 8, 12, 32, 0, 44);
 
-		testSetFieldFail(FieldManipulatorProviders.ARRAY_EXPANDING_MANIPULATOR, target, -1, 5);
+		testSetFieldFail(IndexedManipulatorProvider.ARRAY_EXPANDING_MANIPULATOR, target, -1, 5);
 	}
 
 	@Test
 	public void testExpandingArrayManipulatorSetObject() {
 		String[] target = new String[] { "a", "bb", null, "ccc" };
-		target = testObjectArray(FieldManipulatorProviders.ARRAY_EXPANDING_MANIPULATOR, 1, ":D", target, ":D", "bb", null, "ccc");
-		target = testObjectArray(FieldManipulatorProviders.ARRAY_EXPANDING_MANIPULATOR, 3, "XD", target, ":D", "bb", "XD", "ccc");
-		target = testObjectArray(FieldManipulatorProviders.ARRAY_EXPANDING_MANIPULATOR, 5, "D:", target, ":D", "bb", "XD", "ccc", "D:");
-		target = testObjectArray(FieldManipulatorProviders.ARRAY_EXPANDING_MANIPULATOR, 7, ":|", target, ":D", "bb", "XD", "ccc", "D:", null, ":|");
+		target = testObjectArray(IndexedManipulatorProvider.ARRAY_EXPANDING_MANIPULATOR, 1, ":D", target, ":D", "bb", null, "ccc");
+		target = testObjectArray(IndexedManipulatorProvider.ARRAY_EXPANDING_MANIPULATOR, 3, "XD", target, ":D", "bb", "XD", "ccc");
+		target = testObjectArray(IndexedManipulatorProvider.ARRAY_EXPANDING_MANIPULATOR, 5, "D:", target, ":D", "bb", "XD", "ccc", "D:");
+		target = testObjectArray(IndexedManipulatorProvider.ARRAY_EXPANDING_MANIPULATOR, 7, ":|", target, ":D", "bb", "XD", "ccc", "D:", null, ":|");
 
-		testSetFieldFail(FieldManipulatorProviders.ARRAY_EXPANDING_MANIPULATOR, target, -1, "nope");
+		testSetFieldFail(IndexedManipulatorProvider.ARRAY_EXPANDING_MANIPULATOR, target, -1, "nope");
 	}
 
 	@Test
 	public void testListManipulatorGet() {
 		List<Integer> target = Collections.unmodifiableList(Lists.newArrayList(1, 3, 5, null, 9));
-		Assert.assertEquals(null, testGetIndexedField(FieldManipulatorProviders.LIST_MANIPULATOR, target, 0));
-		Assert.assertEquals(1, testGetIndexedField(FieldManipulatorProviders.LIST_MANIPULATOR, target, 1));
-		Assert.assertEquals(3, testGetIndexedField(FieldManipulatorProviders.LIST_MANIPULATOR, target, 2));
-		Assert.assertEquals(5, testGetIndexedField(FieldManipulatorProviders.LIST_MANIPULATOR, target, 3));
-		Assert.assertEquals(null, testGetIndexedField(FieldManipulatorProviders.EXPANDING_LIST_MANIPULATOR, target, 4));
-		Assert.assertEquals(9, testGetIndexedField(FieldManipulatorProviders.LIST_MANIPULATOR, target, 5));
-		Assert.assertEquals(null, testGetIndexedField(FieldManipulatorProviders.LIST_MANIPULATOR, target, 6));
+		Assert.assertEquals(null, testGetIndexedField(IndexedManipulatorProvider.LIST_MANIPULATOR, target, 0));
+		Assert.assertEquals(1, testGetIndexedField(IndexedManipulatorProvider.LIST_MANIPULATOR, target, 1));
+		Assert.assertEquals(3, testGetIndexedField(IndexedManipulatorProvider.LIST_MANIPULATOR, target, 2));
+		Assert.assertEquals(5, testGetIndexedField(IndexedManipulatorProvider.LIST_MANIPULATOR, target, 3));
+		Assert.assertEquals(null, testGetIndexedField(IndexedManipulatorProvider.LIST_EXPANDING_MANIPULATOR, target, 4));
+		Assert.assertEquals(9, testGetIndexedField(IndexedManipulatorProvider.LIST_MANIPULATOR, target, 5));
+		Assert.assertEquals(null, testGetIndexedField(IndexedManipulatorProvider.LIST_MANIPULATOR, target, 6));
 	}
 
 	private <T> List<T> testListSet(IIndexedFieldManipulator manipulator, List<T> target, int index, T value, T... expected) {
@@ -189,35 +189,35 @@ public class FieldManipulatorsTest {
 	@Test
 	public void testListManipulatorSet() {
 		List<Integer> target = Lists.newArrayList(1, 3, 5, 6, 9);
-		target = testListSet(FieldManipulatorProviders.LIST_MANIPULATOR, target, 1, 3, 3, 3, 5, 6, 9);
-		target = testListSet(FieldManipulatorProviders.LIST_MANIPULATOR, target, 5, 0, 3, 3, 5, 6, 0);
-		target = testListSet(FieldManipulatorProviders.LIST_MANIPULATOR, target, 4, null, 3, 3, 5, null, 0);
+		target = testListSet(IndexedManipulatorProvider.LIST_MANIPULATOR, target, 1, 3, 3, 3, 5, 6, 9);
+		target = testListSet(IndexedManipulatorProvider.LIST_MANIPULATOR, target, 5, 0, 3, 3, 5, 6, 0);
+		target = testListSet(IndexedManipulatorProvider.LIST_MANIPULATOR, target, 4, null, 3, 3, 5, null, 0);
 
-		testSetFieldFail(FieldManipulatorProviders.LIST_MANIPULATOR, target, -1, 3);
-		testSetFieldFail(FieldManipulatorProviders.LIST_MANIPULATOR, target, 6, 4);
+		testSetFieldFail(IndexedManipulatorProvider.LIST_MANIPULATOR, target, -1, 3);
+		testSetFieldFail(IndexedManipulatorProvider.LIST_MANIPULATOR, target, 6, 4);
 	}
 
 	@Test
 	public void testExpandingListManipulatorGet() {
 		List<Integer> target = Collections.unmodifiableList(Lists.newArrayList(1, 3, 5, null, 9));
-		Assert.assertEquals(null, testGetIndexedField(FieldManipulatorProviders.EXPANDING_LIST_MANIPULATOR, target, 0));
-		Assert.assertEquals(1, testGetIndexedField(FieldManipulatorProviders.EXPANDING_LIST_MANIPULATOR, target, 1));
-		Assert.assertEquals(3, testGetIndexedField(FieldManipulatorProviders.EXPANDING_LIST_MANIPULATOR, target, 2));
-		Assert.assertEquals(5, testGetIndexedField(FieldManipulatorProviders.EXPANDING_LIST_MANIPULATOR, target, 3));
-		Assert.assertEquals(null, testGetIndexedField(FieldManipulatorProviders.EXPANDING_LIST_MANIPULATOR, target, 4));
-		Assert.assertEquals(9, testGetIndexedField(FieldManipulatorProviders.EXPANDING_LIST_MANIPULATOR, target, 5));
-		Assert.assertEquals(null, testGetIndexedField(FieldManipulatorProviders.EXPANDING_LIST_MANIPULATOR, target, 6));
+		Assert.assertEquals(null, testGetIndexedField(IndexedManipulatorProvider.LIST_EXPANDING_MANIPULATOR, target, 0));
+		Assert.assertEquals(1, testGetIndexedField(IndexedManipulatorProvider.LIST_EXPANDING_MANIPULATOR, target, 1));
+		Assert.assertEquals(3, testGetIndexedField(IndexedManipulatorProvider.LIST_EXPANDING_MANIPULATOR, target, 2));
+		Assert.assertEquals(5, testGetIndexedField(IndexedManipulatorProvider.LIST_EXPANDING_MANIPULATOR, target, 3));
+		Assert.assertEquals(null, testGetIndexedField(IndexedManipulatorProvider.LIST_EXPANDING_MANIPULATOR, target, 4));
+		Assert.assertEquals(9, testGetIndexedField(IndexedManipulatorProvider.LIST_EXPANDING_MANIPULATOR, target, 5));
+		Assert.assertEquals(null, testGetIndexedField(IndexedManipulatorProvider.LIST_EXPANDING_MANIPULATOR, target, 6));
 	}
 
 	@Test
 	public void testExpandingListManipulatorSet() {
 		List<Integer> target = Lists.newArrayList(1, 3, 5, 6, 9);
-		target = testListSet(FieldManipulatorProviders.EXPANDING_LIST_MANIPULATOR, target, 1, 3, 3, 3, 5, 6, 9);
-		target = testListSet(FieldManipulatorProviders.EXPANDING_LIST_MANIPULATOR, target, 5, 0, 3, 3, 5, 6, 0);
-		target = testListSet(FieldManipulatorProviders.EXPANDING_LIST_MANIPULATOR, target, 6, 42, 3, 3, 5, 6, 0, 42);
-		target = testListSet(FieldManipulatorProviders.EXPANDING_LIST_MANIPULATOR, target, 8, 5, 3, 3, 5, 6, 0, 42, null, 5);
+		target = testListSet(IndexedManipulatorProvider.LIST_EXPANDING_MANIPULATOR, target, 1, 3, 3, 3, 5, 6, 9);
+		target = testListSet(IndexedManipulatorProvider.LIST_EXPANDING_MANIPULATOR, target, 5, 0, 3, 3, 5, 6, 0);
+		target = testListSet(IndexedManipulatorProvider.LIST_EXPANDING_MANIPULATOR, target, 6, 42, 3, 3, 5, 6, 0, 42);
+		target = testListSet(IndexedManipulatorProvider.LIST_EXPANDING_MANIPULATOR, target, 8, 5, 3, 3, 5, 6, 0, 42, null, 5);
 
-		testSetFieldFail(FieldManipulatorProviders.EXPANDING_LIST_MANIPULATOR, target, -1, 3);
+		testSetFieldFail(IndexedManipulatorProvider.LIST_EXPANDING_MANIPULATOR, target, -1, 3);
 	}
 
 	@Test
@@ -229,12 +229,12 @@ public class FieldManipulatorsTest {
 		target.put("f", -1);
 		target = Collections.unmodifiableMap(target);
 
-		Assert.assertEquals(null, testGetField(FieldManipulatorProviders.MAP_MANIPULATOR, target, 42));
-		Assert.assertEquals(null, testGetField(FieldManipulatorProviders.MAP_MANIPULATOR, target, "z"));
-		Assert.assertEquals(null, testGetField(FieldManipulatorProviders.MAP_MANIPULATOR, target, "c"));
-		Assert.assertEquals(2, testGetField(FieldManipulatorProviders.MAP_MANIPULATOR, target, "a"));
-		Assert.assertEquals(6, testGetField(FieldManipulatorProviders.MAP_MANIPULATOR, target, "b"));
-		Assert.assertEquals(-1, testGetField(FieldManipulatorProviders.MAP_MANIPULATOR, target, "f"));
+		Assert.assertEquals(null, testGetField(IndexedManipulatorProvider.MAP_MANIPULATOR, target, 42));
+		Assert.assertEquals(null, testGetField(IndexedManipulatorProvider.MAP_MANIPULATOR, target, "z"));
+		Assert.assertEquals(null, testGetField(IndexedManipulatorProvider.MAP_MANIPULATOR, target, "c"));
+		Assert.assertEquals(2, testGetField(IndexedManipulatorProvider.MAP_MANIPULATOR, target, "a"));
+		Assert.assertEquals(6, testGetField(IndexedManipulatorProvider.MAP_MANIPULATOR, target, "b"));
+		Assert.assertEquals(-1, testGetField(IndexedManipulatorProvider.MAP_MANIPULATOR, target, "f"));
 	}
 
 	@Test
@@ -246,12 +246,12 @@ public class FieldManipulatorsTest {
 		target.put(8, "f");
 		target = Collections.unmodifiableMap(target);
 
-		Assert.assertEquals(null, testGetField(FieldManipulatorProviders.MAP_MANIPULATOR, target, 42));
-		Assert.assertEquals(null, testGetField(FieldManipulatorProviders.MAP_MANIPULATOR, target, "z"));
-		Assert.assertEquals(null, testGetField(FieldManipulatorProviders.MAP_MANIPULATOR, target, 3));
-		Assert.assertEquals("a", testGetField(FieldManipulatorProviders.MAP_MANIPULATOR, target, 2));
-		Assert.assertEquals("b", testGetField(FieldManipulatorProviders.MAP_MANIPULATOR, target, 6));
-		Assert.assertEquals("f", testGetField(FieldManipulatorProviders.MAP_MANIPULATOR, target, 8));
+		Assert.assertEquals(null, testGetField(IndexedManipulatorProvider.MAP_MANIPULATOR, target, 42));
+		Assert.assertEquals(null, testGetField(IndexedManipulatorProvider.MAP_MANIPULATOR, target, "z"));
+		Assert.assertEquals(null, testGetField(IndexedManipulatorProvider.MAP_MANIPULATOR, target, 3));
+		Assert.assertEquals("a", testGetField(IndexedManipulatorProvider.MAP_MANIPULATOR, target, 2));
+		Assert.assertEquals("b", testGetField(IndexedManipulatorProvider.MAP_MANIPULATOR, target, 6));
+		Assert.assertEquals("f", testGetField(IndexedManipulatorProvider.MAP_MANIPULATOR, target, 8));
 	}
 
 	private <K, V> Map<K, V> testMapSet(IIndexedFieldManipulator manipulator, Map<K, V> target, K key, V value, Map<K, V> expected) {
@@ -270,13 +270,13 @@ public class FieldManipulatorsTest {
 		target.put(8, "f");
 
 		Map<Integer, String> expected = Maps.newHashMap(target);
-		target = testMapSet(FieldManipulatorProviders.MAP_MANIPULATOR, target, 2, "b", expected);
-		target = testMapSet(FieldManipulatorProviders.MAP_MANIPULATOR, target, 3, "xyz", expected);
-		target = testMapSet(FieldManipulatorProviders.MAP_MANIPULATOR, target, 8, null, expected);
+		target = testMapSet(IndexedManipulatorProvider.MAP_MANIPULATOR, target, 2, "b", expected);
+		target = testMapSet(IndexedManipulatorProvider.MAP_MANIPULATOR, target, 3, "xyz", expected);
+		target = testMapSet(IndexedManipulatorProvider.MAP_MANIPULATOR, target, 8, null, expected);
 
 		target = Collections.unmodifiableMap(target);
-		testSetFieldFail(FieldManipulatorProviders.MAP_MANIPULATOR, target, -1, 3);
-		testSetFieldFail(FieldManipulatorProviders.MAP_MANIPULATOR, target, "aaaa", 3);
+		testSetFieldFail(IndexedManipulatorProvider.MAP_MANIPULATOR, target, -1, 3);
+		testSetFieldFail(IndexedManipulatorProvider.MAP_MANIPULATOR, target, "aaaa", 3);
 	}
 
 	@Test
@@ -288,13 +288,13 @@ public class FieldManipulatorsTest {
 		target.put("f", -1);
 
 		Map<String, Integer> expected = Maps.newHashMap(target);
-		target = testMapSet(FieldManipulatorProviders.MAP_MANIPULATOR, target, "b", 2, expected);
-		target = testMapSet(FieldManipulatorProviders.MAP_MANIPULATOR, target, "c", 3, expected);
-		target = testMapSet(FieldManipulatorProviders.MAP_MANIPULATOR, target, "f", null, expected);
+		target = testMapSet(IndexedManipulatorProvider.MAP_MANIPULATOR, target, "b", 2, expected);
+		target = testMapSet(IndexedManipulatorProvider.MAP_MANIPULATOR, target, "c", 3, expected);
+		target = testMapSet(IndexedManipulatorProvider.MAP_MANIPULATOR, target, "f", null, expected);
 
 		target = Collections.unmodifiableMap(target);
-		testSetFieldFail(FieldManipulatorProviders.MAP_MANIPULATOR, target, -1, 3);
-		testSetFieldFail(FieldManipulatorProviders.MAP_MANIPULATOR, target, "aaaa", 3);
+		testSetFieldFail(IndexedManipulatorProvider.MAP_MANIPULATOR, target, -1, 3);
+		testSetFieldFail(IndexedManipulatorProvider.MAP_MANIPULATOR, target, "aaaa", 3);
 	}
 
 	@Test
@@ -306,12 +306,12 @@ public class FieldManipulatorsTest {
 		target.put("f", -1);
 		target = Collections.unmodifiableMap(target);
 
-		Assert.assertEquals(null, testGetField(FieldManipulatorProviders.EXPANDING_MAP_MANIPULATOR, target, 42));
-		Assert.assertEquals(null, testGetField(FieldManipulatorProviders.EXPANDING_MAP_MANIPULATOR, target, "z"));
-		Assert.assertEquals(null, testGetField(FieldManipulatorProviders.EXPANDING_MAP_MANIPULATOR, target, "c"));
-		Assert.assertEquals(2, testGetField(FieldManipulatorProviders.EXPANDING_MAP_MANIPULATOR, target, "a"));
-		Assert.assertEquals(6, testGetField(FieldManipulatorProviders.EXPANDING_MAP_MANIPULATOR, target, "b"));
-		Assert.assertEquals(-1, testGetField(FieldManipulatorProviders.EXPANDING_MAP_MANIPULATOR, target, "f"));
+		Assert.assertEquals(null, testGetField(IndexedManipulatorProvider.MAP_EXPANDING_MANIPULATOR, target, 42));
+		Assert.assertEquals(null, testGetField(IndexedManipulatorProvider.MAP_EXPANDING_MANIPULATOR, target, "z"));
+		Assert.assertEquals(null, testGetField(IndexedManipulatorProvider.MAP_EXPANDING_MANIPULATOR, target, "c"));
+		Assert.assertEquals(2, testGetField(IndexedManipulatorProvider.MAP_EXPANDING_MANIPULATOR, target, "a"));
+		Assert.assertEquals(6, testGetField(IndexedManipulatorProvider.MAP_EXPANDING_MANIPULATOR, target, "b"));
+		Assert.assertEquals(-1, testGetField(IndexedManipulatorProvider.MAP_EXPANDING_MANIPULATOR, target, "f"));
 	}
 
 	@Test
@@ -323,12 +323,12 @@ public class FieldManipulatorsTest {
 		target.put(8, "f");
 		target = Collections.unmodifiableMap(target);
 
-		Assert.assertEquals(null, testGetField(FieldManipulatorProviders.EXPANDING_MAP_MANIPULATOR, target, 42));
-		Assert.assertEquals(null, testGetField(FieldManipulatorProviders.EXPANDING_MAP_MANIPULATOR, target, "z"));
-		Assert.assertEquals(null, testGetField(FieldManipulatorProviders.EXPANDING_MAP_MANIPULATOR, target, 3));
-		Assert.assertEquals("a", testGetField(FieldManipulatorProviders.EXPANDING_MAP_MANIPULATOR, target, 2));
-		Assert.assertEquals("b", testGetField(FieldManipulatorProviders.EXPANDING_MAP_MANIPULATOR, target, 6));
-		Assert.assertEquals("f", testGetField(FieldManipulatorProviders.EXPANDING_MAP_MANIPULATOR, target, 8));
+		Assert.assertEquals(null, testGetField(IndexedManipulatorProvider.MAP_EXPANDING_MANIPULATOR, target, 42));
+		Assert.assertEquals(null, testGetField(IndexedManipulatorProvider.MAP_EXPANDING_MANIPULATOR, target, "z"));
+		Assert.assertEquals(null, testGetField(IndexedManipulatorProvider.MAP_EXPANDING_MANIPULATOR, target, 3));
+		Assert.assertEquals("a", testGetField(IndexedManipulatorProvider.MAP_EXPANDING_MANIPULATOR, target, 2));
+		Assert.assertEquals("b", testGetField(IndexedManipulatorProvider.MAP_EXPANDING_MANIPULATOR, target, 6));
+		Assert.assertEquals("f", testGetField(IndexedManipulatorProvider.MAP_EXPANDING_MANIPULATOR, target, 8));
 	}
 
 	@Test
@@ -340,11 +340,11 @@ public class FieldManipulatorsTest {
 		target.put(8, "f");
 
 		Map<Integer, String> expected = Maps.newHashMap(target);
-		target = testMapSet(FieldManipulatorProviders.EXPANDING_MAP_MANIPULATOR, target, 2, "b", expected);
-		target = testMapSet(FieldManipulatorProviders.EXPANDING_MAP_MANIPULATOR, target, 3, "xyz", expected);
-		target = testMapSet(FieldManipulatorProviders.EXPANDING_MAP_MANIPULATOR, target, 8, null, expected);
-		target = testMapSet(FieldManipulatorProviders.EXPANDING_MAP_MANIPULATOR, target, -1, "8", expected);
-		target = testMapSet(FieldManipulatorProviders.EXPANDING_MAP_MANIPULATOR, target, 10, null, expected);
+		target = testMapSet(IndexedManipulatorProvider.MAP_EXPANDING_MANIPULATOR, target, 2, "b", expected);
+		target = testMapSet(IndexedManipulatorProvider.MAP_EXPANDING_MANIPULATOR, target, 3, "xyz", expected);
+		target = testMapSet(IndexedManipulatorProvider.MAP_EXPANDING_MANIPULATOR, target, 8, null, expected);
+		target = testMapSet(IndexedManipulatorProvider.MAP_EXPANDING_MANIPULATOR, target, -1, "8", expected);
+		target = testMapSet(IndexedManipulatorProvider.MAP_EXPANDING_MANIPULATOR, target, 10, null, expected);
 	}
 
 	@Test
@@ -356,10 +356,10 @@ public class FieldManipulatorsTest {
 		target.put("f", -1);
 
 		Map<String, Integer> expected = Maps.newHashMap(target);
-		testMapSet(FieldManipulatorProviders.EXPANDING_MAP_MANIPULATOR, target, "b", 2, expected);
-		testMapSet(FieldManipulatorProviders.EXPANDING_MAP_MANIPULATOR, target, "c", 3, expected);
-		testMapSet(FieldManipulatorProviders.EXPANDING_MAP_MANIPULATOR, target, "f", null, expected);
-		testMapSet(FieldManipulatorProviders.EXPANDING_MAP_MANIPULATOR, target, "g", 58, expected);
-		testMapSet(FieldManipulatorProviders.EXPANDING_MAP_MANIPULATOR, target, "4", null, expected);
+		testMapSet(IndexedManipulatorProvider.MAP_EXPANDING_MANIPULATOR, target, "b", 2, expected);
+		testMapSet(IndexedManipulatorProvider.MAP_EXPANDING_MANIPULATOR, target, "c", 3, expected);
+		testMapSet(IndexedManipulatorProvider.MAP_EXPANDING_MANIPULATOR, target, "f", null, expected);
+		testMapSet(IndexedManipulatorProvider.MAP_EXPANDING_MANIPULATOR, target, "g", 58, expected);
+		testMapSet(IndexedManipulatorProvider.MAP_EXPANDING_MANIPULATOR, target, "4", null, expected);
 	}
 }

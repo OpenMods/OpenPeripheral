@@ -6,13 +6,12 @@ import java.util.List;
 import java.util.Map;
 
 import openperipheral.api.adapter.IIndexedPropertyCallback;
-import openperipheral.api.adapter.IPropertyCallback;
 import openperipheral.api.helpers.Index;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 
-public class FieldManipulatorProviders {
+public class IndexedManipulatorProvider {
 
 	@SuppressWarnings("unchecked")
 	public static <T> T getContents(Object target, Field field) {
@@ -36,34 +35,6 @@ public class FieldManipulatorProviders {
 	public static int getIndex(Object index) {
 		Preconditions.checkArgument(index instanceof Index, "Invalid index type, expecting number");
 		return ((Index)index).unbox();
-	}
-
-	public static final IFieldManipulator DEFAULT = new IFieldManipulator() {
-		@Override
-		public void setField(Object owner, Field field, Object value) {
-			setContents(owner, field, value);
-		}
-
-		@Override
-		public Object getField(Object owner, Field field) {
-			return getContents(owner, field);
-		}
-	};
-
-	public static final IFieldManipulator DELEGATING = new IFieldManipulator() {
-		@Override
-		public void setField(Object target, Field field, Object value) {
-			((IPropertyCallback)target).setField(field, value);
-		}
-
-		@Override
-		public Object getField(Object target, Field field) {
-			return ((IPropertyCallback)target).getField(field);
-		}
-	};
-
-	public static IFieldManipulator getProvider(boolean isDelegating) {
-		return isDelegating? DELEGATING : DEFAULT;
 	}
 
 	private static class ArrayFieldManipulator implements IIndexedFieldManipulator {
@@ -162,7 +133,7 @@ public class FieldManipulatorProviders {
 		}
 	}
 
-	public static final IIndexedFieldManipulator EXPANDING_LIST_MANIPULATOR = new ExpandingListFieldManipulator();
+	public static final IIndexedFieldManipulator LIST_EXPANDING_MANIPULATOR = new ExpandingListFieldManipulator();
 
 	private static class MapFieldManipulator implements IIndexedFieldManipulator {
 		@Override
@@ -190,7 +161,7 @@ public class FieldManipulatorProviders {
 		}
 	}
 
-	public static final IIndexedFieldManipulator INDEXED_DELEGATING = new IIndexedFieldManipulator() {
+	public static final IIndexedFieldManipulator INDEXED_DELEGATING_MANIPULATOR = new IIndexedFieldManipulator() {
 		@Override
 		public void setField(Object target, Field field, Object index, Object value) {
 			((IIndexedPropertyCallback)target).setField(field, index, value);
@@ -202,15 +173,16 @@ public class FieldManipulatorProviders {
 		}
 	};
 
-	public static final IIndexedFieldManipulator EXPANDING_MAP_MANIPULATOR = new ExpandingMapFieldManipulator();
+	public static final IIndexedFieldManipulator MAP_EXPANDING_MANIPULATOR = new ExpandingMapFieldManipulator();
 
-	public static IIndexedFieldManipulator getIndexedProvider(Class<?> fieldType, boolean isDelegating, boolean isExpanding) {
-		if (isDelegating) return INDEXED_DELEGATING;
+	public static IIndexedFieldManipulator getProvider(Class<?> fieldType, boolean isDelegating, boolean isExpanding) {
+		if (isDelegating) return INDEXED_DELEGATING_MANIPULATOR;
 
-		if (Map.class.isAssignableFrom(fieldType)) return isExpanding? EXPANDING_MAP_MANIPULATOR : MAP_MANIPULATOR;
-		else if (List.class.isAssignableFrom(fieldType)) return isExpanding? EXPANDING_LIST_MANIPULATOR : LIST_MANIPULATOR;
+		if (Map.class.isAssignableFrom(fieldType)) return isExpanding? MAP_EXPANDING_MANIPULATOR : MAP_MANIPULATOR;
+		else if (List.class.isAssignableFrom(fieldType)) return isExpanding? LIST_EXPANDING_MANIPULATOR : LIST_MANIPULATOR;
 		else if (fieldType.isArray()) return isExpanding? ARRAY_EXPANDING_MANIPULATOR : ARRAY_MANIPULATOR;
 
 		throw new IllegalArgumentException("Failed to create manipulator for " + fieldType);
 	}
+
 }
