@@ -87,6 +87,6 @@ abstract class SafePeripheralFactory implements IPeripheralFactory<TileEntity> {
 		return PLACEHOLDER;
 	}
 
-	protected abstract IPeripheral createPeripheral(TileEntity tile, int side);
+	protected abstract IPeripheral createPeripheral(TileEntity tile, int side) throws Exception;
 
 }
