@@ -11,7 +11,7 @@ import openperipheral.api.struct.ScriptStruct;
 import openperipheral.api.struct.ScriptStruct.Output;
 import openperipheral.api.struct.StructField;
 import openperipheral.converter.StructCache;
-import openperipheral.converter.StructCache.IStructConverter;
+import openperipheral.converter.StructCache.IStructHandler;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -43,14 +43,14 @@ public class StructTest {
 		verify(converter).fromJava(input);
 	}
 
-	private void assertInboundConversionFail(IStructConverter structConverter, Map<Object, Object> input, int indexOffset) {
+	private void assertInboundConversionFail(IStructHandler structConverter, Map<Object, Object> input, int indexOffset) {
 		try {
 			structConverter.toJava(converter, input, indexOffset);
 			Assert.fail("Exception not thrown");
 		} catch (RuntimeException e) {}
 	}
 
-	private void assertOutboundConversionFail(IStructConverter structConverter, Map<Object, Object> input, int indexOffset) {
+	private void assertOutboundConversionFail(IStructHandler structConverter, Map<Object, Object> input, int indexOffset) {
 		try {
 			structConverter.toJava(converter, input, indexOffset);
 			Assert.fail("Exception not thrown");
@@ -73,7 +73,7 @@ public class StructTest {
 
 	@Test
 	public void testNamedOutboundConversion() {
-		final IStructConverter c = getConverter(SimpleStruct.class);
+		final IStructHandler c = getConverter(SimpleStruct.class);
 
 		SimpleStruct struct = new SimpleStruct();
 		struct.a = "aaaa";
@@ -97,15 +97,15 @@ public class StructTest {
 		verifyOutboundConversion(struct.b);
 	}
 
-	protected IStructConverter getConverter(Class<?> cls) {
+	protected IStructHandler getConverter(Class<?> cls) {
 		StructCache cache = new StructCache();
-		IStructConverter c = cache.getConverter(cls);
+		IStructHandler c = cache.getHandler(cls);
 		return c;
 	}
 
 	@Test
 	public void testNamedInboundConversion() {
-		final IStructConverter c = getConverter(SimpleStruct.class);
+		final IStructHandler c = getConverter(SimpleStruct.class);
 
 		final String inputA = "ca";
 		final String inputB = "zzzz";
@@ -136,7 +136,7 @@ public class StructTest {
 
 	@Test
 	public void testNamedInboundConversionExtraFields() {
-		final IStructConverter c = getConverter(SimpleStruct.class);
+		final IStructHandler c = getConverter(SimpleStruct.class);
 
 		final String inputA = "ca";
 		final String inputB = "zzzz";
@@ -158,7 +158,7 @@ public class StructTest {
 
 	@Test
 	public void testNamedInboundConversionInvalidKey() {
-		final IStructConverter c = getConverter(SimpleStruct.class);
+		final IStructHandler c = getConverter(SimpleStruct.class);
 
 		final String inputA = "ca";
 		final String inputB = "zzzz";
@@ -172,7 +172,7 @@ public class StructTest {
 
 	@Test
 	public void testNamedInboundConversionMissingFields() {
-		final IStructConverter c = getConverter(SimpleStruct.class);
+		final IStructHandler c = getConverter(SimpleStruct.class);
 
 		final String inputA = "ca";
 
@@ -198,7 +198,7 @@ public class StructTest {
 
 	@Test
 	public void testNamedInboundConversionOptionalFields() {
-		final IStructConverter c = getConverter(SimpleStructOptional.class);
+		final IStructHandler c = getConverter(SimpleStructOptional.class);
 
 		final String inputB = "ca";
 
@@ -236,7 +236,7 @@ public class StructTest {
 
 	@Test
 	public void testDefaultOrderedOutboundConversionOneIndexed() {
-		final IStructConverter c = getConverter(SimpleTableDefaultOrdering.class);
+		final IStructHandler c = getConverter(SimpleTableDefaultOrdering.class);
 
 		SimpleTableDefaultOrdering struct = new SimpleTableDefaultOrdering();
 		struct.a = "aaaa";
@@ -263,7 +263,7 @@ public class StructTest {
 
 	@Test
 	public void testDefaultOrderedOutboundConversionZeroIndexed() {
-		final IStructConverter c = getConverter(SimpleTableDefaultOrdering.class);
+		final IStructHandler c = getConverter(SimpleTableDefaultOrdering.class);
 
 		SimpleTableDefaultOrdering struct = new SimpleTableDefaultOrdering();
 		struct.a = "aaaa";
@@ -290,7 +290,7 @@ public class StructTest {
 
 	@Test
 	public void testDefaultOrderedInboundConversionZeroIndexed() {
-		final IStructConverter c = getConverter(SimpleTableDefaultOrdering.class);
+		final IStructHandler c = getConverter(SimpleTableDefaultOrdering.class);
 
 		final String inputA = "ca";
 		final String inputB = "zzzz";
@@ -320,7 +320,7 @@ public class StructTest {
 
 	@Test
 	public void testDefaultOrderedInboundConversionOneIndexed() {
-		final IStructConverter c = getConverter(SimpleTableDefaultOrdering.class);
+		final IStructHandler c = getConverter(SimpleTableDefaultOrdering.class);
 
 		final String inputA = "ca";
 		final String inputB = "zzzz";
@@ -350,7 +350,7 @@ public class StructTest {
 
 	@Test
 	public void testDefaultOrderedInboundConversionExtraFields() {
-		final IStructConverter c = getConverter(SimpleTableDefaultOrdering.class);
+		final IStructHandler c = getConverter(SimpleTableDefaultOrdering.class);
 
 		final String inputA = "ca";
 		final String inputB = "zzzz";
@@ -384,7 +384,7 @@ public class StructTest {
 
 	@Test
 	public void testCustomOrderedOutboundConversionZeroIndexed() {
-		final IStructConverter c = getConverter(SimpleTableForcedOrdering.class);
+		final IStructHandler c = getConverter(SimpleTableForcedOrdering.class);
 
 		SimpleTableForcedOrdering struct = new SimpleTableForcedOrdering();
 		struct.a = "aaaa";
@@ -417,7 +417,7 @@ public class StructTest {
 
 	@Test
 	public void testCustomOrderedOutboundConversionOneIndexed() {
-		final IStructConverter c = getConverter(SimpleTableForcedOrdering.class);
+		final IStructHandler c = getConverter(SimpleTableForcedOrdering.class);
 
 		SimpleTableForcedOrdering struct = new SimpleTableForcedOrdering();
 		struct.a = "aaaa";
@@ -450,7 +450,7 @@ public class StructTest {
 
 	@Test
 	public void testCustomOrderedInboundConversion() {
-		final IStructConverter c = getConverter(SimpleTableForcedOrdering.class);
+		final IStructHandler c = getConverter(SimpleTableForcedOrdering.class);
 
 		final String inputA = "ca";
 		final String inputB = "zzzz";
@@ -496,7 +496,7 @@ public class StructTest {
 
 	@Test
 	public void testStructOnly() {
-		final IStructConverter c = getConverter(StructOnly.class);
+		final IStructHandler c = getConverter(StructOnly.class);
 
 		final String inputA = "ca";
 		final String inputB = "zzzz";

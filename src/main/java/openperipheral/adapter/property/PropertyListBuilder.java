@@ -5,7 +5,6 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.List;
 
-import openmods.reflection.TypeUtils;
 import openperipheral.adapter.IMethodDescription;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.types.IType;
@@ -13,48 +12,11 @@ import openperipheral.adapter.types.TypeHelper;
 import openperipheral.api.adapter.*;
 import openperipheral.api.adapter.IndexedCallbackProperty.GetFromFieldType;
 import openperipheral.api.adapter.method.ArgType;
-import openperipheral.api.helpers.Index;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import com.google.common.reflect.TypeToken;
 
 public class PropertyListBuilder {
-
-	private static IValueTypeProvider createConstantTypeProvider(final Type type) {
-		return new IValueTypeProvider() {
-			@Override
-			public Type getType(Object key) {
-				return type;
-			}
-		};
-	}
-
-	private static Type getIndexType(Type genericType) {
-		final TypeToken<?> type = TypeToken.of(genericType);
-
-		if (TypeUtils.MAP_TOKEN.isAssignableFrom(type)) {
-			return type.resolveType(TypeUtils.MAP_KEY_PARAM).getType();
-		} else if (TypeUtils.LIST_TOKEN.isAssignableFrom(type)) {
-			return Index.class;
-		} else if (type.isArray()) { return Index.class; }
-
-		// TODO structs
-
-		throw new IllegalArgumentException("Failed to deduce key type from " + genericType);
-	}
-
-	private static Type getBasicValueType(Type genericType) {
-		final TypeToken<?> type = TypeToken.of(genericType);
-
-		if (TypeUtils.MAP_TOKEN.isAssignableFrom(type)) {
-			return type.resolveType(TypeUtils.MAP_VALUE_PARAM).getType();
-		} else if (TypeUtils.LIST_TOKEN.isAssignableFrom(type)) {
-			return type.resolveType(TypeUtils.LIST_VALUE_PARAM).getType();
-		} else if (type.isArray()) {
-			return type.getComponentType().getType();
-		} else return null;
-	}
 
 	private class Parameters {
 		public final String name;
@@ -95,16 +57,21 @@ public class PropertyListBuilder {
 			super(name, getterDescription, setterDescription, isDelegating, readOnly, valueNullable);
 			this.expandable = expandable;
 
-			this.keyType = keyType == GetFromFieldType.class? getIndexType(field.getGenericType()) : keyType;
-			this.docKeyType = TypeHelper.interpretArgType(keyDocType, this.keyType);
+			final FieldTypeInfoBuilder fieldTypeBuilder = new FieldTypeInfoBuilder(field.getGenericType());
 
-			Type basicReturnType = valueType == GetFromFieldType.class? getBasicValueType(field.getGenericType()) : valueType;
+			if (keyType != GetFromFieldType.class) fieldTypeBuilder.overrideKeyType(keyType);
+			if (keyDocType != ArgType.AUTO) fieldTypeBuilder.overrideKeyDocType(TypeHelper.single(keyDocType));
 
-			// TODO structs
-			if (basicReturnType == null) throw new IllegalArgumentException("Failed to find return type for field of type " + valueType);
+			if (valueType != GetFromFieldType.class) fieldTypeBuilder.overrideValueType(valueType);
+			if (valueDocType != ArgType.AUTO) fieldTypeBuilder.overrideValueDocType(TypeHelper.single(valueDocType));
 
-			this.valueTypeProvider = createConstantTypeProvider(basicReturnType);
-			this.docValueType = TypeHelper.interpretArgType(valueDocType, basicReturnType);
+			final FieldTypeInfoBuilder.Result types = fieldTypeBuilder.build();
+
+			this.keyType = types.keyType;
+			this.docKeyType = types.keyDocType;
+
+			this.valueTypeProvider = types.valueType;
+			this.docValueType = types.valueDocType;
 		}
 	}
 

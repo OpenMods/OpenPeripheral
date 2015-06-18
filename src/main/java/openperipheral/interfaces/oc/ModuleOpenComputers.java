@@ -11,7 +11,7 @@ import openperipheral.adapter.AdapterRegistry;
 import openperipheral.adapter.composed.ComposedMethodsFactory;
 import openperipheral.adapter.composed.MethodSelector;
 import openperipheral.adapter.method.TypeQualifier;
-import openperipheral.adapter.types.TypeHelper;
+import openperipheral.adapter.types.SingleArgType;
 import openperipheral.api.Constants;
 import openperipheral.api.architecture.IArchitectureAccess;
 import openperipheral.api.converter.IConverter;
@@ -67,7 +67,7 @@ public class ModuleOpenComputers {
 		IConverter converter = new TypeConversionRegistryOC();
 		TypeConvertersProvider.INSTANCE.registerConverter(Constants.ARCH_OPEN_COMPUTERS, converter);
 
-		TypeQualifier.instance.registerType(Value.class, TypeHelper.ARG_OBJECT);
+		TypeQualifier.instance.registerType(Value.class, SingleArgType.OBJECT);
 	}
 
 	public static void registerProvider() {

@@ -13,12 +13,13 @@ import com.google.common.collect.Lists;
 
 public class TypeHelper {
 
-	public static final IType ARG_TABLE = TypeHelper.single(ArgType.TABLE);
-	public static final IType ARG_NUMBER = TypeHelper.single(ArgType.NUMBER);
-	public static final IType ARG_VOID = TypeHelper.single(ArgType.VOID);
-	public static final IType ARG_BOOLEAN = TypeHelper.single(ArgType.BOOLEAN);
-	public static final IType ARG_STRING = TypeHelper.single(ArgType.STRING);
-	public static final IType ARG_OBJECT = TypeHelper.single(ArgType.OBJECT);
+	public static IType single(ArgType type) {
+		return SingleArgType.valueOf(type);
+	}
+
+	public static IType single(ReturnType type) {
+		return SingleReturnType.valueOf(type);
+	}
 
 	public static IType create(ReturnType... types) {
 		return createFromReturn(Arrays.asList(types));
@@ -28,26 +29,16 @@ public class TypeHelper {
 		return createFromArg(Arrays.asList(types));
 	}
 
-	public static IType single(ReturnType type) {
-		Preconditions.checkNotNull(type);
-		return new SingleReturnType(type);
-	}
-
 	public static IType single(ReturnType type, IRange range) {
 		Preconditions.checkNotNull(type);
 		Preconditions.checkNotNull(range);
-		return new BoundedType(new SingleReturnType(type), range);
-	}
-
-	public static IType single(ArgType type) {
-		Preconditions.checkNotNull(type);
-		return new SingleArgType(type);
+		return new BoundedType(SingleReturnType.valueOf(type), range);
 	}
 
 	public static IType single(ArgType type, IRange range) {
 		Preconditions.checkNotNull(type);
 		Preconditions.checkNotNull(range);
-		return new BoundedType(new SingleArgType(type), range);
+		return new BoundedType(SingleArgType.valueOf(type), range);
 	}
 
 	public static IType bounded(IType type, IRange range) {
@@ -60,7 +51,7 @@ public class TypeHelper {
 		if (types.size() == 0) {
 			return IType.VOID;
 		} else if (types.size() == 1) {
-			return new SingleReturnType(types.get(0));
+			return SingleReturnType.valueOf(types.get(0));
 		} else {
 			return wrapSingleReturnTypes(types);
 		}
@@ -70,7 +61,7 @@ public class TypeHelper {
 		if (types.size() == 0) {
 			return IType.VOID;
 		} else if (types.size() == 1) {
-			return new SingleArgType(types.get(0));
+			return SingleArgType.valueOf(types.get(0));
 		} else {
 			return wrapSingleArgTypes(types);
 		}
@@ -88,7 +79,7 @@ public class TypeHelper {
 		List<IType> result = Lists.newArrayList();
 
 		for (ReturnType t : types)
-			result.add(new SingleReturnType(t));
+			result.add(SingleReturnType.valueOf(t));
 
 		return new TupleType(result);
 	}
@@ -97,7 +88,7 @@ public class TypeHelper {
 		List<IType> result = Lists.newArrayList();
 
 		for (ArgType t : types)
-			result.add(new SingleArgType(t));
+			result.add(SingleArgType.valueOf(t));
 
 		return new TupleType(result);
 	}
@@ -116,7 +107,7 @@ public class TypeHelper {
 	}
 
 	public static IType interpretArgType(ArgType givenType, Type targetType) {
-		return givenType == ArgType.AUTO? TypeQualifier.instance.qualifyType(targetType) : TypeHelper.single(givenType);
+		return givenType == ArgType.AUTO? TypeQualifier.instance.qualifyType(targetType) : SingleArgType.valueOf(givenType);
 	}
 
 }

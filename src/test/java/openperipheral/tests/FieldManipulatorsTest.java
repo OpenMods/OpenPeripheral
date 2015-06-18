@@ -8,6 +8,8 @@ import java.util.Map;
 import openperipheral.adapter.property.IIndexedFieldManipulator;
 import openperipheral.adapter.property.IndexedManipulatorProvider;
 import openperipheral.api.helpers.Index;
+import openperipheral.api.struct.ScriptStruct;
+import openperipheral.api.struct.StructField;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -361,5 +363,53 @@ public class FieldManipulatorsTest {
 		testMapSet(IndexedManipulatorProvider.MAP_EXPANDING_MANIPULATOR, target, "f", null, expected);
 		testMapSet(IndexedManipulatorProvider.MAP_EXPANDING_MANIPULATOR, target, "g", 58, expected);
 		testMapSet(IndexedManipulatorProvider.MAP_EXPANDING_MANIPULATOR, target, "4", null, expected);
+	}
+
+	@ScriptStruct
+	public static class SimpleStruct {
+		@StructField
+		public String string;
+
+		@StructField
+		public int integer;
+	}
+
+	@Test
+	public void testStructManipulatorGet() {
+		IIndexedFieldManipulator manipulator = IndexedManipulatorProvider.createStructManipulator(SimpleStruct.class);
+
+		SimpleStruct test = new SimpleStruct();
+		final String stringValue = "hellosfdfdf";
+		final int intValue = 4352;
+
+		test.string = stringValue;
+		test.integer = intValue;
+
+		Assert.assertEquals(stringValue, testGetField(manipulator, test, "string"));
+		Assert.assertEquals(intValue, testGetField(manipulator, test, "integer"));
+
+		testGetFieldFail(manipulator, test, "aaaaa");
+		testGetFieldFail(manipulator, test, "");
+		testGetFieldFail(manipulator, test, 2);
+	}
+
+	@Test
+	public void testStructManipulatorSet() {
+		IIndexedFieldManipulator manipulator = IndexedManipulatorProvider.createStructManipulator(SimpleStruct.class);
+
+		SimpleStruct test = new SimpleStruct();
+		final String stringValue = "hellosfdfdf";
+		final int intValue = 4352;
+
+		Assert.assertEquals(intValue, testSetField(manipulator, test, "integer", intValue).integer);
+		Assert.assertEquals(stringValue, testSetField(manipulator, test, "string", stringValue).string);
+		Assert.assertEquals(null, testSetField(manipulator, test, "string", null).string);
+
+		testSetFieldFail(manipulator, test, "aaaaa", 0);
+		testSetFieldFail(manipulator, test, "", 0);
+		testSetFieldFail(manipulator, test, 2, 0);
+		testSetFieldFail(manipulator, test, "integer", stringValue);
+		testSetFieldFail(manipulator, test, "integer", null);
+		testSetFieldFail(manipulator, test, "string", intValue);
 	}
 }

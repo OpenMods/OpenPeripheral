@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import openmods.reflection.TypeUtils;
 import openperipheral.adapter.types.*;
+import openperipheral.converter.StructCache;
 
 import com.google.common.collect.Lists;
 import com.google.common.reflect.TypeToken;
@@ -51,12 +52,13 @@ public class TypeQualifier {
 			if (result != null) return result;
 		}
 
-		if (cls == String.class) return TypeHelper.ARG_STRING;
-		if (cls == UUID.class) return TypeHelper.ARG_STRING;
-		if (cls == Boolean.class) return TypeHelper.ARG_BOOLEAN;
-		if (cls == Void.class) return TypeHelper.ARG_VOID;
-		if (Number.class.isAssignableFrom(cls)) return TypeHelper.ARG_NUMBER;
-		if (cls.isEnum()) return TypeHelper.bounded(TypeHelper.ARG_STRING, EnumeratedRange.create(cls.getEnumConstants()));
+		if (cls == String.class) return SingleArgType.STRING;
+		if (cls == UUID.class) return SingleArgType.STRING;
+		if (cls == Boolean.class) return SingleArgType.BOOLEAN;
+		if (cls == Void.class) return SingleArgType.VOID;
+		if (Number.class.isAssignableFrom(cls)) return SingleArgType.NUMBER;
+		if (cls.isEnum()) return TypeHelper.bounded(SingleArgType.STRING, EnumeratedRange.create(cls.getEnumConstants()));
+		if (StructCache.instance.isStruct(cls)) return SingleArgType.TABLE;
 
 		throw new IllegalArgumentException(String.format("Can't categorize type '%s'", cls));
 	}
@@ -64,13 +66,13 @@ public class TypeQualifier {
 	protected IType createListType(final TypeToken<?> type) {
 		return (type.getRawType() != Object.class)
 				? new ListType(qualifyType(type))
-				: TypeHelper.ARG_TABLE;
+				: SingleArgType.TABLE;
 	}
 
 	protected IType createSetType(final TypeToken<?> type) {
 		return (type.getRawType() != Object.class)
 				? new SetType(qualifyType(type))
-				: TypeHelper.ARG_TABLE;
+				: SingleArgType.TABLE;
 	}
 
 	private IType qualifyArrayType(TypeToken<?> typeToken) {
@@ -92,7 +94,7 @@ public class TypeQualifier {
 		final TypeToken<?> keyType = typeToken.resolveType(TypeUtils.MAP_KEY_PARAM);
 		final TypeToken<?> valueType = typeToken.resolveType(TypeUtils.MAP_VALUE_PARAM);
 
-		if (keyType.getRawType() == Object.class || valueType.getRawType() == Object.class) return TypeHelper.ARG_TABLE;
+		if (keyType.getRawType() == Object.class || valueType.getRawType() == Object.class) return SingleArgType.TABLE;
 
 		final IType qualifiedKeyType = qualifyType(keyType);
 		final IType qualifiedValueType = qualifyType(valueType);

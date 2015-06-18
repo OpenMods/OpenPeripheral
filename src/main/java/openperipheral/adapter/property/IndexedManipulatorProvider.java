@@ -7,6 +7,9 @@ import java.util.Map;
 
 import openperipheral.api.adapter.IIndexedPropertyCallback;
 import openperipheral.api.helpers.Index;
+import openperipheral.converter.StructCache;
+import openperipheral.converter.StructCache.IFieldHandler;
+import openperipheral.converter.StructCache.IStructHandler;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
@@ -175,14 +178,53 @@ public class IndexedManipulatorProvider {
 
 	public static final IIndexedFieldManipulator MAP_EXPANDING_MANIPULATOR = new ExpandingMapFieldManipulator();
 
+	private static class StructFieldManipulator implements IIndexedFieldManipulator {
+
+		private final IStructHandler handler;
+
+		public StructFieldManipulator(IStructHandler handler) {
+			this.handler = handler;
+		}
+
+		private IFieldHandler getFieldHandler(Object index) {
+			final String key = index.toString();
+			final IFieldHandler fieldHandler = handler.field(key);
+			Preconditions.checkNotNull(fieldHandler, "Invalid field name '%s'", index);
+			return fieldHandler;
+		}
+
+		@Override
+		public void setField(Object target, Field field, Object index, Object value) {
+			final Object container = getContents(target, field);
+			final IFieldHandler fieldHandler = getFieldHandler(index);
+			fieldHandler.set(container, value);
+		}
+
+		@Override
+		public Object getField(Object target, Field field, Object index) {
+			final Object container = getContents(target, field);
+			final IFieldHandler fieldHandler = getFieldHandler(index);
+			return fieldHandler.get(container);
+		}
+
+	}
+
+	public static IIndexedFieldManipulator createStructManipulator(Class<?> cls) {
+		final IStructHandler handler = StructCache.instance.getHandler(cls);
+		return new StructFieldManipulator(handler);
+	}
+
 	public static IIndexedFieldManipulator getProvider(Class<?> fieldType, boolean isDelegating, boolean isExpanding) {
 		if (isDelegating) return INDEXED_DELEGATING_MANIPULATOR;
 
 		if (Map.class.isAssignableFrom(fieldType)) return isExpanding? MAP_EXPANDING_MANIPULATOR : MAP_MANIPULATOR;
 		else if (List.class.isAssignableFrom(fieldType)) return isExpanding? LIST_EXPANDING_MANIPULATOR : LIST_MANIPULATOR;
 		else if (fieldType.isArray()) return isExpanding? ARRAY_EXPANDING_MANIPULATOR : ARRAY_MANIPULATOR;
+		else if (StructCache.instance.isStruct(fieldType)) {
+			Preconditions.checkState(!isExpanding, "Fields of %s cannot be expading", fieldType);
+			return createStructManipulator(fieldType);
+		}
 
 		throw new IllegalArgumentException("Failed to create manipulator for " + fieldType);
 	}
-
 }

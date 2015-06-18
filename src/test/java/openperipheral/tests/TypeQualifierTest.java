@@ -7,6 +7,8 @@ import java.util.*;
 
 import openperipheral.adapter.method.TypeQualifier;
 import openperipheral.adapter.types.IType;
+import openperipheral.api.struct.ScriptStruct;
+import openperipheral.api.struct.StructField;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -55,6 +57,20 @@ public class TypeQualifierTest {
 	public void testEnum() {
 		testQualifier("string{A,B,C,D}", TestEnum.class);
 		testQualifier("string{E,F,G,H}", TestInstancedEnum.class);
+	}
+
+	@ScriptStruct
+	public static class Struct {
+		@StructField
+		public int a;
+
+		@StructField
+		public String b;
+	}
+
+	@Test
+	public void testStruct() {
+		testQualifier("table", Struct.class);
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
@@ -158,6 +174,7 @@ public class TypeQualifierTest {
 		testQualifier("[boolean]", Boolean[].class);
 		testQualifier("table", Object[].class);
 		testQualifier("[[number]]", int[][].class);
+		testQualifier("[table]", Struct[].class);
 	}
 
 	@Test
