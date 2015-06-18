@@ -15,14 +15,12 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import openmods.Log;
-import openperipheral.adapter.IMethodDescription;
+import openperipheral.adapter.*;
 import openperipheral.adapter.IMethodDescription.IArgumentDescription;
-import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.composed.IMethodMap;
 import openperipheral.adapter.composed.IMethodMap.IMethodVisitor;
 import openperipheral.adapter.wrappers.AdapterWrapper;
 import openperipheral.api.adapter.method.ReturnType;
-import openperipheral.api.peripheral.PeripheralTypeProvider;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

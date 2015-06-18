@@ -1,4 +1,4 @@
-package openperipheral.api.peripheral;
+package openperipheral.adapter;
 
 import java.io.*;
 import java.util.List;
@@ -10,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import openmods.Log;
 import openperipheral.api.adapter.IPeripheralTypeProvider;
+import openperipheral.api.peripheral.PeripheralTypeId;
 import openperipheral.util.NameUtils;
 
 import org.apache.commons.lang3.StringUtils;

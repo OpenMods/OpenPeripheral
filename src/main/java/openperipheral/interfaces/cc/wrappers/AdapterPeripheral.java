@@ -6,12 +6,12 @@ import openmods.Log;
 import openmods.utils.CachedFactory;
 import openperipheral.adapter.AdapterLogicException;
 import openperipheral.adapter.IMethodExecutor;
+import openperipheral.adapter.PeripheralTypeProvider;
 import openperipheral.adapter.composed.IndexedMethodMap;
 import openperipheral.api.architecture.IArchitectureAccess;
 import openperipheral.api.architecture.IAttachable;
 import openperipheral.api.architecture.cc.IComputerCraftAttachable;
 import openperipheral.api.peripheral.IOpenPeripheral;
-import openperipheral.api.peripheral.PeripheralTypeProvider;
 import openperipheral.interfaces.cc.*;
 import openperipheral.util.DocUtils;
 

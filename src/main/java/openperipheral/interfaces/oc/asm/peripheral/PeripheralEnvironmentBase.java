@@ -10,10 +10,10 @@ import li.cil.oc.api.network.Visibility;
 import li.cil.oc.api.prefab.ManagedEnvironment;
 import openmods.utils.CachedFactory;
 import openperipheral.adapter.IMethodExecutor;
+import openperipheral.adapter.PeripheralTypeProvider;
 import openperipheral.api.architecture.IArchitectureAccess;
 import openperipheral.api.architecture.IAttachable;
 import openperipheral.api.architecture.oc.IOpenComputersAttachable;
-import openperipheral.api.peripheral.PeripheralTypeProvider;
 import openperipheral.interfaces.oc.OpenComputersEnv;
 import openperipheral.interfaces.oc.asm.ICallerBase;
 
