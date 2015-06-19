@@ -44,7 +44,7 @@ public class LuaObjectWrapper {
 				throw e;
 			} catch (Throwable e) {
 				String methodName = methods.getMethodName(methodIndex);
-				Log.log(Level.DEBUG, e.getCause(), "Internal error during method %s(%d) execution on object %s, args: %s",
+				Log.log(Level.DEBUG, e, "Internal error during method %s(%d) execution on object %s, args: %s",
 						methodName, methodIndex, target.getClass(), Arrays.toString(arguments));
 				throw new LuaException(AdapterLogicException.getMessageForThrowable(e));
 			}
