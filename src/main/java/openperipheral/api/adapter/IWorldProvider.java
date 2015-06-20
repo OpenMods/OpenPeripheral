@@ -3,7 +3,7 @@ package openperipheral.api.adapter;
 import net.minecraft.world.World;
 
 /**
- * For synchronized (non {@link Asynchronous}) peripherals OpenPeripheral needs access to world instance. Use this interface to provide this, it it's not available otherwise (for example, when target object is not TileEntity)
+ * This interface is no longer used by OpenPeripheralCore, but is still used by some child mods (like OpenPeriperal-Integration)
  */
 public interface IWorldProvider {
 	public World getWorld();

@@ -103,12 +103,12 @@ public class PropertyListBuilder {
 	}
 
 	public void addProperty(IndexedProperty property) {
-		addIndexed(property.name(), property.getterDesc(), property.setterDesc(), false, property.readOnly(), property.nullable(), property.expandable(), GetFromFieldType.class, property.indexType(), GetFromFieldType.class, ArgType.AUTO);
+		addIndexed(property.name(), property.getterDesc(), property.setterDesc(), false, property.readOnly(), property.nullable(), property.expandable(), GetFromFieldType.class, property.keyType(), GetFromFieldType.class, ArgType.AUTO);
 	}
 
 	public void addProperty(IndexedCallbackProperty property) {
 		Preconditions.checkArgument(IIndexedPropertyCallback.class.isAssignableFrom(field.getDeclaringClass()));
-		addIndexed(property.name(), property.getterDesc(), property.setterDesc(), true, property.readOnly(), property.nullable(), property.expandable(), property.keyType(), property.keyDocType(), property.valueType(), property.valueDocType());
+		addIndexed(property.name(), property.getterDesc(), property.setterDesc(), true, property.readOnly(), property.nullable(), false, property.keyType(), property.keyDocType(), property.valueType(), property.valueDocType());
 	}
 
 	public PropertyListBuilder configureFromFieldProperties() {

@@ -2,6 +2,11 @@ package openperipheral.api.helpers;
 
 import com.google.common.primitives.Ints;
 
+/**
+ * Simple class for easy handling of not-zero indexed collections.
+ * If used, OpenPeripheral will convert any index to zero-base value with script language specific offset.
+ * For example, in Lua value 3 will become {@code Index(value = 2, offset = 1}.
+ */
 public class Index extends Number implements Comparable<Index> {
 	private static final long serialVersionUID = 1L;
 

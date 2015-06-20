@@ -40,5 +40,8 @@ public @interface Property {
 	 */
 	public boolean readOnly() default false;
 
+	/**
+	 * Does setter accept null values?
+	 */
 	public boolean nullable() default false;
 }
