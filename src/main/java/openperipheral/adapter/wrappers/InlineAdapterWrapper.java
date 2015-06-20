@@ -6,6 +6,7 @@ import java.util.List;
 import openperipheral.adapter.IMethodCall;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.method.MethodDeclaration;
+import openperipheral.adapter.property.PropertyListBuilder;
 
 public class InlineAdapterWrapper extends AdapterWrapper {
 

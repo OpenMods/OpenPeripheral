@@ -1,9 +1,16 @@
 package openperipheral.converter.inbound;
 
 import openperipheral.api.converter.IConverter;
+import openperipheral.api.helpers.Index;
 import openperipheral.converter.GenericInboundConverterAdapter;
 
 public class ConverterNumberInbound extends GenericInboundConverterAdapter {
+
+	private final int offset;
+
+	public ConverterNumberInbound(int collectionOffset) {
+		this.offset = collectionOffset;
+	}
 
 	@Override
 	public Object toJava(IConverter registry, Object o, Class<?> required) {
@@ -29,6 +36,8 @@ public class ConverterNumberInbound extends GenericInboundConverterAdapter {
 		if (required == Byte.class || required == byte.class) return d.byteValue();
 
 		if (required == Boolean.class || required == boolean.class) return d != 0;
+
+		if (required == Index.class) return new Index(d.intValue(), offset);
 
 		return null;
 	}

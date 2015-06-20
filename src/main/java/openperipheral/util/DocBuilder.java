@@ -19,8 +19,9 @@ import openperipheral.adapter.*;
 import openperipheral.adapter.IMethodDescription.IArgumentDescription;
 import openperipheral.adapter.composed.IMethodMap;
 import openperipheral.adapter.composed.IMethodMap.IMethodVisitor;
+import openperipheral.adapter.types.IType;
+import openperipheral.adapter.types.TypeHelper;
 import openperipheral.adapter.wrappers.AdapterWrapper;
-import openperipheral.api.adapter.method.ReturnType;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -186,20 +187,20 @@ public class DocBuilder {
 		}
 
 		{
-			Element returns = doc.createElement("returns");
-			for (ReturnType ret : description.returnTypes())
-				returns.appendChild(createProperty("type", ret.getName()));
-			result.appendChild(returns);
+			final IType returnType = description.returnTypes();
+			if (!TypeHelper.isVoid(returnType)) {
+				final String returnTypes = returnType.describe();
+				result.appendChild(createProperty("returns", returnTypes));
+			}
 		}
 	}
 
 	private Element fillDocForArg(IArgumentDescription arg) {
 		Element result = doc.createElement("arg");
 		result.appendChild(createProperty("name", arg.name()));
-		result.appendChild(createProperty("type", arg.type().getName()));
+		result.appendChild(createProperty("type", arg.type().describe()));
 
 		addOptionalTag(result, "description", arg.description());
-		addOptionalTag(result, "range", arg.range());
 
 		result.setAttribute("nullable", Boolean.toString(arg.nullable()));
 		result.setAttribute("optional", Boolean.toString(arg.optional()));

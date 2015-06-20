@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 
 /**
  *
- * Interface used to receive callback from generated Lua accessors.
+ * Interface used to receive callback from generated accessors.
  *
  * @see CallbackProperty
  */

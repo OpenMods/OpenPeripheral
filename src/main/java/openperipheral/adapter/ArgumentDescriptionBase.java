@@ -3,7 +3,7 @@ package openperipheral.adapter;
 import java.util.Set;
 
 import openperipheral.adapter.IMethodDescription.IArgumentDescription;
-import openperipheral.api.adapter.method.ArgType;
+import openperipheral.adapter.types.IType;
 
 import com.google.common.collect.Sets;
 
@@ -11,21 +11,14 @@ public class ArgumentDescriptionBase implements IArgumentDescription {
 
 	protected final String name;
 
-	protected final ArgType type;
-
-	protected String range;
+	protected final IType type;
 
 	protected String description;
 
-	public ArgumentDescriptionBase(String name, ArgType type, String range, String description) {
+	public ArgumentDescriptionBase(String name, IType type, String description) {
 		this.name = name;
 		this.type = type;
-		this.range = range;
 		this.description = description;
-	}
-
-	public ArgumentDescriptionBase(String name, ArgType type, String description) {
-		this(name, type, "", description);
 	}
 
 	@Override
@@ -34,13 +27,8 @@ public class ArgumentDescriptionBase implements IArgumentDescription {
 	}
 
 	@Override
-	public ArgType type() {
+	public IType type() {
 		return type;
-	}
-
-	@Override
-	public String range() {
-		return range;
 	}
 
 	@Override

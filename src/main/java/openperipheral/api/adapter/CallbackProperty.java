@@ -6,7 +6,7 @@ import openperipheral.api.adapter.method.ArgType;
 
 /**
  * This annotation is used to mark class fields that should be exposed in Lua as get/set accessors.
- * Class that uses this annotation must implement {@link IPropertyCallback}, otherwise registration will fail.
+ * Class that uses this annotation must implement {@link IPropertyCallback}, otherwise wrapping class in peripheral will fail.
  * Every call to accessors will be passed to callback.
  *
  * @see Property
@@ -40,4 +40,10 @@ public @interface CallbackProperty {
 	 * If true, only getter will be generated
 	 */
 	public boolean readOnly() default false;
+
+	/**
+	 * Does setter accept null values?
+	 */
+	public boolean nullable() default false;
+
 }

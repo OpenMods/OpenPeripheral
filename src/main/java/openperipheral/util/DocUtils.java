@@ -10,13 +10,13 @@ import openperipheral.adapter.IMethodDescription.IArgumentDescription;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.composed.IMethodMap;
 import openperipheral.adapter.composed.IMethodMap.IMethodVisitor;
+import openperipheral.adapter.types.IType;
+import openperipheral.adapter.types.TypeHelper;
 import openperipheral.api.adapter.Doc;
-import openperipheral.api.adapter.method.ReturnType;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.reflect.TypeToken;
 
 public class DocUtils {
 
@@ -26,7 +26,6 @@ public class DocUtils {
 	public static final String SOURCE = "source";
 	public static final String NAME = "name";
 	public static final String TYPE = "type";
-	public static final String RANGE = "range";
 
 	public static final CachedFactory<Class<?>, String> DOC_TEXT_CACHE = new CachedFactory<Class<?>, String>() {
 		@Override
@@ -41,7 +40,7 @@ public class DocUtils {
 		result.put(DESCRIPTION, desc.description());
 		result.put(SOURCE, desc.source());
 
-		result.put(RETURN_TYPES, desc.returnTypes());
+		result.put(RETURN_TYPES, desc.returnTypes().describe());
 
 		{
 			List<Map<String, Object>> args = Lists.newArrayList();
@@ -58,7 +57,6 @@ public class DocUtils {
 		result.put(TYPE, arg.type());
 		result.put(NAME, arg.name());
 		result.put(DESCRIPTION, arg.description());
-		result.put(RANGE, arg.range());
 
 		if (arg.nullable()) result.put("nullable", true);
 		if (arg.optional()) result.put("optional", true);
@@ -81,20 +79,16 @@ public class DocUtils {
 		List<String> args = Lists.newArrayList();
 
 		for (IArgumentDescription arg : desc.arguments())
-			args.add(arg.name() + ":" + decorate(arg.type().getName(), arg));
+			args.add(arg.name() + ":" + decorate(arg.type().describe(), arg));
 
-		List<String> returns = Lists.newArrayList();
-
-		for (ReturnType r : desc.returnTypes())
-			returns.add(r.getName());
+		final IType returnTypes = desc.returnTypes();
 
 		String argsJoined = Joiner.on(',').join(args);
 		String argsAndResult;
-		if (returns.isEmpty()) {
+		if (TypeHelper.isVoid(returnTypes)) {
 			argsAndResult = String.format("(%s)", argsJoined);
 		} else {
-			String ret = returns.size() == 1? returns.get(0) : ("(" + Joiner.on(',').join(returns) + ")");
-
+			final String ret = returnTypes.describe();
 			argsAndResult = String.format("(%s):%s", argsJoined, ret);
 		}
 
@@ -144,11 +138,5 @@ public class DocUtils {
 		listMethods(builder, methods);
 
 		return builder.toString();
-	}
-
-	public static String createRangeString(TypeToken<?> genericCls) {
-		Class<?> cls = genericCls.getRawType();
-		if (cls.isEnum()) return "{" + Joiner.on(",").join(cls.getEnumConstants()) + "}";
-		return "";
 	}
 }

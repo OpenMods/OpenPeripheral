@@ -40,20 +40,21 @@ public abstract class TypeConverter implements IConverter {
 		return false;
 	}
 
-	protected TypeConverter() {
+	protected TypeConverter(int indexOffset) {
 		inbound.add(new ConverterRawInbound());
 
 		inbound.add(new ConverterItemStackInbound());
 		inbound.add(new ConverterUuid());
 
-		inbound.add(new ConverterNumberInbound());
+		inbound.add(new ConverterNumberInbound(indexOffset));
 		inbound.add(new ConverterEnumInbound());
 		inbound.add(new ConverterStringInbound());
 
-		inbound.add(new ConverterArrayInbound());
-		inbound.add(new ConverterListInbound());
+		inbound.add(new ConverterArrayInbound(indexOffset));
+		inbound.add(new ConverterListInbound(indexOffset));
 		inbound.add(new ConverterMapInbound());
 		inbound.add(new ConverterSetInbound());
+		inbound.add(new ConverterStructInbound(indexOffset));
 
 		inbound.add(new ConverterBypass());
 
@@ -61,10 +62,11 @@ public abstract class TypeConverter implements IConverter {
 		outbound.add(new ConverterNumberOutbound());
 		outbound.add(new ConverterEnumOutbound());
 
-		outbound.add(new ConverterArrayOutbound());
-		outbound.add(new ConverterListOutbound());
+		outbound.add(new ConverterArrayOutbound(indexOffset));
+		outbound.add(new ConverterListOutbound(indexOffset));
 		outbound.add(new ConverterMapOutbound());
 		outbound.add(new ConverterSetOutbound());
+		outbound.add(new ConverterStructOutbound(indexOffset));
 
 		outbound.add(new ConverterItemStackOutbound());
 		outbound.add(new ConverterGameProfileOutbound());
@@ -117,7 +119,7 @@ public abstract class TypeConverter implements IConverter {
 		}
 
 		final TypeToken<?> type = TypeToken.of(expected);
-		throw new IllegalArgumentException(String.format("Failed to convert value %s to %s", obj, type.getRawType().getSimpleName()));
+		throw new IllegalArgumentException(String.format("No known conversion of value %s to %s", obj, type.getRawType().getSimpleName()));
 	}
 
 	@Override
@@ -139,6 +141,19 @@ public abstract class TypeConverter implements IConverter {
 
 		// should never get here, since ConverterString is catch-all
 		throw new IllegalArgumentException("Conversion failed on value " + obj);
+	}
+
+	public static Object nullableToJava(IConverter converter, Object value, Type expectedType) {
+		return (value != null)? converter.toJava(value, expectedType) : null;
+	}
+
+	public static Object nullableToJava(IConverter converter, boolean nullable, Object value, Type expectedType) {
+		if (value == null) {
+			Preconditions.checkArgument(nullable, "This value cannot be null");
+			return null;
+		}
+
+		return converter.toJava(value, expectedType);
 	}
 
 }

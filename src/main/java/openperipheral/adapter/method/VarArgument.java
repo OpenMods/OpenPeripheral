@@ -4,7 +4,7 @@ import java.lang.reflect.Array;
 import java.util.Iterator;
 import java.util.List;
 
-import openperipheral.api.adapter.method.ArgType;
+import openperipheral.adapter.types.IType;
 import openperipheral.api.converter.IConverter;
 
 import com.google.common.base.Preconditions;
@@ -13,7 +13,7 @@ import com.google.common.reflect.TypeToken;
 
 public class VarArgument extends Argument {
 
-	public VarArgument(String name, String description, ArgType luaType, TypeToken<?> javaType, int javaArgIndex) {
+	public VarArgument(String name, String description, IType luaType, TypeToken<?> javaType, int javaArgIndex) {
 		super(name, description, luaType, javaType, javaArgIndex);
 	}
 

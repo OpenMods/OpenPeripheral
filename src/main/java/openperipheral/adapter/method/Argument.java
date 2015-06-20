@@ -3,9 +3,8 @@ package openperipheral.adapter.method;
 import java.util.Iterator;
 
 import openperipheral.adapter.ArgumentDescriptionBase;
-import openperipheral.api.adapter.method.ArgType;
+import openperipheral.adapter.types.IType;
 import openperipheral.api.converter.IConverter;
-import openperipheral.util.DocUtils;
 
 import com.google.common.base.Preconditions;
 import com.google.common.reflect.TypeToken;
@@ -15,12 +14,10 @@ public class Argument extends ArgumentDescriptionBase {
 	public final TypeToken<?> javaType;
 	final int javaArgIndex;
 
-	public Argument(String name, String description, ArgType type, TypeToken<?> javaType, int javaArgIndex) {
+	public Argument(String name, String description, IType type, TypeToken<?> javaType, int javaArgIndex) {
 		super(name, type, description);
 		this.javaArgIndex = javaArgIndex;
 		this.javaType = getArgType(javaType);
-
-		this.range = DocUtils.createRangeString(this.javaType);
 	}
 
 	protected TypeToken<?> getArgType(TypeToken<?> javaArgClass) {
@@ -38,7 +35,7 @@ public class Argument extends ArgumentDescriptionBase {
 		try {
 			return converter.toJava(o, javaType.getType());
 		} catch (Exception e) {
-			throw new IllegalArgumentException(String.format("Failed to convert arg '%s'", name), e);
+			throw new IllegalArgumentException(String.format("Failed to convert arg '%s', cause: '%s'", name, e.getMessage()));
 		}
 	}
 

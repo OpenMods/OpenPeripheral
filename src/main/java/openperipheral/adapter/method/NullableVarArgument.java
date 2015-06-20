@@ -1,13 +1,13 @@
 package openperipheral.adapter.method;
 
-import openperipheral.api.adapter.method.ArgType;
+import openperipheral.adapter.types.IType;
 
 import com.google.common.base.Preconditions;
 import com.google.common.reflect.TypeToken;
 
 public class NullableVarArgument extends VarArgument {
 
-	public NullableVarArgument(String name, String description, ArgType luaType, TypeToken<?> javaType, int javaArgIndex) {
+	public NullableVarArgument(String name, String description, IType luaType, TypeToken<?> javaType, int javaArgIndex) {
 		super(name, description, luaType, javaType, javaArgIndex);
 	}
 

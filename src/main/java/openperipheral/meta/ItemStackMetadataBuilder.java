@@ -92,6 +92,8 @@ public class ItemStackMetadataBuilder implements IItemStackPartialMetaBuilder {
 		map.put("raw_name", getRawNameForStack(itemstack));
 		map.put("qty", itemstack.stackSize);
 		map.put("dmg", itemstack.getItemDamage());
+
+		if (item.showDurabilityBar(itemstack)) map.put("health_bar", item.getDurabilityForDisplay(itemstack));
 		map.put("max_dmg", itemstack.getMaxDamage());
 		map.put("max_size", itemstack.getMaxStackSize());
 
