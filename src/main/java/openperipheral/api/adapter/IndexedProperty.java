@@ -48,7 +48,7 @@ public @interface IndexedProperty {
 	/**
 	 * Will accessing non-existent key expand underlying container with new value
 	 */
-	public boolean expandable() default false;
+	public boolean expandable() default true;
 
 	/**
 	 * Type of key parameter in script documentation

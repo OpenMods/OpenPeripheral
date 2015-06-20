@@ -149,7 +149,7 @@ public abstract class TypeConverter implements IConverter {
 
 	public static Object nullableToJava(IConverter converter, boolean nullable, Object value, Type expectedType) {
 		if (value == null) {
-			Preconditions.checkArgument(nullable, "This field cannot be null");
+			Preconditions.checkArgument(nullable, "This value cannot be null");
 			return null;
 		}
 

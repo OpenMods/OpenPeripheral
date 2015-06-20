@@ -18,5 +18,5 @@ public @interface StructField {
 	/**
 	 * Can this field be missing from input map/table
 	 */
-	public boolean isOptional() default false;
+	public boolean optional() default false;
 }

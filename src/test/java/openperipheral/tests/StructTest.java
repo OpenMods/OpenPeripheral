@@ -189,7 +189,7 @@ public class StructTest {
 	@ScriptStruct
 	public static class SimpleStructOptional {
 
-		@StructField(isOptional = true)
+		@StructField(optional = true)
 		public String a = SKIP_VALUE;
 
 		@StructField

@@ -1,8 +1,6 @@
 package openperipheral.converter;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Type;
+import java.lang.reflect.*;
 import java.util.*;
 
 import javax.annotation.Nullable;
@@ -142,7 +140,7 @@ public class StructCache {
 				if (index == StructField.AUTOASSIGN) index = autoIndex;
 				indexedFields.put(index, handler);
 
-				if (fieldMarker.isOptional()) optionalFields.add(handler);
+				if (fieldMarker.optional()) optionalFields.add(handler);
 
 				autoIndex++;
 			}
@@ -259,6 +257,11 @@ public class StructCache {
 	private final CachedFactory<Class<?>, IStructHandler> handlers = new CachedFactory<Class<?>, IStructHandler>() {
 		@Override
 		protected IStructHandler create(Class<?> cls) {
+			if (cls.getEnclosingClass() != null && !Modifier.isStatic(cls.getModifiers())) {
+				Log.warn("Can't create serializer for not-static inner %s", cls);
+				return DUMMY_CONVERTER;
+			}
+
 			final ScriptStruct struct = cls.getAnnotation(ScriptStruct.class);
 			if (struct == null) {
 				Log.warn("Trying to generate serializer for unserializable %s", cls);

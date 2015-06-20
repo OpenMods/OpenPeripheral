@@ -68,7 +68,7 @@ public class Index extends Number implements Comparable<Index> {
 
 	@Override
 	public String toString() {
-		return "(" + value + "+" + offset + ")";
+		return Integer.toString(value + offset);
 	}
 
 	public void checkElementIndex(int size, int index) {

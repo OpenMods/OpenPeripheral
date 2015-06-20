@@ -74,7 +74,7 @@ public class IndexedManipulatorProvider {
 			Object container = getContents(target, field);
 
 			final int i = getIndex(index);
-			if (i < 0) throw new IllegalArgumentException("Failed to set value at index " + i);
+			if (i < 0) throw new IllegalArgumentException("Negative index: " + i);
 
 			final int length = Array.getLength(container);
 			if (i >= length) {
@@ -127,7 +127,7 @@ public class IndexedManipulatorProvider {
 			final List<Object> container = getContents(target, field);
 			final int i = getIndex(index);
 
-			if (i < 0) throw new IllegalArgumentException("Failed to set value at index " + i);
+			if (i < 0) throw new IllegalArgumentException("Negative index: " + i);
 
 			while (i >= container.size())
 				container.add(null);
@@ -142,7 +142,7 @@ public class IndexedManipulatorProvider {
 		@Override
 		public void setField(Object target, Field field, Object index, Object value) {
 			final Map<Object, Object> container = getContents(target, field);
-			Preconditions.checkArgument(container.containsKey(index), "Invalid key = %s", index);
+			Preconditions.checkArgument(container.containsKey(index), "Can't add new key '%s' to map", index);
 			container.put(index, value);
 
 		}

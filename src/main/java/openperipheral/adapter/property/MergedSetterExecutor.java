@@ -62,6 +62,8 @@ public class MergedSetterExecutor implements IPropertyExecutor {
 			singleManipulator.setField(target, field, converted);
 
 			return ArrayUtils.EMPTY_OBJECT_ARRAY;
+		} else {
+			throw new IllegalArgumentException("This method must be called with one or two arguments");
 		}
 
 		return ArrayUtils.EMPTY_OBJECT_ARRAY;

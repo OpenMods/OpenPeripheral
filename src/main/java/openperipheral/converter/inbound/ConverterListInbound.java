@@ -7,8 +7,8 @@ import java.util.Map;
 import openmods.reflection.TypeUtils;
 import openperipheral.api.converter.IConverter;
 import openperipheral.api.converter.IGenericInboundTypeConverter;
-import scala.actors.threadpool.Arrays;
 
+import com.google.common.collect.Lists;
 import com.google.common.reflect.TypeToken;
 
 public class ConverterListInbound implements IGenericInboundTypeConverter {
@@ -47,7 +47,7 @@ public class ConverterListInbound implements IGenericInboundTypeConverter {
 			final TypeToken<?> type = TypeToken.of(expected);
 			if (type.getRawType() == List.class) {
 				final Object[] elements = converter.convertToContainer(registry, obj, type);
-				return Arrays.asList(elements);
+				return Lists.newArrayList(elements);
 			}
 		}
 

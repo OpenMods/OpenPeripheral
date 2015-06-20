@@ -249,7 +249,6 @@ public class PropertyListBuilder {
 		final int modifiers = field.getModifiers();
 		Preconditions.checkArgument(!Modifier.isStatic(modifiers), "Field marked with @IndexedProperty can't be static");
 		Preconditions.checkArgument(!params.expandable || !params.readOnly, "@IndexedProperty fields can't be both read-only and expandable");
-		Preconditions.checkArgument(params.readOnly || !Modifier.isFinal(modifiers), "Only fields marked with @IndexedProperty(readOnly = true) can be marked final");
 		Preconditions.checkArgument(!params.expandable || !Modifier.isFinal(modifiers), "Only non-final @IndexedProperty fields can me expandable");
 	}
 
