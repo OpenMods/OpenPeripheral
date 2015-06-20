@@ -20,6 +20,8 @@ import openperipheral.api.adapter.IndexedCallbackProperty.GetFromFieldType;
 import openperipheral.api.adapter.method.ArgType;
 import openperipheral.api.converter.IConverter;
 import openperipheral.api.helpers.Index;
+import openperipheral.api.struct.ScriptStruct;
+import openperipheral.api.struct.StructField;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -52,6 +54,16 @@ public class PropertyBuilderTest {
 
 	private static class ConvertedKey {}
 
+	@ScriptStruct
+	public static class Struct {
+
+		@StructField
+		public int a;
+
+		@StructField
+		public boolean b;
+	}
+
 	public static class FieldSource {
 		public int intField;
 
@@ -62,6 +74,8 @@ public class PropertyBuilderTest {
 		public List<String> listField;
 
 		public boolean[] arrayField;
+
+		public Struct structField;
 	}
 
 	private static Field getTargetField(String name) {
@@ -81,6 +95,8 @@ public class PropertyBuilderTest {
 	public final Field listField = getTargetField("listField");
 
 	public final Field arrayField = getTargetField("arrayField");
+
+	public final Field structField = getTargetField("structField");
 
 	private static List<IMethodExecutor> buildPropertyList(PropertyListBuilder builder) {
 		List<IMethodExecutor> output = Lists.newArrayList();
@@ -422,7 +438,7 @@ public class PropertyBuilderTest {
 
 	@Test
 	public void testMergedGetterOnly() {
-		PropertyListBuilder builder = new PropertyListBuilder(mapField, SOURCE);
+		PropertyListBuilder builder = new PropertyListBuilder(structField, SOURCE);
 		builder.addSingle("Hello", "", "", IS_DELEGATING, READ_ONLY, NOT_NULLABLE, ArgType.AUTO);
 		builder.addIndexed("Hello", "", "", IS_DELEGATING, READ_ONLY, NOT_NULLABLE, NOT_EXPANDABLE, GetFromFieldType.class, ArgType.AUTO, GetFromFieldType.class, ArgType.AUTO);
 
@@ -430,10 +446,10 @@ public class PropertyBuilderTest {
 
 		{
 			IMethodExecutor executor = findAndVerifyExecutor("getHello", output);
-			checkDescription(executor, "{string->number}|number", ArgType.STRING);
+			checkDescription(executor, "table|*", ArgType.STRING);
 			checkParamOptionality(executor, 0, true);
-			verifySingleGetterExecution(executor, mapField);
-			verifyIndexedGetterExecution(executor, mapField, String.class);
+			verifySingleGetterExecution(executor, structField);
+			verifyIndexedGetterExecution(executor, structField, String.class);
 		}
 	}
 

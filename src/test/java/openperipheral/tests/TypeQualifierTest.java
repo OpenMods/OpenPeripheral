@@ -83,6 +83,9 @@ public class TypeQualifierTest {
 		@ExpectedConversion("{string->number}")
 		public Map<String, Integer> mapStringInteger;
 
+		@ExpectedConversion("{boolean->table}")
+		public Map<Boolean, Struct> mapStringStruct;
+
 		@ExpectedConversion("{string{A,B,C,D}->number}")
 		public Map<TestEnum, Integer> mapEnumInteger;
 
@@ -109,6 +112,12 @@ public class TypeQualifierTest {
 
 		@ExpectedConversion("[string]")
 		public List<String> listString;
+
+		@ExpectedConversion("[table]")
+		public List<Struct> listStruct;
+
+		@ExpectedConversion("[[table]]")
+		public List<Struct[]> listArrayStruct;
 
 		@ExpectedConversion("[string{A,B,C,D}]")
 		public List<TestEnum> listEnum;
