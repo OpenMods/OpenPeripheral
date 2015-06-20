@@ -25,7 +25,7 @@ import openperipheral.api.peripheral.IPeripheralBlacklist;
  * </ul>
  */
 public class ApiAccess {
-	public static final String API_VERSION = "3.2";
+	public static final String API_VERSION = "3.3";
 
 	public interface ApiProvider {
 		public <T extends IApiInterface> T getApi(Class<T> cls);
