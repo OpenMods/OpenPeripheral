@@ -1,5 +1,7 @@
 package openperipheral.api.helpers;
 
+import com.google.common.primitives.Ints;
+
 public class Index extends Number implements Comparable<Index> {
 	private static final long serialVersionUID = 1L;
 
@@ -56,7 +58,7 @@ public class Index extends Number implements Comparable<Index> {
 
 	@Override
 	public int hashCode() {
-		return Integer.hashCode(value);
+		return Ints.hashCode(value);
 	}
 
 	@Override
