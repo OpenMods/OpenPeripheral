@@ -3,7 +3,7 @@ package openperipheral.adapter.method;
 import java.util.Iterator;
 
 import openperipheral.adapter.ArgumentDescriptionBase;
-import openperipheral.adapter.types.IType;
+import openperipheral.api.adapter.IScriptType;
 import openperipheral.api.converter.IConverter;
 
 import com.google.common.base.Preconditions;
@@ -14,7 +14,7 @@ public class Argument extends ArgumentDescriptionBase {
 	public final TypeToken<?> javaType;
 	final int javaArgIndex;
 
-	public Argument(String name, String description, IType type, TypeToken<?> javaType, int javaArgIndex) {
+	public Argument(String name, String description, IScriptType type, TypeToken<?> javaType, int javaArgIndex) {
 		super(name, type, description);
 		this.javaArgIndex = javaArgIndex;
 		this.javaType = getArgType(javaType);

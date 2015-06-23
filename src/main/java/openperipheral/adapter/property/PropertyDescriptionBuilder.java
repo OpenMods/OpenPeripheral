@@ -6,8 +6,9 @@ import openperipheral.adapter.ArgumentDescriptionBase;
 import openperipheral.adapter.IMethodDescription;
 import openperipheral.adapter.IMethodDescription.IArgumentDescription;
 import openperipheral.adapter.types.AlternativeType;
-import openperipheral.adapter.types.IType;
+import openperipheral.adapter.types.SingleType;
 import openperipheral.adapter.types.TypeHelper;
+import openperipheral.api.adapter.IScriptType;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -21,7 +22,7 @@ public class PropertyDescriptionBuilder {
 	private static class IndexArgumentDescription extends ArgumentDescriptionBase {
 		private final boolean isOptional;
 
-		private IndexArgumentDescription(String name, IType type, String description, boolean isOptional) {
+		private IndexArgumentDescription(String name, IScriptType type, String description, boolean isOptional) {
 			super(name, type, description);
 			this.isOptional = isOptional;
 		}
@@ -36,9 +37,9 @@ public class PropertyDescriptionBuilder {
 	private final String capitalizedName;
 	private final String source;
 
-	private IType singleValueType;
-	private IType indexKeyType;
-	private IType indexValueType;
+	private IScriptType singleValueType;
+	private IScriptType indexKeyType;
+	private IScriptType indexValueType;
 
 	private boolean buildIndexedProperty;
 	private boolean buildSingleProperty;
@@ -51,12 +52,12 @@ public class PropertyDescriptionBuilder {
 		this.source = source;
 	}
 
-	public void addSingleParameter(IType singleType) {
+	public void addSingleParameter(IScriptType singleType) {
 		this.singleValueType = singleType;
 		this.buildSingleProperty = true;
 	}
 
-	public void addIndexParameter(IType keyType, IType valueType) {
+	public void addIndexParameter(IScriptType keyType, IScriptType valueType) {
 		this.indexKeyType = keyType;
 		this.indexValueType = valueType;
 		this.buildIndexedProperty = true;
@@ -71,12 +72,12 @@ public class PropertyDescriptionBuilder {
 		final String methodName = "set" + capitalizedName;
 		final List<IArgumentDescription> arguments = Lists.newArrayList();
 
-		final IType valueType = calculateValueType();
+		final IScriptType valueType = calculateValueType();
 
 		arguments.add(new ArgumentDescriptionBase(ARG_VALUE, valueType, ""));
 		if (buildIndexedProperty) arguments.add(createIndexArgument());
 
-		return new SimpleMethodDescription(methodName, description, source, arguments, IType.VOID);
+		return new SimpleMethodDescription(methodName, description, source, arguments, SingleType.VOID);
 	}
 
 	public IMethodDescription buildGetter() {
@@ -86,12 +87,12 @@ public class PropertyDescriptionBuilder {
 		final List<IArgumentDescription> arguments = Lists.newArrayList();
 		if (buildIndexedProperty) arguments.add(createIndexArgument());
 
-		final IType returnType = calculateValueType();
+		final IScriptType returnType = calculateValueType();
 
 		return new SimpleMethodDescription(methodName, description, source, arguments, returnType);
 	}
 
-	private IType calculateValueType() {
+	private IScriptType calculateValueType() {
 		if (buildIndexedProperty && buildSingleProperty) {
 			if (TypeHelper.compareTypes(singleValueType, indexValueType)) {
 				return singleValueType;

@@ -5,8 +5,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.*;
 
-import openperipheral.adapter.method.TypeQualifier;
-import openperipheral.adapter.types.IType;
+import openperipheral.adapter.TypeQualifier;
+import openperipheral.api.adapter.IScriptType;
 import openperipheral.api.struct.ScriptStruct;
 import openperipheral.api.struct.StructField;
 
@@ -19,7 +19,7 @@ public class TypeQualifierTest {
 
 	public static void testQualifier(String expected, Type type) {
 		final TypeQualifier qualifier = new TypeQualifier();
-		final IType qualified = qualifier.qualifyType(type);
+		final IScriptType qualified = qualifier.qualifyType(type);
 		Assert.assertEquals(expected, qualified.describe());
 	}
 
@@ -165,7 +165,7 @@ public class TypeQualifierTest {
 
 			final TypeQualifier qualifier = new TypeQualifier();
 
-			final IType qualified;
+			final IScriptType qualified;
 			try {
 				qualified = qualifier.qualifyType(f.getGenericType());
 			} catch (Exception e) {

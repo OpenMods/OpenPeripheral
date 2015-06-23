@@ -1,10 +1,11 @@
 package openperipheral.adapter.types;
 
+import openperipheral.api.adapter.IScriptType;
 import openperipheral.api.adapter.method.ArgType;
 
 import com.google.common.base.Preconditions;
 
-public class SingleArgType implements IType {
+public class SingleArgType implements IScriptType {
 
 	public static final SingleArgType TABLE = new SingleArgType(ArgType.TABLE);
 	public static final SingleArgType NUMBER = new SingleArgType(ArgType.NUMBER);

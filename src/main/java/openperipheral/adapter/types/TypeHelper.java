@@ -4,7 +4,8 @@ import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
 
-import openperipheral.adapter.method.TypeQualifier;
+import openperipheral.adapter.TypeQualifier;
+import openperipheral.api.adapter.IScriptType;
 import openperipheral.api.adapter.method.ArgType;
 import openperipheral.api.adapter.method.ReturnType;
 
@@ -13,43 +14,43 @@ import com.google.common.collect.Lists;
 
 public class TypeHelper {
 
-	public static IType single(ArgType type) {
+	public static IScriptType single(ArgType type) {
 		return SingleArgType.valueOf(type);
 	}
 
-	public static IType single(ReturnType type) {
+	public static IScriptType single(ReturnType type) {
 		return SingleReturnType.valueOf(type);
 	}
 
-	public static IType create(ReturnType... types) {
+	public static IScriptType create(ReturnType... types) {
 		return createFromReturn(Arrays.asList(types));
 	}
 
-	public static IType create(ArgType... types) {
+	public static IScriptType create(ArgType... types) {
 		return createFromArg(Arrays.asList(types));
 	}
 
-	public static IType single(ReturnType type, IRange range) {
+	public static IScriptType single(ReturnType type, IRange range) {
 		Preconditions.checkNotNull(type);
 		Preconditions.checkNotNull(range);
 		return new BoundedType(SingleReturnType.valueOf(type), range);
 	}
 
-	public static IType single(ArgType type, IRange range) {
+	public static IScriptType single(ArgType type, IRange range) {
 		Preconditions.checkNotNull(type);
 		Preconditions.checkNotNull(range);
 		return new BoundedType(SingleArgType.valueOf(type), range);
 	}
 
-	public static IType bounded(IType type, IRange range) {
+	public static IScriptType bounded(IScriptType type, IRange range) {
 		Preconditions.checkNotNull(type);
 		Preconditions.checkNotNull(range);
 		return new BoundedType(type, range);
 	}
 
-	public static IType createFromReturn(List<ReturnType> types) {
+	public static IScriptType createFromReturn(List<ReturnType> types) {
 		if (types.size() == 0) {
-			return IType.VOID;
+			return SingleType.VOID;
 		} else if (types.size() == 1) {
 			return SingleReturnType.valueOf(types.get(0));
 		} else {
@@ -57,9 +58,9 @@ public class TypeHelper {
 		}
 	}
 
-	public static IType createFromArg(List<ArgType> types) {
+	public static IScriptType createFromArg(List<ArgType> types) {
 		if (types.size() == 0) {
-			return IType.VOID;
+			return SingleType.VOID;
 		} else if (types.size() == 1) {
 			return SingleArgType.valueOf(types.get(0));
 		} else {
@@ -67,16 +68,16 @@ public class TypeHelper {
 		}
 	}
 
-	public static IType wrapSingleTypes(ReturnType... types) {
+	public static IScriptType wrapSingleTypes(ReturnType... types) {
 		return wrapSingleReturnTypes(Arrays.asList(types));
 	}
 
-	public static IType wrapSingleTypes(ArgType... types) {
+	public static IScriptType wrapSingleTypes(ArgType... types) {
 		return wrapSingleArgTypes(Arrays.asList(types));
 	}
 
-	public static IType wrapSingleReturnTypes(List<ReturnType> types) {
-		List<IType> result = Lists.newArrayList();
+	public static IScriptType wrapSingleReturnTypes(List<ReturnType> types) {
+		List<IScriptType> result = Lists.newArrayList();
 
 		for (ReturnType t : types)
 			result.add(SingleReturnType.valueOf(t));
@@ -84,8 +85,8 @@ public class TypeHelper {
 		return new TupleType(result);
 	}
 
-	public static IType wrapSingleArgTypes(List<ArgType> types) {
-		List<IType> result = Lists.newArrayList();
+	public static IScriptType wrapSingleArgTypes(List<ArgType> types) {
+		List<IScriptType> result = Lists.newArrayList();
 
 		for (ArgType t : types)
 			result.add(SingleArgType.valueOf(t));
@@ -93,11 +94,11 @@ public class TypeHelper {
 		return new TupleType(result);
 	}
 
-	public static boolean isVoid(IType type) {
-		return type == IType.VOID;
+	public static boolean isVoid(IScriptType type) {
+		return type == SingleType.VOID;
 	}
 
-	public static boolean compareTypes(IType left, IType right) {
+	public static boolean compareTypes(IScriptType left, IScriptType right) {
 		if (left == right) return true;
 		if (left == null || right == null) return false;
 
@@ -106,8 +107,8 @@ public class TypeHelper {
 		return leftDescription.equals(rightDescription);
 	}
 
-	public static IType interpretArgType(ArgType givenType, Type targetType) {
-		return givenType == ArgType.AUTO? TypeQualifier.instance.qualifyType(targetType) : SingleArgType.valueOf(givenType);
+	public static IScriptType interpretArgType(ArgType givenType, Type targetType) {
+		return givenType == ArgType.AUTO? TypeQualifier.INSTANCE.qualifyType(targetType) : SingleArgType.valueOf(givenType);
 	}
 
 }

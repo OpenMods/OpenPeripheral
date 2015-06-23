@@ -19,9 +19,9 @@ import openperipheral.adapter.*;
 import openperipheral.adapter.IMethodDescription.IArgumentDescription;
 import openperipheral.adapter.composed.IMethodMap;
 import openperipheral.adapter.composed.IMethodMap.IMethodVisitor;
-import openperipheral.adapter.types.IType;
 import openperipheral.adapter.types.TypeHelper;
 import openperipheral.adapter.wrappers.AdapterWrapper;
+import openperipheral.api.adapter.IScriptType;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -187,7 +187,7 @@ public class DocBuilder {
 		}
 
 		{
-			final IType returnType = description.returnTypes();
+			final IScriptType returnType = description.returnTypes();
 			if (!TypeHelper.isVoid(returnType)) {
 				final String returnTypes = returnType.describe();
 				result.appendChild(createProperty("returns", returnTypes));

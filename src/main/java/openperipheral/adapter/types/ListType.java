@@ -1,10 +1,12 @@
 package openperipheral.adapter.types;
 
-public class ListType implements IType {
+import openperipheral.api.adapter.IScriptType;
 
-	public final IType componentType;
+public class ListType implements IScriptType {
 
-	public ListType(IType componentType) {
+	public final IScriptType componentType;
+
+	public ListType(IScriptType componentType) {
 		this.componentType = componentType;
 	}
 

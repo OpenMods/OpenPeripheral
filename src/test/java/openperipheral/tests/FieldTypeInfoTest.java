@@ -7,8 +7,8 @@ import java.util.Map;
 
 import openperipheral.adapter.property.FieldTypeInfoBuilder;
 import openperipheral.adapter.property.FieldTypeInfoBuilder.Result;
-import openperipheral.adapter.types.IType;
 import openperipheral.adapter.types.SingleType;
+import openperipheral.api.adapter.IScriptType;
 import openperipheral.api.helpers.Index;
 import openperipheral.api.struct.ScriptStruct;
 import openperipheral.api.struct.StructField;
@@ -23,8 +23,8 @@ public class FieldTypeInfoTest {
 	private static final String TYPE_A_DESCRIPTION = "TEST_TYPE_A";
 	private static final String TYPE_B_DESCRIPTION = "TEST_TYPE_B";
 
-	private static final IType TYPE_A = new SingleType(TYPE_A_DESCRIPTION);
-	private static final IType TYPE_B = new SingleType(TYPE_B_DESCRIPTION);
+	private static final IScriptType TYPE_A = new SingleType(TYPE_A_DESCRIPTION);
+	private static final IScriptType TYPE_B = new SingleType(TYPE_B_DESCRIPTION);
 
 	public static class Types {
 		public Map<String, Integer> mapField;

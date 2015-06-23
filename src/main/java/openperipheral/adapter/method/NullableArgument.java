@@ -2,7 +2,7 @@ package openperipheral.adapter.method;
 
 import java.util.Iterator;
 
-import openperipheral.adapter.types.IType;
+import openperipheral.api.adapter.IScriptType;
 import openperipheral.api.converter.IConverter;
 
 import com.google.common.base.Preconditions;
@@ -10,7 +10,7 @@ import com.google.common.reflect.TypeToken;
 
 public class NullableArgument extends Argument {
 
-	public NullableArgument(String name, String description, IType luaType, TypeToken<?> javaType, int javaArgIndex) {
+	public NullableArgument(String name, String description, IScriptType luaType, TypeToken<?> javaType, int javaArgIndex) {
 		super(name, description, luaType, javaType, javaArgIndex);
 	}
 

@@ -8,9 +8,9 @@ import openmods.injector.InjectedClassesManager;
 import openperipheral.ApiProvider;
 import openperipheral.CommandDump;
 import openperipheral.adapter.AdapterRegistry;
+import openperipheral.adapter.TypeQualifier;
 import openperipheral.adapter.composed.ComposedMethodsFactory;
 import openperipheral.adapter.composed.MethodSelector;
-import openperipheral.adapter.method.TypeQualifier;
 import openperipheral.adapter.types.SingleArgType;
 import openperipheral.api.Constants;
 import openperipheral.api.architecture.IArchitectureAccess;
@@ -67,7 +67,7 @@ public class ModuleOpenComputers {
 		IConverter converter = new TypeConversionRegistryOC();
 		TypeConvertersProvider.INSTANCE.registerConverter(Constants.ARCH_OPEN_COMPUTERS, converter);
 
-		TypeQualifier.instance.registerType(Value.class, SingleArgType.OBJECT);
+		TypeQualifier.INSTANCE.registerType(Value.class, SingleArgType.OBJECT);
 	}
 
 	public static void registerProvider() {

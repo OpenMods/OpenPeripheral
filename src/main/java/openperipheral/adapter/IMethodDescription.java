@@ -3,13 +3,13 @@ package openperipheral.adapter;
 import java.util.List;
 import java.util.Set;
 
-import openperipheral.adapter.types.IType;
+import openperipheral.api.adapter.IScriptType;
 
 public interface IMethodDescription {
 	public interface IArgumentDescription {
 		public String name();
 
-		public IType type();
+		public IScriptType type();
 
 		public String description();
 
@@ -30,7 +30,7 @@ public interface IMethodDescription {
 
 	public List<IArgumentDescription> arguments();
 
-	public IType returnTypes();
+	public IScriptType returnTypes();
 
 	public Set<String> attributes();
 }

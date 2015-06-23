@@ -7,7 +7,6 @@ import java.util.List;
 
 import openperipheral.adapter.IMethodDescription;
 import openperipheral.adapter.IMethodExecutor;
-import openperipheral.adapter.types.IType;
 import openperipheral.adapter.types.TypeHelper;
 import openperipheral.api.adapter.*;
 import openperipheral.api.adapter.IndexedCallbackProperty.GetFromFieldType;
@@ -38,7 +37,7 @@ public class PropertyListBuilder {
 
 	private class SingleParameters extends Parameters {
 
-		public final IType valueType;
+		public final IScriptType valueType;
 
 		public SingleParameters(String name, String getterDescription, String setterDescription, boolean isDelegating, boolean readOnly, boolean valueNullable, ArgType valueType) {
 			super(name, getterDescription, setterDescription, isDelegating, readOnly, valueNullable);
@@ -49,9 +48,9 @@ public class PropertyListBuilder {
 	private class IndexedParameters extends Parameters {
 		public final boolean expandable;
 		public final Type keyType;
-		public final IType docKeyType;
+		public final IScriptType docKeyType;
 		public final IValueTypeProvider valueTypeProvider;
-		public final IType docValueType;
+		public final IScriptType docValueType;
 
 		public IndexedParameters(String name, String getterDescription, String setterDescription, boolean isDelegating, boolean readOnly, boolean valueNullable, boolean expandable, Class<?> keyType, ArgType keyDocType, Class<?> valueType, ArgType valueDocType) {
 			super(name, getterDescription, setterDescription, isDelegating, readOnly, valueNullable);

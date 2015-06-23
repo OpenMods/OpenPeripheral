@@ -1,12 +1,14 @@
 package openperipheral.adapter.types;
 
-public class MapType implements IType {
+import openperipheral.api.adapter.IScriptType;
 
-	public final IType keyType;
+public class MapType implements IScriptType {
 
-	public final IType valueType;
+	public final IScriptType keyType;
 
-	public MapType(IType keyType, IType valueType) {
+	public final IScriptType valueType;
+
+	public MapType(IScriptType keyType, IScriptType valueType) {
 		this.keyType = keyType;
 		this.valueType = valueType;
 	}

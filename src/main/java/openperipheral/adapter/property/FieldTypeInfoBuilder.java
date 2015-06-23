@@ -4,8 +4,9 @@ import java.lang.reflect.Type;
 import java.util.Set;
 
 import openmods.reflection.TypeUtils;
-import openperipheral.adapter.method.TypeQualifier;
-import openperipheral.adapter.types.IType;
+import openperipheral.adapter.TypeQualifier;
+import openperipheral.adapter.types.SingleType;
+import openperipheral.api.adapter.IScriptType;
 import openperipheral.api.helpers.Index;
 import openperipheral.converter.StructCache;
 import openperipheral.converter.StructCache.IFieldHandler;
@@ -46,7 +47,7 @@ public class FieldTypeInfoBuilder {
 		};
 	}
 
-	private static IType identityCommonStructType(IStructHandler handler) {
+	private static IScriptType identityCommonStructType(IStructHandler handler) {
 		Set<Type> types = Sets.newHashSet();
 
 		for (String fieldName : handler.fields()) {
@@ -56,8 +57,8 @@ public class FieldTypeInfoBuilder {
 
 		if (types.size() == 1) {
 			Type type = types.iterator().next();
-			return TypeQualifier.instance.qualifyType(type);
-		} else return IType.WILDCHAR;
+			return TypeQualifier.INSTANCE.qualifyType(type);
+		} else return SingleType.WILDCHAR;
 	}
 
 	private Pair<Type, Type> identifyBasicTypes() {
@@ -79,22 +80,22 @@ public class FieldTypeInfoBuilder {
 
 	private Type overridenKeyType;
 
-	private IType overridenKeyDocType;
+	private IScriptType overridenKeyDocType;
 
 	private Type overridenValueType;
 
-	private IType overridenValueDocType;
+	private IScriptType overridenValueDocType;
 
 	public static class Result {
 		public final Type keyType;
 
-		public final IType keyDocType;
+		public final IScriptType keyDocType;
 
 		public final IValueTypeProvider valueType;
 
-		public final IType valueDocType;
+		public final IScriptType valueDocType;
 
-		public Result(Type keyType, IType keyDocType, IValueTypeProvider valueType, IType valueDocType) {
+		public Result(Type keyType, IScriptType keyDocType, IValueTypeProvider valueType, IScriptType valueDocType) {
 			this.keyType = keyType;
 			this.keyDocType = keyDocType;
 			this.valueType = valueType;
@@ -106,7 +107,7 @@ public class FieldTypeInfoBuilder {
 		this.overridenKeyType = type;
 	}
 
-	public void overrideKeyDocType(IType type) {
+	public void overrideKeyDocType(IScriptType type) {
 		this.overridenKeyDocType = type;
 	}
 
@@ -114,20 +115,20 @@ public class FieldTypeInfoBuilder {
 		this.overridenValueType = type;
 	}
 
-	public void overrideValueDocType(IType type) {
+	public void overrideValueDocType(IScriptType type) {
 		this.overridenValueDocType = type;
 	}
 
 	public Result build() {
 		Type keyType = overridenKeyType;
-		IType keyDocType = overridenKeyDocType;
-		IType valueDocType = overridenValueDocType;
+		IScriptType keyDocType = overridenKeyDocType;
+		IScriptType valueDocType = overridenValueDocType;
 
 		IValueTypeProvider valueTypeProvider = null;
 
 		if (overridenValueType != null) {
 			valueTypeProvider = createConstantTypeProvider(overridenValueType);
-			if (valueDocType == null) valueDocType = TypeQualifier.instance.qualifyType(overridenValueType);
+			if (valueDocType == null) valueDocType = TypeQualifier.INSTANCE.qualifyType(overridenValueType);
 		}
 
 		if (keyType == null || overridenValueType == null) {
@@ -141,11 +142,11 @@ public class FieldTypeInfoBuilder {
 				if (keyType == null) keyType = deducedTypes.getKey();
 				final Type valueType = deducedTypes.getValue();
 				if (valueTypeProvider == null) valueTypeProvider = createConstantTypeProvider(valueType);
-				if (valueDocType == null) valueDocType = TypeQualifier.instance.qualifyType(valueType);
+				if (valueDocType == null) valueDocType = TypeQualifier.INSTANCE.qualifyType(valueType);
 			}
 		}
 
-		if (keyDocType == null) keyDocType = TypeQualifier.instance.qualifyType(keyType);
+		if (keyDocType == null) keyDocType = TypeQualifier.INSTANCE.qualifyType(keyType);
 
 		Preconditions.checkNotNull(keyType, "Failed to deduce key type");
 		Preconditions.checkNotNull(keyDocType, "Failed to deduce key doc type");

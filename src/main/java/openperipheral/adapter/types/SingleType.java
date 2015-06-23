@@ -1,6 +1,12 @@
 package openperipheral.adapter.types;
 
-public class SingleType implements IType {
+import openperipheral.api.adapter.IScriptType;
+
+public class SingleType implements IScriptType {
+
+	public static IScriptType VOID = new SingleType("()");
+	public static IScriptType WILDCHAR = new SingleType("*");
+	public static IScriptType UNKNOWN = new SingleType("?");
 
 	private final String type;
 

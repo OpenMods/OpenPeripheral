@@ -1,12 +1,14 @@
 package openperipheral.adapter.types;
 
-public class BoundedType implements IType {
+import openperipheral.api.adapter.IScriptType;
 
-	public final IType type;
+public class BoundedType implements IScriptType {
+
+	public final IScriptType type;
 
 	public final IRange range;
 
-	public BoundedType(IType type, IRange range) {
+	public BoundedType(IScriptType type, IRange range) {
 		this.type = type;
 		this.range = range;
 	}

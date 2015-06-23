@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import openperipheral.adapter.IMethodDescription;
-import openperipheral.adapter.types.IType;
+import openperipheral.api.adapter.IScriptType;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Sets;
@@ -14,9 +14,9 @@ public class SimpleMethodDescription implements IMethodDescription {
 	private final String description;
 	private final String source;
 	private final List<IArgumentDescription> arguments;
-	private final IType returnType;
+	private final IScriptType returnType;
 
-	public SimpleMethodDescription(String name, String description, String source, List<IArgumentDescription> arguments, IType returnType) {
+	public SimpleMethodDescription(String name, String description, String source, List<IArgumentDescription> arguments, IScriptType returnType) {
 		this.names = ImmutableList.of(name);
 		this.description = description;
 		this.source = source;
@@ -50,7 +50,7 @@ public class SimpleMethodDescription implements IMethodDescription {
 	}
 
 	@Override
-	public IType returnTypes() {
+	public IScriptType returnTypes() {
 		return returnType;
 	}
 }

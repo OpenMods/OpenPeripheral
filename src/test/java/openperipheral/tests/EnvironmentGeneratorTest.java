@@ -18,7 +18,7 @@ import li.cil.oc.api.network.*;
 import openperipheral.adapter.*;
 import openperipheral.adapter.IMethodDescription.IArgumentDescription;
 import openperipheral.adapter.composed.IndexedMethodMap;
-import openperipheral.adapter.types.IType;
+import openperipheral.adapter.types.SingleType;
 import openperipheral.api.Constants;
 import openperipheral.api.architecture.IArchitectureAccess;
 import openperipheral.api.architecture.IAttachable;
@@ -105,7 +105,7 @@ public class EnvironmentGeneratorTest {
 		IMethodDescription descriptable = mock(IMethodDescription.class);
 
 		when(descriptable.arguments()).thenReturn(ImmutableList.<IArgumentDescription> of());
-		when(descriptable.returnTypes()).thenReturn(IType.VOID);
+		when(descriptable.returnTypes()).thenReturn(SingleType.VOID);
 		when(descriptable.description()).thenReturn("");
 
 		when(executor.description()).thenReturn(descriptable);

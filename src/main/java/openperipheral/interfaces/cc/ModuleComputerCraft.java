@@ -6,10 +6,10 @@ import openperipheral.ApiProvider;
 import openperipheral.CommandDump;
 import openperipheral.adapter.AdapterRegistry;
 import openperipheral.adapter.IMethodExecutor;
+import openperipheral.adapter.TypeQualifier;
 import openperipheral.adapter.composed.ComposedMethodsFactory;
 import openperipheral.adapter.composed.IndexedMethodMap;
 import openperipheral.adapter.composed.MethodSelector;
-import openperipheral.adapter.method.TypeQualifier;
 import openperipheral.adapter.types.SingleArgType;
 import openperipheral.api.Constants;
 import openperipheral.api.architecture.IArchitectureAccess;
@@ -63,7 +63,7 @@ public class ModuleComputerCraft {
 		// CC converter is default one (legacy behaviour)
 		TypeConvertersProvider.INSTANCE.registerConverter(Constants.ARCH_COMPUTER_CRAFT, converter);
 
-		TypeQualifier.instance.registerType(ILuaObject.class, SingleArgType.OBJECT);
+		TypeQualifier.INSTANCE.registerType(ILuaObject.class, SingleArgType.OBJECT);
 	}
 
 	public static void registerProvider() {

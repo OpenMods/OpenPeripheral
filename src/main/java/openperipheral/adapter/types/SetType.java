@@ -1,10 +1,12 @@
 package openperipheral.adapter.types;
 
-public class SetType implements IType {
+import openperipheral.api.adapter.IScriptType;
 
-	public final IType componentType;
+public class SetType implements IScriptType {
 
-	public SetType(IType componentType) {
+	public final IScriptType componentType;
+
+	public SetType(IScriptType componentType) {
 		this.componentType = componentType;
 	}
 

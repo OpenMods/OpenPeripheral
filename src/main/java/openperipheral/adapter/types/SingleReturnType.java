@@ -1,10 +1,11 @@
 package openperipheral.adapter.types;
 
+import openperipheral.api.adapter.IScriptType;
 import openperipheral.api.adapter.method.ReturnType;
 
 import com.google.common.base.Preconditions;
 
-public class SingleReturnType implements IType {
+public class SingleReturnType implements IScriptType {
 
 	public static final SingleReturnType TABLE = new SingleReturnType(ReturnType.TABLE);
 	public static final SingleReturnType NUMBER = new SingleReturnType(ReturnType.NUMBER);
