@@ -16,10 +16,13 @@ public class IndexedGetterExecutor implements IPropertyExecutor {
 
 	private final IndexedTypeInfo typeInfo;
 
-	public IndexedGetterExecutor(Field field, IIndexedFieldManipulator manipulator, IndexedTypeInfo typeInfo) {
+	private final IIndexedPropertyAccessHandler accessHandler;
+
+	public IndexedGetterExecutor(Field field, IIndexedFieldManipulator manipulator, IndexedTypeInfo typeInfo, IIndexedPropertyAccessHandler accessHandler) {
 		this.field = field;
 		this.manipulator = manipulator;
 		this.typeInfo = typeInfo;
+		this.accessHandler = accessHandler;
 	}
 
 	@Override
@@ -29,6 +32,7 @@ public class IndexedGetterExecutor implements IPropertyExecutor {
 		Preconditions.checkArgument(index != null, "Invalid index");
 
 		final Object target = PropertyUtils.getContents(owner, field);
+		accessHandler.onGet(owner, target, field, index);
 		final Object result = manipulator.getField(owner, target, field, index);
 		final Object converted = converter.fromJava(result);
 		return ArrayUtils.toArray(converted);

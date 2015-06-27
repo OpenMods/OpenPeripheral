@@ -18,12 +18,15 @@ public class SetterExecutor implements IPropertyExecutor {
 
 	private final SingleTypeInfo typeInfo;
 
+	private final ISinglePropertyAccessHandler accessHandler;
+
 	private final boolean nullable;
 
-	public SetterExecutor(Field field, IFieldManipulator manipulator, SingleTypeInfo typeInfo, boolean nullable) {
+	public SetterExecutor(Field field, IFieldManipulator manipulator, SingleTypeInfo typeInfo, ISinglePropertyAccessHandler accessHandler, boolean nullable) {
 		this.field = field;
-		this.typeInfo = typeInfo;
 		this.manipulator = manipulator;
+		this.typeInfo = typeInfo;
+		this.accessHandler = accessHandler;
 		this.nullable = nullable;
 	}
 
@@ -35,6 +38,7 @@ public class SetterExecutor implements IPropertyExecutor {
 		final Object target = PropertyUtils.getContents(owner, field);
 		final Type valueType = typeInfo.getValueType(target);
 		final Object converted = TypeConverter.nullableToJava(converter, nullable, arg, valueType);
+		accessHandler.onSet(owner, target, field, converted);
 		manipulator.setField(owner, target, field, converted);
 
 		return ArrayUtils.EMPTY_OBJECT_ARRAY;

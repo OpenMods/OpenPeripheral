@@ -14,9 +14,12 @@ public class GetterExecutor implements IPropertyExecutor {
 
 	private final IFieldManipulator manipulator;
 
-	public GetterExecutor(Field field, IFieldManipulator manipulator) {
+	private final ISinglePropertyAccessHandler accessHandler;
+
+	public GetterExecutor(Field field, IFieldManipulator manipulator, ISinglePropertyAccessHandler accessHandler) {
 		this.field = field;
 		this.manipulator = manipulator;
+		this.accessHandler = accessHandler;
 	}
 
 	@Override
@@ -24,6 +27,7 @@ public class GetterExecutor implements IPropertyExecutor {
 		Preconditions.checkArgument(args.length == 0, "Getter has no arguments");
 
 		final Object target = PropertyUtils.getContents(owner, field);
+		accessHandler.onGet(owner, target, field);
 		final Object result = manipulator.getField(owner, target, field);
 		final Object converted = converter.fromJava(result);
 		return ArrayUtils.toArray(converted);

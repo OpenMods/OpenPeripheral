@@ -20,20 +20,26 @@ public class MergedSetterExecutor implements IPropertyExecutor {
 
 	private final SingleTypeInfo singleTypeInfo;
 
+	private final ISinglePropertyAccessHandler singleAccessHandler;
+
 	private final boolean indexedNullable;
 
 	private final IIndexedFieldManipulator indexedManipulator;
 
 	private final IndexedTypeInfo indexedTypeInfo;
 
-	public MergedSetterExecutor(Field field, boolean singleNullable, IFieldManipulator singleManipulator, SingleTypeInfo singleTypeInfo, boolean indexedNullable, IIndexedFieldManipulator indexedManipulator, IndexedTypeInfo indexedTypeInfo) {
+	private final IIndexedPropertyAccessHandler indexedAccessHandler;
+
+	public MergedSetterExecutor(Field field, boolean singleNullable, IFieldManipulator singleManipulator, SingleTypeInfo singleTypeInfo, ISinglePropertyAccessHandler singleAccessHandler, boolean indexedNullable, IIndexedFieldManipulator indexedManipulator, IndexedTypeInfo indexedTypeInfo, IIndexedPropertyAccessHandler indexedAccessHandler) {
 		this.field = field;
 		this.singleNullable = singleNullable;
 		this.singleManipulator = singleManipulator;
 		this.singleTypeInfo = singleTypeInfo;
+		this.singleAccessHandler = singleAccessHandler;
 		this.indexedNullable = indexedNullable;
 		this.indexedManipulator = indexedManipulator;
 		this.indexedTypeInfo = indexedTypeInfo;
+		this.indexedAccessHandler = indexedAccessHandler;
 	}
 
 	@Override
@@ -50,6 +56,7 @@ public class MergedSetterExecutor implements IPropertyExecutor {
 			final Type valueType = indexedTypeInfo.getValueType(target, convertedKey);
 			final Object convertedValue = TypeConverter.nullableToJava(converter, indexedNullable, value, valueType);
 
+			indexedAccessHandler.onSet(owner, target, field, convertedKey, convertedValue);
 			indexedManipulator.setField(owner, target, field, convertedKey, convertedValue);
 
 		} else if (args.length == 1) {
@@ -59,6 +66,7 @@ public class MergedSetterExecutor implements IPropertyExecutor {
 			final Type valueType = singleTypeInfo.getValueType(target);
 			final Object convertedValue = TypeConverter.nullableToJava(converter, singleNullable, value, valueType);
 
+			singleAccessHandler.onSet(owner, target, field, convertedValue);
 			singleManipulator.setField(owner, target, field, convertedValue);
 
 			return ArrayUtils.EMPTY_OBJECT_ARRAY;

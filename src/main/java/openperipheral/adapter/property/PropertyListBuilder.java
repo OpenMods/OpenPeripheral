@@ -10,6 +10,8 @@ import openperipheral.adapter.types.TypeHelper;
 import openperipheral.api.adapter.*;
 import openperipheral.api.adapter.method.ArgType;
 import openperipheral.api.property.GetTypeFromField;
+import openperipheral.api.property.IIndexedPropertyListener;
+import openperipheral.api.property.ISinglePropertyListener;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -75,11 +77,25 @@ public class PropertyListBuilder {
 	private SingleParameters singleParameters;
 	private IndexedParameters indexedParameters;
 
+	private final ISinglePropertyAccessHandler singleAccessHandler;
+	private final IIndexedPropertyAccessHandler indexedAccessHandler;
+
 	public PropertyListBuilder(Class<?> ownerClass, Field field, String source) {
 		Preconditions.checkArgument(field.getDeclaringClass().isAssignableFrom(ownerClass), "Field %s not usable on %s", field, ownerClass);
 		this.ownerClass = ownerClass;
 		this.field = field;
 		this.source = source;
+
+		this.singleAccessHandler = getSingleAccessHandler(ownerClass);
+		this.indexedAccessHandler = getIndexedAccessHandler(ownerClass);
+	}
+
+	private static ISinglePropertyAccessHandler getSingleAccessHandler(Class<?> ownerClass) {
+		return (ISinglePropertyListener.class.isAssignableFrom(ownerClass))? ISinglePropertyAccessHandler.DELEGATE_TO_OWNER : ISinglePropertyAccessHandler.IGNORE;
+	}
+
+	private static IIndexedPropertyAccessHandler getIndexedAccessHandler(Class<?> ownerClass) {
+		return (IIndexedPropertyListener.class.isAssignableFrom(ownerClass))? IIndexedPropertyAccessHandler.DELEGATE_TO_OWNER : IIndexedPropertyAccessHandler.IGNORE;
 	}
 
 	public void addSingle(String name, String getterDescription, String setterDescription, boolean isDelegating, boolean readOnly, boolean valueNullable, Class<?> valueType, ArgType docType) {
@@ -175,7 +191,7 @@ public class PropertyListBuilder {
 		descriptionBuilder.addSingleParameter(params.typeInfo);
 		if (!Strings.isNullOrEmpty(params.getterDescription)) descriptionBuilder.overrideDescription(params.getterDescription);
 		final IMethodDescription description = descriptionBuilder.buildGetter();
-		final IPropertyExecutor caller = new GetterExecutor(field, fieldManipulator);
+		final IPropertyExecutor caller = new GetterExecutor(field, fieldManipulator, singleAccessHandler);
 		return new PropertyExecutor(description, caller);
 	}
 
@@ -184,7 +200,7 @@ public class PropertyListBuilder {
 		descriptionBuilder.addSingleParameter(params.typeInfo);
 		if (!Strings.isNullOrEmpty(params.setterDescription)) descriptionBuilder.overrideDescription(params.setterDescription);
 		final IMethodDescription description = descriptionBuilder.buildSetter();
-		final IPropertyExecutor caller = new SetterExecutor(field, fieldManipulator, params.typeInfo, params.valueNullable);
+		final IPropertyExecutor caller = new SetterExecutor(field, fieldManipulator, params.typeInfo, singleAccessHandler, params.valueNullable);
 		return new PropertyExecutor(description, caller);
 	}
 
@@ -195,7 +211,7 @@ public class PropertyListBuilder {
 		if (!Strings.isNullOrEmpty(params.getterDescription)) descriptionBuilder.overrideDescription(params.getterDescription);
 
 		final IMethodDescription description = descriptionBuilder.buildGetter();
-		final IPropertyExecutor caller = new IndexedGetterExecutor(field, fieldManipulator, params.typeInfo);
+		final IPropertyExecutor caller = new IndexedGetterExecutor(field, fieldManipulator, params.typeInfo, indexedAccessHandler);
 		return new PropertyExecutor(description, caller);
 	}
 
@@ -206,7 +222,7 @@ public class PropertyListBuilder {
 		if (!Strings.isNullOrEmpty(params.setterDescription)) descriptionBuilder.overrideDescription(params.setterDescription);
 
 		final IMethodDescription description = descriptionBuilder.buildSetter();
-		final IPropertyExecutor caller = new IndexedSetterExecutor(field, fieldManipulator, params.typeInfo, params.valueNullable);
+		final IPropertyExecutor caller = new IndexedSetterExecutor(field, fieldManipulator, params.typeInfo, indexedAccessHandler, params.valueNullable);
 		return new PropertyExecutor(description, caller);
 	}
 
@@ -219,7 +235,7 @@ public class PropertyListBuilder {
 		else if (!Strings.isNullOrEmpty(indexedParameters.getterDescription)) descriptionBuilder.overrideDescription(indexedParameters.getterDescription);
 
 		final IMethodDescription description = descriptionBuilder.buildGetter();
-		final IPropertyExecutor caller = new MergedGetterExecutor(field, singleFieldManipulator, indexedFieldManipulator, indexedParameters.typeInfo);
+		final IPropertyExecutor caller = new MergedGetterExecutor(field, singleFieldManipulator, singleAccessHandler, indexedFieldManipulator, indexedParameters.typeInfo, indexedAccessHandler);
 		return new PropertyExecutor(description, caller);
 	}
 
@@ -230,7 +246,7 @@ public class PropertyListBuilder {
 		if (!Strings.isNullOrEmpty(singleParameters.setterDescription)) descriptionBuilder.overrideDescription(singleParameters.setterDescription);
 		else if (!Strings.isNullOrEmpty(singleParameters.setterDescription)) descriptionBuilder.overrideDescription(singleParameters.setterDescription);
 		final IMethodDescription description = descriptionBuilder.buildSetter();
-		final IPropertyExecutor caller = new MergedSetterExecutor(field, singleParameters.valueNullable, singleFieldManipulator, singleParameters.typeInfo, indexedParameters.valueNullable, indexedFieldManipulator, indexedParameters.typeInfo);
+		final IPropertyExecutor caller = new MergedSetterExecutor(field, singleParameters.valueNullable, singleFieldManipulator, singleParameters.typeInfo, singleAccessHandler, indexedParameters.valueNullable, indexedFieldManipulator, indexedParameters.typeInfo, indexedAccessHandler);
 		return new PropertyExecutor(description, caller);
 	}
 
