@@ -63,6 +63,13 @@ abstract class SafePeripheralFactory implements IPeripheralFactory<TileEntity> {
 
 	private static final IPeripheral PLACEHOLDER = new BrokenPeripheral();
 
+	public static final IPeripheralFactory<TileEntity> BROKEN_FACTORY = new IPeripheralFactory<TileEntity>() {
+		@Override
+		public IPeripheral getPeripheral(TileEntity obj, int side) {
+			return PLACEHOLDER;
+		}
+	};
+
 	@Override
 	public IPeripheral getPeripheral(TileEntity tile, int side) {
 		if (tile == null) return null;

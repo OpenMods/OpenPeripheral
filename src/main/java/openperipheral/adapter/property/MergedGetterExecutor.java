@@ -1,7 +1,6 @@
 package openperipheral.adapter.property;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Type;
 
 import openperipheral.api.converter.IConverter;
 
@@ -17,25 +16,26 @@ public class MergedGetterExecutor implements IPropertyExecutor {
 
 	private final IIndexedFieldManipulator indexedManipulator;
 
-	private final Type keyType;
+	private final IndexedTypeInfo indexedTypeInfo;
 
-	public MergedGetterExecutor(Field field, IFieldManipulator manipulator, IIndexedFieldManipulator indexedManipulator, Type keyType) {
+	public MergedGetterExecutor(Field field, IFieldManipulator manipulator, IIndexedFieldManipulator indexedManipulator, IndexedTypeInfo indexedTypeInfo) {
 		this.field = field;
 		this.manipulator = manipulator;
 		this.indexedManipulator = indexedManipulator;
-		this.keyType = keyType;
+		this.indexedTypeInfo = indexedTypeInfo;
 	}
 
 	@Override
-	public Object[] call(IConverter converter, Object target, Object... args) {
-
+	public Object[] call(IConverter converter, Object owner, Object... args) {
 		final Object result;
 		if (args.length == 0) {
-			result = manipulator.getField(target, field);
+			final Object target = PropertyUtils.getContents(owner, field);
+			result = manipulator.getField(owner, target, field);
 		} else if (args.length == 1) {
-			final Object key = converter.toJava(args[0], keyType);
+			final Object key = converter.toJava(args[0], indexedTypeInfo.keyType);
 			Preconditions.checkArgument(key != null, "Invalid index");
-			result = indexedManipulator.getField(target, field, key);
+			final Object target = PropertyUtils.getContents(owner, field);
+			result = indexedManipulator.getField(owner, target, field, key);
 		} else {
 			throw new IllegalArgumentException("Getter can have at most one parameter (index)");
 		}

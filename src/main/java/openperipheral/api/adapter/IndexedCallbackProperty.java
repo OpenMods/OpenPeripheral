@@ -3,6 +3,7 @@ package openperipheral.api.adapter;
 import java.lang.annotation.*;
 
 import openperipheral.api.adapter.method.ArgType;
+import openperipheral.api.property.GetTypeFromField;
 import openperipheral.api.struct.ScriptStruct;
 
 /**
@@ -48,12 +49,10 @@ public @interface IndexedCallbackProperty {
 	 */
 	public boolean nullable() default false;
 
-	public static final class GetFromFieldType {}
-
 	/**
 	 * Java type of key (used of conversion of {@code index} in {@link IIndexedPropertyCallback#getField(java.lang.reflect.Field, Object)} and {@link IIndexedPropertyCallback#setField(java.lang.reflect.Field, Object, Object)}. May be used if normal deduction fails.
 	 */
-	public Class<?> keyType() default GetFromFieldType.class;
+	public Class<?> keyType() default GetTypeFromField.class;
 
 	/**
 	 * Type of key parameter in script documentation
@@ -63,7 +62,7 @@ public @interface IndexedCallbackProperty {
 	/**
 	 * Java type of value (used of conversion of {@code value} in {@link IIndexedPropertyCallback#setField(java.lang.reflect.Field, Object, Object)}. May be used if normal deduction fails.
 	 */
-	public Class<?> valueType() default GetFromFieldType.class;
+	public Class<?> valueType() default GetTypeFromField.class;
 
 	/**
 	 * Type of value parameter in script documentation

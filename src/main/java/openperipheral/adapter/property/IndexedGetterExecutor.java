@@ -1,7 +1,6 @@
 package openperipheral.adapter.property;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Type;
 
 import openperipheral.api.converter.IConverter;
 
@@ -15,20 +14,22 @@ public class IndexedGetterExecutor implements IPropertyExecutor {
 
 	private final IIndexedFieldManipulator manipulator;
 
-	private final Type indexType;
+	private final IndexedTypeInfo typeInfo;
 
-	public IndexedGetterExecutor(Field field, IIndexedFieldManipulator manipulator, Type indexType) {
+	public IndexedGetterExecutor(Field field, IIndexedFieldManipulator manipulator, IndexedTypeInfo typeInfo) {
 		this.field = field;
 		this.manipulator = manipulator;
-		this.indexType = indexType;
+		this.typeInfo = typeInfo;
 	}
 
 	@Override
-	public Object[] call(IConverter converter, Object target, Object... args) {
+	public Object[] call(IConverter converter, Object owner, Object... args) {
 		Preconditions.checkArgument(args.length == 1, "Getter should have exactly one argument (index)");
-		final Object index = converter.toJava(args[0], indexType);
+		final Object index = converter.toJava(args[0], typeInfo.keyType);
 		Preconditions.checkArgument(index != null, "Invalid index");
-		final Object result = manipulator.getField(target, field, index);
+
+		final Object target = PropertyUtils.getContents(owner, field);
+		final Object result = manipulator.getField(owner, target, field, index);
 		final Object converted = converter.fromJava(result);
 		return ArrayUtils.toArray(converted);
 	}

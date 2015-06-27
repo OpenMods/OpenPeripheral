@@ -7,6 +7,7 @@ import java.util.Set;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import openmods.Log;
 import openmods.reflection.ReflectionHelper;
 import openmods.utils.CachedFactory;
 import openperipheral.adapter.TileEntityBlacklist;
@@ -89,15 +90,20 @@ public class PeripheralProvider implements IPeripheralProvider {
 	private static final CachedFactory<Class<? extends TileEntity>, IPeripheralFactory<TileEntity>> ADAPTED_CLASSES = new CachedFactory<Class<? extends TileEntity>, IPeripheralFactory<TileEntity>>() {
 		@Override
 		protected IPeripheralFactory<TileEntity> create(Class<? extends TileEntity> targetCls) {
-			if (IPeripheral.class.isAssignableFrom(targetCls)) return NULL_FACTORY;
-			if (ICustomPeripheralProvider.class.isAssignableFrom(targetCls)) return PROVIDER_ADAPTER;
-			if (TileEntityBlacklist.INSTANCE.isBlacklisted(targetCls)) return NULL_FACTORY;
+			try {
+				if (IPeripheral.class.isAssignableFrom(targetCls)) return NULL_FACTORY;
+				if (ICustomPeripheralProvider.class.isAssignableFrom(targetCls)) return PROVIDER_ADAPTER;
+				if (TileEntityBlacklist.INSTANCE.isBlacklisted(targetCls)) return NULL_FACTORY;
 
-			final IndexedMethodMap methods = getMethodsForClass(targetCls);
-			if (methods.isEmpty()) return NULL_FACTORY;
+				final IndexedMethodMap methods = getMethodsForClass(targetCls);
+				if (methods.isEmpty()) return NULL_FACTORY;
 
-			final Set<Class<?>> proxyClasses = getProxyClasses(targetCls);
-			return proxyClasses.isEmpty()? createDirectFactory(methods) : createProxyFactory(methods, targetCls, proxyClasses);
+				final Set<Class<?>> proxyClasses = getProxyClasses(targetCls);
+				return proxyClasses.isEmpty()? createDirectFactory(methods) : createProxyFactory(methods, targetCls, proxyClasses);
+			} catch (Exception e) {
+				Log.warn(e, "Failed to create factory for %s", targetCls);
+				return SafePeripheralFactory.BROKEN_FACTORY;
+			}
 		}
 	};
 
@@ -145,6 +151,7 @@ public class PeripheralProvider implements IPeripheralProvider {
 		if (te == null) return null;
 
 		final IPeripheralFactory<TileEntity> factory = getFactoryForClass(te.getClass());
-		return factory.getPeripheral(te, side);
+		final IPeripheral peripheral = factory.getPeripheral(te, side);
+		return peripheral;
 	}
 }

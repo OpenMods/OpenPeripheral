@@ -2,15 +2,14 @@ package openperipheral.adapter.property;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.Type;
 import java.util.List;
 
 import openperipheral.adapter.IMethodDescription;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.types.TypeHelper;
 import openperipheral.api.adapter.*;
-import openperipheral.api.adapter.IndexedCallbackProperty.GetFromFieldType;
 import openperipheral.api.adapter.method.ArgType;
+import openperipheral.api.property.GetTypeFromField;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -36,65 +35,63 @@ public class PropertyListBuilder {
 	}
 
 	private class SingleParameters extends Parameters {
+		public final SingleTypeInfo typeInfo;
 
-		public final IScriptType valueType;
-
-		public SingleParameters(String name, String getterDescription, String setterDescription, boolean isDelegating, boolean readOnly, boolean valueNullable, ArgType valueType) {
+		public SingleParameters(String name, String getterDescription, String setterDescription, boolean isDelegating, boolean readOnly, boolean valueNullable, Class<?> valueType, ArgType valueDocType) {
 			super(name, getterDescription, setterDescription, isDelegating, readOnly, valueNullable);
-			this.valueType = TypeHelper.interpretArgType(valueType, field.getGenericType());
+
+			SingleTypeInfoBuilder typeInfoBuilder = new SingleTypeInfoBuilder(field.getGenericType());
+
+			if (valueType != GetTypeFromField.class) typeInfoBuilder.overrideValueType(valueType);
+			if (valueDocType != ArgType.AUTO) typeInfoBuilder.overrideValueDocType(TypeHelper.single(valueDocType));
+
+			this.typeInfo = typeInfoBuilder.build();
 		}
 	}
 
 	private class IndexedParameters extends Parameters {
 		public final boolean expandable;
-		public final Type keyType;
-		public final IScriptType docKeyType;
-		public final IValueTypeProvider valueTypeProvider;
-		public final IScriptType docValueType;
+		public final IndexedTypeInfo typeInfo;
 
 		public IndexedParameters(String name, String getterDescription, String setterDescription, boolean isDelegating, boolean readOnly, boolean valueNullable, boolean expandable, Class<?> keyType, ArgType keyDocType, Class<?> valueType, ArgType valueDocType) {
 			super(name, getterDescription, setterDescription, isDelegating, readOnly, valueNullable);
 			this.expandable = expandable;
 
-			final FieldTypeInfoBuilder fieldTypeBuilder = new FieldTypeInfoBuilder(field.getGenericType());
+			final IndexedTypeInfoBuilder typeInfoBuilder = new IndexedTypeInfoBuilder(field.getGenericType());
 
-			if (keyType != GetFromFieldType.class) fieldTypeBuilder.overrideKeyType(keyType);
-			if (keyDocType != ArgType.AUTO) fieldTypeBuilder.overrideKeyDocType(TypeHelper.single(keyDocType));
+			if (keyType != GetTypeFromField.class) typeInfoBuilder.overrideKeyType(keyType);
+			if (keyDocType != ArgType.AUTO) typeInfoBuilder.overrideKeyDocType(TypeHelper.single(keyDocType));
 
-			if (valueType != GetFromFieldType.class) fieldTypeBuilder.overrideValueType(valueType);
-			if (valueDocType != ArgType.AUTO) fieldTypeBuilder.overrideValueDocType(TypeHelper.single(valueDocType));
+			if (valueType != GetTypeFromField.class) typeInfoBuilder.overrideValueType(valueType);
+			if (valueDocType != ArgType.AUTO) typeInfoBuilder.overrideValueDocType(TypeHelper.single(valueDocType));
 
-			final FieldTypeInfoBuilder.Result types = fieldTypeBuilder.build();
-
-			this.keyType = types.keyType;
-			this.docKeyType = types.keyDocType;
-
-			this.valueTypeProvider = types.valueType;
-			this.docValueType = types.valueDocType;
+			this.typeInfo = typeInfoBuilder.build();
 		}
 	}
 
+	private final Class<?> ownerClass;
 	private final Field field;
 	private final String source;
 	private SingleParameters singleParameters;
 	private IndexedParameters indexedParameters;
 
-	public PropertyListBuilder(Field field, String source) {
+	public PropertyListBuilder(Class<?> ownerClass, Field field, String source) {
+		Preconditions.checkArgument(field.getDeclaringClass().isAssignableFrom(ownerClass), "Field %s not usable on %s", field, ownerClass);
+		this.ownerClass = ownerClass;
 		this.field = field;
 		this.source = source;
 	}
 
-	public void addSingle(String name, String getterDescription, String setterDescription, boolean isDelegating, boolean readOnly, boolean valueNullable, ArgType type) {
-		this.singleParameters = new SingleParameters(name, getterDescription, setterDescription, isDelegating, readOnly, valueNullable, type);
+	public void addSingle(String name, String getterDescription, String setterDescription, boolean isDelegating, boolean readOnly, boolean valueNullable, Class<?> valueType, ArgType docType) {
+		this.singleParameters = new SingleParameters(name, getterDescription, setterDescription, isDelegating, readOnly, valueNullable, valueType, docType);
 	}
 
 	public void addProperty(Property property) {
-		addSingle(property.name(), property.getterDesc(), property.setterDesc(), false, property.readOnly(), property.nullable(), property.type());
+		addSingle(property.name(), property.getterDesc(), property.setterDesc(), false, property.readOnly(), property.nullable(), GetTypeFromField.class, property.type());
 	}
 
 	public void addProperty(CallbackProperty property) {
-		Preconditions.checkArgument(IPropertyCallback.class.isAssignableFrom(field.getDeclaringClass()));
-		addSingle(property.name(), property.getterDesc(), property.setterDesc(), true, property.readOnly(), property.nullable(), property.type());
+		addSingle(property.name(), property.getterDesc(), property.setterDesc(), true, property.readOnly(), property.nullable(), property.javaType(), property.type());
 	}
 
 	public void addIndexed(String name, String getterDescription, String setterDescription, boolean isDelegating, boolean readOnly, boolean valueNullable, boolean expandable, Class<?> keyType, ArgType keyDocType, Class<?> valueType, ArgType valueDocType) {
@@ -102,11 +99,10 @@ public class PropertyListBuilder {
 	}
 
 	public void addProperty(IndexedProperty property) {
-		addIndexed(property.name(), property.getterDesc(), property.setterDesc(), false, property.readOnly(), property.nullable(), property.expandable(), GetFromFieldType.class, property.keyType(), GetFromFieldType.class, ArgType.AUTO);
+		addIndexed(property.name(), property.getterDesc(), property.setterDesc(), false, property.readOnly(), property.nullable(), property.expandable(), GetTypeFromField.class, property.keyType(), GetTypeFromField.class, ArgType.AUTO);
 	}
 
 	public void addProperty(IndexedCallbackProperty property) {
-		Preconditions.checkArgument(IIndexedPropertyCallback.class.isAssignableFrom(field.getDeclaringClass()));
 		addIndexed(property.name(), property.getterDesc(), property.setterDesc(), true, property.readOnly(), property.nullable(), false, property.keyType(), property.keyDocType(), property.valueType(), property.valueDocType());
 	}
 
@@ -143,7 +139,7 @@ public class PropertyListBuilder {
 
 	private void addSinglePropertyMethods(List<IMethodExecutor> output, SingleParameters params) {
 		precheckSingleField(params);
-		final IFieldManipulator fieldManipulator = SingleManipulatorProvider.getProvider(params.isDelegating);
+		final IFieldManipulator fieldManipulator = SingleManipulatorProvider.getProvider(field.getType(), params.isDelegating);
 		output.add(createSinglePropertyGetter(params, fieldManipulator));
 		if (!params.readOnly) output.add(createSinglePropertySetter(params, fieldManipulator));
 	}
@@ -159,8 +155,9 @@ public class PropertyListBuilder {
 		precheckSingleField(singleParameters);
 		precheckIndexedField(indexedParameters);
 
-		final IFieldManipulator singleFieldManipulator = SingleManipulatorProvider.getProvider(singleParameters.isDelegating);
-		final IIndexedFieldManipulator indexedFieldManipulator = IndexedManipulatorProvider.getProvider(field.getType(), indexedParameters.isDelegating, indexedParameters.expandable);
+		final Class<?> fieldType = field.getType();
+		final IFieldManipulator singleFieldManipulator = SingleManipulatorProvider.getProvider(fieldType, singleParameters.isDelegating);
+		final IIndexedFieldManipulator indexedFieldManipulator = IndexedManipulatorProvider.getProvider(fieldType, indexedParameters.isDelegating, indexedParameters.expandable);
 
 		output.add(createMergedPropertyGetter(singleParameters, singleFieldManipulator, indexedParameters, indexedFieldManipulator));
 
@@ -175,7 +172,7 @@ public class PropertyListBuilder {
 
 	private IMethodExecutor createSinglePropertyGetter(SingleParameters params, final IFieldManipulator fieldManipulator) {
 		final PropertyDescriptionBuilder descriptionBuilder = new PropertyDescriptionBuilder(params.name, source);
-		descriptionBuilder.addSingleParameter(params.valueType);
+		descriptionBuilder.addSingleParameter(params.typeInfo);
 		if (!Strings.isNullOrEmpty(params.getterDescription)) descriptionBuilder.overrideDescription(params.getterDescription);
 		final IMethodDescription description = descriptionBuilder.buildGetter();
 		final IPropertyExecutor caller = new GetterExecutor(field, fieldManipulator);
@@ -184,76 +181,83 @@ public class PropertyListBuilder {
 
 	private IMethodExecutor createSinglePropertySetter(SingleParameters params, final IFieldManipulator fieldManipulator) {
 		final PropertyDescriptionBuilder descriptionBuilder = new PropertyDescriptionBuilder(params.name, source);
-		descriptionBuilder.addSingleParameter(params.valueType);
+		descriptionBuilder.addSingleParameter(params.typeInfo);
 		if (!Strings.isNullOrEmpty(params.setterDescription)) descriptionBuilder.overrideDescription(params.setterDescription);
 		final IMethodDescription description = descriptionBuilder.buildSetter();
-		final IPropertyExecutor caller = new SetterExecutor(field, fieldManipulator, params.valueNullable);
+		final IPropertyExecutor caller = new SetterExecutor(field, fieldManipulator, params.typeInfo, params.valueNullable);
 		return new PropertyExecutor(description, caller);
 	}
 
 	private IMethodExecutor createIndexedPropertyGetter(IndexedParameters params, final IIndexedFieldManipulator fieldManipulator) {
 		final PropertyDescriptionBuilder descriptionBuilder = new PropertyDescriptionBuilder(params.name, source);
-		descriptionBuilder.addIndexParameter(params.docKeyType, params.docValueType);
+		descriptionBuilder.addIndexParameter(params.typeInfo);
 
 		if (!Strings.isNullOrEmpty(params.getterDescription)) descriptionBuilder.overrideDescription(params.getterDescription);
 
 		final IMethodDescription description = descriptionBuilder.buildGetter();
-		final IPropertyExecutor caller = new IndexedGetterExecutor(field, fieldManipulator, params.keyType);
+		final IPropertyExecutor caller = new IndexedGetterExecutor(field, fieldManipulator, params.typeInfo);
 		return new PropertyExecutor(description, caller);
 	}
 
 	private IMethodExecutor createIndexedPropertySetter(IndexedParameters params, final IIndexedFieldManipulator fieldManipulator) {
 		final PropertyDescriptionBuilder descriptionBuilder = new PropertyDescriptionBuilder(params.name, source);
-		descriptionBuilder.addIndexParameter(params.docKeyType, params.docValueType);
+		descriptionBuilder.addIndexParameter(params.typeInfo);
 
 		if (!Strings.isNullOrEmpty(params.setterDescription)) descriptionBuilder.overrideDescription(params.setterDescription);
 
 		final IMethodDescription description = descriptionBuilder.buildSetter();
-		final IPropertyExecutor caller = new IndexedSetterExecutor(field, fieldManipulator, params.keyType, params.valueTypeProvider, params.valueNullable);
+		final IPropertyExecutor caller = new IndexedSetterExecutor(field, fieldManipulator, params.typeInfo, params.valueNullable);
 		return new PropertyExecutor(description, caller);
 	}
 
 	private IMethodExecutor createMergedPropertyGetter(SingleParameters singleParameters, IFieldManipulator singleFieldManipulator, IndexedParameters indexedParameters, IIndexedFieldManipulator indexedFieldManipulator) {
 		final PropertyDescriptionBuilder descriptionBuilder = new PropertyDescriptionBuilder(singleParameters.name, source);
-		descriptionBuilder.addSingleParameter(singleParameters.valueType);
-		descriptionBuilder.addIndexParameter(indexedParameters.docKeyType, indexedParameters.docValueType);
+		descriptionBuilder.addSingleParameter(singleParameters.typeInfo);
+		descriptionBuilder.addIndexParameter(indexedParameters.typeInfo);
 
 		if (!Strings.isNullOrEmpty(singleParameters.getterDescription)) descriptionBuilder.overrideDescription(singleParameters.getterDescription);
 		else if (!Strings.isNullOrEmpty(indexedParameters.getterDescription)) descriptionBuilder.overrideDescription(indexedParameters.getterDescription);
 
 		final IMethodDescription description = descriptionBuilder.buildGetter();
-		final IPropertyExecutor caller = new MergedGetterExecutor(field, singleFieldManipulator, indexedFieldManipulator, indexedParameters.keyType);
+		final IPropertyExecutor caller = new MergedGetterExecutor(field, singleFieldManipulator, indexedFieldManipulator, indexedParameters.typeInfo);
 		return new PropertyExecutor(description, caller);
 	}
 
 	private IMethodExecutor createMergedPropertySetter(SingleParameters singleParameters, IFieldManipulator singleFieldManipulator, IndexedParameters indexedParameters, IIndexedFieldManipulator indexedFieldManipulator) {
 		final PropertyDescriptionBuilder descriptionBuilder = new PropertyDescriptionBuilder(singleParameters.name, source);
-		descriptionBuilder.addSingleParameter(singleParameters.valueType);
-		descriptionBuilder.addIndexParameter(indexedParameters.docKeyType, indexedParameters.docValueType);
+		descriptionBuilder.addSingleParameter(singleParameters.typeInfo);
+		descriptionBuilder.addIndexParameter(indexedParameters.typeInfo);
 		if (!Strings.isNullOrEmpty(singleParameters.setterDescription)) descriptionBuilder.overrideDescription(singleParameters.setterDescription);
 		else if (!Strings.isNullOrEmpty(singleParameters.setterDescription)) descriptionBuilder.overrideDescription(singleParameters.setterDescription);
 		final IMethodDescription description = descriptionBuilder.buildSetter();
-		final IPropertyExecutor caller = new MergedSetterExecutor(field, singleParameters.valueNullable, singleFieldManipulator, indexedParameters.valueNullable, indexedFieldManipulator, indexedParameters.keyType, indexedParameters.valueTypeProvider);
+		final IPropertyExecutor caller = new MergedSetterExecutor(field, singleParameters.valueNullable, singleFieldManipulator, singleParameters.typeInfo, indexedParameters.valueNullable, indexedFieldManipulator, indexedParameters.typeInfo);
 		return new PropertyExecutor(description, caller);
 	}
 
 	private void precheckSingleField(SingleParameters params) {
 		final int modifiers = field.getModifiers();
+		final boolean isFinal = Modifier.isFinal(modifiers);
+		final Class<?> fieldType = field.getType();
+
 		Preconditions.checkArgument(!Modifier.isStatic(modifiers), "Field marked with @Property can't be static");
-		Preconditions.checkArgument(params.readOnly || !Modifier.isFinal(modifiers), "Only fields marked with @Property(readOnly = true) can be marked final");
-		Preconditions.checkArgument(!(params.valueNullable && field.getType().isPrimitive()), "Fields with primitive types can't be nullable");
+		Preconditions.checkArgument(params.readOnly || !isFinal, "Only fields marked with @Property(readOnly = true) can be marked final");
+		Preconditions.checkArgument(!(params.valueNullable && fieldType.isPrimitive()), "Fields with primitive types can't be nullable");
+		Preconditions.checkArgument(!params.isDelegating || IPropertyCallback.class.isAssignableFrom(ownerClass), "Only classes implementing IPropertyCallback can use @CallbackProperty");
 	}
 
 	private void precheckIndexedField(IndexedParameters params) {
 		final int modifiers = field.getModifiers();
+		final boolean isFinal = Modifier.isFinal(modifiers);
+
 		Preconditions.checkArgument(!Modifier.isStatic(modifiers), "Field marked with @IndexedProperty can't be static");
 		Preconditions.checkArgument(!params.expandable || !params.readOnly, "@IndexedProperty fields can't be both read-only and expandable");
-		Preconditions.checkArgument(!params.expandable || !Modifier.isFinal(modifiers), "Only non-final @IndexedProperty fields can me expandable");
+		Preconditions.checkArgument(!params.expandable || !isFinal, "Only non-final @IndexedProperty fields can me expandable");
+		Preconditions.checkArgument(!params.isDelegating || IIndexedPropertyCallback.class.isAssignableFrom(ownerClass), "Only classes implementing IIndexedPropertyCallback can use @CallbackIndexedProperty");
 	}
 
 	public static void buildPropertyList(Class<?> targetCls, String source, List<IMethodExecutor> output) {
 		for (Field f : targetCls.getDeclaredFields())
-			new PropertyListBuilder(f, source).configureFromFieldProperties().addMethods(output);
+			new PropertyListBuilder(targetCls, f, source).configureFromFieldProperties().addMethods(output);
 	}
 
 }

@@ -7,59 +7,62 @@ import java.util.Map;
 
 import openperipheral.api.adapter.IIndexedPropertyCallback;
 import openperipheral.api.helpers.Index;
+import openperipheral.api.property.IIndexedCustomProperty;
 import openperipheral.converter.StructCache;
 import openperipheral.converter.StructCache.IFieldHandler;
 import openperipheral.converter.StructCache.IStructHandler;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Throwables;
 
 public class IndexedManipulatorProvider {
-
-	@SuppressWarnings("unchecked")
-	public static <T> T getContents(Object target, Field field) {
-		try {
-			final T container = (T)field.get(target);
-			Preconditions.checkNotNull(container, "Can't index nil value");
-			return container;
-		} catch (Throwable t) {
-			throw Throwables.propagate(t);
-		}
-	}
-
-	public static void setContents(Object owner, Field field, Object value) {
-		try {
-			field.set(owner, value);
-		} catch (Throwable t) {
-			throw Throwables.propagate(t);
-		}
-	}
 
 	public static int getIndex(Object index) {
 		Preconditions.checkArgument(index instanceof Index, "Invalid index type, expecting number");
 		return ((Index)index).unbox();
 	}
 
-	private static class ArrayFieldManipulator implements IIndexedFieldManipulator {
+	private abstract static class GenericFieldManipulator<T> implements IIndexedFieldManipulator {
+		@Override
+		@SuppressWarnings("unchecked")
+		public final void setField(Object owner, Object target, Field field, Object index, Object value) {
+			Preconditions.checkNotNull(target, "Can't index nil value");
+			set(owner, (T)target, field, index, value);
+		}
+
+		public abstract void set(Object owner, T target, Field field, Object index, Object value);
 
 		@Override
-		public void setField(Object target, Field field, Object index, Object value) {
-			final Object container = getContents(target, field);
+		@SuppressWarnings("unchecked")
+		public final Object getField(Object owner, Object target, Field field, Object index) {
+			Preconditions.checkNotNull(target, "Can't index nil value");
+			return get(owner, (T)target, field, index);
+		}
+
+		public abstract Object get(Object owner, T target, Field field, Object index);
+	}
+
+	private abstract static class DefaultFieldManipulator extends GenericFieldManipulator<Object> {
+
+	}
+
+	private static class ArrayFieldManipulator extends DefaultFieldManipulator {
+
+		@Override
+		public void set(Object owner, Object target, Field field, Object index, Object value) {
 			final int i = getIndex(index);
 			try {
-				Array.set(container, i, value);
+				Array.set(target, i, value);
 			} catch (ArrayIndexOutOfBoundsException e) {
 				throw new IllegalArgumentException("Failed to set value at index " + index);
 			}
 		}
 
 		@Override
-		public Object getField(Object target, Field field, Object index) {
-			final Object container = getContents(target, field);
+		public Object get(Object owner, Object target, Field field, Object index) {
 			final int i = getIndex(index);
 
 			try {
-				return Array.get(container, i);
+				return Array.get(target, i);
 			} catch (ArrayIndexOutOfBoundsException e) {
 				return null;
 			}
@@ -70,48 +73,44 @@ public class IndexedManipulatorProvider {
 
 	private static class ExpandingArrayFieldManipulator extends ArrayFieldManipulator {
 		@Override
-		public void setField(Object target, Field field, Object index, Object value) {
-			Object container = getContents(target, field);
-
+		public void set(Object owner, Object target, Field field, Object index, Object value) {
 			final int i = getIndex(index);
 			if (i < 0) throw new IllegalArgumentException("Negative index: " + i);
 
-			final int length = Array.getLength(container);
+			final int length = Array.getLength(target);
 			if (i >= length) {
-				Class<?> componentCls = container.getClass().getComponentType();
+				Class<?> componentCls = target.getClass().getComponentType();
 				final int newLength = i + 1;
 				Object newArray = Array.newInstance(componentCls, newLength);
-				System.arraycopy(container, 0, newArray, 0, length);
-				container = newArray;
-				setContents(target, field, container);
+				System.arraycopy(target, 0, newArray, 0, length);
+				target = newArray;
+				PropertyUtils.setContents(owner, field, target);
 			}
 
-			Array.set(container, i, value);
+			Array.set(target, i, value);
 		}
 	}
 
 	public static final IIndexedFieldManipulator ARRAY_EXPANDING_MANIPULATOR = new ExpandingArrayFieldManipulator();
 
-	private static class ListFieldManipulator implements IIndexedFieldManipulator {
+	private static class ListFieldManipulator extends GenericFieldManipulator<List<Object>> {
 		@Override
-		public void setField(Object target, Field field, Object index, Object value) {
-			final List<Object> container = getContents(target, field);
+		public void set(Object owner, List<Object> target, Field field, Object index, Object value) {
 			final int i = getIndex(index);
 
 			try {
-				container.set(i, value);
+				target.set(i, value);
 			} catch (IndexOutOfBoundsException e) {
 				throw new IllegalArgumentException("Failed to set value at index " + index);
 			}
 		}
 
 		@Override
-		public Object getField(Object target, Field field, Object index) {
-			final List<Object> container = getContents(target, field);
+		public Object get(Object owner, List<Object> target, Field field, Object index) {
 			final int i = getIndex(index);
 
 			try {
-				return container.get(i);
+				return target.get(i);
 			} catch (IndexOutOfBoundsException e) {
 				return null;
 			}
@@ -123,34 +122,31 @@ public class IndexedManipulatorProvider {
 	private static class ExpandingListFieldManipulator extends ListFieldManipulator {
 
 		@Override
-		public void setField(Object target, Field field, Object index, Object value) {
-			final List<Object> container = getContents(target, field);
+		public void set(Object owner, List<Object> target, Field field, Object index, Object value) {
 			final int i = getIndex(index);
 
 			if (i < 0) throw new IllegalArgumentException("Negative index: " + i);
 
-			while (i >= container.size())
-				container.add(null);
+			while (i >= target.size())
+				target.add(null);
 
-			container.set(i, value);
+			target.set(i, value);
 		}
 	}
 
 	public static final IIndexedFieldManipulator LIST_EXPANDING_MANIPULATOR = new ExpandingListFieldManipulator();
 
-	private static class MapFieldManipulator implements IIndexedFieldManipulator {
+	private static class MapFieldManipulator extends GenericFieldManipulator<Map<Object, Object>> {
 		@Override
-		public void setField(Object target, Field field, Object index, Object value) {
-			final Map<Object, Object> container = getContents(target, field);
-			Preconditions.checkArgument(container.containsKey(index), "Can't add new key '%s' to map", index);
-			container.put(index, value);
+		public void set(Object owner, Map<Object, Object> target, Field field, Object index, Object value) {
+			Preconditions.checkArgument(target.containsKey(index), "Can't add new key '%s' to map", index);
+			target.put(index, value);
 
 		}
 
 		@Override
-		public Object getField(Object target, Field field, Object index) {
-			final Map<Object, Object> container = getContents(target, field);
-			return container.get(index);
+		public Object get(Object owner, Map<Object, Object> target, Field field, Object index) {
+			return target.get(index);
 		}
 	}
 
@@ -158,27 +154,39 @@ public class IndexedManipulatorProvider {
 
 	private static class ExpandingMapFieldManipulator extends MapFieldManipulator {
 		@Override
-		public void setField(Object target, Field field, Object index, Object value) {
-			final Map<Object, Object> container = getContents(target, field);
-			container.put(index, value);
+		public void set(Object owner, Map<Object, Object> target, Field field, Object index, Object value) {
+			target.put(index, value);
 		}
 	}
 
-	public static final IIndexedFieldManipulator INDEXED_DELEGATING_MANIPULATOR = new IIndexedFieldManipulator() {
+	public static final IIndexedFieldManipulator MAP_EXPANDING_MANIPULATOR = new ExpandingMapFieldManipulator();
+
+	public static final IIndexedFieldManipulator INDEXED_OWNER_DELEGATING_MANIPULATOR = new IIndexedFieldManipulator() {
 		@Override
-		public void setField(Object target, Field field, Object index, Object value) {
-			((IIndexedPropertyCallback)target).setField(field, index, value);
+		public void setField(Object owner, Object target, Field field, Object index, Object value) {
+			((IIndexedPropertyCallback)owner).setField(field, index, value);
 		}
 
 		@Override
-		public Object getField(Object target, Field field, Object index) {
-			return ((IIndexedPropertyCallback)target).getField(field, index);
+		public Object getField(Object owner, Object target, Field field, Object index) {
+			return ((IIndexedPropertyCallback)owner).getField(field, index);
 		}
 	};
 
-	public static final IIndexedFieldManipulator MAP_EXPANDING_MANIPULATOR = new ExpandingMapFieldManipulator();
+	public static final IIndexedFieldManipulator INDEXED_TARGET_DELEGATING_MANIPULATOR = new GenericFieldManipulator<IIndexedCustomProperty<Object, Object>>() {
 
-	private static class StructFieldManipulator implements IIndexedFieldManipulator {
+		@Override
+		public void set(Object owner, IIndexedCustomProperty<Object, Object> target, Field field, Object index, Object value) {
+			target.set(target, field, index, value);
+		}
+
+		@Override
+		public Object get(Object owner, IIndexedCustomProperty<Object, Object> target, Field field, Object index) {
+			return target.get(target, field, index);
+		}
+	};
+
+	private static class StructFieldManipulator extends DefaultFieldManipulator {
 
 		private final IStructHandler handler;
 
@@ -194,19 +202,16 @@ public class IndexedManipulatorProvider {
 		}
 
 		@Override
-		public void setField(Object target, Field field, Object index, Object value) {
-			final Object container = getContents(target, field);
+		public void set(Object owner, Object target, Field field, Object index, Object value) {
 			final IFieldHandler fieldHandler = getFieldHandler(index);
-			fieldHandler.set(container, value);
+			fieldHandler.set(target, value);
 		}
 
 		@Override
-		public Object getField(Object target, Field field, Object index) {
-			final Object container = getContents(target, field);
+		public Object get(Object owner, Object target, Field field, Object index) {
 			final IFieldHandler fieldHandler = getFieldHandler(index);
-			return fieldHandler.get(container);
+			return fieldHandler.get(target);
 		}
-
 	}
 
 	public static IIndexedFieldManipulator createStructManipulator(Class<?> cls) {
@@ -215,15 +220,13 @@ public class IndexedManipulatorProvider {
 	}
 
 	public static IIndexedFieldManipulator getProvider(Class<?> fieldType, boolean isDelegating, boolean isExpanding) {
-		if (isDelegating) return INDEXED_DELEGATING_MANIPULATOR;
+		if (isDelegating) return INDEXED_OWNER_DELEGATING_MANIPULATOR;
+		if (IIndexedCustomProperty.class.isAssignableFrom(fieldType)) return INDEXED_TARGET_DELEGATING_MANIPULATOR;
 
 		if (Map.class.isAssignableFrom(fieldType)) return isExpanding? MAP_EXPANDING_MANIPULATOR : MAP_MANIPULATOR;
 		else if (List.class.isAssignableFrom(fieldType)) return isExpanding? LIST_EXPANDING_MANIPULATOR : LIST_MANIPULATOR;
 		else if (fieldType.isArray()) return isExpanding? ARRAY_EXPANDING_MANIPULATOR : ARRAY_MANIPULATOR;
-		else if (StructCache.instance.isStruct(fieldType)) {
-			Preconditions.checkState(!isExpanding, "Fields of %s cannot be expading", fieldType);
-			return createStructManipulator(fieldType);
-		}
+		else if (StructCache.instance.isStruct(fieldType)) return createStructManipulator(fieldType);
 
 		throw new IllegalArgumentException("Failed to create manipulator for " + fieldType);
 	}

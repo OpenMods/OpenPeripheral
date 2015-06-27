@@ -16,33 +16,33 @@ public class IndexedSetterExecutor implements IPropertyExecutor {
 
 	private final IIndexedFieldManipulator manipulator;
 
-	private final Type keyType;
-
-	private final IValueTypeProvider valueTypeProvider;
+	private final IndexedTypeInfo typeInfo;
 
 	private final boolean nullable;
 
-	public IndexedSetterExecutor(Field field, IIndexedFieldManipulator manipulator, Type keyType, IValueTypeProvider valueTypeProvider, boolean nullable) {
+	public IndexedSetterExecutor(Field field, IIndexedFieldManipulator manipulator, IndexedTypeInfo typeInfo, boolean nullable) {
 		this.field = field;
 		this.manipulator = manipulator;
-		this.keyType = keyType;
-		this.valueTypeProvider = valueTypeProvider;
+		this.typeInfo = typeInfo;
 		this.nullable = nullable;
 	}
 
 	@Override
-	public Object[] call(IConverter converter, Object target, Object... args) {
+	public Object[] call(IConverter converter, Object owner, Object... args) {
 		Preconditions.checkArgument(args.length == 2, "Setter must have exactly two arguments (value and index)");
 		final Object value = args[0];
 		final Object key = args[1];
 
+		final Type keyType = typeInfo.keyType;
 		final Object convertedKey = converter.toJava(key, keyType);
 		Preconditions.checkArgument(convertedKey != null, "Failed to convert index to type %s", keyType);
 
-		final Type valueType = valueTypeProvider.getType(convertedKey);
+		final Object target = PropertyUtils.getContents(owner, field);
+
+		final Type valueType = typeInfo.getValueType(target, convertedKey);
 		final Object convertedValue = TypeConverter.nullableToJava(converter, nullable, value, valueType);
 
-		manipulator.setField(target, field, convertedKey, convertedValue);
+		manipulator.setField(owner, target, field, convertedKey, convertedValue);
 
 		return ArrayUtils.EMPTY_OBJECT_ARRAY;
 	}

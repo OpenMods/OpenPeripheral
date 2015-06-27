@@ -18,48 +18,48 @@ public class MergedSetterExecutor implements IPropertyExecutor {
 
 	private final IFieldManipulator singleManipulator;
 
+	private final SingleTypeInfo singleTypeInfo;
+
 	private final boolean indexedNullable;
 
 	private final IIndexedFieldManipulator indexedManipulator;
 
-	private final Type fieldValueType;
+	private final IndexedTypeInfo indexedTypeInfo;
 
-	private final Type keyType;
-
-	private final IValueTypeProvider valueTypeProvider;
-
-	public MergedSetterExecutor(Field field, boolean singleNullable, IFieldManipulator singleManipulator, boolean indexedNullable, IIndexedFieldManipulator indexedManipulator, Type keyType, IValueTypeProvider valueTypeProvider) {
+	public MergedSetterExecutor(Field field, boolean singleNullable, IFieldManipulator singleManipulator, SingleTypeInfo singleTypeInfo, boolean indexedNullable, IIndexedFieldManipulator indexedManipulator, IndexedTypeInfo indexedTypeInfo) {
 		this.field = field;
 		this.singleNullable = singleNullable;
 		this.singleManipulator = singleManipulator;
-		this.fieldValueType = field.getGenericType();
+		this.singleTypeInfo = singleTypeInfo;
 		this.indexedNullable = indexedNullable;
 		this.indexedManipulator = indexedManipulator;
-		this.keyType = keyType;
-		this.valueTypeProvider = valueTypeProvider;
+		this.indexedTypeInfo = indexedTypeInfo;
 	}
 
 	@Override
-	public Object[] call(IConverter converter, Object target, Object... args) {
-
+	public Object[] call(IConverter converter, Object owner, Object... args) {
 		if (args.length == 2) {
 			final Object value = args[0];
 			final Object key = args[1];
 
+			final Type keyType = indexedTypeInfo.keyType;
 			final Object convertedKey = converter.toJava(key, keyType);
 			Preconditions.checkArgument(convertedKey != null, "Failed to convert index to type %s", keyType);
 
-			final Type valueType = valueTypeProvider.getType(convertedKey);
+			final Object target = PropertyUtils.getContents(owner, field);
+			final Type valueType = indexedTypeInfo.getValueType(target, convertedKey);
 			final Object convertedValue = TypeConverter.nullableToJava(converter, indexedNullable, value, valueType);
 
-			indexedManipulator.setField(target, field, convertedKey, convertedValue);
+			indexedManipulator.setField(owner, target, field, convertedKey, convertedValue);
 
 		} else if (args.length == 1) {
 			final Object value = args[0];
 
-			final Object converted = TypeConverter.nullableToJava(converter, singleNullable, value, fieldValueType);
+			final Object target = PropertyUtils.getContents(owner, field);
+			final Type valueType = singleTypeInfo.getValueType(target);
+			final Object convertedValue = TypeConverter.nullableToJava(converter, singleNullable, value, valueType);
 
-			singleManipulator.setField(target, field, converted);
+			singleManipulator.setField(owner, target, field, convertedValue);
 
 			return ArrayUtils.EMPTY_OBJECT_ARRAY;
 		} else {

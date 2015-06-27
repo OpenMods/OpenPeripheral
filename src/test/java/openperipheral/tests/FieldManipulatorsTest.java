@@ -44,7 +44,7 @@ public class FieldManipulatorsTest {
 
 	public <T> T testSetField(IIndexedFieldManipulator manipulator, T container, Object index, Object value) {
 		Holder<T> holder = new Holder<T>(container);
-		manipulator.setField(holder, targetField, index, value);
+		manipulator.setField(holder, container, targetField, index, value);
 		return holder.target;
 	}
 
@@ -57,7 +57,7 @@ public class FieldManipulatorsTest {
 
 	public <T> Object testGetField(IIndexedFieldManipulator manipulator, T value, Object index) {
 		Holder<T> holder = new Holder<T>(value);
-		return manipulator.getField(holder, targetField, index);
+		return manipulator.getField(holder, value, targetField, index);
 	}
 
 	public <T> Object testGetIndexedField(IIndexedFieldManipulator manipulator, T value, int index) {

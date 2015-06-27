@@ -16,24 +16,26 @@ public class SetterExecutor implements IPropertyExecutor {
 
 	private final IFieldManipulator manipulator;
 
-	private final Type expectedType;
+	private final SingleTypeInfo typeInfo;
 
 	private final boolean nullable;
 
-	public SetterExecutor(Field field, IFieldManipulator manipulator, boolean nullable) {
+	public SetterExecutor(Field field, IFieldManipulator manipulator, SingleTypeInfo typeInfo, boolean nullable) {
 		this.field = field;
-		this.expectedType = field.getGenericType();
+		this.typeInfo = typeInfo;
 		this.manipulator = manipulator;
 		this.nullable = nullable;
 	}
 
 	@Override
-	public Object[] call(IConverter converter, Object target, Object... args) {
+	public Object[] call(IConverter converter, Object owner, Object... args) {
 		Preconditions.checkArgument(args.length == 1, "Setter must have exactly one argument");
 		final Object arg = args[0];
 
-		final Object converted = TypeConverter.nullableToJava(converter, nullable, arg, expectedType);
-		manipulator.setField(target, field, converted);
+		final Object target = PropertyUtils.getContents(owner, field);
+		final Type valueType = typeInfo.getValueType(target);
+		final Object converted = TypeConverter.nullableToJava(converter, nullable, arg, valueType);
+		manipulator.setField(owner, target, field, converted);
 
 		return ArrayUtils.EMPTY_OBJECT_ARRAY;
 	}

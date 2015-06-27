@@ -3,6 +3,7 @@ package openperipheral.api.adapter;
 import java.lang.annotation.*;
 
 import openperipheral.api.adapter.method.ArgType;
+import openperipheral.api.property.GetTypeFromField;
 
 /**
  * This annotation is used to mark class fields that should be exposed in Lua as get/set accessors.
@@ -19,6 +20,11 @@ public @interface CallbackProperty {
 	 * Type of setter parameter and getter result. Used only for documentation
 	 */
 	public ArgType type() default ArgType.AUTO;
+
+	/**
+	 * Type used for conversion of value from script to callback
+	 */
+	public Class<?> javaType() default GetTypeFromField.class;
 
 	/**
 	 * Field name used for naming get/set methods. If empty, original field name will be used.

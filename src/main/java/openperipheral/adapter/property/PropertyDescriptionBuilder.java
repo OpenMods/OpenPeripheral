@@ -57,10 +57,18 @@ public class PropertyDescriptionBuilder {
 		this.buildSingleProperty = true;
 	}
 
+	public void addSingleParameter(SingleTypeInfo singleTypeInfo) {
+		addSingleParameter(singleTypeInfo.valueDocType);
+	}
+
 	public void addIndexParameter(IScriptType keyType, IScriptType valueType) {
 		this.indexKeyType = keyType;
 		this.indexValueType = valueType;
 		this.buildIndexedProperty = true;
+	}
+
+	public void addIndexParameter(IndexedTypeInfo indexedTypeInfo) {
+		addIndexParameter(indexedTypeInfo.keyDocType, indexedTypeInfo.valueDocType);
 	}
 
 	public void overrideDescription(String description) {
