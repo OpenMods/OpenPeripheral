@@ -1,6 +1,5 @@
 package openperipheral.api.adapter.method;
 
-import openperipheral.api.adapter.ITypeQualifier;
 
 public enum ArgType {
 

@@ -3,7 +3,10 @@ package openperipheral;
 import openmods.Log;
 import openmods.Mods;
 import openmods.access.ApiProviderBase;
-import openperipheral.adapter.*;
+import openperipheral.adapter.AdapterRegistryWrapper;
+import openperipheral.adapter.PeripheralTypeProvider;
+import openperipheral.adapter.TileEntityBlacklist;
+import openperipheral.adapter.types.classifier.TypeClassifier;
 import openperipheral.api.ApiAccess;
 import openperipheral.api.IApiInterface;
 import openperipheral.converter.TypeConvertersProvider;
@@ -27,7 +30,7 @@ public class ApiProvider extends ApiProviderBase<IApiInterface> implements ApiAc
 		registerInstance(TypeConvertersProvider.INSTANCE);
 		registerInstance(TileEntityBlacklist.INSTANCE);
 		registerInstance(PeripheralTypeProvider.INSTANCE);
-		registerInstance(TypeQualifier.INSTANCE);
+		registerInstance(TypeClassifier.INSTANCE);
 
 		if (Loader.isModLoaded(Mods.COMPUTERCRAFT)) ModuleComputerCraft.installAPI(this);
 		if (Loader.isModLoaded(Mods.OPENCOMPUTERS)) ModuleOpenComputers.installAPI(this);

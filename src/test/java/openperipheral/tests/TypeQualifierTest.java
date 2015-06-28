@@ -5,7 +5,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.*;
 
-import openperipheral.adapter.TypeQualifier;
+import openperipheral.adapter.types.classifier.TypeClassifier;
 import openperipheral.api.adapter.IScriptType;
 import openperipheral.api.struct.ScriptStruct;
 import openperipheral.api.struct.StructField;
@@ -18,8 +18,8 @@ import com.google.common.base.Preconditions;
 public class TypeQualifierTest {
 
 	public static void testQualifier(String expected, Type type) {
-		final TypeQualifier qualifier = new TypeQualifier();
-		final IScriptType qualified = qualifier.qualifyType(type);
+		final TypeClassifier qualifier = new TypeClassifier();
+		final IScriptType qualified = qualifier.classifyType(type);
 		Assert.assertEquals(expected, qualified.describe());
 	}
 
@@ -163,11 +163,11 @@ public class TypeQualifierTest {
 			final String name = f.getName();
 			Preconditions.checkNotNull(ann, "Field without annotation: " + name);
 
-			final TypeQualifier qualifier = new TypeQualifier();
+			final TypeClassifier qualifier = new TypeClassifier();
 
 			final IScriptType qualified;
 			try {
-				qualified = qualifier.qualifyType(f.getGenericType());
+				qualified = qualifier.classifyType(f.getGenericType());
 			} catch (Exception e) {
 				throw new RuntimeException("Field " + name, e);
 			}

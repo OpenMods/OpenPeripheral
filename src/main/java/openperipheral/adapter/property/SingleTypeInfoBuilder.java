@@ -3,8 +3,8 @@ package openperipheral.adapter.property;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 
-import openperipheral.adapter.TypeQualifier;
 import openperipheral.adapter.types.SingleArgType;
+import openperipheral.adapter.types.classifier.TypeClassifier;
 import openperipheral.api.adapter.IScriptType;
 import openperipheral.api.property.ISingleCustomProperty;
 import openperipheral.api.property.ISingleTypedCustomProperty;
@@ -70,7 +70,7 @@ public class SingleTypeInfoBuilder {
 		@Override
 		public IScriptType getValueDocType() {
 			final PropertyValueDocType customValueDoc = fieldType.getAnnotation(PropertyValueDocType.class);
-			return (customValueDoc == null)? TypeQualifier.INSTANCE.qualifyType(valueType) : SingleArgType.valueOf(customValueDoc.value());
+			return (customValueDoc == null)? TypeClassifier.INSTANCE.classifyType(valueType) : SingleArgType.valueOf(customValueDoc.value());
 		}
 	}
 
@@ -111,7 +111,7 @@ public class SingleTypeInfoBuilder {
 
 		@Override
 		public IScriptType getValueDocType() {
-			return TypeQualifier.INSTANCE.qualifyType(fieldType);
+			return TypeClassifier.INSTANCE.classifyType(fieldType);
 		}
 
 	}
@@ -175,7 +175,7 @@ public class SingleTypeInfoBuilder {
 			if (overridenValueType == null) {
 				valueDocType = getTypesProvider().getValueDocType();
 			} else {
-				valueDocType = TypeQualifier.INSTANCE.qualifyType(overridenValueType);
+				valueDocType = TypeClassifier.INSTANCE.classifyType(overridenValueType);
 			}
 		} else {
 			valueDocType = overridenValueDocType;

@@ -5,9 +5,9 @@ import java.lang.reflect.TypeVariable;
 import java.util.Set;
 
 import openmods.reflection.TypeUtils;
-import openperipheral.adapter.TypeQualifier;
 import openperipheral.adapter.types.SingleArgType;
 import openperipheral.adapter.types.SingleType;
+import openperipheral.adapter.types.classifier.TypeClassifier;
 import openperipheral.api.adapter.IScriptType;
 import openperipheral.api.helpers.Index;
 import openperipheral.api.property.*;
@@ -79,7 +79,7 @@ public class IndexedTypeInfoBuilder {
 
 		@Override
 		public IScriptType getKeyDocType() {
-			return TypeQualifier.INSTANCE.qualifyType(keyType);
+			return classifyType(keyType);
 		}
 
 		@Override
@@ -89,8 +89,12 @@ public class IndexedTypeInfoBuilder {
 
 		@Override
 		public IScriptType getValueDocType() {
-			return TypeQualifier.INSTANCE.qualifyType(valueType);
+			return classifyType(valueType);
 		}
+	}
+
+	private static IScriptType classifyType(final Type type) {
+		return TypeClassifier.INSTANCE.classifyType(type);
 	}
 
 	private static Type getTypeVariable(TypeToken<?> type, TypeVariable<?> var) {
@@ -133,7 +137,7 @@ public class IndexedTypeInfoBuilder {
 
 			if (types.size() == 1) {
 				Type type = types.iterator().next();
-				return TypeQualifier.INSTANCE.qualifyType(type);
+				return classifyType(type);
 			} else return SingleType.WILDCHAR;
 		}
 
@@ -196,13 +200,13 @@ public class IndexedTypeInfoBuilder {
 		@Override
 		public IScriptType getKeyDocType() {
 			final PropertyKeyDocType customKeyDoc = fieldType.getAnnotation(PropertyKeyDocType.class);
-			return (customKeyDoc == null)? TypeQualifier.INSTANCE.qualifyType(keyType) : SingleArgType.valueOf(customKeyDoc.value());
+			return (customKeyDoc == null)? classifyType(keyType) : SingleArgType.valueOf(customKeyDoc.value());
 		}
 
 		@Override
 		public IScriptType getValueDocType() {
 			final PropertyValueDocType customValueDoc = fieldType.getAnnotation(PropertyValueDocType.class);
-			return (customValueDoc == null)? TypeQualifier.INSTANCE.qualifyType(valueType) : SingleArgType.valueOf(customValueDoc.value());
+			return (customValueDoc == null)? classifyType(valueType) : SingleArgType.valueOf(customValueDoc.value());
 		}
 	}
 
@@ -315,7 +319,7 @@ public class IndexedTypeInfoBuilder {
 			if (overridenKeyType == null) {
 				keyDocType = getTypesProvider().getKeyDocType();
 			} else {
-				keyDocType = TypeQualifier.INSTANCE.qualifyType(overridenKeyType);
+				keyDocType = classifyType(overridenKeyType);
 			}
 		} else {
 			keyDocType = overridenKeyDocType;
@@ -335,7 +339,7 @@ public class IndexedTypeInfoBuilder {
 			if (overridenValueType == null) {
 				valueDocType = getTypesProvider().getValueDocType();
 			} else {
-				valueDocType = TypeQualifier.INSTANCE.qualifyType(overridenValueType);
+				valueDocType = classifyType(overridenValueType);
 			}
 		} else {
 			valueDocType = overridenValueDocType;

@@ -4,7 +4,7 @@ import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
 
-import openperipheral.adapter.TypeQualifier;
+import openperipheral.adapter.types.classifier.TypeClassifier;
 import openperipheral.api.adapter.IScriptType;
 import openperipheral.api.adapter.method.ArgType;
 import openperipheral.api.adapter.method.ReturnType;
@@ -108,7 +108,7 @@ public class TypeHelper {
 	}
 
 	public static IScriptType interpretArgType(ArgType givenType, Type targetType) {
-		return givenType == ArgType.AUTO? TypeQualifier.INSTANCE.qualifyType(targetType) : SingleArgType.valueOf(givenType);
+		return givenType == ArgType.AUTO? TypeClassifier.INSTANCE.classifyType(targetType) : SingleArgType.valueOf(givenType);
 	}
 
 }
