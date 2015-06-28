@@ -8,6 +8,7 @@ Thumbs.db
 /.gradle
 /build/
 /run/
+/logs/
 
 # Eclipse
 .classpath

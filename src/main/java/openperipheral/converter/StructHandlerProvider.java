@@ -5,7 +5,6 @@ import java.util.*;
 
 import javax.annotation.Nullable;
 
-import openmods.Log;
 import openmods.utils.CachedFactory;
 import openperipheral.api.converter.IConverter;
 import openperipheral.api.struct.ScriptStruct;
@@ -16,12 +15,30 @@ import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.*;
 
-public class StructCache {
+public class StructHandlerProvider {
 
-	public static final StructCache instance = new StructCache();
+	public static class InvalidStructureException extends RuntimeException {
+		private static final long serialVersionUID = 1L;
+
+		public InvalidStructureException(Class<?> cls, Throwable cause) {
+			super("Invalid structure: " + cls, cause);
+		}
+
+		public InvalidStructureException(String message) {
+			super(message);
+		}
+	}
+
+	public static final StructHandlerProvider instance = new StructHandlerProvider();
 
 	public interface IFieldHandler {
+		public int index();
+
+		public String name();
+
 		public Type type();
+
+		public boolean isOptional();
 
 		public Object get(Object target);
 
@@ -36,31 +53,11 @@ public class StructCache {
 		public Set<String> fields();
 
 		public IFieldHandler field(String name);
+
+		public ScriptStruct.Output defaultOutput();
 	}
 
-	private static final IStructHandler DUMMY_CONVERTER = new IStructHandler() {
-		@Override
-		public Object toJava(IConverter converter, Map<?, ?> obj, int indexOffset) {
-			return null;
-		}
-
-		@Override
-		public Map<?, ?> fromJava(IConverter converter, Object obj, int indexOffset) {
-			return ImmutableMap.of();
-		}
-
-		@Override
-		public Set<String> fields() {
-			return ImmutableSet.of();
-		}
-
-		@Override
-		public IFieldHandler field(String field) {
-			throw new UnsupportedOperationException();
-		}
-	};
-
-	private static final Ordering<Field> FIELD_ORDERING = Ordering.natural().onResultOf(new Function<Field, String>() {
+	private static final Ordering<Field> FIELD_NAME_ORDERING = Ordering.natural().onResultOf(new Function<Field, String>() {
 
 		@Override
 		public String apply(@Nullable Field input) {
@@ -72,13 +69,37 @@ public class StructCache {
 
 		private final Field field;
 
-		public FieldHandler(Field field) {
+		private final String name;
+
+		private final int index;
+
+		private final boolean isOptional;
+
+		public FieldHandler(Field field, String name, int index, boolean isOptional) {
 			this.field = field;
+			this.name = name;
+			this.index = index;
+			this.isOptional = isOptional;
 		}
 
 		@Override
 		public Type type() {
 			return field.getGenericType();
+		}
+
+		@Override
+		public boolean isOptional() {
+			return isOptional;
+		}
+
+		@Override
+		public int index() {
+			return index;
+		}
+
+		@Override
+		public String name() {
+			return name;
 		}
 
 		@Override
@@ -98,7 +119,6 @@ public class StructCache {
 				throw new RuntimeException("Failed to set value of field " + field, ex);
 			}
 		}
-
 	}
 
 	private static class StructHandler implements IStructHandler {
@@ -106,48 +126,64 @@ public class StructCache {
 
 		private final Map<String, IFieldHandler> namedFields;
 
-		private final Map<Integer, IFieldHandler> indexedFields;
+		private final List<IFieldHandler> indexedFields;
 
 		private final Set<IFieldHandler> optionalFields;
 
 		private final ScriptStruct.Output output;
 
-		private final boolean tryIndexed;
-
 		public StructHandler(ScriptStruct meta, Constructor<?> ctor) {
 			this.ctor = ctor;
 			this.output = meta.defaultOutput();
-			this.tryIndexed = meta.allowTableInput();
 
-			ImmutableMap.Builder<String, IFieldHandler> namedFields = ImmutableMap.builder();
-			ImmutableMap.Builder<Integer, IFieldHandler> indexedFields = ImmutableMap.builder();
 			ImmutableSet.Builder<IFieldHandler> optionalFields = ImmutableSet.builder();
 
-			List<Field> fields = Lists.newArrayList(this.ctor.getDeclaringClass().getFields());
-			Collections.sort(fields, FIELD_ORDERING);
+			final Class<?> cls = this.ctor.getDeclaringClass();
+			final List<Field> sortedFields = Lists.newArrayList(cls.getFields());
+			Collections.sort(sortedFields, FIELD_NAME_ORDERING);
+
+			final SortedMap<Integer, IFieldHandler> indexedFields = Maps.newTreeMap();
 
 			int autoIndex = 0;
-			for (Field f : fields) {
-				final StructField fieldMarker = f.getAnnotation(StructField.class);
-
+			for (Field field : sortedFields) {
+				final StructField fieldMarker = field.getAnnotation(StructField.class);
 				if (fieldMarker == null) continue;
 
-				FieldHandler handler = new FieldHandler(f);
+				final boolean isOptional = fieldMarker.optional();
 
-				namedFields.put(f.getName(), handler);
-
-				int index = fieldMarker.index();
-				if (index == StructField.AUTOASSIGN) index = autoIndex;
-				indexedFields.put(index, handler);
-
-				if (fieldMarker.optional()) optionalFields.add(handler);
-
+				final int markerIndex = fieldMarker.index();
+				final int index = (markerIndex != StructField.AUTOASSIGN)? markerIndex : autoIndex;
 				autoIndex++;
+
+				FieldHandler handler = new FieldHandler(field, field.getName(), index, isOptional);
+				final IFieldHandler prev = indexedFields.put(index, handler);
+				if (prev != null) throw new IllegalArgumentException(String.format("Duplicate index %d on fields %s and %s", index, handler.name(), prev.name()));
+
+				if (isOptional) optionalFields.add(handler);
+			}
+
+			this.optionalFields = optionalFields.build();
+
+			final int fieldCount = indexedFields.size();
+			IFieldHandler[] collectedFields = new IFieldHandler[fieldCount];
+
+			for (IFieldHandler handler : indexedFields.values()) {
+				final int index = handler.index();
+				Preconditions.checkArgument(index >= 0, "Negative index on field %s", handler.name());
+				Preconditions.checkArgument(index < fieldCount, "Non-continuous field numbering on field %s (max index allowed: %s)", handler.name(), fieldCount - 1);
+				collectedFields[index] = handler;
+			}
+
+			this.indexedFields = ImmutableList.copyOf(collectedFields);
+
+			ImmutableMap.Builder<String, IFieldHandler> namedFields = ImmutableMap.builder();
+
+			for (IFieldHandler handler : collectedFields) {
+				Preconditions.checkArgument(handler != null, "Non-continuous field numbering");
+				namedFields.put(handler.name(), handler);
 			}
 
 			this.namedFields = namedFields.build();
-			this.indexedFields = indexedFields.build();
-			this.optionalFields = optionalFields.build();
 		}
 
 		@Override
@@ -173,7 +209,6 @@ public class StructCache {
 					safeFields.add(f);
 
 				} else if (key instanceof Number) {
-					Preconditions.checkArgument(tryIndexed, "Can't convert from array");
 					final int index = ((Number)key).intValue() - indexOffset;
 
 					final IFieldHandler f = indexedFields.get(index);
@@ -214,17 +249,18 @@ public class StructCache {
 		}
 
 		@Override
-		public Map<?, ?> fromJava(IConverter converter, Object obj, int indexOffset) {
+		public Map<?, ?> fromJava(IConverter converter, Object obj, final int indexOffset) {
 			if (output == Output.OBJECT) {
-				Map<String, Object> result = Maps.newHashMap();
+				final Map<String, Object> result = Maps.newHashMap();
 				for (Map.Entry<String, IFieldHandler> e : namedFields.entrySet())
 					addFieldFromJava(converter, obj, result, e.getKey(), e.getValue());
 
 				return result;
 			} else {
-				Map<Integer, Object> result = Maps.newHashMap();
-				for (Map.Entry<Integer, IFieldHandler> e : indexedFields.entrySet())
-					addFieldFromJava(converter, obj, result, e.getKey() + indexOffset, e.getValue());
+				final Map<Integer, Object> result = Maps.newHashMap();
+				int index = indexOffset;
+				for (IFieldHandler handler : indexedFields)
+					addFieldFromJava(converter, obj, result, index++, handler);
 				return result;
 			}
 
@@ -245,6 +281,11 @@ public class StructCache {
 		public IFieldHandler field(String name) {
 			return namedFields.get(name);
 		}
+
+		@Override
+		public ScriptStruct.Output defaultOutput() {
+			return output;
+		}
 	}
 
 	private final CachedFactory<Class<?>, Boolean> checkedClasses = new CachedFactory<Class<?>, Boolean>() {
@@ -258,22 +299,19 @@ public class StructCache {
 		@Override
 		protected IStructHandler create(Class<?> cls) {
 			if (cls.getEnclosingClass() != null && !Modifier.isStatic(cls.getModifiers())) {
-				Log.warn("Can't create serializer for not-static inner %s", cls);
-				return DUMMY_CONVERTER;
+			throw new InvalidStructureException("Can't create serializer for not-static inner " + cls);
 			}
 
 			final ScriptStruct struct = cls.getAnnotation(ScriptStruct.class);
 			if (struct == null) {
-				Log.warn("Trying to generate serializer for unserializable %s", cls);
-				return DUMMY_CONVERTER;
+			throw new InvalidStructureException("Trying to generate serializer for unserializable " + cls);
 			}
 
 			try {
 				final Constructor<?> ctor = cls.getConstructor();
 				return new StructHandler(struct, ctor);
 			} catch (Exception e) {
-				Log.warn(e, "Failed to find parameterless contstructor for class %s", cls);
-				return DUMMY_CONVERTER;
+				throw new InvalidStructureException(cls, e);
 			}
 		}
 	};

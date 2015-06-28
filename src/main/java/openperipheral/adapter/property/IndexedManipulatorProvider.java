@@ -8,9 +8,9 @@ import java.util.Map;
 import openperipheral.api.adapter.IIndexedPropertyCallback;
 import openperipheral.api.helpers.Index;
 import openperipheral.api.property.IIndexedCustomProperty;
-import openperipheral.converter.StructCache;
-import openperipheral.converter.StructCache.IFieldHandler;
-import openperipheral.converter.StructCache.IStructHandler;
+import openperipheral.converter.StructHandlerProvider;
+import openperipheral.converter.StructHandlerProvider.IFieldHandler;
+import openperipheral.converter.StructHandlerProvider.IStructHandler;
 
 import com.google.common.base.Preconditions;
 
@@ -215,7 +215,7 @@ public class IndexedManipulatorProvider {
 	}
 
 	public static IIndexedFieldManipulator createStructManipulator(Class<?> cls) {
-		final IStructHandler handler = StructCache.instance.getHandler(cls);
+		final IStructHandler handler = StructHandlerProvider.instance.getHandler(cls);
 		return new StructFieldManipulator(handler);
 	}
 
@@ -226,7 +226,7 @@ public class IndexedManipulatorProvider {
 		if (Map.class.isAssignableFrom(fieldType)) return isExpanding? MAP_EXPANDING_MANIPULATOR : MAP_MANIPULATOR;
 		else if (List.class.isAssignableFrom(fieldType)) return isExpanding? LIST_EXPANDING_MANIPULATOR : LIST_MANIPULATOR;
 		else if (fieldType.isArray()) return isExpanding? ARRAY_EXPANDING_MANIPULATOR : ARRAY_MANIPULATOR;
-		else if (StructCache.instance.isStruct(fieldType)) return createStructManipulator(fieldType);
+		else if (StructHandlerProvider.instance.isStruct(fieldType)) return createStructManipulator(fieldType);
 
 		throw new IllegalArgumentException("Failed to create manipulator for " + fieldType);
 	}

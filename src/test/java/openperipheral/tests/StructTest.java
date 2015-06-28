@@ -10,8 +10,9 @@ import openperipheral.api.converter.IConverter;
 import openperipheral.api.struct.ScriptStruct;
 import openperipheral.api.struct.ScriptStruct.Output;
 import openperipheral.api.struct.StructField;
-import openperipheral.converter.StructCache;
-import openperipheral.converter.StructCache.IStructHandler;
+import openperipheral.converter.StructHandlerProvider;
+import openperipheral.converter.StructHandlerProvider.IStructHandler;
+import openperipheral.converter.StructHandlerProvider.InvalidStructureException;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -20,6 +21,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 @RunWith(MockitoJUnitRunner.class)
 public class StructTest {
@@ -54,7 +56,7 @@ public class StructTest {
 		try {
 			structConverter.toJava(converter, input, indexOffset);
 			Assert.fail("Exception not thrown");
-		} catch (IllegalArgumentException e) {}
+		} catch (RuntimeException e) {}
 	}
 
 	public static final String SKIP_VALUE = "skip!";
@@ -74,6 +76,7 @@ public class StructTest {
 	@Test
 	public void testNamedOutboundConversion() {
 		final IStructHandler c = getConverter(SimpleStruct.class);
+		verifyFieldOrder(c, "a", "b");
 
 		SimpleStruct struct = new SimpleStruct();
 		struct.a = "aaaa";
@@ -97,8 +100,12 @@ public class StructTest {
 		verifyOutboundConversion(struct.b);
 	}
 
+	private static void verifyFieldOrder(IStructHandler c, String... fields) {
+		Assert.assertEquals(Sets.newHashSet(fields), c.fields());
+	}
+
 	protected IStructHandler getConverter(Class<?> cls) {
-		StructCache cache = new StructCache();
+		StructHandlerProvider cache = new StructHandlerProvider();
 		IStructHandler c = cache.getHandler(cls);
 		return c;
 	}
@@ -106,6 +113,7 @@ public class StructTest {
 	@Test
 	public void testNamedInboundConversion() {
 		final IStructHandler c = getConverter(SimpleStruct.class);
+		verifyFieldOrder(c, "a", "b");
 
 		final String inputA = "ca";
 		final String inputB = "zzzz";
@@ -137,6 +145,7 @@ public class StructTest {
 	@Test
 	public void testNamedInboundConversionExtraFields() {
 		final IStructHandler c = getConverter(SimpleStruct.class);
+		verifyFieldOrder(c, "a", "b");
 
 		final String inputA = "ca";
 		final String inputB = "zzzz";
@@ -159,6 +168,7 @@ public class StructTest {
 	@Test
 	public void testNamedInboundConversionInvalidKey() {
 		final IStructHandler c = getConverter(SimpleStruct.class);
+		verifyFieldOrder(c, "a", "b");
 
 		final String inputA = "ca";
 		final String inputB = "zzzz";
@@ -173,6 +183,7 @@ public class StructTest {
 	@Test
 	public void testNamedInboundConversionMissingFields() {
 		final IStructHandler c = getConverter(SimpleStruct.class);
+		verifyFieldOrder(c, "a", "b");
 
 		final String inputA = "ca";
 
@@ -199,6 +210,7 @@ public class StructTest {
 	@Test
 	public void testNamedInboundConversionOptionalFields() {
 		final IStructHandler c = getConverter(SimpleStructOptional.class);
+		verifyFieldOrder(c, "a", "b");
 
 		final String inputB = "ca";
 
@@ -237,6 +249,7 @@ public class StructTest {
 	@Test
 	public void testDefaultOrderedOutboundConversionOneIndexed() {
 		final IStructHandler c = getConverter(SimpleTableDefaultOrdering.class);
+		verifyFieldOrder(c, "a", "b");
 
 		SimpleTableDefaultOrdering struct = new SimpleTableDefaultOrdering();
 		struct.a = "aaaa";
@@ -264,6 +277,7 @@ public class StructTest {
 	@Test
 	public void testDefaultOrderedOutboundConversionZeroIndexed() {
 		final IStructHandler c = getConverter(SimpleTableDefaultOrdering.class);
+		verifyFieldOrder(c, "a", "b");
 
 		SimpleTableDefaultOrdering struct = new SimpleTableDefaultOrdering();
 		struct.a = "aaaa";
@@ -291,6 +305,7 @@ public class StructTest {
 	@Test
 	public void testDefaultOrderedInboundConversionZeroIndexed() {
 		final IStructHandler c = getConverter(SimpleTableDefaultOrdering.class);
+		verifyFieldOrder(c, "a", "b");
 
 		final String inputA = "ca";
 		final String inputB = "zzzz";
@@ -321,6 +336,7 @@ public class StructTest {
 	@Test
 	public void testDefaultOrderedInboundConversionOneIndexed() {
 		final IStructHandler c = getConverter(SimpleTableDefaultOrdering.class);
+		verifyFieldOrder(c, "a", "b");
 
 		final String inputA = "ca";
 		final String inputB = "zzzz";
@@ -351,6 +367,7 @@ public class StructTest {
 	@Test
 	public void testDefaultOrderedInboundConversionExtraFields() {
 		final IStructHandler c = getConverter(SimpleTableDefaultOrdering.class);
+		verifyFieldOrder(c, "a", "b");
 
 		final String inputA = "ca";
 		final String inputB = "zzzz";
@@ -372,19 +389,20 @@ public class StructTest {
 	@ScriptStruct(defaultOutput = Output.TABLE)
 	public static class SimpleTableForcedOrdering {
 
-		@StructField(index = 2)
+		@StructField(index = 1)
 		public String a;
 
 		@StructField(index = 0)
 		public int b;
 
-		@StructField(index = 4)
+		@StructField(index = 2)
 		public Float c;
 	}
 
 	@Test
 	public void testCustomOrderedOutboundConversionZeroIndexed() {
 		final IStructHandler c = getConverter(SimpleTableForcedOrdering.class);
+		verifyFieldOrder(c, "b", "a", "c");
 
 		SimpleTableForcedOrdering struct = new SimpleTableForcedOrdering();
 		struct.a = "aaaa";
@@ -405,8 +423,8 @@ public class StructTest {
 		// Lua ordering
 		Map<Object, Object> result = Maps.newHashMap();
 		result.put(1, resultB);
-		result.put(3, resultA);
-		result.put(5, resultC);
+		result.put(2, resultA);
+		result.put(3, resultC);
 
 		Assert.assertEquals(result, fromJava);
 
@@ -418,6 +436,7 @@ public class StructTest {
 	@Test
 	public void testCustomOrderedOutboundConversionOneIndexed() {
 		final IStructHandler c = getConverter(SimpleTableForcedOrdering.class);
+		verifyFieldOrder(c, "b", "a", "c");
 
 		SimpleTableForcedOrdering struct = new SimpleTableForcedOrdering();
 		struct.a = "aaaa";
@@ -438,8 +457,8 @@ public class StructTest {
 		// Java ordering
 		Map<Object, Object> result = Maps.newHashMap();
 		result.put(0, resultB);
-		result.put(2, resultA);
-		result.put(4, resultC);
+		result.put(1, resultA);
+		result.put(2, resultC);
 
 		Assert.assertEquals(result, fromJava);
 
@@ -451,6 +470,7 @@ public class StructTest {
 	@Test
 	public void testCustomOrderedInboundConversion() {
 		final IStructHandler c = getConverter(SimpleTableForcedOrdering.class);
+		verifyFieldOrder(c, "b", "a", "c");
 
 		final String inputA = "ca";
 		final String inputB = "zzzz";
@@ -458,8 +478,8 @@ public class StructTest {
 
 		Map<Object, Object> input = Maps.newHashMap();
 		input.put(1, inputB);
-		input.put(3, inputA);
-		input.put(5, inputC);
+		input.put(2, inputA);
+		input.put(3, inputC);
 
 		final String resultA = "ca";
 		final int resultB = 2;
@@ -484,29 +504,68 @@ public class StructTest {
 		Assert.assertEquals(resultC, converted.c);
 	}
 
-	@ScriptStruct(allowTableInput = false)
-	public static class StructOnly {
+	@ScriptStruct
+	public static class DuplicateManualIndex {
 
-		@StructField
+		@StructField(index = 1)
 		public String a;
 
-		@StructField
+		@StructField(index = 1)
+		public int b;
+
+		@StructField(index = 0)
+		public Float c;
+	}
+
+	@Test(expected = InvalidStructureException.class)
+	public void testDuplicateManualIndex() {
+		getConverter(DuplicateManualIndex.class);
+	}
+
+	@ScriptStruct
+	public static class DuplicateAutomaticIndex {
+
+		@StructField(index = 1)
+		public String a;
+
+		@StructField()
+		public int b;
+
+		@StructField(index = 0)
+		public Float c;
+	}
+
+	@Test(expected = InvalidStructureException.class)
+	public void testDuplicateAutomaticIndex() {
+		getConverter(DuplicateAutomaticIndex.class);
+	}
+
+	@ScriptStruct
+	public static class NegativeIndex {
+		@StructField(index = -1)
+		public String a;
+
+		@StructField()
 		public int b;
 	}
 
-	@Test
-	public void testStructOnly() {
-		final IStructHandler c = getConverter(StructOnly.class);
+	@Test(expected = InvalidStructureException.class)
+	public void testNegativeIndex() {
+		getConverter(NegativeIndex.class);
+	}
 
-		final String inputA = "ca";
-		final String inputB = "zzzz";
+	@ScriptStruct
+	public static class NonContinuousIndex {
+		@StructField
+		public String a;
 
-		Map<Object, Object> input = Maps.newHashMap();
-		input.put(1, inputB);
-		input.put(2, inputA);
+		@StructField(index = 2)
+		public int b;
+	}
 
-		assertInboundConversionFail(c, input, 1);
-
+	@Test(expected = InvalidStructureException.class)
+	public void testNonContinuousIndex() {
+		getConverter(NonContinuousIndex.class);
 	}
 
 }

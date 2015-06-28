@@ -1,6 +1,5 @@
 package openperipheral.api.adapter.method;
 
-
 public enum ArgType {
 
 	TABLE,

@@ -2,8 +2,8 @@ package openperipheral.converter.outbound;
 
 import openperipheral.api.converter.IConverter;
 import openperipheral.api.converter.IOutboundTypeConverter;
-import openperipheral.converter.StructCache;
-import openperipheral.converter.StructCache.IStructHandler;
+import openperipheral.converter.StructHandlerProvider;
+import openperipheral.converter.StructHandlerProvider.IStructHandler;
 
 public class ConverterStructOutbound implements IOutboundTypeConverter {
 
@@ -17,8 +17,8 @@ public class ConverterStructOutbound implements IOutboundTypeConverter {
 	public Object fromJava(IConverter converter, Object obj) {
 		final Class<?> cls = obj.getClass();
 
-		if (StructCache.instance.isStruct(cls)) {
-			final IStructHandler structConverter = StructCache.instance.getHandler(cls);
+		if (StructHandlerProvider.instance.isStruct(cls)) {
+			final IStructHandler structConverter = StructHandlerProvider.instance.getHandler(cls);
 			return structConverter.fromJava(converter, obj, indexOffset);
 		}
 

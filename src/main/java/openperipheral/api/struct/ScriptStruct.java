@@ -21,11 +21,6 @@ public @interface ScriptStruct {
 	}
 
 	/**
-	 * If false, this type can be only created from map (i.e. accepts named fields only).
-	 */
-	public boolean allowTableInput() default true;
-
-	/**
 	 * Defines representation on script side
 	 */
 	public Output defaultOutput() default Output.OBJECT;

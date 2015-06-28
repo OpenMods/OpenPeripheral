@@ -11,9 +11,9 @@ import openperipheral.adapter.types.classifier.TypeClassifier;
 import openperipheral.api.adapter.IScriptType;
 import openperipheral.api.helpers.Index;
 import openperipheral.api.property.*;
-import openperipheral.converter.StructCache;
-import openperipheral.converter.StructCache.IFieldHandler;
-import openperipheral.converter.StructCache.IStructHandler;
+import openperipheral.converter.StructHandlerProvider;
+import openperipheral.converter.StructHandlerProvider.IFieldHandler;
+import openperipheral.converter.StructHandlerProvider.IStructHandler;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
@@ -124,7 +124,7 @@ public class IndexedTypeInfoBuilder {
 		private final IStructHandler handler;
 
 		public StructTypesProvider(Class<?> structCls) {
-			this.handler = StructCache.instance.getHandler(structCls);
+			this.handler = StructHandlerProvider.instance.getHandler(structCls);
 		}
 
 		private static IScriptType identityCommonStructType(IStructHandler handler) {
@@ -280,7 +280,7 @@ public class IndexedTypeInfoBuilder {
 		if (fieldType.isArray()) return new ArrayTypesProvider(fieldType);
 		final Class<?> rawType = fieldType.getRawType();
 
-		if (StructCache.instance.isStruct(rawType)) return new StructTypesProvider(rawType);
+		if (StructHandlerProvider.instance.isStruct(rawType)) return new StructTypesProvider(rawType);
 
 		throw new IllegalArgumentException("Failed to deduce value type from" + fieldType);
 	}

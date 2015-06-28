@@ -4,8 +4,8 @@ import java.util.Map;
 
 import openperipheral.api.converter.IConverter;
 import openperipheral.converter.GenericInboundConverterAdapter;
-import openperipheral.converter.StructCache;
-import openperipheral.converter.StructCache.IStructHandler;
+import openperipheral.converter.StructHandlerProvider;
+import openperipheral.converter.StructHandlerProvider.IStructHandler;
 
 public class ConverterStructInbound extends GenericInboundConverterAdapter {
 
@@ -17,9 +17,9 @@ public class ConverterStructInbound extends GenericInboundConverterAdapter {
 
 	@Override
 	protected Object toJava(IConverter converter, Object obj, Class<?> expected) {
-		if (obj instanceof Map && StructCache.instance.isStruct(expected)) {
+		if (obj instanceof Map && StructHandlerProvider.instance.isStruct(expected)) {
 			final Map<?, ?> data = (Map<?, ?>)obj;
-			final IStructHandler structConverter = StructCache.instance.getHandler(expected);
+			final IStructHandler structConverter = StructHandlerProvider.instance.getHandler(expected);
 			return structConverter.toJava(converter, data, indexOffset);
 		}
 

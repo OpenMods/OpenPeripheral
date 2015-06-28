@@ -8,7 +8,7 @@ import openperipheral.adapter.types.*;
 import openperipheral.api.adapter.IScriptType;
 import openperipheral.api.adapter.ITypeClassifier;
 import openperipheral.api.adapter.ITypeClassifier.IGenericClassifier;
-import openperipheral.converter.StructCache;
+import openperipheral.converter.StructHandlerProvider;
 
 import com.google.common.reflect.TypeToken;
 
@@ -26,7 +26,7 @@ public class DefaultTypeClassifier implements IGenericClassifier {
 		if (Number.class.isAssignableFrom(cls)) return SingleArgType.NUMBER;
 
 		if (cls.isEnum()) return TypeHelper.bounded(SingleArgType.STRING, EnumeratedRange.create(cls.getEnumConstants()));
-		if (StructCache.instance.isStruct(cls)) return SingleArgType.TABLE;
+		if (StructHandlerProvider.instance.isStruct(cls)) return SingleArgType.TABLE;
 
 		if (typeToken.isArray()) return classifyArrayType(classifier, typeToken);
 		else if (TypeUtils.MAP_TOKEN.isAssignableFrom(typeToken)) return classifyMapType(classifier, typeToken);
