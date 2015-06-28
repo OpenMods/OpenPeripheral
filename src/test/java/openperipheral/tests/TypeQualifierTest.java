@@ -60,7 +60,7 @@ public class TypeQualifierTest {
 	}
 
 	@ScriptStruct
-	public static class Struct {
+	public static class BasicStruct {
 		@StructField
 		public int a;
 
@@ -69,8 +69,56 @@ public class TypeQualifierTest {
 	}
 
 	@Test
-	public void testStruct() {
-		testQualifier("table", Struct.class);
+	public void testBasicStruct() {
+		testQualifier("{a:number,b:string}", BasicStruct.class);
+	}
+
+	@ScriptStruct
+	public static class OptionalStruct {
+		@StructField
+		public int a;
+
+		@StructField
+		public String b;
+
+		@StructField(optional = true)
+		public boolean c;
+	}
+
+	@Test
+	public void testStructWithOptional() {
+		testQualifier("{a:number,b:string,c:boolean?}", OptionalStruct.class);
+	}
+
+	@ScriptStruct
+	public static class OrderedStruct {
+		@StructField(index = 2)
+		public int a;
+
+		@StructField(index = 0)
+		public String b;
+
+		@StructField(index = 1)
+		public boolean c;
+	}
+
+	@Test
+	public void testOrderedStruct() {
+		testQualifier("{b:string,c:boolean,a:number}", OrderedStruct.class);
+	}
+
+	@ScriptStruct
+	public static class NestedStruct {
+		@StructField
+		public int a;
+
+		@StructField
+		public BasicStruct b;
+	}
+
+	@Test
+	public void testNestedStruct() {
+		testQualifier("{a:number,b:{a:number,b:string}}", NestedStruct.class);
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
@@ -83,8 +131,8 @@ public class TypeQualifierTest {
 		@ExpectedConversion("{string->number}")
 		public Map<String, Integer> mapStringInteger;
 
-		@ExpectedConversion("{boolean->table}")
-		public Map<Boolean, Struct> mapStringStruct;
+		@ExpectedConversion("{boolean->{a:number,b:string}}")
+		public Map<Boolean, BasicStruct> mapStringStruct;
 
 		@ExpectedConversion("{string{A,B,C,D}->number}")
 		public Map<TestEnum, Integer> mapEnumInteger;
@@ -113,11 +161,11 @@ public class TypeQualifierTest {
 		@ExpectedConversion("[string]")
 		public List<String> listString;
 
-		@ExpectedConversion("[table]")
-		public List<Struct> listStruct;
+		@ExpectedConversion("[{a:number,b:string}]")
+		public List<BasicStruct> listStruct;
 
-		@ExpectedConversion("[[table]]")
-		public List<Struct[]> listArrayStruct;
+		@ExpectedConversion("[[{a:number,b:string}]]")
+		public List<BasicStruct[]> listArrayStruct;
 
 		@ExpectedConversion("[string{A,B,C,D}]")
 		public List<TestEnum> listEnum;
@@ -183,7 +231,8 @@ public class TypeQualifierTest {
 		testQualifier("[boolean]", Boolean[].class);
 		testQualifier("table", Object[].class);
 		testQualifier("[[number]]", int[][].class);
-		testQualifier("[table]", Struct[].class);
+		testQualifier("[{a:number,b:string}]", BasicStruct[].class);
+		testQualifier("[[{a:number,b:string}]]", BasicStruct[][].class);
 	}
 
 	@Test

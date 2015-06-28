@@ -360,7 +360,7 @@ public class IndexedTypeInfoBuilderTest {
 		builder.overrideKeyType(UniformStruct.class);
 		builder.overrideValueType(boolean.class);
 		final IndexedTypeInfo result = builder.build();
-		matchDocTypes(result, "table", "boolean");
+		matchDocTypes(result, "{a:number,b:number,c:number}", "boolean");
 		matchKeyType(result, UniformStruct.class);
 		matchConstantValue(result, boolean.class);
 	}
@@ -371,7 +371,7 @@ public class IndexedTypeInfoBuilderTest {
 		builder.overrideKeyType(UniformStruct.class);
 		builder.overrideValueType(Boolean.class);
 		final IndexedTypeInfo result = builder.build();
-		matchDocTypes(result, "table", "boolean");
+		matchDocTypes(result, "{a:number,b:number,c:number}", "boolean");
 		matchKeyType(result, UniformStruct.class);
 		matchFieldValue(result, "a", Boolean.class);
 		matchFieldValue(result, "b", Boolean.class);

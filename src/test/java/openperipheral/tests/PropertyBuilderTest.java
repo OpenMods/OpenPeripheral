@@ -458,7 +458,7 @@ public class PropertyBuilderTest {
 
 		{
 			IMethodExecutor executor = findAndVerifyExecutor("getHello", output);
-			checkDescription(executor, "table|*", ArgType.STRING);
+			checkDescription(executor, "{a:number,b:boolean}|*", ArgType.STRING);
 			checkParamOptionality(executor, 0, true);
 			verifySingleGetterExecution(executor, structField);
 			verifyIndexedGetterExecution(executor, structField, String.class);

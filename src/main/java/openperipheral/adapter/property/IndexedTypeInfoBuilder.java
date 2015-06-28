@@ -130,10 +130,8 @@ public class IndexedTypeInfoBuilder {
 		private static IScriptType identityCommonStructType(IStructHandler handler) {
 			Set<Type> types = Sets.newHashSet();
 
-			for (String fieldName : handler.fields()) {
-				IFieldHandler fieldHandler = handler.field(fieldName);
+			for (IFieldHandler fieldHandler : handler.fields())
 				types.add(fieldHandler.type());
-			}
 
 			if (types.size() == 1) {
 				Type type = types.iterator().next();

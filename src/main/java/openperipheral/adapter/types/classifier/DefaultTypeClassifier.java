@@ -1,15 +1,20 @@
 package openperipheral.adapter.types.classifier;
 
 import java.lang.reflect.Type;
+import java.util.List;
 import java.util.UUID;
 
 import openmods.reflection.TypeUtils;
 import openperipheral.adapter.types.*;
+import openperipheral.adapter.types.NamedTupleType.NamedTupleField;
 import openperipheral.api.adapter.IScriptType;
 import openperipheral.api.adapter.ITypeClassifier;
 import openperipheral.api.adapter.ITypeClassifier.IGenericClassifier;
 import openperipheral.converter.StructHandlerProvider;
+import openperipheral.converter.StructHandlerProvider.IFieldHandler;
+import openperipheral.converter.StructHandlerProvider.IStructHandler;
 
+import com.google.common.collect.Lists;
 import com.google.common.reflect.TypeToken;
 
 public class DefaultTypeClassifier implements IGenericClassifier {
@@ -17,16 +22,19 @@ public class DefaultTypeClassifier implements IGenericClassifier {
 	@Override
 	public IScriptType classify(ITypeClassifier classifier, Type type) {
 		final TypeToken<?> typeToken = TypeToken.of(type);
-		Class<?> cls = TypeUtils.toObjectType(typeToken.getRawType());
 
-		if (cls == String.class) return SingleArgType.STRING;
-		if (cls == UUID.class) return SingleArgType.STRING;
-		if (cls == Boolean.class) return SingleArgType.BOOLEAN;
-		if (cls == Void.class) return SingleArgType.VOID;
-		if (Number.class.isAssignableFrom(cls)) return SingleArgType.NUMBER;
+		{
+			Class<?> cls = TypeUtils.toObjectType(typeToken.getRawType());
 
-		if (cls.isEnum()) return TypeHelper.bounded(SingleArgType.STRING, EnumeratedRange.create(cls.getEnumConstants()));
-		if (StructHandlerProvider.instance.isStruct(cls)) return SingleArgType.TABLE;
+			if (cls == String.class) return SingleArgType.STRING;
+			if (cls == UUID.class) return SingleArgType.STRING;
+			if (cls == Boolean.class) return SingleArgType.BOOLEAN;
+			if (cls == Void.class) return SingleArgType.VOID;
+			if (Number.class.isAssignableFrom(cls)) return SingleArgType.NUMBER;
+
+			if (cls.isEnum()) return TypeHelper.bounded(SingleArgType.STRING, EnumeratedRange.create(cls.getEnumConstants()));
+			if (StructHandlerProvider.instance.isStruct(cls)) return classifyStruct(classifier, cls);
+		}
 
 		if (typeToken.isArray()) return classifyArrayType(classifier, typeToken);
 		else if (TypeUtils.MAP_TOKEN.isAssignableFrom(typeToken)) return classifyMapType(classifier, typeToken);
@@ -73,6 +81,18 @@ public class DefaultTypeClassifier implements IGenericClassifier {
 		final IScriptType qualifiedValueType = classifier.classifyType(valueType.getType());
 
 		return new MapType(qualifiedKeyType, qualifiedValueType);
+	}
+
+	private static IScriptType classifyStruct(ITypeClassifier classifier, Class<?> cls) {
+		IStructHandler handler = StructHandlerProvider.instance.getHandler(cls);
+
+		List<NamedTupleField> fields = Lists.newArrayList();
+		for (IFieldHandler f : handler.fields()) {
+			IScriptType type = classifier.classifyType(f.type());
+			fields.add(new NamedTupleField(f.name(), type, f.isOptional()));
+		}
+
+		return new NamedTupleType(fields);
 	}
 
 }

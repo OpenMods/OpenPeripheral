@@ -4,13 +4,15 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Type;
+import java.util.List;
 import java.util.Map;
 
 import openperipheral.api.converter.IConverter;
 import openperipheral.api.struct.ScriptStruct;
 import openperipheral.api.struct.ScriptStruct.Output;
 import openperipheral.api.struct.StructField;
-import openperipheral.converter.StructHandlerProvider;
+import openperipheral.converter.*;
+import openperipheral.converter.StructHandlerProvider.IFieldHandler;
 import openperipheral.converter.StructHandlerProvider.IStructHandler;
 import openperipheral.converter.StructHandlerProvider.InvalidStructureException;
 
@@ -20,8 +22,10 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import scala.actors.threadpool.Arrays;
+
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
 @RunWith(MockitoJUnitRunner.class)
 public class StructTest {
@@ -101,7 +105,11 @@ public class StructTest {
 	}
 
 	private static void verifyFieldOrder(IStructHandler c, String... fields) {
-		Assert.assertEquals(Sets.newHashSet(fields), c.fields());
+		final List<String> names = Lists.newArrayList();
+		for (IFieldHandler handler : c.fields())
+			names.add(handler.name());
+
+		Assert.assertEquals(Arrays.asList(fields), names);
 	}
 
 	protected IStructHandler getConverter(Class<?> cls) {

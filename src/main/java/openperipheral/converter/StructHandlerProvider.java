@@ -50,9 +50,9 @@ public class StructHandlerProvider {
 
 		public Map<?, ?> fromJava(IConverter converter, Object obj, int indexOffset);
 
-		public Set<String> fields();
-
 		public IFieldHandler field(String name);
+
+		public List<IFieldHandler> fields();
 
 		public ScriptStruct.Output defaultOutput();
 	}
@@ -273,8 +273,8 @@ public class StructHandlerProvider {
 		}
 
 		@Override
-		public Set<String> fields() {
-			return namedFields.keySet();
+		public List<IFieldHandler> fields() {
+			return indexedFields;
 		}
 
 		@Override
