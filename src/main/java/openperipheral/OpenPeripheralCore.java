@@ -9,6 +9,8 @@ import openmods.Mods;
 import openmods.config.properties.ConfigProcessing;
 import openperipheral.adapter.PeripheralTypeProvider;
 import openperipheral.adapter.TileEntityBlacklist;
+import openperipheral.adapter.types.classifier.MinecraftTypeClassifier;
+import openperipheral.adapter.types.classifier.TypeClassifier;
 import openperipheral.api.Constants;
 import openperipheral.api.peripheral.IOpenPeripheral;
 import openperipheral.interfaces.cc.ModuleComputerCraft;
@@ -42,6 +44,8 @@ public class OpenPeripheralCore {
 
 		if (Loader.isModLoaded(Mods.OPENCOMPUTERS)) ModuleOpenComputers.init();
 		if (Loader.isModLoaded(Mods.COMPUTERCRAFT)) ModuleComputerCraft.init();
+
+		TypeClassifier.INSTANCE.registerClassifier(new MinecraftTypeClassifier());
 	}
 
 	@Mod.EventHandler

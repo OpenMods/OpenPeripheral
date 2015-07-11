@@ -7,6 +7,7 @@ import java.util.UUID;
 import openmods.reflection.TypeUtils;
 import openperipheral.adapter.types.*;
 import openperipheral.adapter.types.NamedTupleType.NamedTupleField;
+import openperipheral.adapter.types.NamedTupleType.TupleField;
 import openperipheral.api.adapter.IScriptType;
 import openperipheral.api.adapter.ITypeClassifier;
 import openperipheral.api.adapter.ITypeClassifier.IGenericClassifier;
@@ -86,7 +87,7 @@ public class DefaultTypeClassifier implements IGenericClassifier {
 	private static IScriptType classifyStruct(ITypeClassifier classifier, Class<?> cls) {
 		IStructHandler handler = StructHandlerProvider.instance.getHandler(cls);
 
-		List<NamedTupleField> fields = Lists.newArrayList();
+		List<TupleField> fields = Lists.newArrayList();
 		for (IFieldHandler f : handler.fields()) {
 			IScriptType type = classifier.classifyType(f.type());
 			fields.add(new NamedTupleField(f.name(), type, f.isOptional()));

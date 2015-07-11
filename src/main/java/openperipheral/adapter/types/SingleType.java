@@ -7,6 +7,7 @@ public class SingleType implements IScriptType {
 	public static IScriptType VOID = new SingleType("()");
 	public static IScriptType WILDCHAR = new SingleType("*");
 	public static IScriptType UNKNOWN = new SingleType("?");
+	public static IScriptType TAIL = new SingleType("...");
 
 	private final String type;
 

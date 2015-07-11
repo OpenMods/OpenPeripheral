@@ -10,7 +10,16 @@ import com.google.common.collect.ImmutableList;
 
 public class NamedTupleType implements IScriptType {
 
-	public static class NamedTupleField {
+	public static class TupleField {}
+
+	public static TupleField TAIL = new TupleField() {
+		@Override
+		public String toString() {
+			return "...";
+		}
+	};
+
+	public static class NamedTupleField extends TupleField {
 		public final String name;
 		public final IScriptType type;
 		public final boolean isOptional;
@@ -27,9 +36,13 @@ public class NamedTupleType implements IScriptType {
 		}
 	}
 
-	public final List<NamedTupleField> fields;
+	public final List<TupleField> fields;
 
-	public NamedTupleType(Collection<NamedTupleField> fields) {
+	public NamedTupleType(TupleField... fields) {
+		this.fields = ImmutableList.copyOf(fields);
+	}
+
+	public NamedTupleType(Collection<TupleField> fields) {
 		this.fields = ImmutableList.copyOf(fields);
 	}
 
