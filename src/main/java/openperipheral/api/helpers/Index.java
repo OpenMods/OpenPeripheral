@@ -70,12 +70,16 @@ public class Index extends Number implements Comparable<Index> {
 	public String toString() {
 		return Integer.toString(value + offset);
 	}
-
-	public void checkElementIndex(int size, int index) {
+	
+	public void checkElementIndex(String name, int size) {
 		if (size < 0) throw new IllegalArgumentException("Negative size: " + size);
 
-		if (index < 0) throw new IndexOutOfBoundsException(String.format("Index %d must be larger than %d", index + offset, offset));
-		if (index >= size) throw new IndexOutOfBoundsException(String.format("Index %d less than %d", index + offset, size + offset));
+		if (value < 0) throw new IndexOutOfBoundsException(String.format("%s (%d) must be at least %d", name, value + offset, offset));
+		if (value >= size) throw new IndexOutOfBoundsException(String.format("%s (%d) must be less than %d", name, value + offset, size + offset));
+	}
+
+	public void checkElementIndex(int size) {
+		checkElementIndex("index", size);
 	}
 
 }
