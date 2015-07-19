@@ -70,7 +70,7 @@ public class Index extends Number implements Comparable<Index> {
 	public String toString() {
 		return Integer.toString(value + offset);
 	}
-	
+
 	public void checkElementIndex(String name, int size) {
 		if (size < 0) throw new IllegalArgumentException("Negative size: " + size);
 

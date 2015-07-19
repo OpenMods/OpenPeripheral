@@ -1,10 +1,6 @@
 package openperipheral.adapter.types;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-
-import scala.actors.threadpool.Arrays;
+import java.util.*;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSet;
@@ -31,7 +27,6 @@ public class EnumeratedRange<T> implements IRange {
 		return new EnumeratedRange<T>(values);
 	}
 
-	@SuppressWarnings("unchecked")
 	public static <T> EnumeratedRange<T> create(T... values) {
 		return new EnumeratedRange<T>(Arrays.asList(values));
 	}
