@@ -35,7 +35,7 @@ public class ExternalAdapterWrapper extends AdapterWrapper {
 	private final IAdapter adapter;
 
 	public ExternalAdapterWrapper(IAdapter adapter) {
-		super(adapter.getClass(), adapter.getTargetClass(), adapter.getSourceId());
+		super(adapter.getClass(), adapter.getTargetClass(), adapter.getClass(), adapter.getSourceId());
 		this.adapter = adapter;
 	}
 

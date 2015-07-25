@@ -48,9 +48,8 @@ public class MethodDescriptionTest {
 	}
 
 	private static MethodDeclaration createMethodDecl(Class<?> cls) {
-		Method m = getMethod(cls);
-
-		return new MethodDeclaration(m, m.getAnnotation(ScriptCallable.class), "test");
+		final Method m = getMethod(cls);
+		return new MethodDeclaration(cls, m, m.getAnnotation(ScriptCallable.class), "test");
 	}
 
 	private static Map<String, Class<?>> singleArg(String name, Class<?> cls) {
@@ -299,6 +298,22 @@ public class MethodDescriptionTest {
 	@Test
 	public void testEverything() {
 		MethodDeclaration decl = createMethodDecl(Everything.class);
+		decl.validateUnnamedEnvArgs(B.class);
+		decl.validateEnvArgs(singleArg("env1", D.class));
+	}
+
+	public static class GenericBase<T, E, P> {
+		@ScriptCallable(returnTypes = ReturnType.STRING)
+		public String test(T target, @Env("env1") E access, @Arg(name = "a") P a) {
+			return String.valueOf(a);
+		}
+	}
+
+	public static class GenericDerrived extends GenericBase<B, D, Float> {}
+
+	@Test
+	public void testGeneric() {
+		MethodDeclaration decl = createMethodDecl(GenericDerrived.class);
 		decl.validateUnnamedEnvArgs(B.class);
 		decl.validateEnvArgs(singleArg("env1", D.class));
 	}

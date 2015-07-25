@@ -4,12 +4,16 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
+import net.minecraft.tileentity.TileEntity;
 import openmods.Log;
 import openperipheral.adapter.AdapterRegistry;
 import openperipheral.adapter.IMethodDescription;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.wrappers.AdapterWrapper;
+import openperipheral.adapter.wrappers.InlineAdapterWrapper;
 import openperipheral.adapter.wrappers.TechnicalAdapterWrapper;
+import openperipheral.api.adapter.AdapterSourceName;
+import openperipheral.api.peripheral.PeripheralTypeId;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableMap;
@@ -36,8 +40,9 @@ public class ClassMethodsListBuilder {
 			else Log.warn("Adapter %s cannot be used for %s due to constraints", wrapper.describe());
 	}
 
-	public void addInlineAdapter(Class<?> cls) {
-		AdapterWrapper wrapper = manager.getInlineAdapter(cls);
+	public void addInlineAdapter(Class<?> rootClass, Class<?> targetClass) {
+		final String sourceId = getSourceId(targetClass);
+		AdapterWrapper wrapper = new InlineAdapterWrapper(rootClass, targetClass, sourceId);
 		addMethods(wrapper);
 	}
 
@@ -73,5 +78,19 @@ public class ClassMethodsListBuilder {
 
 	public void addMethodsFromObject(Object obj, Class<?> targetCls, String source) {
 		addMethods(new TechnicalAdapterWrapper(obj, targetCls, source));
+	}
+
+	private static String getSourceId(Class<?> cls) {
+		{
+			AdapterSourceName id = cls.getAnnotation(AdapterSourceName.class);
+			if (id != null) return id.value();
+		}
+
+		if (TileEntity.class.isAssignableFrom(cls)) {
+			PeripheralTypeId id = cls.getAnnotation(PeripheralTypeId.class);
+			if (id != null) return id.value();
+		}
+
+		return cls.getName().toLowerCase();
 	}
 }

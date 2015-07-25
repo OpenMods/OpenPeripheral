@@ -60,7 +60,7 @@ public class ModuleOpenComputers {
 		InjectedClassesManager.instance.registerProvider(OBJECT_CLASS_PREFIX, new EnvironmentClassBytesProvider<Value>(OBJECT_METHODS_FACTORY));
 
 		CommandDump.addArchSerializer("OpenComputers", "peripheral", DocBuilder.TILE_ENTITY_DECORATOR, PERIPHERAL_METHODS_FACTORY);
-		CommandDump.addArchSerializer("OpenComputers", "object", DocBuilder.NULL_DECORATOR, OBJECT_METHODS_FACTORY);
+		CommandDump.addArchSerializer("OpenComputers", "object", DocBuilder.SCRIPT_OBJECT_DECORATOR, OBJECT_METHODS_FACTORY);
 	}
 
 	public static void init() {

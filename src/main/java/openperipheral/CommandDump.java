@@ -56,13 +56,6 @@ public class CommandDump extends SidedCommand {
 		}
 	}
 
-	private static void processInternalAdapters(DocBuilder builder, AdapterRegistry registry, String type) {
-		for (Map.Entry<Class<?>, AdapterWrapper> e : registry.listInternalAdapters().entrySet()) {
-			final AdapterWrapper adapter = e.getValue();
-			if (!adapter.getMethods().isEmpty()) builder.createDocForAdapter(type, "inline", e.getKey(), adapter);
-		}
-	}
-
 	@Override
 	public void processCommand(ICommandSender sender, String[] args) {
 		final String format = (args.length >= 1)? args[0] : "xhtml";
@@ -86,9 +79,7 @@ public class CommandDump extends SidedCommand {
 				serializer.serialize(builder);
 
 			processExternalAdapters(builder, AdapterRegistry.PERIPHERAL_ADAPTERS, "peripheral");
-			processInternalAdapters(builder, AdapterRegistry.PERIPHERAL_ADAPTERS, "peripheral");
 			processExternalAdapters(builder, AdapterRegistry.OBJECT_ADAPTERS, "object");
-			processInternalAdapters(builder, AdapterRegistry.OBJECT_ADAPTERS, "object");
 
 			if (format.equalsIgnoreCase("xhtml")) builder.dumpXml(output, true);
 			else if (format.equalsIgnoreCase("xml")) builder.dumpXml(output, false);

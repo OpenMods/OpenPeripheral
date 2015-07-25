@@ -13,7 +13,7 @@ public class TechnicalAdapterWrapper extends AdapterWrapper {
 	private final Object adapter;
 
 	public TechnicalAdapterWrapper(Object adapter, Class<?> targetClass, String source) {
-		super(adapter.getClass(), targetClass, source);
+		super(adapter.getClass(), targetClass, targetClass, source);
 		this.adapter = adapter;
 	}
 

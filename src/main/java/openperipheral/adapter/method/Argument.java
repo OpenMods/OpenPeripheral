@@ -41,6 +41,6 @@ public class Argument extends ArgumentDescriptionBase {
 
 	@Override
 	public String toString() {
-		return name;
+		return name + "(" + javaArgIndex + "):" + javaType;
 	}
 }

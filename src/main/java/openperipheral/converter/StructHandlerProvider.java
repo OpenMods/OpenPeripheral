@@ -5,6 +5,7 @@ import java.util.*;
 
 import javax.annotation.Nullable;
 
+import openmods.reflection.TypeUtils;
 import openmods.utils.CachedFactory;
 import openperipheral.api.converter.IConverter;
 import openperipheral.api.struct.ScriptStruct;
@@ -14,6 +15,7 @@ import openperipheral.api.struct.StructField;
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.*;
+import com.google.common.reflect.TypeToken;
 
 public class StructHandlerProvider {
 
@@ -67,6 +69,8 @@ public class StructHandlerProvider {
 
 	private static class FieldHandler implements IFieldHandler {
 
+		private final Type type;
+
 		private final Field field;
 
 		private final String name;
@@ -75,7 +79,9 @@ public class StructHandlerProvider {
 
 		private final boolean isOptional;
 
-		public FieldHandler(Field field, String name, int index, boolean isOptional) {
+		public FieldHandler(Class<?> ownerCls, Field field, String name, int index, boolean isOptional) {
+			TypeToken<?> fieldType = TypeUtils.resolveFieldType(ownerCls, field);
+			this.type = fieldType.getType();
 			this.field = field;
 			this.name = name;
 			this.index = index;
@@ -84,7 +90,7 @@ public class StructHandlerProvider {
 
 		@Override
 		public Type type() {
-			return field.getGenericType();
+			return type;
 		}
 
 		@Override
@@ -155,7 +161,7 @@ public class StructHandlerProvider {
 				final int index = (markerIndex != StructField.AUTOASSIGN)? markerIndex : autoIndex;
 				autoIndex++;
 
-				FieldHandler handler = new FieldHandler(field, field.getName(), index, isOptional);
+				FieldHandler handler = new FieldHandler(cls, field, field.getName(), index, isOptional);
 				final IFieldHandler prev = indexedFields.put(index, handler);
 				if (prev != null) throw new IllegalArgumentException(String.format("Duplicate index %d on fields %s and %s", index, handler.name(), prev.name()));
 
@@ -211,6 +217,7 @@ public class StructHandlerProvider {
 				} else if (key instanceof Number) {
 					final int index = ((Number)key).intValue() - indexOffset;
 
+					Preconditions.checkArgument(index < indexedFields.size(), "Index %s is outside of allowed range for structure", index);
 					final IFieldHandler f = indexedFields.get(index);
 					Preconditions.checkArgument(f != null, "Extraneous field: %s = %s", key, value);
 

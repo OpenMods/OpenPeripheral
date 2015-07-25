@@ -55,7 +55,7 @@ public class ModuleComputerCraft {
 		};
 
 		CommandDump.addArchSerializer("ComputerCraft", "peripheral", DocBuilder.TILE_ENTITY_DECORATOR, PERIPHERAL_METHODS_FACTORY);
-		CommandDump.addArchSerializer("ComputerCraft", "object", DocBuilder.NULL_DECORATOR, OBJECT_METHODS_FACTORY);
+		CommandDump.addArchSerializer("ComputerCraft", "object", DocBuilder.SCRIPT_OBJECT_DECORATOR, OBJECT_METHODS_FACTORY);
 	}
 
 	public static void init() {

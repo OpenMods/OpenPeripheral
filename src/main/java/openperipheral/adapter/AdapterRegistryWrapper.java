@@ -29,7 +29,7 @@ public class AdapterRegistryWrapper<T extends IAdapter> implements IAdapterRegis
 
 	@Override
 	public void registerInline(Class<?> cls) {
-		registry.addInlineAdapter(cls);
+		// No longer in use!
 	}
 
 }

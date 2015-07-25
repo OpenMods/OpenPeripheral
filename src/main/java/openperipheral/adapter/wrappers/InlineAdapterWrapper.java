@@ -10,8 +10,8 @@ import openperipheral.adapter.property.PropertyListBuilder;
 
 public class InlineAdapterWrapper extends AdapterWrapper {
 
-	public InlineAdapterWrapper(Class<?> targetClass, String source) {
-		super(targetClass, targetClass, source);
+	public InlineAdapterWrapper(Class<?> rootClass, Class<?> targetClass, String source) {
+		super(targetClass, targetClass, rootClass, source);
 	}
 
 	@Override
@@ -40,7 +40,7 @@ public class InlineAdapterWrapper extends AdapterWrapper {
 	@Override
 	protected List<IMethodExecutor> buildMethodList() {
 		List<IMethodExecutor> result = super.buildMethodList();
-		PropertyListBuilder.buildPropertyList(targetClass, source, result);
+		PropertyListBuilder.buildPropertyList(rootClass, targetClass, source, result);
 		return result;
 	}
 

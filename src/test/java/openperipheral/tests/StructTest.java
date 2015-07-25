@@ -511,6 +511,107 @@ public class StructTest {
 		Assert.assertEquals(resultC, converted.c);
 	}
 
+	public static class GenericBase1<A, B> {
+		@StructField
+		public A fieldA;
+
+		@StructField
+		public B fieldB;
+	}
+
+	public static class GenericBase2<A, B, C, D> extends GenericBase1<C, D> {
+		@StructField
+		public A fieldC;
+
+		@StructField
+		public B fieldD;
+	}
+
+	@ScriptStruct
+	public static class GenericDerrived extends GenericBase2<Integer, String, Boolean, Float> {}
+
+	@Test
+	public void testGenericBaseOutboundConversion() {
+		final IStructHandler c = getConverter(GenericDerrived.class);
+		verifyFieldOrder(c, "fieldA", "fieldB", "fieldC", "fieldD");
+
+		GenericDerrived struct = new GenericDerrived();
+		struct.fieldA = false;
+		struct.fieldB = 3.5f;
+		struct.fieldC = 34;
+		struct.fieldD = "Hello";
+
+		final int resultA = 5;
+		setupOutboundConverter(struct.fieldA, resultA);
+
+		final String resultB = "cb";
+		setupOutboundConverter(struct.fieldB, resultB);
+
+		final float resultC = 0.2f;
+		setupOutboundConverter(struct.fieldC, resultC);
+
+		final boolean resultD = false;
+		setupOutboundConverter(struct.fieldD, resultD);
+
+		Map<?, ?> fromJava = c.fromJava(converter, struct, 0);
+
+		Map<Object, Object> result = Maps.newHashMap();
+		result.put("fieldA", resultA);
+		result.put("fieldB", resultB);
+		result.put("fieldC", resultC);
+		result.put("fieldD", resultD);
+
+		Assert.assertEquals(result, fromJava);
+
+		verifyOutboundConversion(struct.fieldA);
+		verifyOutboundConversion(struct.fieldB);
+		verifyOutboundConversion(struct.fieldC);
+		verifyOutboundConversion(struct.fieldD);
+	}
+
+	@Test
+	public void testGenericBaseInboundConversion() {
+		final IStructHandler c = getConverter(GenericDerrived.class);
+		verifyFieldOrder(c, "fieldA", "fieldB", "fieldC", "fieldD");
+
+		final Boolean inputA = false;
+		final Float inputB = 999.3f;
+		final Integer inputC = 3214;
+		final String inputD = "zzzz";
+
+		Map<Object, Object> input = Maps.newHashMap();
+		input.put("fieldA", inputA);
+		input.put("fieldB", inputB);
+		input.put("fieldC", inputC);
+		input.put("fieldD", inputD);
+
+		final Boolean resultA = true;
+		final Float resultB = 9432.4f;
+		final Integer resultC = 5425;
+		final String resultD = "sfs";
+
+		setupInboundConverter(inputA, Boolean.class, resultA);
+		setupInboundConverter(inputB, Float.class, resultB);
+		setupInboundConverter(inputC, Integer.class, resultC);
+		setupInboundConverter(inputD, String.class, resultD);
+
+		Object o = c.toJava(converter, input, 1);
+
+		verifyInboundConversion(inputA, Boolean.class);
+		verifyInboundConversion(inputB, Float.class);
+		verifyInboundConversion(inputC, Integer.class);
+		verifyInboundConversion(inputD, String.class);
+
+		Assert.assertTrue(o instanceof GenericDerrived);
+
+		GenericDerrived converted = (GenericDerrived)o;
+
+		Assert.assertEquals(resultA, converted.fieldA);
+		Assert.assertEquals(resultB, converted.fieldB);
+		Assert.assertEquals(resultC, converted.fieldC);
+		Assert.assertEquals(resultD, converted.fieldD);
+	}
+
 	@ScriptStruct
 	public static class DuplicateManualIndex {
 

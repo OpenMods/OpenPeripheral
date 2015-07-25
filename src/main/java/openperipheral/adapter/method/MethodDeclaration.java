@@ -80,7 +80,7 @@ public class MethodDeclaration implements IMethodDescription {
 
 	}
 
-	public MethodDeclaration(Method method, ScriptCallable meta, String source) {
+	public MethodDeclaration(Class<?> rootClass, Method method, ScriptCallable meta, String source) {
 		this.method = method;
 		this.source = source;
 
@@ -101,10 +101,12 @@ public class MethodDeclaration implements IMethodDescription {
 
 		ArgParseState state = ArgParseState.ENV_UNNAMED;
 
+		TypeToken<?> scopeType = TypeToken.of(rootClass);
+
 		final Annotation[][] argsAnnotations = method.getParameterAnnotations();
 		for (int argIndex = 0; argIndex < methodArgs.length; argIndex++) {
 			try {
-				final TypeToken<?> argType = TypeToken.of(methodArgs[argIndex]);
+				final TypeToken<?> argType = scopeType.resolveType(methodArgs[argIndex]);
 
 				AnnotationMap argAnnotations = new AnnotationMap(argsAnnotations[argIndex]);
 

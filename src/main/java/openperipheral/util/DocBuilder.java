@@ -21,6 +21,7 @@ import openperipheral.adapter.composed.IMethodMap;
 import openperipheral.adapter.composed.IMethodMap.IMethodVisitor;
 import openperipheral.adapter.types.TypeHelper;
 import openperipheral.adapter.wrappers.AdapterWrapper;
+import openperipheral.api.adapter.AdapterSourceName;
 import openperipheral.api.adapter.IScriptType;
 
 import org.w3c.dom.Document;
@@ -43,6 +44,17 @@ public class DocBuilder {
 		public void decorateEntry(Element element, Class<?> cls) {}
 	};
 
+	public static final IClassDecorator SCRIPT_OBJECT_DECORATOR = new IClassDecorator() {
+		@Override
+		public void decorateEntry(Element element, Class<?> cls) {
+			final AdapterSourceName nameAnnotation = cls.getAnnotation(AdapterSourceName.class);
+			final String name = nameAnnotation != null? nameAnnotation.value() : cls.getSimpleName().toLowerCase();
+
+			Document doc = element.getOwnerDocument();
+			element.appendChild(createProperty(doc, "name", name));
+		}
+	};
+
 	public static final IClassDecorator TILE_ENTITY_DECORATOR = new IClassDecorator() {
 
 		@Override
@@ -53,6 +65,12 @@ public class DocBuilder {
 
 			String docText = DocUtils.DOC_TEXT_CACHE.getOrCreate(cls);
 			if (!Strings.isNullOrEmpty(docText)) element.appendChild(createCDataProperty(doc, "docText", docText));
+
+			String userName = PeripheralTypeProvider.INSTANCE.getType(cls);
+			if (Strings.isNullOrEmpty(userName)) {
+				userName = "unknown?";
+			}
+			element.appendChild(createProperty(doc, "name", userName));
 		}
 	};
 
@@ -153,11 +171,6 @@ public class DocBuilder {
 	private void fillDocForClass(final Element result, Class<?> cls, IMethodMap list) {
 		result.setAttribute("class", cls.getName());
 		result.appendChild(createProperty("simpleName", cls.getSimpleName()));
-		String userName = PeripheralTypeProvider.INSTANCE.getType(cls);
-		if (Strings.isNullOrEmpty(userName)) {
-			userName = "unknown?";
-		}
-		result.appendChild(createProperty("name", userName));
 
 		list.visitMethods(new IMethodVisitor() {
 			@Override

@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.List;
 
+import openmods.reflection.TypeUtils;
 import openperipheral.adapter.IMethodDescription;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.types.TypeHelper;
@@ -15,6 +16,7 @@ import openperipheral.api.property.ISinglePropertyListener;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.common.reflect.TypeToken;
 
 public class PropertyListBuilder {
 
@@ -42,7 +44,8 @@ public class PropertyListBuilder {
 		public SingleParameters(String name, String getterDescription, String setterDescription, boolean isDelegating, boolean readOnly, boolean valueNullable, Class<?> valueType, ArgType valueDocType) {
 			super(name, getterDescription, setterDescription, isDelegating, readOnly, valueNullable);
 
-			SingleTypeInfoBuilder typeInfoBuilder = new SingleTypeInfoBuilder(field.getGenericType());
+			final TypeToken<?> fieldType = TypeUtils.resolveFieldType(ownerClass, field);
+			SingleTypeInfoBuilder typeInfoBuilder = new SingleTypeInfoBuilder(fieldType.getType());
 
 			if (valueType != GetTypeFromField.class) typeInfoBuilder.overrideValueType(valueType);
 			if (valueDocType != ArgType.AUTO) typeInfoBuilder.overrideValueDocType(TypeHelper.single(valueDocType));
@@ -59,7 +62,8 @@ public class PropertyListBuilder {
 			super(name, getterDescription, setterDescription, isDelegating, readOnly, valueNullable);
 			this.expandable = expandable;
 
-			final IndexedTypeInfoBuilder typeInfoBuilder = new IndexedTypeInfoBuilder(field.getGenericType());
+			final TypeToken<?> fieldType = TypeUtils.resolveFieldType(ownerClass, field);
+			final IndexedTypeInfoBuilder typeInfoBuilder = new IndexedTypeInfoBuilder(fieldType.getType());
 
 			if (keyType != GetTypeFromField.class) typeInfoBuilder.overrideKeyType(keyType);
 			if (keyDocType != ArgType.AUTO) typeInfoBuilder.overrideKeyDocType(TypeHelper.single(keyDocType));
@@ -271,9 +275,9 @@ public class PropertyListBuilder {
 		Preconditions.checkArgument(!params.isDelegating || IIndexedPropertyCallback.class.isAssignableFrom(ownerClass), "Only classes implementing IIndexedPropertyCallback can use @CallbackIndexedProperty");
 	}
 
-	public static void buildPropertyList(Class<?> targetCls, String source, List<IMethodExecutor> output) {
+	public static void buildPropertyList(Class<?> rootClass, Class<?> targetCls, String source, List<IMethodExecutor> output) {
 		for (Field f : targetCls.getDeclaredFields())
-			new PropertyListBuilder(targetCls, f, source).configureFromFieldProperties().addMethods(output);
+			new PropertyListBuilder(rootClass, f, source).configureFromFieldProperties().addMethods(output);
 	}
 
 }

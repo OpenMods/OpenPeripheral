@@ -24,12 +24,14 @@ public abstract class AdapterWrapper {
 	protected final List<IMethodExecutor> methods;
 	protected final Class<?> targetClass;
 	protected final Class<?> adapterClass;
+	protected final Class<?> rootClass;
 	protected final String source;
 	protected final MethodMetaExtractor metaInfo;
 
-	protected AdapterWrapper(Class<?> adapterClass, Class<?> targetClass, String source) {
+	protected AdapterWrapper(Class<?> adapterClass, Class<?> targetClass, Class<?> rootClass, String source) {
 		this.adapterClass = adapterClass;
 		this.targetClass = targetClass;
+		this.rootClass = rootClass;
 		this.source = source;
 		this.metaInfo = new MethodMetaExtractor(adapterClass);
 		this.methods = ImmutableList.copyOf(buildMethodList());
@@ -76,7 +78,7 @@ public abstract class AdapterWrapper {
 				ScriptCallable callableAnn = method.getAnnotation(ScriptCallable.class);
 				if (callableAnn == null) continue;
 
-				final MethodDeclaration decl = new MethodDeclaration(method, callableAnn, source);
+				final MethodDeclaration decl = new MethodDeclaration(rootClass, method, callableAnn, source);
 				prepareDeclaration(decl);
 				decl.verifyAllParamsNamed();
 

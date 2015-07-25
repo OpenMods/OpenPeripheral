@@ -64,7 +64,11 @@ public class PropertyBuilderTest {
 		public boolean b;
 	}
 
-	public static class FieldSource {
+	public static class GenericBase<P> {
+		public List<P> genericField;
+	}
+
+	public static class FieldSource extends GenericBase<Long> {
 		public int intField;
 
 		public String stringField;
@@ -76,6 +80,8 @@ public class PropertyBuilderTest {
 		public boolean[] arrayField;
 
 		public Struct structField;
+
+		public List<Long> parametrizedGenericField;
 	}
 
 	public abstract static class SingleCallbackSource extends FieldSource implements IPropertyCallback {
@@ -109,6 +115,10 @@ public class PropertyBuilderTest {
 	public final Field arrayField = getTargetField("arrayField");
 
 	public final Field structField = getTargetField("structField");
+
+	public final Field genericField = getTargetField("genericField");
+
+	public final Field parametrizedGenericField = getTargetField("parametrizedGenericField");
 
 	private static List<IMethodExecutor> buildPropertyList(PropertyListBuilder builder) {
 		List<IMethodExecutor> output = Lists.newArrayList();
@@ -190,6 +200,10 @@ public class PropertyBuilderTest {
 	}
 
 	private static void verifySingleSetterExecution(IMethodExecutor executor, Field targetField) {
+		verifySingleSetterExecution(executor, targetField, targetField.getGenericType());
+	}
+
+	private static void verifySingleSetterExecution(IMethodExecutor executor, Field targetField, Type targetTypeField) {
 		final IPropertyCallback target = mock(SingleCallbackSource.class);
 		final IConverter converter = Mockito.mock(IConverter.class);
 		final IMethodCall call = executor.startCall(target);
@@ -206,7 +220,7 @@ public class PropertyBuilderTest {
 			throw Throwables.propagate(e);
 		}
 
-		verify(converter).toJava(markerValue, targetField.getGenericType());
+		verify(converter).toJava(markerValue, targetTypeField);
 		verify(target).setField(targetField, markerConvertedValue);
 	}
 
@@ -227,9 +241,13 @@ public class PropertyBuilderTest {
 		verify(target).setField(targetField, null);
 	}
 
+	private static PropertyListBuilder create(Class<?> targetClass, Field field) {
+		return new PropertyListBuilder(targetClass, field, SOURCE);
+	}
+
 	@Test
 	public void testSingleGetterOnly() {
-		PropertyListBuilder builder = new PropertyListBuilder(SingleCallbackSource.class, intField, SOURCE);
+		PropertyListBuilder builder = create(SingleCallbackSource.class, intField);
 		builder.addSingle("test", "", "", IS_DELEGATING, READ_ONLY, NOT_NULLABLE, GetTypeFromField.class, ArgType.AUTO);
 
 		List<IMethodExecutor> output = buildPropertyListAndCheckSize(builder, 1);
@@ -243,7 +261,7 @@ public class PropertyBuilderTest {
 
 	@Test
 	public void testSingleGetterSetter() {
-		PropertyListBuilder builder = new PropertyListBuilder(SingleCallbackSource.class, intField, SOURCE);
+		PropertyListBuilder builder = create(SingleCallbackSource.class, intField);
 		builder.addSingle("test", "", "", IS_DELEGATING, READ_WRITE, NOT_NULLABLE, GetTypeFromField.class, ArgType.STRING);
 
 		List<IMethodExecutor> output = buildPropertyListAndCheckSize(builder, 2);
@@ -263,7 +281,7 @@ public class PropertyBuilderTest {
 
 	@Test
 	public void testSingleNullableGetterSetter() {
-		PropertyListBuilder builder = new PropertyListBuilder(SingleCallbackSource.class, stringField, SOURCE);
+		PropertyListBuilder builder = create(SingleCallbackSource.class, stringField);
 		builder.addSingle("test", "", "", IS_DELEGATING, READ_WRITE, NULLABLE, GetTypeFromField.class, ArgType.STRING);
 
 		List<IMethodExecutor> output = buildPropertyListAndCheckSize(builder, 2);
@@ -361,7 +379,7 @@ public class PropertyBuilderTest {
 
 	@Test
 	public void testIndexedGetterOnly() {
-		PropertyListBuilder builder = new PropertyListBuilder(IndexedCallbackSource.class, mapField, SOURCE);
+		PropertyListBuilder builder = create(IndexedCallbackSource.class, mapField);
 		builder.addIndexed("Hello", "", "", IS_DELEGATING, READ_ONLY, NOT_NULLABLE, NOT_EXPANDABLE, GetTypeFromField.class, ArgType.AUTO, GetTypeFromField.class, ArgType.AUTO);
 
 		List<IMethodExecutor> output = buildPropertyListAndCheckSize(builder, 1);
@@ -376,7 +394,7 @@ public class PropertyBuilderTest {
 
 	@Test
 	public void testIndexedGetterOnlyWithCustomTypes() {
-		PropertyListBuilder builder = new PropertyListBuilder(IndexedCallbackSource.class, intField, SOURCE);
+		PropertyListBuilder builder = create(IndexedCallbackSource.class, intField);
 		builder.addIndexed("Hello", "", "", IS_DELEGATING, READ_ONLY, NOT_NULLABLE, NOT_EXPANDABLE, float.class, ArgType.AUTO, String.class, ArgType.AUTO);
 
 		List<IMethodExecutor> output = buildPropertyListAndCheckSize(builder, 1);
@@ -391,7 +409,7 @@ public class PropertyBuilderTest {
 
 	@Test
 	public void testIndexedGetterOnlyWithCustomDocTypes() {
-		PropertyListBuilder builder = new PropertyListBuilder(IndexedCallbackSource.class, mapField, SOURCE);
+		PropertyListBuilder builder = create(IndexedCallbackSource.class, mapField);
 		builder.addIndexed("Hello", "", "", IS_DELEGATING, READ_ONLY, NOT_NULLABLE, NOT_EXPANDABLE, GetTypeFromField.class, ArgType.BOOLEAN, GetTypeFromField.class, ArgType.TABLE);
 
 		List<IMethodExecutor> output = buildPropertyListAndCheckSize(builder, 1);
@@ -406,7 +424,7 @@ public class PropertyBuilderTest {
 
 	@Test
 	public void testIndexedGetterSetter() {
-		PropertyListBuilder builder = new PropertyListBuilder(IndexedCallbackSource.class, listField, SOURCE);
+		PropertyListBuilder builder = create(IndexedCallbackSource.class, listField);
 		builder.addIndexed("Hello", "", "", IS_DELEGATING, READ_WRITE, NOT_NULLABLE, NOT_EXPANDABLE, GetTypeFromField.class, ArgType.AUTO, GetTypeFromField.class, ArgType.AUTO);
 
 		List<IMethodExecutor> output = buildPropertyListAndCheckSize(builder, 2);
@@ -428,7 +446,7 @@ public class PropertyBuilderTest {
 
 	@Test
 	public void testIndexedNullableGetterSetter() {
-		PropertyListBuilder builder = new PropertyListBuilder(IndexedCallbackSource.class, listField, SOURCE);
+		PropertyListBuilder builder = create(IndexedCallbackSource.class, listField);
 		builder.addIndexed("Hello", "", "", IS_DELEGATING, READ_WRITE, NULLABLE, NOT_EXPANDABLE, GetTypeFromField.class, ArgType.AUTO, GetTypeFromField.class, ArgType.AUTO);
 
 		List<IMethodExecutor> output = buildPropertyListAndCheckSize(builder, 2);
@@ -450,7 +468,7 @@ public class PropertyBuilderTest {
 
 	@Test
 	public void testMergedGetterOnly() {
-		PropertyListBuilder builder = new PropertyListBuilder(MergedCallbackSource.class, structField, SOURCE);
+		PropertyListBuilder builder = create(MergedCallbackSource.class, structField);
 		builder.addSingle("Hello", "", "", IS_DELEGATING, READ_ONLY, NOT_NULLABLE, GetTypeFromField.class, ArgType.AUTO);
 		builder.addIndexed("Hello", "", "", IS_DELEGATING, READ_ONLY, NOT_NULLABLE, NOT_EXPANDABLE, GetTypeFromField.class, ArgType.AUTO, GetTypeFromField.class, ArgType.AUTO);
 
@@ -467,7 +485,7 @@ public class PropertyBuilderTest {
 
 	@Test
 	public void testMergedGetterSingleSetter() {
-		PropertyListBuilder builder = new PropertyListBuilder(MergedCallbackSource.class, mapField, SOURCE);
+		PropertyListBuilder builder = create(MergedCallbackSource.class, mapField);
 		builder.addSingle("Hello", "", "", IS_DELEGATING, READ_WRITE, NOT_NULLABLE, GetTypeFromField.class, ArgType.AUTO);
 		builder.addIndexed("Hello", "", "", IS_DELEGATING, READ_ONLY, NOT_NULLABLE, NOT_EXPANDABLE, GetTypeFromField.class, ArgType.AUTO, GetTypeFromField.class, ArgType.AUTO);
 
@@ -490,7 +508,7 @@ public class PropertyBuilderTest {
 
 	@Test
 	public void testMergedGetterIndexedSetter() {
-		PropertyListBuilder builder = new PropertyListBuilder(MergedCallbackSource.class, mapField, SOURCE);
+		PropertyListBuilder builder = create(MergedCallbackSource.class, mapField);
 		builder.addSingle("Hello", "", "", IS_DELEGATING, READ_ONLY, NOT_NULLABLE, GetTypeFromField.class, ArgType.AUTO);
 		builder.addIndexed("Hello", "", "", IS_DELEGATING, READ_WRITE, NOT_NULLABLE, NOT_EXPANDABLE, GetTypeFromField.class, ArgType.AUTO, GetTypeFromField.class, ArgType.AUTO);
 
@@ -514,7 +532,7 @@ public class PropertyBuilderTest {
 
 	@Test
 	public void testMergedGetterSetter() {
-		PropertyListBuilder builder = new PropertyListBuilder(MergedCallbackSource.class, mapField, SOURCE);
+		PropertyListBuilder builder = create(MergedCallbackSource.class, mapField);
 		builder.addSingle("Hello", "", "", IS_DELEGATING, READ_WRITE, NOT_NULLABLE, GetTypeFromField.class, ArgType.AUTO);
 		builder.addIndexed("Hello", "", "", IS_DELEGATING, READ_WRITE, NOT_NULLABLE, NOT_EXPANDABLE, GetTypeFromField.class, ArgType.AUTO, GetTypeFromField.class, ArgType.AUTO);
 
@@ -539,7 +557,7 @@ public class PropertyBuilderTest {
 
 	@Test
 	public void testMergedGetterSetterSameTypes() {
-		PropertyListBuilder builder = new PropertyListBuilder(MergedCallbackSource.class, mapField, SOURCE);
+		PropertyListBuilder builder = create(MergedCallbackSource.class, mapField);
 		builder.addSingle("Hello", "", "", IS_DELEGATING, READ_WRITE, NOT_NULLABLE, GetTypeFromField.class, ArgType.BOOLEAN);
 		builder.addIndexed("Hello", "", "", IS_DELEGATING, READ_WRITE, NOT_NULLABLE, NOT_EXPANDABLE, GetTypeFromField.class, ArgType.OBJECT, GetTypeFromField.class, ArgType.BOOLEAN);
 
@@ -564,7 +582,7 @@ public class PropertyBuilderTest {
 
 	@Test
 	public void testSplitGetterOnly() {
-		PropertyListBuilder builder = new PropertyListBuilder(MergedCallbackSource.class, listField, SOURCE);
+		PropertyListBuilder builder = create(MergedCallbackSource.class, listField);
 		builder.addSingle("Hello", "", "", IS_DELEGATING, READ_ONLY, NOT_NULLABLE, GetTypeFromField.class, ArgType.AUTO);
 		builder.addIndexed("Hi", "", "", IS_DELEGATING, READ_ONLY, NOT_NULLABLE, NOT_EXPANDABLE, GetTypeFromField.class, ArgType.AUTO, GetTypeFromField.class, ArgType.AUTO);
 
@@ -586,7 +604,7 @@ public class PropertyBuilderTest {
 
 	@Test
 	public void testSplitGetterIndexedSetter() {
-		PropertyListBuilder builder = new PropertyListBuilder(MergedCallbackSource.class, listField, SOURCE);
+		PropertyListBuilder builder = create(MergedCallbackSource.class, listField);
 		builder.addSingle("Hello", "", "", IS_DELEGATING, READ_WRITE, NOT_NULLABLE, GetTypeFromField.class, ArgType.AUTO);
 		builder.addIndexed("Hi", "", "", IS_DELEGATING, READ_ONLY, NOT_NULLABLE, NOT_EXPANDABLE, GetTypeFromField.class, ArgType.AUTO, GetTypeFromField.class, ArgType.AUTO);
 
@@ -614,7 +632,7 @@ public class PropertyBuilderTest {
 
 	@Test
 	public void testSingleGetterSplitSetter() {
-		PropertyListBuilder builder = new PropertyListBuilder(MergedCallbackSource.class, arrayField, SOURCE);
+		PropertyListBuilder builder = create(MergedCallbackSource.class, arrayField);
 		builder.addSingle("Hello", "", "", IS_DELEGATING, READ_ONLY, NOT_NULLABLE, GetTypeFromField.class, ArgType.AUTO);
 		builder.addIndexed("Hi", "", "", IS_DELEGATING, READ_WRITE, NOT_NULLABLE, NOT_EXPANDABLE, GetTypeFromField.class, ArgType.AUTO, GetTypeFromField.class, ArgType.AUTO);
 
@@ -643,7 +661,7 @@ public class PropertyBuilderTest {
 
 	@Test
 	public void testSplitGetterSetter() {
-		PropertyListBuilder builder = new PropertyListBuilder(MergedCallbackSource.class, arrayField, SOURCE);
+		PropertyListBuilder builder = create(MergedCallbackSource.class, arrayField);
 		builder.addSingle("Hello", "", "", IS_DELEGATING, READ_WRITE, NOT_NULLABLE, GetTypeFromField.class, ArgType.AUTO);
 		builder.addIndexed("Hi", "", "", IS_DELEGATING, READ_WRITE, NOT_NULLABLE, NOT_EXPANDABLE, GetTypeFromField.class, ArgType.AUTO, GetTypeFromField.class, ArgType.AUTO);
 
@@ -673,6 +691,48 @@ public class PropertyBuilderTest {
 			checkDescription(executor, "()", ArgType.BOOLEAN, ArgType.NUMBER);
 			checkParamOptionality(executor, 1, false);
 			verifyIndexedSetterExecution(executor, arrayField, Index.class, boolean.class);
+		}
+	}
+
+	@Test
+	public void testGenericSingleGetterSetter() {
+		PropertyListBuilder builder = create(SingleCallbackSource.class, genericField);
+		builder.addSingle("test", "", "", IS_DELEGATING, READ_WRITE, NOT_NULLABLE, GetTypeFromField.class, ArgType.AUTO);
+
+		List<IMethodExecutor> output = buildPropertyListAndCheckSize(builder, 2);
+
+		{
+			IMethodExecutor executor = findAndVerifyExecutor("getTest", output);
+			checkDescription(executor, "[number]");
+			verifySingleGetterExecution(executor, genericField);
+		}
+
+		{
+			IMethodExecutor executor = findAndVerifyExecutor("setTest", output);
+			checkDescriptionRaw(executor, "()", "[number]");
+			verifySingleSetterExecution(executor, genericField, parametrizedGenericField.getGenericType());
+		}
+	}
+
+	@Test
+	public void testGenericIndexedGetterSetter() {
+		PropertyListBuilder builder = create(IndexedCallbackSource.class, genericField);
+		builder.addIndexed("Hello", "", "", IS_DELEGATING, READ_WRITE, NOT_NULLABLE, NOT_EXPANDABLE, GetTypeFromField.class, ArgType.AUTO, GetTypeFromField.class, ArgType.AUTO);
+
+		List<IMethodExecutor> output = buildPropertyListAndCheckSize(builder, 2);
+
+		{
+			IMethodExecutor executor = findAndVerifyExecutor("getHello", output);
+			checkDescription(executor, "number", ArgType.NUMBER);
+			checkParamOptionality(executor, 0, false);
+			verifyIndexedGetterExecution(executor, genericField, Index.class);
+		}
+
+		{
+			IMethodExecutor executor = findAndVerifyExecutor("setHello", output);
+			checkDescriptionRaw(executor, "()", "number", "number");
+			checkParamOptionality(executor, 1, false);
+			verifyIndexedSetterExecution(executor, genericField, Index.class, Long.class);
 		}
 	}
 }

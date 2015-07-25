@@ -29,12 +29,12 @@ public class ClassMethodsComposer {
 
 		for (Class<?> c : allSuperInterfaces) {
 			builder.addExternalAdapters(cls, c);
-			builder.addInlineAdapter(c);
+			builder.addInlineAdapter(cls, c);
 		}
 
 		for (Class<?> c : classHierarchy) {
 			builder.addExternalAdapters(cls, c);
-			builder.addInlineAdapter(c);
+			builder.addInlineAdapter(cls, c);
 		}
 
 		if (Config.devMethods) builder.addMethodsFromObject(new LuaReflectionHelper(), cls, "<reflection>");

@@ -51,24 +51,12 @@ body {
   <!-- Table of contents -->
   <h2>Table of Contents:</h2>
 
-  <h3>Adapters:</h3>
+  <h3>External adapters:</h3>
   <ul>
-    <li>External:
-      <ul>
-      <xsl:for-each select="adapter[@location='external']">
-        <xsl:sort select="source/text()"/>
-        <li><a href = "#adapt.{@class}"><xsl:value-of select="source/text()" /></a></li>
-      </xsl:for-each>
-      </ul>
-    </li>
-    <li>Inline:
-      <ul>
-      <xsl:for-each select="adapter[@location='inline']">
-        <xsl:sort select="source/text()"/>
-        <li><a href="#adapt.{@class}"><xsl:value-of select="source/text()" /></a></li>
-      </xsl:for-each>
-      </ul>
-    </li>
+    <xsl:for-each select="adapter">
+      <xsl:sort select="source/text()"/>
+      <li><a href = "#adapt.{@class}"><xsl:value-of select="source/text()" /></a></li>
+    </xsl:for-each>
   </ul>
 
   <!-- Note: following line selects only first elements in key group. That way we can get unique architectures-->
@@ -84,8 +72,8 @@ body {
       <h4>Objects:</h4>
       <ul>
       <xsl:for-each select="key('architectures', @architecture)[@type='object']">
-        <xsl:sort select="simpleName/text()"/>
-        <li><a href="#lua.{@architecture}.{@class}"><xsl:value-of select="simpleName/text()" /></a></li>
+        <xsl:sort select="name/text()"/>
+        <li><a href="#lua.{@architecture}.{@class}"><xsl:value-of select="name/text()" /></a></li>
       </xsl:for-each>
       </ul>
   </xsl:for-each>
@@ -103,7 +91,6 @@ body {
     <p>Source class: <code><xsl:value-of select="@class" /></code></p>
     <p>Defined in: <code><xsl:value-of select="@source" /></code></p>
     <p>Location: <xsl:value-of select="@location" /></p>
-    <p>Type: <xsl:value-of select="@type" /></p>
     <xsl:for-each select="method">
       <xsl:sort select="@name"/>
       <div class="method">
@@ -184,9 +171,8 @@ body {
   <xsl:for-each select="classMethods[@type='object']">
     <xsl:sort select="@architecture"/>
     <div class="major" id="lua.{@architecture}.{@class}">
-    <h1><xsl:value-of select="simpleName/text()" /></h1>
-    <p>A Script Object</p>
-    <xsl:if test="name"><p>Name: <code><xsl:value-of select="name/text()" /></code></p></xsl:if>
+    <h1><xsl:value-of select="name/text()" /></h1>
+    <p>A Script Object of type <code><xsl:value-of select="name/text()" /></code></p>
     <p>Architecture: <xsl:value-of select="@architecture" /></p>
     <p>Generated for class <code><xsl:value-of select="@class" /></code></p>
     <xsl:for-each select="method">
