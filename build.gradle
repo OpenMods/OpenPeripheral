@@ -174,12 +174,12 @@ task deobfJar(type: Jar) {
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier 'src'
+    classifier 'sources'
 
     from sourceSets.main.java
 
     manifest {
-        from gitManifest, fmlManifest
+        from jenkinsManifest, gitManifest
     }
 }
 
@@ -192,29 +192,29 @@ task apiJar(type: Jar) {
     include 'openperipheral/api/**'
 
     manifest {
-        from gitManifest, fmlManifest
+        from jenkinsManifest, gitManifest
     }
 }
 
-task apiSrcJar(type: Zip) {
-    classifier 'api-src'
+task apiSrcJar(type: Jar) {
+    classifier 'api-sources'
 
     from sourceSets.main.java
 
     include 'openperipheral/api/**'
 
     manifest {
-        from gitManifest, fmlManifest
+        from jenkinsManifest, gitManifest
     }
 }
 
-task javadocJar(type: Zip, dependsOn: javadoc) {
+task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier 'javadoc'
 
     from 'build/docs/javadoc'
 
     manifest {
-        from gitManifest, fmlManifest
+        from jenkinsManifest, gitManifest
     }
 }
 
