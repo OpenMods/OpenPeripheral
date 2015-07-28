@@ -6,6 +6,7 @@ import openperipheral.adapter.IMethodCall;
 import openperipheral.api.Constants;
 import openperipheral.api.architecture.IArchitectureAccess;
 import openperipheral.api.converter.IConverter;
+import openperipheral.api.helpers.Index;
 import openperipheral.converter.TypeConvertersProvider;
 
 public class OpenComputersEnv {
@@ -40,6 +41,11 @@ public class OpenComputersEnv {
 			@Override
 			public boolean canSignal() {
 				return context.isRunning() || context.isPaused();
+			}
+
+			@Override
+			public Index createIndex(int value) {
+				return new Index(value, 1);
 			}
 		};
 	}

@@ -8,8 +8,8 @@ public class ConverterNumberInbound extends GenericInboundConverterAdapter {
 
 	private final int offset;
 
-	public ConverterNumberInbound(int collectionOffset) {
-		this.offset = collectionOffset;
+	public ConverterNumberInbound(int offset) {
+		this.offset = offset;
 	}
 
 	@Override

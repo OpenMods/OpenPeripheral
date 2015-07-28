@@ -27,7 +27,7 @@ public class OpenPeripheralCore {
 		ApiProvider.installApi();
 	}
 
-	public static final String PROVIDED_API_VERSION = "3.3";
+	public static final String PROVIDED_API_VERSION = "3.3.1";
 
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent evt) {

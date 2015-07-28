@@ -5,6 +5,7 @@ import openperipheral.adapter.IMethodCall;
 import openperipheral.api.Constants;
 import openperipheral.api.architecture.IArchitectureAccess;
 import openperipheral.api.converter.IConverter;
+import openperipheral.api.helpers.Index;
 import openperipheral.converter.TypeConvertersProvider;
 import openperipheral.interfaces.cc.wrappers.LuaObjectWrapper;
 
@@ -57,6 +58,11 @@ public class ComputerCraftEnv {
 				} catch (Exception e) {
 					return false;
 				}
+			}
+
+			@Override
+			public Index createIndex(int value) {
+				return new Index(value, 1);
 			}
 		};
 	}
