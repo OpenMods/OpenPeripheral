@@ -4,6 +4,7 @@ import li.cil.oc.api.Driver;
 import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.machine.Value;
 import li.cil.oc.api.network.ManagedEnvironment;
+import li.cil.oc.api.network.Node;
 import openmods.injector.InjectedClassesManager;
 import openperipheral.ApiProvider;
 import openperipheral.CommandDump;
@@ -38,7 +39,8 @@ public class ModuleOpenComputers {
 		final MethodSelector peripheralSelector = new MethodSelector(Constants.ARCH_OPEN_COMPUTERS)
 				.addDefaultEnv()
 				.addProvidedEnv(Constants.ARG_ACCESS, IArchitectureAccess.class)
-				.addProvidedEnv(Constants.ARG_CONTEXT, Context.class);
+				.addProvidedEnv(Constants.ARG_CONTEXT, Context.class)
+				.addProvidedEnv(Constants.ARG_NODE, Node.class);
 
 		PERIPHERAL_METHODS_FACTORY = new EnvironmentMethodsFactory<ManagedEnvironment>(
 				AdapterRegistry.PERIPHERAL_ADAPTERS,

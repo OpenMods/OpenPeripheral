@@ -4,6 +4,7 @@ import java.util.Map;
 
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.api.Constants;
+import openperipheral.api.architecture.IArchitecture;
 import openperipheral.api.converter.IConverter;
 
 import com.google.common.base.Predicate;
@@ -21,6 +22,7 @@ public class MethodSelector implements Predicate<IMethodExecutor> {
 
 	public MethodSelector addDefaultEnv() {
 		providedEnv.put(Constants.ARG_CONVERTER, IConverter.class);
+		providedEnv.put(Constants.ARG_ARCHITECTURE, IArchitecture.class);
 		return this;
 	}
 
