@@ -1,15 +1,15 @@
 package openperipheral.api.architecture;
 
+import openperipheral.api.Constants;
 import openperipheral.api.adapter.method.Env;
-import openperipheral.api.helpers.Index;
 
 /**
- * Set of common methods from architectures. Used as argument of types marked with {@link Env}
+ * Set of common methods from architectures. Used as argument of types marked with {@link Env}.
+ * Usually available only for peripherals.
  *
+ * @see Constants#ARG_ACCESS
  */
-public interface IArchitectureAccess {
-
-	public String architecture();
+public interface IArchitectureAccess extends IArchitecture {
 
 	public String callerName();
 
@@ -21,14 +21,4 @@ public interface IArchitectureAccess {
 	public boolean canSignal();
 
 	public boolean signal(String name, Object... args);
-
-	/**
-	 * Convert object to Lua object with callable methods
-	 */
-	public Object wrapObject(Object target);
-
-	/**
-	 * Creates new index with offset native for this architecture (usually 1 for Lua based architectures)
-	 */
-	public Index createIndex(int value);
 }

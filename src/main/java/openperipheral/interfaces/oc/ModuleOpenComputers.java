@@ -28,11 +28,13 @@ public class ModuleOpenComputers {
 	private static final String PERIPHERAL_CLASS_PREFIX = "OP_OC_Peripheral";
 	private static final String OBJECT_CLASS_PREFIX = "OP_OC_Object";
 
-	public static final ComposedMethodsFactory<IEnviromentInstanceWrapper<Value>> OBJECT_METHODS_FACTORY;
+	public static ComposedMethodsFactory<IEnviromentInstanceWrapper<Value>> OBJECT_METHODS_FACTORY;
 
-	public static final ComposedMethodsFactory<IEnviromentInstanceWrapper<ManagedEnvironment>> PERIPHERAL_METHODS_FACTORY;
+	public static ComposedMethodsFactory<IEnviromentInstanceWrapper<ManagedEnvironment>> PERIPHERAL_METHODS_FACTORY;
 
-	static {
+	public static OpenComputersEnv ENV;
+
+	public static void init() {
 		final MethodSelector peripheralSelector = new MethodSelector(Constants.ARCH_OPEN_COMPUTERS)
 				.addDefaultEnv()
 				.addProvidedEnv(Constants.ARG_ACCESS, IArchitectureAccess.class)
@@ -61,13 +63,13 @@ public class ModuleOpenComputers {
 
 		CommandDump.addArchSerializer("OpenComputers", "peripheral", DocBuilder.TILE_ENTITY_DECORATOR, PERIPHERAL_METHODS_FACTORY);
 		CommandDump.addArchSerializer("OpenComputers", "object", DocBuilder.SCRIPT_OBJECT_DECORATOR, OBJECT_METHODS_FACTORY);
-	}
 
-	public static void init() {
-		IConverter converter = new TypeConversionRegistryOC();
+		final IConverter converter = new TypeConversionRegistryOC();
 		TypeConvertersProvider.INSTANCE.registerConverter(Constants.ARCH_OPEN_COMPUTERS, converter);
 
 		TypeClassifier.INSTANCE.registerType(Value.class, SingleArgType.OBJECT);
+
+		ENV = new OpenComputersEnv(converter);
 	}
 
 	public static void registerProvider() {

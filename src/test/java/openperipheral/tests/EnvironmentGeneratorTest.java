@@ -25,6 +25,8 @@ import openperipheral.api.architecture.IAttachable;
 import openperipheral.api.architecture.oc.IOpenComputersAttachable;
 import openperipheral.api.converter.IConverter;
 import openperipheral.converter.TypeConvertersProvider;
+import openperipheral.interfaces.oc.ModuleOpenComputers;
+import openperipheral.interfaces.oc.OpenComputersEnv;
 import openperipheral.interfaces.oc.asm.ICodeGenerator;
 import openperipheral.interfaces.oc.asm.MethodsStore;
 import openperipheral.interfaces.oc.asm.object.ObjectCodeGenerator;
@@ -34,6 +36,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
@@ -116,14 +120,18 @@ public class EnvironmentGeneratorTest {
 		methods.put(name, Pair.of(executor, call));
 	}
 
-	private static void testMethods(Map<String, Pair<IMethodExecutor, IMethodCall>> executorMocks, Class<?> generatedClass, final TargetClass target, Object wrapper) throws Exception {
+	private static void testMethods(Map<String, Pair<IMethodExecutor, IMethodCall>> executorMocks, Class<?> generatedClass, TargetClass target, Object wrapper, ArgVerifier verifier) throws Exception {
 		for (Map.Entry<String, Pair<IMethodExecutor, IMethodCall>> method : executorMocks.entrySet()) {
 			final Pair<IMethodExecutor, IMethodCall> value = method.getValue();
-			testMethod(target, wrapper, generatedClass, method.getKey(), value.getLeft(), value.getRight());
+			testMethod(target, wrapper, generatedClass, method.getKey(), value.getLeft(), value.getRight(), verifier);
 		}
 	}
 
-	private static void testMethod(Object target, Object wrapper, Class<?> generatedClass, String name, IMethodExecutor executor, IMethodCall call) throws Exception {
+	private static interface ArgVerifier {
+		public void verifyCall(IMethodCall call, Context context);
+	}
+
+	private static void testMethod(Object target, Object wrapper, Class<?> generatedClass, String name, IMethodExecutor executor, IMethodCall call, ArgVerifier verifier) throws Exception {
 		Method m = getMethod(generatedClass, name.substring(0, 1));
 
 		Callback callback = m.getAnnotation(Callback.class);
@@ -137,8 +145,6 @@ public class EnvironmentGeneratorTest {
 		Arguments args = mock(Arguments.class);
 		final Object[] argArray = new Object[] { 1, 2, 3 };
 		when(args.toArray()).thenReturn(argArray);
-		when(call.setEnv(eq(Constants.ARG_CONVERTER), anyObject())).thenReturn(call);
-		when(call.setEnv(anyString(), anyObject())).thenReturn(call);
 		Context context = mock(Context.class);
 
 		m.invoke(wrapper, context, args);
@@ -146,7 +152,7 @@ public class EnvironmentGeneratorTest {
 		verify(executor).startCall(target);
 
 		verify(args).toArray();
-		verify(call).setEnv(Constants.ARG_CONTEXT, context);
+		verifier.verifyCall(call, context);
 		verify(call).call(argArray);
 	}
 
@@ -177,17 +183,32 @@ public class EnvironmentGeneratorTest {
 		return methods;
 	}
 
-	private static IConverter setupConverterMock() {
+	private static <T> Answer<T> returnFirstArg() {
+		return new Answer<T>() {
+			@Override
+			@SuppressWarnings("unchecked")
+			public T answer(InvocationOnMock invocation) throws Throwable {
+				Object[] args = invocation.getArguments();
+				return (T)args[0];
+			}
+		};
+	}
+
+	private static void setupEnvMocks() {
 		IConverter converter = mock(IConverter.class);
 		TypeConvertersProvider.INSTANCE.registerConverter(Constants.ARCH_OPEN_COMPUTERS, converter);
-		return converter;
+
+		final OpenComputersEnv env = mock(OpenComputersEnv.class);
+		when(env.addObjectArgs(any(IMethodCall.class), any(Context.class))).then(returnFirstArg());
+		when(env.addPeripheralArgs(any(IMethodCall.class), any(Node.class), any(Context.class))).then(returnFirstArg());
+		ModuleOpenComputers.ENV = env;
 	}
 
 	@Test
 	public void testPeripheral() throws Exception {
-		setupConverterMock();
+		setupEnvMocks();
 
-		setupOpenComputersApiMock();
+		final Node node = setupOpenComputersApiMock();
 
 		Map<String, Pair<IMethodExecutor, IMethodCall>> mocks = Maps.newHashMap();
 		addDefaultMethods(mocks);
@@ -206,12 +227,17 @@ public class EnvironmentGeneratorTest {
 
 		verifyCallThrough(target, o);
 
-		testMethods(mocks, cls, target, o);
+		testMethods(mocks, cls, target, o, new ArgVerifier() {
+			@Override
+			public void verifyCall(IMethodCall call, Context context) {
+				verify(ModuleOpenComputers.ENV).addPeripheralArgs(call, node, context);
+			}
+		});
 	}
 
 	@Test(expected = IllegalStateException.class)
 	public void testPeripheralNullTarget() throws Throwable {
-		setupConverterMock();
+		setupEnvMocks();
 		setupOpenComputersApiMock();
 
 		Map<String, Pair<IMethodExecutor, IMethodCall>> mocks = Maps.newHashMap();
@@ -241,7 +267,7 @@ public class EnvironmentGeneratorTest {
 
 	@Test
 	public void testObject() throws Exception {
-		setupConverterMock();
+		setupEnvMocks();
 
 		Map<String, Pair<IMethodExecutor, IMethodCall>> mocks = Maps.newHashMap();
 		addDefaultMethods(mocks);
@@ -261,12 +287,17 @@ public class EnvironmentGeneratorTest {
 
 		verifyCallThrough(target, o);
 
-		testMethods(mocks, cls, target, o);
+		testMethods(mocks, cls, target, o, new ArgVerifier() {
+			@Override
+			public void verifyCall(IMethodCall call, Context context) {
+				verify(ModuleOpenComputers.ENV).addObjectArgs(call, context);
+			}
+		});
 	}
 
 	@Test(expected = IllegalStateException.class)
 	public void testObjectNullConstructor() throws Throwable {
-		setupConverterMock();
+		setupEnvMocks();
 
 		Map<String, Pair<IMethodExecutor, IMethodCall>> mocks = Maps.newHashMap();
 
@@ -297,19 +328,6 @@ public class EnvironmentGeneratorTest {
 
 	private interface ContextEnvironment extends Context, Environment {}
 
-	private static IArchitectureAccess verifyCommonConnectCall(IAttachable target, String nodeAddress) {
-		ArgumentCaptor<IArchitectureAccess> connectAccess = ArgumentCaptor.forClass(IArchitectureAccess.class);
-		verify(target).addComputer(connectAccess.capture());
-		Assert.assertEquals(nodeAddress, connectAccess.getValue().callerName());
-		return connectAccess.getValue();
-	}
-
-	private static void verifyCommonDisconnectCall(IAttachable target, IArchitectureAccess connectAccess) {
-		ArgumentCaptor<IArchitectureAccess> disconnectAccess = ArgumentCaptor.forClass(IArchitectureAccess.class);
-		verify(target).removeComputer(disconnectAccess.capture());
-		Assert.assertEquals(connectAccess, disconnectAccess.getValue()); // must be same object
-	}
-
 	private static void verifyOcSpecificConnectCall(IOpenComputersAttachable target, Node node) {
 		ArgumentCaptor<Node> capuredNode = ArgumentCaptor.forClass(Node.class);
 		verify(target).onConnect(capuredNode.capture());
@@ -324,7 +342,7 @@ public class EnvironmentGeneratorTest {
 
 	@Test
 	public void testConnectivity() throws Exception {
-		setupOpenComputersApiMock();
+		final Node node = setupOpenComputersApiMock();
 
 		ICodeGenerator generator = new PeripheralCodeGenerator();
 
@@ -334,19 +352,23 @@ public class EnvironmentGeneratorTest {
 		final AwareTargetClass target = mock(AwareTargetClass.class);
 		ManagedEnvironment o = cls.getConstructor(AwareTargetClass.class).newInstance(target);
 
-		Environment environment = mock(ContextEnvironment.class);
-		Node node = mock(Node.class);
+		ContextEnvironment environment = mock(ContextEnvironment.class);
 		final String nodeAddress = "node_11";
 		when(node.address()).thenReturn(nodeAddress);
 		when(node.host()).thenReturn(environment);
 		when(environment.node()).thenReturn(node);
 
+		final OpenComputersEnv env = mock(OpenComputersEnv.class);
+		final IArchitectureAccess access = mock(IArchitectureAccess.class);
+		when(env.createAccess(node, environment)).thenReturn(access);
+		ModuleOpenComputers.ENV = env;
+
 		o.onConnect(node);
-		final IArchitectureAccess connectAccess = verifyCommonConnectCall(target, nodeAddress);
+		verify(target).addComputer(access);
 		verifyOcSpecificConnectCall(target, node);
 
 		o.onDisconnect(node);
-		verifyCommonDisconnectCall(target, connectAccess);
+		verify(target).removeComputer(access);
 		verifyOcSpecificDisconnectCall(target, node);
 	}
 
@@ -373,7 +395,7 @@ public class EnvironmentGeneratorTest {
 
 	@Test
 	public void testCommonConnectivity() throws Exception {
-		setupOpenComputersApiMock();
+		final Node node = setupOpenComputersApiMock();
 
 		ICodeGenerator generator = new PeripheralCodeGenerator();
 
@@ -383,27 +405,34 @@ public class EnvironmentGeneratorTest {
 		final CommonAwareTargetClass target = mock(CommonAwareTargetClass.class);
 		ManagedEnvironment o = cls.getConstructor(CommonAwareTargetClass.class).newInstance(target);
 
-		Environment environment = mock(ContextEnvironment.class);
-		Node node = mock(Node.class);
+		ContextEnvironment environment = mock(ContextEnvironment.class);
 		final String nodeAddress = "node_13";
 		when(node.address()).thenReturn(nodeAddress);
 		when(node.host()).thenReturn(environment);
 		when(environment.node()).thenReturn(node);
 
+		final OpenComputersEnv env = mock(OpenComputersEnv.class);
+		final IArchitectureAccess access = mock(IArchitectureAccess.class);
+		when(env.createAccess(node, environment)).thenReturn(access);
+		ModuleOpenComputers.ENV = env;
+
 		o.onConnect(node);
-		IArchitectureAccess connectAccess = verifyCommonConnectCall(target, nodeAddress);
+		verify(target).addComputer(access);
 
 		o.onDisconnect(node);
-		verifyCommonDisconnectCall(target, connectAccess);
+		verify(target).removeComputer(access);
 	}
 
-	private static void setupOpenComputersApiMock() {
+	private static Node setupOpenComputersApiMock() {
+		final Component node = mock(Component.class);
 		final NodeBuilder nodeBuilderMock = mock(NodeBuilder.class);
 		final ComponentBuilder componentBuilderMock = mock(ComponentBuilder.class);
 		final NetworkAPI networkMock = mock(NetworkAPI.class);
 		li.cil.oc.api.API.network = networkMock;
 		when(networkMock.newNode(any(Environment.class), any(Visibility.class))).thenReturn(nodeBuilderMock);
 		when(nodeBuilderMock.withComponent(anyString())).thenReturn(componentBuilderMock);
-		when(componentBuilderMock.create()).thenReturn(null);
+		when(componentBuilderMock.create()).thenReturn(node);
+
+		return node;
 	}
 }

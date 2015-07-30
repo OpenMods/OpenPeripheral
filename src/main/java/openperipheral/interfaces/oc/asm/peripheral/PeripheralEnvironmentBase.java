@@ -9,12 +9,13 @@ import li.cil.oc.api.network.Node;
 import li.cil.oc.api.network.Visibility;
 import li.cil.oc.api.prefab.ManagedEnvironment;
 import openmods.utils.CachedFactory;
+import openperipheral.adapter.IMethodCall;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.PeripheralTypeProvider;
 import openperipheral.api.architecture.IArchitectureAccess;
 import openperipheral.api.architecture.IAttachable;
 import openperipheral.api.architecture.oc.IOpenComputersAttachable;
-import openperipheral.interfaces.oc.OpenComputersEnv;
+import openperipheral.interfaces.oc.ModuleOpenComputers;
 import openperipheral.interfaces.oc.asm.ICallerBase;
 
 public class PeripheralEnvironmentBase extends ManagedEnvironment implements NamedBlock, ICallerBase {
@@ -24,7 +25,7 @@ public class PeripheralEnvironmentBase extends ManagedEnvironment implements Nam
 	private final CachedFactory<Context, IArchitectureAccess> accessCache = new CachedFactory<Context, IArchitectureAccess>() {
 		@Override
 		protected IArchitectureAccess create(Context context) {
-			return OpenComputersEnv.createAccess(node(), context);
+			return ModuleOpenComputers.ENV.createAccess(node(), context);
 		}
 	};
 
@@ -39,7 +40,8 @@ public class PeripheralEnvironmentBase extends ManagedEnvironment implements Nam
 	@Override
 	public Object[] call(Object target, IMethodExecutor executor, Context context, Arguments arguments) throws Exception {
 		Object[] args = arguments.toArray();
-		return OpenComputersEnv.addPeripheralArgs(executor.startCall(target), node(), context).call(args);
+		final IMethodCall call = executor.startCall(target);
+		return ModuleOpenComputers.ENV.addPeripheralArgs(call, node(), context).call(args);
 	}
 
 	protected void onConnect(IAttachable target, Node node) {

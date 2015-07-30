@@ -30,6 +30,12 @@ public class OpenPeripheralCore {
 	public static final String PROVIDED_API_VERSION = "3.3.1";
 
 	@Mod.EventHandler
+	public void construct(FMLConstructionEvent evt) {
+		if (Loader.isModLoaded(Mods.OPENCOMPUTERS)) ModuleOpenComputers.init();
+		if (Loader.isModLoaded(Mods.COMPUTERCRAFT)) ModuleComputerCraft.init();
+	}
+
+	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent evt) {
 		PeripheralTypeProvider.INSTANCE.initialize(evt.getModConfigurationDirectory());
 
@@ -41,9 +47,6 @@ public class OpenPeripheralCore {
 		MinecraftForge.EVENT_BUS.register(TileEntityBlacklist.INSTANCE);
 
 		FMLInterModComms.sendMessage(Mods.OPENCOMPUTERS, "blacklistPeripheral", IOpenPeripheral.class.getName());
-
-		if (Loader.isModLoaded(Mods.OPENCOMPUTERS)) ModuleOpenComputers.init();
-		if (Loader.isModLoaded(Mods.COMPUTERCRAFT)) ModuleComputerCraft.init();
 
 		TypeClassifier.INSTANCE.registerClassifier(new MinecraftTypeClassifier());
 	}

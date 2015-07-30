@@ -4,9 +4,7 @@ import java.util.Arrays;
 
 import openmods.Log;
 import openmods.utils.CachedFactory;
-import openperipheral.adapter.AdapterLogicException;
-import openperipheral.adapter.IMethodExecutor;
-import openperipheral.adapter.PeripheralTypeProvider;
+import openperipheral.adapter.*;
 import openperipheral.adapter.composed.IndexedMethodMap;
 import openperipheral.api.architecture.IArchitectureAccess;
 import openperipheral.api.architecture.IAttachable;
@@ -39,7 +37,7 @@ public class AdapterPeripheral implements IPeripheral, IOpenPeripheral {
 	private final CachedFactory<IComputerAccess, IArchitectureAccess> accessCache = new CachedFactory<IComputerAccess, IArchitectureAccess>() {
 		@Override
 		protected IArchitectureAccess create(IComputerAccess computer) {
-			return ComputerCraftEnv.createAccess(computer);
+			return ModuleComputerCraft.ENV.createAccess(computer);
 		}
 	};
 
@@ -62,7 +60,8 @@ public class AdapterPeripheral implements IPeripheral, IOpenPeripheral {
 
 	private Object[] call(int methodIndex, IMethodExecutor executor, IComputerAccess computer, ILuaContext context, Object[] arguments) throws LuaException, InterruptedException {
 		try {
-			return ComputerCraftEnv.addPeripheralArgs(executor.startCall(target), computer, context).call(arguments);
+			final IMethodCall call = executor.startCall(target);
+			return ModuleComputerCraft.ENV.addPeripheralArgs(call, computer, context).call(arguments);
 		} catch (InterruptedException e) {
 			throw e;
 		} catch (LuaException e) {

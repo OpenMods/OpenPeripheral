@@ -1,6 +1,6 @@
 package openperipheral.api.helpers;
 
-import openperipheral.api.architecture.IArchitectureAccess;
+import openperipheral.api.architecture.IArchitecture;
 
 import com.google.common.primitives.Ints;
 
@@ -9,7 +9,7 @@ import com.google.common.primitives.Ints;
  * If used, OpenPeripheral will convert any index to zero-base value with script language specific offset.
  * For example, in Lua value 3 will become {@code Index(value = 2, offset = 1}.
  *
- * To create index with proper offset for given architecture use {@link IArchitectureAccess#createIndex(int)}.
+ * To create index with proper offset for given architecture use {@link IArchitecture#createIndex(int)}.
  */
 public class Index extends Number implements Comparable<Index> {
 	private static final long serialVersionUID = 1L;

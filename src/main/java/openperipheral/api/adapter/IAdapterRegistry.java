@@ -15,7 +15,8 @@ public interface IAdapterRegistry<T extends IAdapter> {
 	public boolean register(T adapter);
 
 	/**
-	 * Precalculate internal adapter (i.e. scan class for declared methods). May be used for error checking
+	 * @deprecated Previously used for forcing adapter creation
 	 */
+	@Deprecated
 	public void registerInline(Class<?> cls);
 }

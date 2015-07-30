@@ -4,10 +4,10 @@ import java.util.Arrays;
 
 import openmods.Log;
 import openperipheral.adapter.AdapterLogicException;
+import openperipheral.adapter.IMethodCall;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.composed.IndexedMethodMap;
 import openperipheral.api.adapter.GenerationFailedException;
-import openperipheral.interfaces.cc.ComputerCraftEnv;
 import openperipheral.interfaces.cc.ModuleComputerCraft;
 import openperipheral.interfaces.cc.SynchronousExecutor;
 
@@ -37,7 +37,8 @@ public class LuaObjectWrapper {
 
 		private Object[] call(int methodIndex, IMethodExecutor executor, ILuaContext context, Object[] arguments) throws LuaException, InterruptedException {
 			try {
-				return ComputerCraftEnv.addCommonArgs(executor.startCall(target), context).call(arguments);
+				final IMethodCall call = executor.startCall(target);
+				return ModuleComputerCraft.ENV.addObjectArgs(call, context).call(arguments);
 			} catch (InterruptedException e) {
 				throw e;
 			} catch (LuaException e) {

@@ -4,61 +4,99 @@ import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.Node;
 import openperipheral.adapter.IMethodCall;
 import openperipheral.api.Constants;
+import openperipheral.api.architecture.IArchitecture;
 import openperipheral.api.architecture.IArchitectureAccess;
 import openperipheral.api.converter.IConverter;
 import openperipheral.api.helpers.Index;
-import openperipheral.converter.TypeConvertersProvider;
 
 public class OpenComputersEnv {
 
-	public static IArchitectureAccess createAccess(final Node ownNode, final Context context) {
-		return new IArchitectureAccess() {
-			@Override
-			public String architecture() {
-				return Constants.ARCH_OPEN_COMPUTERS;
-			}
+	private static class OCArchitecture implements IArchitecture {
 
-			@Override
-			public String callerName() {
-				return context.node().address();
-			}
+		private final IConverter converter;
 
-			@Override
-			public String peripheralName() {
-				return ownNode.address();
-			}
+		public OCArchitecture(IConverter converter) {
+			this.converter = converter;
+		}
 
-			@Override
-			public boolean signal(String name, Object... args) {
-				return context.signal(name, args);
-			}
+		@Override
+		public String architecture() {
+			return Constants.ARCH_OPEN_COMPUTERS;
+		}
 
-			@Override
-			public Object wrapObject(Object target) {
-				return ModuleOpenComputers.wrapObject(target);
-			}
+		@Override
+		public Object wrapObject(Object target) {
+			return ModuleOpenComputers.wrapObject(target);
+		}
 
-			@Override
-			public boolean canSignal() {
-				return context.isRunning() || context.isPaused();
-			}
+		@Override
+		public Index createIndex(int value) {
+			return new Index(value, 1);
+		}
 
-			@Override
-			public Index createIndex(int value) {
-				return new Index(value, 1);
-			}
-		};
+		@Override
+		public IConverter getConverter() {
+			return converter;
+		}
 	}
 
-	public static IMethodCall addCommonArgs(IMethodCall call, Context context) {
-		final IConverter converter = TypeConvertersProvider.INSTANCE.getConverter(Constants.ARCH_OPEN_COMPUTERS);
+	private static class OCArchitectureAccess extends OCArchitecture implements IArchitectureAccess {
+		private final Node ownNode;
+		private final Context context;
+
+		private OCArchitectureAccess(Node ownNode, Context context, IConverter converter) {
+			super(converter);
+			this.ownNode = ownNode;
+			this.context = context;
+		}
+
+		@Override
+		public String callerName() {
+			return context.node().address();
+		}
+
+		@Override
+		public String peripheralName() {
+			return ownNode.address();
+		}
+
+		@Override
+		public boolean canSignal() {
+			return context.isRunning() || context.isPaused();
+		}
+
+		@Override
+		public boolean signal(String name, Object... args) {
+			return context.signal(name, args);
+		}
+	}
+
+	private final IConverter converter;
+
+	public OpenComputersEnv(IConverter converter) {
+		this.converter = converter;
+	}
+
+	public IArchitectureAccess createAccess(Node ownNode, Context context) {
+		return new OCArchitectureAccess(ownNode, context, converter);
+	}
+
+	private IMethodCall addCommonArgs(IMethodCall call, Context context) {
 		return call
 				.setEnv(Constants.ARG_CONVERTER, converter)
 				.setEnv(Constants.ARG_CONTEXT, context);
 	}
 
-	public static IMethodCall addPeripheralArgs(IMethodCall call, Node node, Context context) {
-		final IArchitectureAccess wrappedAccess = createAccess(node, context);
-		return addCommonArgs(call, context).setEnv(Constants.ARG_ACCESS, wrappedAccess);
+	public IMethodCall addObjectArgs(IMethodCall call, Context context) {
+		return addCommonArgs(call, context)
+				.setEnv(Constants.ARG_ARCHITECTURE, new OCArchitecture(converter));
+	}
+
+	public IMethodCall addPeripheralArgs(IMethodCall call, Node node, Context context) {
+		final OCArchitectureAccess wrapper = new OCArchitectureAccess(node, context, converter);
+		return addCommonArgs(call, context)
+				.setEnv(Constants.ARG_ARCHITECTURE, wrapper)
+				.setEnv(Constants.ARG_ACCESS, wrapper)
+				.setEnv(Constants.ARG_NODE, node);
 	}
 }

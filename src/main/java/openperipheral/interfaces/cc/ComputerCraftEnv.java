@@ -3,10 +3,10 @@ package openperipheral.interfaces.cc;
 import openmods.Log;
 import openperipheral.adapter.IMethodCall;
 import openperipheral.api.Constants;
+import openperipheral.api.architecture.IArchitecture;
 import openperipheral.api.architecture.IArchitectureAccess;
 import openperipheral.api.converter.IConverter;
 import openperipheral.api.helpers.Index;
-import openperipheral.converter.TypeConvertersProvider;
 import openperipheral.interfaces.cc.wrappers.LuaObjectWrapper;
 
 import org.apache.logging.log4j.Level;
@@ -16,68 +16,101 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 
 public class ComputerCraftEnv {
 
-	public static IArchitectureAccess createAccess(final IComputerAccess access) {
-		return new IArchitectureAccess() {
-			@Override
-			public String architecture() {
-				return Constants.ARCH_COMPUTER_CRAFT;
-			}
+	private static class CCArchitecture implements IArchitecture {
+		private final IConverter converter;
 
-			@Override
-			public String callerName() {
-				return Integer.toString(access.getID());
-			}
+		public CCArchitecture(IConverter converter) {
+			this.converter = converter;
+		}
 
-			@Override
-			public String peripheralName() {
-				return access.getAttachmentName();
-			}
+		@Override
+		public String architecture() {
+			return Constants.ARCH_COMPUTER_CRAFT;
+		}
 
-			@Override
-			public boolean signal(String name, Object... args) {
-				try {
-					access.queueEvent(name, args);
-					return true;
-				} catch (Exception e) {
-					Log.log(Level.DEBUG, e, "Failed to send signal: %s", name);
-				}
-				return false;
-			}
+		@Override
+		public Object wrapObject(Object target) {
+			return LuaObjectWrapper.wrap(target);
+		}
 
-			@Override
-			public Object wrapObject(Object target) {
-				return LuaObjectWrapper.wrap(target);
-			}
+		@Override
+		public Index createIndex(int value) {
+			return new Index(value, 1);
+		}
 
-			@Override
-			public boolean canSignal() {
-				try {
-					// this should throw if peripheral isn't attached
-					access.getAttachmentName();
-					return true;
-				} catch (Exception e) {
-					return false;
-				}
-			}
-
-			@Override
-			public Index createIndex(int value) {
-				return new Index(value, 1);
-			}
-		};
+		@Override
+		public IConverter getConverter() {
+			return converter;
+		}
 	}
 
-	public static IMethodCall addCommonArgs(IMethodCall call, ILuaContext context) {
-		final IConverter converter = TypeConvertersProvider.INSTANCE.getConverter(Constants.ARCH_COMPUTER_CRAFT);
+	private static class CCArchitectureAccess extends CCArchitecture implements IArchitectureAccess {
+		private final IComputerAccess access;
+
+		public CCArchitectureAccess(IComputerAccess access, IConverter converter) {
+			super(converter);
+			this.access = access;
+		}
+
+		@Override
+		public String callerName() {
+			return Integer.toString(access.getID());
+		}
+
+		@Override
+		public String peripheralName() {
+			return access.getAttachmentName();
+		}
+
+		@Override
+		public boolean canSignal() {
+			try {
+				// this should throw if peripheral isn't attached
+				access.getAttachmentName();
+				return true;
+			} catch (Exception e) {
+				return false;
+			}
+		}
+
+		@Override
+		public boolean signal(String name, Object... args) {
+			try {
+				access.queueEvent(name, args);
+				return true;
+			} catch (Exception e) {
+				Log.log(Level.DEBUG, e, "Failed to send signal: %s", name);
+			}
+			return false;
+		}
+	}
+
+	private final IConverter converter;
+
+	public ComputerCraftEnv(IConverter converter) {
+		this.converter = converter;
+	}
+
+	public IArchitectureAccess createAccess(final IComputerAccess access) {
+		return new CCArchitectureAccess(access, converter);
+	}
+
+	private IMethodCall addCommonArgs(IMethodCall call, ILuaContext context) {
 		return call
 				.setEnv(Constants.ARG_CONVERTER, converter)
 				.setEnv(Constants.ARG_CONTEXT, context);
 	}
 
-	public static IMethodCall addPeripheralArgs(IMethodCall call, IComputerAccess access, ILuaContext context) {
-		final IArchitectureAccess wrappedAccess = createAccess(access);
+	public IMethodCall addObjectArgs(IMethodCall call, ILuaContext context) {
 		return addCommonArgs(call, context)
-				.setEnv(Constants.ARG_ACCESS, wrappedAccess)
+				.setEnv(Constants.ARG_ARCHITECTURE, new CCArchitecture(converter));
+	}
+
+	public IMethodCall addPeripheralArgs(IMethodCall call, IComputerAccess access, ILuaContext context) {
+		final CCArchitectureAccess wrapper = new CCArchitectureAccess(access, converter);
+		return addCommonArgs(call, context)
+				.setEnv(Constants.ARG_ARCHITECTURE, wrapper)
+				.setEnv(Constants.ARG_ACCESS, wrapper)
 				.setEnv(Constants.ARG_COMPUTER, access);
 	}
 }

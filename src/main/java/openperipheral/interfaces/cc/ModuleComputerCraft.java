@@ -25,11 +25,13 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 
 public class ModuleComputerCraft {
 
-	public static final ComposedMethodsFactory<IndexedMethodMap> PERIPHERAL_METHODS_FACTORY;
+	public static ComposedMethodsFactory<IndexedMethodMap> PERIPHERAL_METHODS_FACTORY;
 
-	public static final ComposedMethodsFactory<IndexedMethodMap> OBJECT_METHODS_FACTORY;
+	public static ComposedMethodsFactory<IndexedMethodMap> OBJECT_METHODS_FACTORY;
 
-	static {
+	public static ComputerCraftEnv ENV;
+
+	public static void init() {
 		final MethodSelector peripheralSelector = new MethodSelector(Constants.ARCH_COMPUTER_CRAFT)
 				.addDefaultEnv()
 				.addProvidedEnv(Constants.ARG_ACCESS, IArchitectureAccess.class)
@@ -56,14 +58,14 @@ public class ModuleComputerCraft {
 
 		CommandDump.addArchSerializer("ComputerCraft", "peripheral", DocBuilder.TILE_ENTITY_DECORATOR, PERIPHERAL_METHODS_FACTORY);
 		CommandDump.addArchSerializer("ComputerCraft", "object", DocBuilder.SCRIPT_OBJECT_DECORATOR, OBJECT_METHODS_FACTORY);
-	}
 
-	public static void init() {
-		IConverter converter = new TypeConversionRegistryCC();
+		final IConverter converter = new TypeConversionRegistryCC();
 		// CC converter is default one (legacy behaviour)
 		TypeConvertersProvider.INSTANCE.registerConverter(Constants.ARCH_COMPUTER_CRAFT, converter);
 
 		TypeClassifier.INSTANCE.registerType(ILuaObject.class, SingleArgType.OBJECT);
+
+		ENV = new ComputerCraftEnv(converter);
 	}
 
 	public static void registerProvider() {

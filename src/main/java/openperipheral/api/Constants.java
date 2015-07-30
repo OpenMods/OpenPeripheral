@@ -1,6 +1,7 @@
 package openperipheral.api;
 
 import openperipheral.api.adapter.method.Env;
+import openperipheral.api.architecture.IArchitecture;
 import openperipheral.api.architecture.IArchitectureAccess;
 import openperipheral.api.converter.IConverter;
 
@@ -22,6 +23,12 @@ public class Constants {
 	public static final String ARG_CONTEXT = "context";
 
 	/**
+	 * Environment variable (see {@link Env} for node.
+	 * Available only of OpenComputers {@link li.cil.oc.api.network.Node}
+	 */
+	public static final String ARG_NODE = "node";
+
+	/**
 	 * Environment variable (see {@link Env} for computer access.
 	 * Available only for ComputerCraft, needs type {@link dan200.computercraft.api.peripheral.IComputerAccess}.
 	 */
@@ -34,8 +41,17 @@ public class Constants {
 	public static final String ARG_CONVERTER = "converter";
 
 	/**
+	 * Environment variable (see {@link Env} for access to architecture ({@link IArchitecture}).
+	 * Returned instance will be valid for current architecture.
+	 */
+	public static final String ARG_ARCHITECTURE = "architecture";
+
+	/**
 	 * Environment variable (see {@link Env} for architecture-independent access to machine ({@link IArchitectureAccess}).
 	 * Returned instance will be valid for current architecture.
+	 * This environment value is usually available only for peripherals.
+	 *
+	 * @see Constants#ARG_ARCHITECTURE usually added on wider class of objects, but contains less functionality
 	 */
 	public static final String ARG_ACCESS = "access";
 
