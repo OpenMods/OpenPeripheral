@@ -58,7 +58,7 @@ public class Index extends Number implements Comparable<Index> {
 
 	@Override
 	public int compareTo(Index other) {
-		return Integer.compare(this.value, other.value);
+		return Ints.compare(this.value, other.value);
 	}
 
 	@Override
