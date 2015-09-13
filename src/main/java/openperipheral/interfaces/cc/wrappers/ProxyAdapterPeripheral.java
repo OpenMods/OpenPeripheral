@@ -16,7 +16,8 @@ public class ProxyAdapterPeripheral extends AdapterPeripheral implements Invocat
 	@Override
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 		try {
-			if (method.getDeclaringClass() == IPeripheral.class) return method.invoke(this, args);
+			final Class<?> declaringClass = method.getDeclaringClass();
+			if (declaringClass == IPeripheral.class || declaringClass == Object.class) return method.invoke(this, args);
 			return method.invoke(target, args);
 		} catch (InvocationTargetException e) {
 			Throwable wrapper = e.getCause();
