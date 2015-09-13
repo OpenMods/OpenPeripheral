@@ -117,6 +117,8 @@ public class AdapterPeripheral implements IPeripheral, IOpenPeripheral {
 
 	@Override
 	public boolean equals(IPeripheral other) {
-		return other == this;
+		if (other == this) return true;
+		if (other instanceof AdapterPeripheral) return ((AdapterPeripheral)other).target == target;
+		return false;
 	}
 }
