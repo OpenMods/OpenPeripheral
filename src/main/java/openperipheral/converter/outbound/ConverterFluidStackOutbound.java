@@ -15,7 +15,7 @@ public class ConverterFluidStackOutbound extends SimpleOutboundConverter<FluidSt
 	public Object convert(IConverter registry, FluidStack fluidStack) {
 		Map<String, Object> result = Maps.newHashMap();
 		result.put("amount", fluidStack.amount);
-		result.put("id", fluidStack.fluidID);
+		result.put("id", fluidStack.getFluidID());
 
 		Fluid fluid = fluidStack.getFluid();
 		if (fluid != null) {
