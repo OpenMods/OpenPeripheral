@@ -1,5 +1,7 @@
 package openperipheral.api.adapter.method;
 
+import java.util.Locale;
+
 public enum ArgType {
 
 	TABLE,
@@ -25,6 +27,6 @@ public enum ArgType {
 	};
 
 	public String getName() {
-		return name().toLowerCase();
+		return name().toLowerCase(Locale.ENGLISH);
 	}
 }

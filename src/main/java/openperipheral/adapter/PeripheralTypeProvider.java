@@ -2,6 +2,7 @@ package openperipheral.adapter;
 
 import java.io.*;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import net.minecraft.block.Block;
@@ -146,7 +147,7 @@ public class PeripheralTypeProvider implements IPeripheralTypeProvider {
 
 	private static String create(Class<?> cls, Object target) {
 		final String name = tryGetName(cls, target);
-		return Strings.isNullOrEmpty(name)? "peripheral" : name.replaceAll("[^a-zA-Z0-9]", "_").toLowerCase();
+		return Strings.isNullOrEmpty(name)? "peripheral" : name.replaceAll("[^a-zA-Z0-9]", "_").toLowerCase(Locale.ENGLISH);
 	}
 
 	private static String tryGetName(Class<?> cls, Object target) {

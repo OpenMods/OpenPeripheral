@@ -1,5 +1,6 @@
 package openperipheral.adapter;
 
+import java.util.Locale;
 import java.util.Set;
 
 import openmods.Log;
@@ -25,13 +26,13 @@ public class TileEntityBlacklist implements IPeripheralBlacklist {
 		if (evt.check("integration", "disableClasses")) {
 			fullBlacklist = Sets.newHashSet(imcBlacklist);
 			for (String cls : Config.teBlacklist)
-				fullBlacklist.add(cls.toLowerCase());
+				fullBlacklist.add(cls.toLowerCase(Locale.ENGLISH));
 		}
 	}
 
 	@Override
 	public boolean isBlacklisted(Class<?> teClass) {
-		final String teClassName = teClass.getName().toLowerCase();
+		final String teClassName = teClass.getName().toLowerCase(Locale.ENGLISH);
 		if (fullBlacklist.contains(teClassName)) return true;
 
 		if (teClass.isAnnotationPresent(Ignore.class)) {
@@ -54,7 +55,7 @@ public class TileEntityBlacklist implements IPeripheralBlacklist {
 
 	@Override
 	public void addToBlacklist(String className) {
-		imcBlacklist.add(className.toLowerCase());
+		imcBlacklist.add(className.toLowerCase(Locale.ENGLISH));
 	}
 
 	@Override

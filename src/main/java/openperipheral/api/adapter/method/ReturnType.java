@@ -1,5 +1,6 @@
 package openperipheral.api.adapter.method;
 
+import java.util.Locale;
 import java.util.Map;
 
 public enum ReturnType {
@@ -21,6 +22,6 @@ public enum ReturnType {
 	}
 
 	public String getName() {
-		return name().toLowerCase();
+		return name().toLowerCase(Locale.ENGLISH);
 	}
 }

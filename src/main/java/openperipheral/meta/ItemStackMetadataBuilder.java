@@ -1,8 +1,6 @@
 package openperipheral.meta;
 
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -147,7 +145,7 @@ public class ItemStackMetadataBuilder implements IItemStackPartialMetaBuilder {
 
 	public static String getRawNameForStack(ItemStack is) {
 		try {
-			return is.getUnlocalizedName().toLowerCase();
+			return is.getUnlocalizedName().toLowerCase(Locale.ENGLISH);
 		} catch (Exception e) {}
 
 		return "unknown";
