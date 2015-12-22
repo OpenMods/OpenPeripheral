@@ -5,8 +5,8 @@ import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.machine.Value;
 import li.cil.oc.api.network.ManagedEnvironment;
 import li.cil.oc.api.network.Node;
+import openmods.access.ApiProviderRegistry;
 import openmods.injector.InjectedClassesManager;
-import openperipheral.ApiProvider;
 import openperipheral.CommandDump;
 import openperipheral.adapter.AdapterRegistry;
 import openperipheral.adapter.composed.ComposedMethodsFactory;
@@ -14,6 +14,7 @@ import openperipheral.adapter.composed.MethodSelector;
 import openperipheral.adapter.types.SingleArgType;
 import openperipheral.adapter.types.classifier.TypeClassifier;
 import openperipheral.api.Constants;
+import openperipheral.api.IApiInterface;
 import openperipheral.api.architecture.IArchitectureAccess;
 import openperipheral.api.converter.IConverter;
 import openperipheral.converter.TypeConvertersProvider;
@@ -78,8 +79,8 @@ public class ModuleOpenComputers {
 		Driver.add(new DriverOpenPeripheral());
 	}
 
-	public static void installAPI(ApiProvider apiProvider) {
-		apiProvider.registerClass(AdapterFactoryWrapperOC.class);
+	public static void installAPI(ApiProviderRegistry<IApiInterface> registry) {
+		registry.registerClass(AdapterFactoryWrapperOC.class);
 	}
 
 	public static Value wrapObject(Object target) {

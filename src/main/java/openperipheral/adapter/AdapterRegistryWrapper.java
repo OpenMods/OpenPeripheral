@@ -28,6 +28,7 @@ public class AdapterRegistryWrapper<T extends IAdapter> implements IAdapterRegis
 	}
 
 	@Override
+	@Deprecated
 	public void registerInline(Class<?> cls) {
 		// No longer in use!
 	}

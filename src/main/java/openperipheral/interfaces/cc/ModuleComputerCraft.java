@@ -2,7 +2,7 @@ package openperipheral.interfaces.cc;
 
 import java.util.Map;
 
-import openperipheral.ApiProvider;
+import openmods.access.ApiProviderRegistry;
 import openperipheral.CommandDump;
 import openperipheral.adapter.AdapterRegistry;
 import openperipheral.adapter.IMethodExecutor;
@@ -12,6 +12,7 @@ import openperipheral.adapter.composed.MethodSelector;
 import openperipheral.adapter.types.SingleArgType;
 import openperipheral.adapter.types.classifier.TypeClassifier;
 import openperipheral.api.Constants;
+import openperipheral.api.IApiInterface;
 import openperipheral.api.architecture.IArchitectureAccess;
 import openperipheral.api.converter.IConverter;
 import openperipheral.converter.TypeConvertersProvider;
@@ -72,7 +73,7 @@ public class ModuleComputerCraft {
 		ComputerCraftAPI.registerPeripheralProvider(new PeripheralProvider());
 	}
 
-	public static void installAPI(ApiProvider apiProvider) {
-		apiProvider.registerClass(AdapterFactoryWrapperCC.class);
+	public static void installAPI(ApiProviderRegistry<IApiInterface> registry) {
+		registry.registerClass(AdapterFactoryWrapperCC.class);
 	}
 }
