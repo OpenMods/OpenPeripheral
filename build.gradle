@@ -123,7 +123,7 @@ minecraft {
     replaceIn "openperipheral/ModInfo.java"
     replaceIn "openperipheral/api/ApiAccess.java"
     replace '$VERSION$', mod_version
-    replace 'OP-$API-VERSION$', api_version
+    replace '$OP-API-VERSION$', api_version
     replace '$LIB-VERSION$', project(':OpenModsLib').mod_version
     replace '$NEXT-LIB-VERSION$', project(':OpenModsLib').next_mod_version
 }
