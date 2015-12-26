@@ -23,14 +23,12 @@ import cpw.mods.fml.common.event.*;
 @Mod(modid = ModInfo.ID, name = ModInfo.NAME, version = ModInfo.VERSION, dependencies = ModInfo.DEPENDENCIES, acceptableRemoteVersions = "*")
 public class OpenPeripheralCore {
 
-	public static final String PROVIDED_API_VERSION = "3.3.2";
-
 	private final ApiSetup apiSetup = new ApiSetup();
 
 	@Mod.EventHandler
 	public void construct(FMLConstructionEvent evt) {
 		apiSetup.setupApis();
-		apiSetup.installLegacyAccess();
+		apiSetup.installProviderAccess();
 
 		if (Loader.isModLoaded(Mods.OPENCOMPUTERS)) ModuleOpenComputers.init();
 		if (Loader.isModLoaded(Mods.COMPUTERCRAFT)) ModuleComputerCraft.init();

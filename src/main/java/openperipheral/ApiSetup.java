@@ -49,15 +49,13 @@ public class ApiSetup {
 		ApiFactory.instance.createApi(ApiHolder.class, IApiInterface.class, table, registry);
 	}
 
-	@SuppressWarnings("deprecation")
 	private static class LegacyApiAccess extends ApiProviderBase<IApiInterface> implements openperipheral.api.ApiAccess.ApiProvider {
 		public LegacyApiAccess(ApiProviderRegistry<IApiInterface> apiRegistry) {
 			super(apiRegistry);
 		}
 	}
 
-	@SuppressWarnings("deprecation")
-	void installLegacyAccess() {
+	void installProviderAccess() {
 		final String presentApiVersion;
 		try {
 			presentApiVersion = openperipheral.api.ApiAccess.API_VERSION;
@@ -73,9 +71,9 @@ public class ApiSetup {
 			Log.severe(t, "Failed to get OpenPeripheralCore API source");
 		}
 
-		Preconditions.checkState(OpenPeripheralCore.PROVIDED_API_VERSION.equals(presentApiVersion),
+		Preconditions.checkState(ModInfo.API_VERSION.equals(presentApiVersion),
 				"OpenPeripheralCore version mismatch, should be %s, is %s (ApiAccess source: %s)",
-				OpenPeripheralCore.PROVIDED_API_VERSION, presentApiVersion, apiSource
+				ModInfo.API_VERSION, presentApiVersion, apiSource
 				);
 
 		try {

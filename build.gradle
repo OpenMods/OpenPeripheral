@@ -121,7 +121,9 @@ minecraft {
     runDir = 'eclipse/assets'
 
     replaceIn "openperipheral/ModInfo.java"
+    replaceIn "openperipheral/api/ApiAccess.java"
     replace '$VERSION$', mod_version
+    replace 'OP-$API-VERSION$', api_version
     replace '$LIB-VERSION$', project(':OpenModsLib').mod_version
     replace '$NEXT-LIB-VERSION$', project(':OpenModsLib').next_mod_version
 }
@@ -173,10 +175,12 @@ task deobfJar(type: Jar) {
     }
 }
 
+ext.sourcesPath = new File(new File(buildDir, "sources"), "java")
+
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier 'sources'
 
-    from sourceSets.main.java
+    from sourcesPath
 
     manifest {
         from jenkinsManifest, gitManifest
@@ -184,10 +188,11 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 }
 
 task apiJar(type: Jar) {
-    classifier 'api'
+    baseName "OpenPeripheralCore-API"
+    version api_version
 
     from sourceSets.main.output
-    from sourceSets.main.java
+    from sourcesPath
 
     include 'openperipheral/api/**'
 
@@ -197,9 +202,11 @@ task apiJar(type: Jar) {
 }
 
 task apiSrcJar(type: Jar) {
-    classifier 'api-sources'
+    baseName "OpenPeripheralCore-API"
+    version api_version
+    classifier 'sources'
 
-    from sourceSets.main.java
+    from sourcesPath
 
     include 'openperipheral/api/**'
 
@@ -209,6 +216,8 @@ task apiSrcJar(type: Jar) {
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
+    baseName "OpenPeripheralCore-API"
+    version api_version
     classifier 'javadoc'
 
     from 'build/docs/javadoc'

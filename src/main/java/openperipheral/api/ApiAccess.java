@@ -3,12 +3,10 @@ package openperipheral.api;
 /**
  * This class is used to access instancef of API interfaces (marked with {@link IApiInterface}).
  *
- * @deprecated Use {@link ApiHolder}.
- *
+ * For alternative method, see {@link ApiHolder}.
  */
-@Deprecated
 public class ApiAccess {
-	public static final String API_VERSION = "3.3.2";
+	public static final String API_VERSION = "$OP-API-VERSION$";
 
 	public interface ApiProvider {
 		public <T extends IApiInterface> T getApi(Class<T> cls);
@@ -26,6 +24,10 @@ public class ApiAccess {
 		ApiAccess.provider = provider;
 	}
 
+	/**
+	 * @deprecated Use {@link ApiHolder}.
+	 */
+	@Deprecated
 	public static <T extends IApiInterface> T getApi(Class<T> cls) {
 		if (provider == null) throw new IllegalStateException("API not initialized");
 		return provider.getApi(cls);
