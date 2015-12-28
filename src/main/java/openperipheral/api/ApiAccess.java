@@ -24,10 +24,6 @@ public class ApiAccess {
 		ApiAccess.provider = provider;
 	}
 
-	/**
-	 * @deprecated Use {@link ApiHolder}.
-	 */
-	@Deprecated
 	public static <T extends IApiInterface> T getApi(Class<T> cls) {
 		if (provider == null) throw new IllegalStateException("API not initialized");
 		return provider.getApi(cls);

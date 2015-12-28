@@ -26,6 +26,9 @@ import openperipheral.api.peripheral.IPeripheralBlacklist;
  * <li>{@link IConverterManager} - for getting architecture-specific type converters</li>
  * <li>{@link IPeripheralBlacklist} - for checking if class is blacklisted (i.e. will not generate peripheral)</li>
  * </ul>
+ *
+ * <strong>Note:</strong> using this annotation will cause class load!
+ * If this causes problems, consider switching to {@link ApiAccess#getApi(Class)}.
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
