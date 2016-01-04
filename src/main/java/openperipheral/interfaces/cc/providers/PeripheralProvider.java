@@ -6,6 +6,8 @@ import java.lang.reflect.Proxy;
 import java.util.Set;
 
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import openmods.Log;
 import openmods.reflection.ReflectionHelper;
@@ -30,14 +32,14 @@ import dan200.computercraft.api.peripheral.IPeripheralProvider;
 public class PeripheralProvider implements IPeripheralProvider {
 	private static final IPeripheralFactory<TileEntity> NULL_FACTORY = new IPeripheralFactory<TileEntity>() {
 		@Override
-		public IPeripheral getPeripheral(TileEntity obj, int side) {
+		public IPeripheral getPeripheral(TileEntity obj, EnumFacing side) {
 			return null;
 		}
 	};
 
 	private static final IPeripheralFactory<TileEntity> PROVIDER_ADAPTER = new SafePeripheralFactory() {
 		@Override
-		protected IPeripheral createPeripheral(TileEntity tile, int side) {
+		protected IPeripheral createPeripheral(TileEntity tile, EnumFacing side) {
 			return ((ICustomPeripheralProvider)tile).createPeripheral(side);
 		}
 	};
@@ -45,7 +47,7 @@ public class PeripheralProvider implements IPeripheralProvider {
 	private static IPeripheralFactory<TileEntity> createDirectFactory(final IndexedMethodMap methods) {
 		return new SafePeripheralFactory() {
 			@Override
-			protected IPeripheral createPeripheral(TileEntity target, int side) {
+			protected IPeripheral createPeripheral(TileEntity target, EnumFacing side) {
 				return new AdapterPeripheral(methods, target);
 			}
 		};
@@ -58,7 +60,7 @@ public class PeripheralProvider implements IPeripheralProvider {
 
 		return new SafePeripheralFactory() {
 			@Override
-			public IPeripheral createPeripheral(TileEntity tile, int side) throws Exception {
+			public IPeripheral createPeripheral(TileEntity tile, EnumFacing side) throws Exception {
 				final InvocationHandler handler = new ProxyAdapterPeripheral(methods, tile);
 				return ctor.newInstance(handler);
 			}
@@ -146,8 +148,8 @@ public class PeripheralProvider implements IPeripheralProvider {
 	}
 
 	@Override
-	public IPeripheral getPeripheral(World world, int x, int y, int z, int side) {
-		final TileEntity te = world.getTileEntity(x, y, z);
+	public IPeripheral getPeripheral(World world, BlockPos pos, EnumFacing side) {
+		final TileEntity te = world.getTileEntity(pos);
 		if (te == null) return null;
 
 		final IPeripheralFactory<TileEntity> factory = getFactoryForClass(te.getClass());

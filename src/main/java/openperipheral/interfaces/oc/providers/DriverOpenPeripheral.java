@@ -4,6 +4,7 @@ import java.util.Map;
 
 import li.cil.oc.api.network.ManagedEnvironment;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import openmods.Log;
 import openperipheral.adapter.TileEntityBlacklist;
@@ -16,8 +17,8 @@ public class DriverOpenPeripheral implements li.cil.oc.api.driver.Block {
 	private final Map<Class<?>, Boolean> cache = Maps.newHashMap();
 
 	@Override
-	public boolean worksWith(World world, int x, int y, int z) {
-		final TileEntity te = world.getTileEntity(x, y, z);
+	public boolean worksWith(World world, BlockPos pos) {
+		final TileEntity te = world.getTileEntity(pos);
 		if (te == null) return false;
 
 		final Class<?> cls = te.getClass();
@@ -39,10 +40,10 @@ public class DriverOpenPeripheral implements li.cil.oc.api.driver.Block {
 	}
 
 	@Override
-	public ManagedEnvironment createEnvironment(World world, int x, int y, int z) {
-		TileEntity te = world.getTileEntity(x, y, z);
+	public ManagedEnvironment createEnvironment(World world, BlockPos pos) {
+		TileEntity te = world.getTileEntity(pos);
 		if (te == null) {
-			Log.warn("Trying to provide environment for %d,%d,%d in world %d, but TE not found", x, y, z, world.provider.dimensionId);
+			Log.warn("Trying to provide environment for %s in world %d, but TE not found", pos, world.provider.getDimensionId());
 			return null;
 		}
 

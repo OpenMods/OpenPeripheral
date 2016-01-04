@@ -1,5 +1,7 @@
 package openperipheral;
 
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import openmods.Log;
 import openmods.Mods;
 import openmods.access.ApiFactory;
@@ -18,9 +20,6 @@ import openperipheral.meta.EntityMetadataBuilder;
 import openperipheral.meta.ItemStackMetadataBuilder;
 
 import com.google.common.base.Preconditions;
-
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.discovery.ASMDataTable;
 
 public class ApiSetup {
 

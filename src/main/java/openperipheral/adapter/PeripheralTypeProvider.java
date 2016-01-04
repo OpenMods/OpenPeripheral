@@ -156,7 +156,7 @@ public class PeripheralTypeProvider implements IPeripheralTypeProvider {
 
 		if (target instanceof IInventory) {
 			try {
-				return ((IInventory)target).getInventoryName();
+				return ((IInventory)target).getName();
 			} catch (Throwable t) {
 				Log.warn(t, "Can't get inventory name for %s", cls);
 			}

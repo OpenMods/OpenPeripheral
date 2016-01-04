@@ -3,6 +3,7 @@ package openperipheral.interfaces.cc.providers;
 import java.util.Random;
 
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import openmods.Log;
 import openperipheral.adapter.composed.ComposedMethodsFactory.InvalidClassException;
 import openperipheral.api.peripheral.IBrokenOpenPeripheral;
@@ -65,13 +66,13 @@ abstract class SafePeripheralFactory implements IPeripheralFactory<TileEntity> {
 
 	public static final IPeripheralFactory<TileEntity> BROKEN_FACTORY = new IPeripheralFactory<TileEntity>() {
 		@Override
-		public IPeripheral getPeripheral(TileEntity obj, int side) {
+		public IPeripheral getPeripheral(TileEntity obj, EnumFacing side) {
 			return PLACEHOLDER;
 		}
 	};
 
 	@Override
-	public IPeripheral getPeripheral(TileEntity tile, int side) {
+	public IPeripheral getPeripheral(TileEntity tile, EnumFacing side) {
 		if (tile == null) return null;
 
 		try {
@@ -79,21 +80,21 @@ abstract class SafePeripheralFactory implements IPeripheralFactory<TileEntity> {
 		} catch (InvalidClassException e) {
 			Throwable cause = e.getCause();
 			if (cause != null) {
-				Log.severe(cause, "Can't create peripheral for TE %s @ (%d,%d,%d) in world %s due to error in class",
-						tile.getClass(), tile.xCoord, tile.yCoord, tile.zCoord, tile.getWorldObj().provider.dimensionId);
+				Log.severe(cause, "Can't create peripheral for TE %s @ (%s) in world %s due to error in class",
+						tile.getClass(), tile.getPos(), tile.getWorld().provider.getDimensionId());
 			} else {
-				Log.severe("Can't create peripheral for TE %s @ (%d,%d,%d) in world %s due to error in class %s",
-						tile.getClass(), tile.xCoord, tile.yCoord, tile.zCoord, tile.getWorldObj().provider.dimensionId, tile.getClass());
+				Log.severe("Can't create peripheral for TE %s @ (%s) in world %s due to error in class %s",
+						tile.getClass(), tile.getPos(), tile.getWorld().provider.getDimensionId(), tile.getClass());
 			}
 
 		} catch (Throwable t) {
-			Log.severe(t, "Can't create peripheral for TE %s @ (%d,%d,%d) in world %s",
-					tile.getClass(), tile.xCoord, tile.yCoord, tile.zCoord, tile.getWorldObj().provider.dimensionId);
+			Log.severe(t, "Can't create peripheral for TE %s @ (%s) in world %s",
+					tile.getClass(), tile.getPos(), tile.getWorld().provider.getDimensionId());
 
 		}
 		return PLACEHOLDER;
 	}
 
-	protected abstract IPeripheral createPeripheral(TileEntity tile, int side) throws Exception;
+	protected abstract IPeripheral createPeripheral(TileEntity tile, EnumFacing side) throws Exception;
 
 }

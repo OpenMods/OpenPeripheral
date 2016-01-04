@@ -79,7 +79,7 @@ public class EntityMetadataBuilder implements IEntityPartialMetaBuilder {
 	private static Map<String, Object> createBasicProperties(Entity entity, Vec3 relativePos) {
 		Map<String, Object> map = Maps.newHashMap();
 		addPositionInfo(map, entity, relativePos);
-		map.put("name", entity.getCommandSenderName());
+		map.put("name", entity.getName());
 		map.put("id", entity.getEntityId());
 		map.put("uuid", entity.getUniqueID());
 

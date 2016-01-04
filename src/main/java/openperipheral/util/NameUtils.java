@@ -3,7 +3,7 @@ package openperipheral.util;
 import java.util.Map;
 
 import net.minecraft.tileentity.TileEntity;
-import cpw.mods.fml.relauncher.ReflectionHelper;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 public class NameUtils {
 

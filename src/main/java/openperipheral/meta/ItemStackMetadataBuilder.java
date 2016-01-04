@@ -4,15 +4,14 @@ import java.util.*;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.registry.GameData;
 import openperipheral.api.adapter.method.ScriptObject;
 import openperipheral.api.meta.*;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
-
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
 
 public class ItemStackMetadataBuilder implements IItemStackPartialMetaBuilder {
 
@@ -80,11 +79,11 @@ public class ItemStackMetadataBuilder implements IItemStackPartialMetaBuilder {
 
 	private static Map<String, Object> createBasicProperties(Item item, ItemStack itemstack) {
 		Map<String, Object> map = Maps.newHashMap();
-		UniqueIdentifier id = GameRegistry.findUniqueIdentifierFor(item);
+		final ResourceLocation id = GameData.getItemRegistry().getNameForObject(item);
 
 		map.put("id", id != null? id.toString() : "?");
-		map.put("name", id != null? id.name : "?");
-		map.put("mod_id", id != null? id.modId : "?");
+		map.put("name", id != null? id.getResourcePath() : "?");
+		map.put("mod_id", id != null? id.getResourceDomain() : "?");
 
 		map.put("display_name", getNameForItemStack(itemstack));
 		map.put("raw_name", getRawNameForStack(itemstack));

@@ -5,8 +5,10 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
+import net.minecraftforge.fml.common.Loader;
 import openmods.Log;
 import openmods.OpenMods;
 import openmods.utils.SidedCommand;
@@ -18,8 +20,6 @@ import openperipheral.util.DocBuilder;
 import openperipheral.util.DocBuilder.IClassDecorator;
 
 import com.google.common.collect.Lists;
-
-import cpw.mods.fml.common.Loader;
 
 public class CommandDump extends SidedCommand {
 
@@ -73,7 +73,7 @@ public class CommandDump extends SidedCommand {
 			builder.setRootAttribute("generatedIn", getModVersion());
 
 			builder.setRootAttribute("generatedOn", getCurrentTime());
-			builder.setRootAttribute("generatedBy", sender.getCommandSenderName());
+			builder.setRootAttribute("generatedBy", sender.getName());
 
 			for (IArchSerializer serializer : archSerializers)
 				serializer.serialize(builder);
@@ -113,8 +113,8 @@ public class CommandDump extends SidedCommand {
 	}
 
 	@Override
-	public List<?> addTabCompletionOptions(ICommandSender icommandsender, String[] astring) {
-		if (astring.length == 1) return Lists.newArrayList("xml", "xhtml");
+	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos) {
+		if (args.length == 1) return Lists.newArrayList("xml", "xhtml");
 		return null;
 	}
 
