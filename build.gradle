@@ -115,7 +115,7 @@ ext.gitManifest = manifest {
 minecraft {
     version = mc_ver + "-" + forge_ver
     runDir = 'run'
-    
+
     mappings = mcp_mappings
 
     replaceIn "openperipheral/ModInfo.java"
