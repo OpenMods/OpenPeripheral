@@ -9,25 +9,21 @@
 buildscript {
     repositories {
         // General deps
+        jcenter()
         mavenCentral()
         // Minecraft Forge
         maven {
             name = 'Forge'
             url = 'http://files.minecraftforge.net/maven'
         }
-        // Sonatype (for SpecialSource in 1.7+)
-        maven {
-            name = "Sonatype Nexus"
-            url = "https://oss.sonatype.org/content/repositories/snapshots/"
-        }
     }
 
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
     }
 }
 
-apply plugin: 'forge'
+apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'java'
 
 repositories {
@@ -48,7 +44,7 @@ repositories {
 }
 
 dependencies {
-    compile "li.cil.oc:OpenComputers:MC1.7.10-1.5.0.5:api"
+    compile "li.cil.oc:OpenComputers:MC1.8.9-1.5.21.1:api"
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
     testCompile "org.mockito:mockito-core:1.10.19"
@@ -118,7 +114,9 @@ ext.gitManifest = manifest {
 // Setup Forge plugin
 minecraft {
     version = mc_ver + "-" + forge_ver
-    runDir = 'eclipse/assets'
+    runDir = 'run'
+    
+    mappings = mcp_mappings
 
     replaceIn "openperipheral/ModInfo.java"
     replaceIn "openperipheral/api/ApiAccess.java"

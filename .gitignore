@@ -16,6 +16,7 @@
 build/
 run/
 bin/
+*.launch
 
 # Eclipse
 .classpath
