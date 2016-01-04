@@ -18,4 +18,5 @@ public enum TurtleAnimation
     SwingLeftTool,
     SwingRightTool,
     Wait,
+    ShortWait,
 }

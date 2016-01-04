@@ -4,7 +4,7 @@
  * For help using the API, and posting your mods, visit the forums at computercraft.info.
  */
 
-@API( owner="ComputerCraft", provides="ComputerCraft|API", apiVersion="1.73" )
+@API( owner="ComputerCraft", provides="ComputerCraft|API", apiVersion="1.76" )
 package dan200.computercraft.api;
 
-import cpw.mods.fml.common.API;
+import net.minecraftforge.fml.common.API;
