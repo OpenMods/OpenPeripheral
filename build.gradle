@@ -173,7 +173,7 @@ task deobfJar(type: Jar) {
     }
 }
 
-ext.sourcesPath = new File(new File(buildDir, "sources"), "java")
+ext.sourcesPath = new File(new File(new File(buildDir, "sources"), "main"), "java")
 
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier 'sources'
