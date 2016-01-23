@@ -19,6 +19,8 @@ public class PeripheralCodeGenerator implements ICodeGenerator {
 
 	private static final Type BASE_TYPE = Type.getType(PeripheralEnvironmentBase.class);
 
+	private static final Type SIGNALLING_BASE_TYPE = Type.getType(TickablePeripheralEnvironmentBase.class);
+
 	private static final Type ATTACHABLE_TYPE = Type.getType(IAttachable.class);
 
 	private static final Type NODE_TYPE = Type.getType(Node.class);
@@ -39,9 +41,11 @@ public class PeripheralCodeGenerator implements ICodeGenerator {
 	public byte[] generate(String clsName, Class<?> targetClass, Set<Class<?>> exposedInterfaces, IndexedMethodMap methods, int methodsId) {
 		ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
 
+		Type baseType = getBaseClass(methods);
+
 		writer.visit(Opcodes.V1_6,
 				Opcodes.ACC_PUBLIC | Opcodes.ACC_FINAL | Opcodes.ACC_SYNTHETIC | Opcodes.ACC_SUPER,
-				clsName, null, BASE_TYPE.getInternalName(), Utils.getInterfaces(exposedInterfaces));
+				clsName, null, baseType.getInternalName(), Utils.getInterfaces(exposedInterfaces));
 
 		Type targetType = Type.getType(targetClass);
 
@@ -51,7 +55,7 @@ public class PeripheralCodeGenerator implements ICodeGenerator {
 		builder.addMethodsField();
 
 		builder.addClassInit(methodsId);
-		createConstructor(writer, clsName, targetType);
+		createConstructor(writer, clsName, targetType, baseType);
 
 		final Map<Method, Type> exposedMethods = Utils.getExposedMethods(exposedInterfaces);
 		for (Map.Entry<Method, Type> e : exposedMethods.entrySet())
@@ -76,8 +80,15 @@ public class PeripheralCodeGenerator implements ICodeGenerator {
 		return writer.toByteArray();
 	}
 
+	private static Type getBaseClass(IndexedMethodMap methods) {
+		for (IMethodExecutor e : methods.getMethods())
+			if (e.getReturnSignal().isPresent()) return SIGNALLING_BASE_TYPE;
+
+		return BASE_TYPE;
+	}
+
 	@SuppressWarnings("deprecation")
-	private static void createConstructor(ClassWriter writer, String clsName, Type targetType) {
+	private static void createConstructor(ClassWriter writer, String clsName, Type targetType, Type baseType) {
 		final Type ctorType = Type.getMethodType(Type.VOID_TYPE, targetType);
 
 		MethodVisitor init = writer.visitMethod(Opcodes.ACC_PUBLIC | Opcodes.ACC_SYNTHETIC, "<init>", ctorType.getDescriptor(), null, null);
@@ -85,7 +96,7 @@ public class PeripheralCodeGenerator implements ICodeGenerator {
 		init.visitVarInsn(Opcodes.ALOAD, 0);
 		init.visitVarInsn(Opcodes.ALOAD, 1);
 		init.visitInsn(Opcodes.DUP2);
-		init.visitMethodInsn(Opcodes.INVOKESPECIAL, BASE_TYPE.getInternalName(), "<init>", SUPER_CTOR_TYPE.getDescriptor());
+		init.visitMethodInsn(Opcodes.INVOKESPECIAL, baseType.getInternalName(), "<init>", SUPER_CTOR_TYPE.getDescriptor());
 		init.visitFieldInsn(Opcodes.PUTFIELD, clsName, CommonMethodsBuilder.TARGET_FIELD_NAME, targetType.getDescriptor());
 		init.visitInsn(Opcodes.RETURN);
 

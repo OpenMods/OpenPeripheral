@@ -8,6 +8,7 @@ import openperipheral.adapter.IMethodExecutor;
 import openperipheral.api.Constants;
 import openperipheral.api.converter.IConverter;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 
@@ -51,6 +52,11 @@ public class PropertyExecutor implements IMethodExecutor {
 	@Override
 	public boolean isAsynchronous() {
 		return true;
+	}
+
+	@Override
+	public Optional<String> getReturnSignal() {
+		return Optional.absent();
 	}
 
 	@Override

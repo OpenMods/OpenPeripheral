@@ -11,4 +11,7 @@ public class Config {
 
 	@ConfigProperty(category = "dev", name = "enableDevMethods", comment = "Enable methods that access reflection metadata")
 	public static boolean devMethods = false;
+
+	@ConfigProperty(category = "performance", name = "threadPoolForSignallingCalls", comment = "Number of threads available to calls marked with @ReturnSignal")
+	public static int signallingPoolSize = 10;
 }

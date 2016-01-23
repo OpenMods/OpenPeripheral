@@ -6,6 +6,7 @@ import openmods.Log;
 import openmods.utils.CachedFactory;
 import openperipheral.adapter.*;
 import openperipheral.adapter.composed.IndexedMethodMap;
+import openperipheral.adapter.wrappers.SignallingGlobals;
 import openperipheral.api.architecture.IArchitectureAccess;
 import openperipheral.api.architecture.IAttachable;
 import openperipheral.api.architecture.cc.IComputerCraftAttachable;
@@ -15,10 +16,12 @@ import openperipheral.util.DocUtils;
 
 import org.apache.logging.log4j.Level;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 
 import dan200.computercraft.api.filesystem.IMount;
 import dan200.computercraft.api.lua.ILuaContext;
+import dan200.computercraft.api.lua.ILuaTask;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
@@ -27,6 +30,7 @@ public class AdapterPeripheral implements IPeripheral, IOpenPeripheral {
 
 	private static final String MOUNT_NAME = "openp";
 	private static final IMount MOUNT = new UtilsResourceMount();
+	private final Object[] NULL = new Object[0];
 
 	protected final String type;
 	protected final Object target;
@@ -58,10 +62,14 @@ public class AdapterPeripheral implements IPeripheral, IOpenPeripheral {
 		return methods.getMethodNames();
 	}
 
-	private Object[] call(int methodIndex, IMethodExecutor executor, IComputerAccess computer, ILuaContext context, Object[] arguments) throws LuaException, InterruptedException {
+	private IMethodCall prepareCall(IMethodExecutor executor, IComputerAccess computer, ILuaContext context) {
+		final IMethodCall call = executor.startCall(target);
+		return ModuleComputerCraft.ENV.addPeripheralArgs(call, computer, context);
+	}
+
+	private Object[] executeCall(IMethodCall call, int methodIndex, Object[] arguments) throws LuaException, InterruptedException {
 		try {
-			final IMethodCall call = executor.startCall(target);
-			return ModuleComputerCraft.ENV.addPeripheralArgs(call, computer, context).call(arguments);
+			return call.call(arguments);
 		} catch (InterruptedException e) {
 			throw e;
 		} catch (LuaException e) {
@@ -74,6 +82,21 @@ public class AdapterPeripheral implements IPeripheral, IOpenPeripheral {
 		}
 	}
 
+	private Object[] executeToSignal(int callbackId, int methodIndex, IMethodCall preparedCall, Object[] arguments) {
+		try {
+			Object[] callResult = executeCall(preparedCall, methodIndex, arguments);
+			Object[] fullResult = new Object[callResult.length + 2];
+			fullResult[0] = callbackId;
+			fullResult[1] = true;
+			System.arraycopy(callResult, 0, fullResult, 2, callResult.length);
+			return fullResult;
+		} catch (InterruptedException e) {
+			return new Object[] { callbackId, false };
+		} catch (LuaException e) {
+			return new Object[] { callbackId, false, e.getMessage() };
+		}
+	}
+
 	@Override
 	public Object[] callMethod(final IComputerAccess computer, final ILuaContext context, final int index, final Object[] arguments) throws LuaException, InterruptedException {
 		// this should throw if peripheral isn't attached
@@ -82,15 +105,41 @@ public class AdapterPeripheral implements IPeripheral, IOpenPeripheral {
 		final IMethodExecutor method = methods.getMethod(index);
 		Preconditions.checkNotNull(method, "Invalid method index: %d", index);
 
-		if (method.isAsynchronous()) return call(index, method, computer, context, arguments);
-		else {
-			Object[] results = SynchronousExecutor.executeInMainThread(context, new SynchronousExecutor.Task() {
-				@Override
-				public Object[] execute() throws LuaException, InterruptedException {
-					return call(index, method, computer, context, arguments);
-				}
-			});
-			return results;
+		final IMethodCall preparedCall = prepareCall(method, computer, context);
+
+		final Optional<String> returnSignal = method.getReturnSignal();
+		if (returnSignal.isPresent()) {
+			final int callbackId = SignallingGlobals.instance.nextCallbackId();
+			final String returnSignalId = returnSignal.get();
+			if (method.isAsynchronous()) {
+				SignallingGlobals.instance.scheduleTask(new Runnable() {
+					@Override
+					public void run() {
+						computer.queueEvent(returnSignalId, executeToSignal(callbackId, index, preparedCall, arguments));
+					}
+				});
+			} else {
+				context.issueMainThreadTask(new ILuaTask() {
+					@Override
+					public Object[] execute() {
+						computer.queueEvent(returnSignalId, executeToSignal(callbackId, index, preparedCall, arguments));
+						// this will be used as 'task_complete' result, so we will ignore it
+						return NULL;
+					}
+				});
+			}
+			return new Object[] { callbackId };
+		} else {
+			if (method.isAsynchronous()) return executeCall(preparedCall, index, arguments);
+			else {
+				Object[] results = SynchronousExecutor.executeInMainThread(context, new SynchronousExecutor.Task() {
+					@Override
+					public Object[] execute() throws LuaException, InterruptedException {
+						return executeCall(preparedCall, index, arguments);
+					}
+				});
+				return results;
+			}
 		}
 	}
 

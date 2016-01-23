@@ -101,6 +101,7 @@ body {
         </code></h2>
       </xsl:for-each>
       <xsl:if test="@asynchronous = 'false'"><p><strong>Synchronized</strong></p></xsl:if>
+      <xsl:if test="@returnSignal"><p><strong>Return signal: </strong><code><xsl:value-of select="@returnSignal" /></code></p></xsl:if>
       <xsl:if test="description"><p><xsl:value-of select="description/text()" /></p></xsl:if>
       <xsl:if test="source"><p>Source: <xsl:value-of select="source/text()" /></p></xsl:if>
       <xsl:if test="arguments/arg">
@@ -145,6 +146,7 @@ body {
       	<xsl:if test="returns"> : <xsl:value-of select="returns/text()" /></xsl:if>
       </code></h2>
       <xsl:if test="@asynchronous = 'false'"><p><strong>Synchronized</strong></p></xsl:if>
+      <xsl:if test="@returnSignal"><p><strong>Return signal: </strong><code><xsl:value-of select="@returnSignal" /></code></p></xsl:if>
       <xsl:if test="description"><p><xsl:value-of select="description/text()" /></p></xsl:if>
       <xsl:if test="source"><p>Source: <xsl:value-of select="source/text()" /></p></xsl:if>
        <xsl:if test="arguments/arg">
@@ -183,6 +185,7 @@ body {
       	<xsl:if test="returns"> : <xsl:value-of select="returns/text()" /></xsl:if>
       </code></h2>
       <xsl:if test="@asynchronous = 'false'"><p><strong>Synchronized</strong></p></xsl:if>
+      <xsl:if test="@returnSignal"><p><strong>Return signal: </strong><code><xsl:value-of select="@returnSignal" /></code></p></xsl:if>
       <xsl:if test="description"><p><xsl:value-of select="description/text()" /></p></xsl:if>
       <xsl:if test="source"><p>Source: <xsl:value-of select="source/text()" /></p></xsl:if>
       <xsl:if test="arguments/arg">
