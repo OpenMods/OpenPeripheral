@@ -87,7 +87,6 @@ public class PeripheralCodeGenerator implements ICodeGenerator {
 		return BASE_TYPE;
 	}
 
-	@SuppressWarnings("deprecation")
 	private static void createConstructor(ClassWriter writer, String clsName, Type targetType, Type baseType) {
 		final Type ctorType = Type.getMethodType(Type.VOID_TYPE, targetType);
 
@@ -96,7 +95,7 @@ public class PeripheralCodeGenerator implements ICodeGenerator {
 		init.visitVarInsn(Opcodes.ALOAD, 0);
 		init.visitVarInsn(Opcodes.ALOAD, 1);
 		init.visitInsn(Opcodes.DUP2);
-		init.visitMethodInsn(Opcodes.INVOKESPECIAL, baseType.getInternalName(), "<init>", SUPER_CTOR_TYPE.getDescriptor());
+		init.visitMethodInsn(Opcodes.INVOKESPECIAL, baseType.getInternalName(), "<init>", SUPER_CTOR_TYPE.getDescriptor(), false);
 		init.visitFieldInsn(Opcodes.PUTFIELD, clsName, CommonMethodsBuilder.TARGET_FIELD_NAME, targetType.getDescriptor());
 		init.visitInsn(Opcodes.RETURN);
 
@@ -105,7 +104,6 @@ public class PeripheralCodeGenerator implements ICodeGenerator {
 		init.visitEnd();
 	}
 
-	@SuppressWarnings("deprecation")
 	protected void visitConnectivityMethod(String methodName, String clsName, ClassWriter writer, Type targetType, final boolean isAttachable, final boolean isOcAttachable) {
 		MethodVisitor onConnect = writer.visitMethod(Opcodes.ACC_PUBLIC | Opcodes.ACC_SYNTHETIC, methodName, CONNECTIVITY_METHOD_TYPE.getDescriptor(), null, null);
 
@@ -116,14 +114,14 @@ public class PeripheralCodeGenerator implements ICodeGenerator {
 			onConnect.visitInsn(Opcodes.DUP);
 			onConnect.visitFieldInsn(Opcodes.GETFIELD, clsName, CommonMethodsBuilder.TARGET_FIELD_NAME, targetType.getDescriptor());
 			onConnect.visitVarInsn(Opcodes.ALOAD, 1);
-			onConnect.visitMethodInsn(Opcodes.INVOKEVIRTUAL, clsName, methodName, ATTACHABLE_WRAP_TYPE.getDescriptor());
+			onConnect.visitMethodInsn(Opcodes.INVOKEVIRTUAL, clsName, methodName, ATTACHABLE_WRAP_TYPE.getDescriptor(), false);
 		}
 
 		if (isOcAttachable) {
 			onConnect.visitVarInsn(Opcodes.ALOAD, 0);
 			onConnect.visitFieldInsn(Opcodes.GETFIELD, clsName, CommonMethodsBuilder.TARGET_FIELD_NAME, targetType.getDescriptor());
 			onConnect.visitVarInsn(Opcodes.ALOAD, 1);
-			onConnect.visitMethodInsn(Opcodes.INVOKESTATIC, clsName, methodName, OC_ATTACHABLE_WRAP_TYPE.getDescriptor());
+			onConnect.visitMethodInsn(Opcodes.INVOKESTATIC, clsName, methodName, OC_ATTACHABLE_WRAP_TYPE.getDescriptor(), false);
 		}
 
 		onConnect.visitInsn(Opcodes.RETURN);

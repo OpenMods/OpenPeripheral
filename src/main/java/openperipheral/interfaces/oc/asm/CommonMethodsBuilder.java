@@ -140,7 +140,6 @@ public class CommonMethodsBuilder {
 		wrap.visitEnd();
 	}
 
-	@SuppressWarnings("deprecation")
 	public void addExposedMethodBypass(Method method, Type sourceInterface) {
 		MethodVisitor mv = writer.visitMethod(Opcodes.ACC_PUBLIC | Opcodes.ACC_SYNTHETIC, method.getName(), method.getDescriptor(), null, null);
 
@@ -153,7 +152,7 @@ public class CommonMethodsBuilder {
 		for (int i = 0; i < args.length; i++)
 			mv.visitVarInsn(args[i].getOpcode(Opcodes.ILOAD), i + 1);
 
-		mv.visitMethodInsn(Opcodes.INVOKEINTERFACE, sourceInterface.getInternalName(), method.getName(), method.getDescriptor());
+		mv.visitMethodInsn(Opcodes.INVOKEINTERFACE, sourceInterface.getInternalName(), method.getName(), method.getDescriptor(), true);
 		Type returnType = method.getReturnType();
 		mv.visitInsn(returnType.getOpcode(Opcodes.IRETURN));
 
@@ -161,14 +160,13 @@ public class CommonMethodsBuilder {
 		mv.visitEnd();
 	}
 
-	@SuppressWarnings("deprecation")
 	public void addClassInit(int methodsDropboxId) {
 		MethodVisitor mv = writer.visitMethod(Opcodes.ACC_PUBLIC | Opcodes.ACC_SYNTHETIC | Opcodes.ACC_STATIC, "<clinit>", CLINIT_TYPE.getDescriptor(), null, null);
 
 		mv.visitCode();
 
 		visitIntConst(mv, methodsDropboxId);
-		mv.visitMethodInsn(Opcodes.INVOKESTATIC, METHOD_STORE_TYPE.getInternalName(), "collect", METHOD_STORE_COLLECT_TYPE.getDescriptor());
+		mv.visitMethodInsn(Opcodes.INVOKESTATIC, METHOD_STORE_TYPE.getInternalName(), "collect", METHOD_STORE_COLLECT_TYPE.getDescriptor(), false);
 		mv.visitFieldInsn(Opcodes.PUTSTATIC, clsName, METHODS_FIELD_NAME, EXECUTORS_TYPE.getDescriptor());
 		mv.visitInsn(Opcodes.RETURN);
 
