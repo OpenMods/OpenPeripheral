@@ -92,17 +92,8 @@ if (!in_jenkins) {
     branch = env.GIT_BRANCH.minus("origin/")
 }
 
-// If not on master, add branch to jar name
-if (branch != null && !branch.equals("master")) {
-    version += "-" + branch
-} else {
-    //version += "-" + hash
-}
-
 // Version tag for jar file name
-if (env.BUILD_NUMBER != null) {
-    version += "-snapshot-" + env.BUILD_NUMBER
-}
+version += "." + (env.BUILD_NUMBER ?: 'dev')
 
 // Get Git metadata (if in Jenkins)
 ext.gitManifest = manifest {
@@ -162,36 +153,13 @@ jar {
     }
 }
 
-// Dev jar
-task deobfJar(type: Jar) {
-    classifier 'deobf'
-
-    from sourceSets.main.output
-
-    manifest {
-        from jenkinsManifest, gitManifest, fmlManifest
-    }
-}
-
 ext.sourcesPath = new File(new File(new File(buildDir, "sources"), "main"), "java")
-
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier 'sources'
-
-    from sourcesPath
-
-    manifest {
-        from jenkinsManifest, gitManifest
-    }
-}
 
 task apiJar(type: Jar) {
     baseName "OpenPeripheralCore-API"
     version api_version
 
     from sourceSets.main.output
-    from sourcesPath
-
     include 'openperipheral/api/**'
 
     manifest {
@@ -205,7 +173,6 @@ task apiSrcJar(type: Jar) {
     classifier 'sources'
 
     from sourcesPath
-
     include 'openperipheral/api/**'
 
     manifest {
@@ -226,8 +193,6 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 }
 
 artifacts {
-    archives deobfJar
-    archives sourcesJar
     archives apiJar
     archives apiSrcJar
     archives javadocJar
