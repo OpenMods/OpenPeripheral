@@ -14,6 +14,7 @@ import openperipheral.api.peripheral.IPeripheralBlacklist;
 /**
  * This annotation is used to get implementation of API interfaces (subclasses of {@link IApiInterface}).
  * Static variables marked with this annotation will be filled with instance of requested API (defined by type of variable).
+ * Static, single parameter methods will be called with instance of requested API (defined by parameter of type).
  *
  * Most commonly used interfaces:
  * <ul>
@@ -30,6 +31,6 @@ import openperipheral.api.peripheral.IPeripheralBlacklist;
  * <strong>Note:</strong> using this annotation will cause class load!
  * If this causes problems, consider switching to {@link ApiAccess#getApi(Class)}.
  */
-@Target(ElementType.FIELD)
+@Target({ ElementType.FIELD, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ApiHolder {}
