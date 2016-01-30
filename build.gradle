@@ -41,10 +41,15 @@ repositories {
         name = "OC repo"
         url = "http://maven.cil.li/"
     }
+    maven {
+        name "OpenMods 3rd party"
+        url "http://repo.openmods.info/artifactory/thirdparty"
+    }
 }
 
 dependencies {
     compile "li.cil.oc:OpenComputers:MC1.8.9-1.5.21.1:api"
+    compile "info.computercraft:ComputerCraft-API:1.78"
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
     testCompile "org.mockito:mockito-core:1.10.19"
