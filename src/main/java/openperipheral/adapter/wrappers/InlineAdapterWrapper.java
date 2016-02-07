@@ -3,6 +3,7 @@ package openperipheral.adapter.wrappers;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import openmods.Log;
 import openperipheral.adapter.IMethodCall;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.method.MethodDeclaration;
@@ -40,7 +41,14 @@ public class InlineAdapterWrapper extends AdapterWrapper {
 	@Override
 	protected List<IMethodExecutor> buildMethodList() {
 		List<IMethodExecutor> result = super.buildMethodList();
-		PropertyListBuilder.buildPropertyList(rootClass, targetClass, source, result);
+
+		// non-fatal to avoid sideness annoyances
+		try {
+			PropertyListBuilder.buildPropertyList(rootClass, targetClass, source, result);
+		} catch (Exception e) {
+			Log.warn(e, "Failed to get properties for class %s, skipping", targetClass);
+		}
+
 		return result;
 	}
 

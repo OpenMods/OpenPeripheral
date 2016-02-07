@@ -16,6 +16,8 @@ public class MethodSelector implements Predicate<IMethodExecutor> {
 
 	private final String architecture;
 
+	private boolean allowReturnSignal;
+
 	public MethodSelector(String architecture) {
 		this.architecture = architecture;
 	}
@@ -31,9 +33,16 @@ public class MethodSelector implements Predicate<IMethodExecutor> {
 		return this;
 	}
 
+	public MethodSelector allowReturnSignal() {
+		this.allowReturnSignal = true;
+		return this;
+	}
+
 	@Override
 	public boolean apply(IMethodExecutor executor) {
 		if (!executor.canInclude(architecture)) return false;
+
+		if (!allowReturnSignal && executor.getReturnSignal().isPresent()) return false;
 
 		Map<String, Class<?>> requiredEnv = executor.requiredEnv();
 

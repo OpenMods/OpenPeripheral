@@ -27,8 +27,7 @@ import openperipheral.api.converter.IConverter;
 import openperipheral.converter.TypeConvertersProvider;
 import openperipheral.interfaces.oc.ModuleOpenComputers;
 import openperipheral.interfaces.oc.OpenComputersEnv;
-import openperipheral.interfaces.oc.asm.ICodeGenerator;
-import openperipheral.interfaces.oc.asm.MethodsStore;
+import openperipheral.interfaces.oc.asm.*;
 import openperipheral.interfaces.oc.asm.object.ObjectCodeGenerator;
 import openperipheral.interfaces.oc.asm.peripheral.PeripheralCodeGenerator;
 
@@ -39,6 +38,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -64,6 +64,10 @@ public class EnvironmentGeneratorTest {
 		} catch (Exception e) {
 			throw Throwables.propagate(e);
 		}
+	}
+
+	private <T> Class<T> generateClass(String name, Class<?> targetClass, Map<String, IMethodExecutor> methods, ICodeGenerator generator) {
+		return generateClass(name, targetClass, ImmutableSet.<Class<?>> of(), methods, generator);
 	}
 
 	private <T> Class<T> generateClass(String name, Class<?> targetClass, Set<Class<?>> interfaces, Map<String, IMethodExecutor> methods, ICodeGenerator generator) {
@@ -101,10 +105,15 @@ public class EnvironmentGeneratorTest {
 		throw new IllegalArgumentException();
 	}
 
-	private static void addMethod(Map<String, Pair<IMethodExecutor, IMethodCall>> methods, String name, final boolean isAsynchronous, final String desc) {
+	private static void addMethod(Map<String, Pair<IMethodExecutor, IMethodCall>> methods, String name, boolean isAsynchronous, String desc) {
+		addMethod(methods, name, isAsynchronous, Optional.<String> absent(), desc);
+	}
+
+	private static void addMethod(Map<String, Pair<IMethodExecutor, IMethodCall>> methods, String name, boolean isAsynchronous, Optional<String> returnSignal, String desc) {
 		IMethodExecutor executor = mock(IMethodExecutor.class);
 
 		when(executor.isAsynchronous()).thenReturn(isAsynchronous);
+		when(executor.getReturnSignal()).thenReturn(returnSignal);
 
 		IMethodDescription descriptable = mock(IMethodDescription.class);
 
@@ -154,6 +163,15 @@ public class EnvironmentGeneratorTest {
 		verify(args).toArray();
 		verifier.verifyCall(call, context);
 		verify(call).call(argArray);
+	}
+
+	private static void testSignallingMethod(Class<?> generatedClass, String name) throws Exception {
+		Method m = getMethod(generatedClass, name.substring(0, 1));
+
+		Callback callback = m.getAnnotation(Callback.class);
+		Assert.assertNotNull(callback);
+
+		Assert.assertTrue(callback.direct());
 	}
 
 	private static void verifyCallThrough(final TargetClass wrapped, Object wrapper) {
@@ -221,9 +239,13 @@ public class EnvironmentGeneratorTest {
 		final TargetClass target = mock(TargetClass.class);
 		Object o = cls.getConstructor(TargetClass.class).newInstance(target);
 
+		Assert.assertTrue(o instanceof ICallerBase);
 		Assert.assertTrue(o instanceof ManagedEnvironment);
 		Assert.assertTrue(o instanceof InterfaceA);
 		Assert.assertTrue(o instanceof InterfaceB);
+
+		ManagedEnvironment e = (ManagedEnvironment)o;
+		Assert.assertFalse(e.canUpdate());
 
 		verifyCallThrough(target, o);
 
@@ -233,6 +255,31 @@ public class EnvironmentGeneratorTest {
 				verify(ModuleOpenComputers.ENV).addPeripheralArgs(call, node, context);
 			}
 		});
+	}
+
+	@Test
+	public void testSignallingPeripheral() throws Exception {
+		setupEnvMocks();
+
+		Map<String, Pair<IMethodExecutor, IMethodCall>> mocks = Maps.newHashMap();
+		addMethod(mocks, "async", true, Optional.of("hello"), "desc1");
+		addMethod(mocks, "sync", false, Optional.of("hello"), "desc2");
+		Map<String, IMethodExecutor> methods = extractExecutors(mocks);
+
+		ICodeGenerator generator = new PeripheralCodeGenerator();
+
+		Class<?> cls = generateClass("TestClass\u2659", TargetClass.class, methods, generator);
+
+		final TargetClass target = mock(TargetClass.class);
+		Object o = cls.getConstructor(TargetClass.class).newInstance(target);
+
+		Assert.assertTrue(o instanceof ISignallingCallerBase);
+		Assert.assertTrue(o instanceof ManagedEnvironment);
+		ManagedEnvironment e = (ManagedEnvironment)o;
+		Assert.assertTrue(e.canUpdate());
+
+		testSignallingMethod(cls, "async");
+		testSignallingMethod(cls, "sync");
 	}
 
 	@Test(expected = IllegalStateException.class)
@@ -281,6 +328,7 @@ public class EnvironmentGeneratorTest {
 		final TargetClass target = mock(TargetClass.class);
 		Object o = cls.getConstructor(TargetClass.class).newInstance(target);
 
+		Assert.assertTrue(o instanceof ICallerBase);
 		Assert.assertTrue(o instanceof Value);
 		Assert.assertTrue(o instanceof InterfaceA);
 		Assert.assertTrue(o instanceof InterfaceB);

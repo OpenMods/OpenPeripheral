@@ -9,6 +9,8 @@ import openperipheral.util.DocUtils;
 import org.objectweb.asm.*;
 import org.objectweb.asm.commons.Method;
 
+import com.google.common.base.Optional;
+
 public class CommonMethodsBuilder {
 
 	public static final String TARGET_FIELD_NAME = "target";
@@ -16,6 +18,8 @@ public class CommonMethodsBuilder {
 	public static final String METHODS_FIELD_NAME = "methods";
 
 	private static final Type OBJECT_TYPE = Type.getType(Object.class);
+
+	private static final Type STRING_TYPE = Type.getType(String.class);
 
 	public static final Type EXECUTOR_TYPE = Type.getType(IMethodExecutor.class);
 
@@ -33,11 +37,15 @@ public class CommonMethodsBuilder {
 
 	private static final Type BASE_TYPE = Type.getType(ICallerBase.class);
 
+	private static final Type SIGNALLING_BASE_TYPE = Type.getType(ISignallingCallerBase.class);
+
 	private static final Type METHOD_STORE_COLLECT_TYPE = Type.getMethodType(EXECUTORS_TYPE, Type.INT_TYPE);
 
 	public static final Type WRAP_TYPE = Type.getMethodType(OBJECTS_TYPE, CONTEXT_TYPE, ARGUMENTS_TYPE);
 
 	public static final Type CALLER_METHOD_TYPE = Type.getMethodType(OBJECTS_TYPE, OBJECT_TYPE, EXECUTOR_TYPE, CONTEXT_TYPE, ARGUMENTS_TYPE);
+
+	public static final Type SIGNALLING_CALLER_METHOD_TYPE = Type.getMethodType(OBJECTS_TYPE, OBJECT_TYPE, EXECUTOR_TYPE, STRING_TYPE, CONTEXT_TYPE, ARGUMENTS_TYPE);
 
 	private static final Type INVALID_STATE_TYPE = Type.getMethodType(OBJECTS_TYPE);
 
@@ -79,16 +87,18 @@ public class CommonMethodsBuilder {
 		writer.visitField(Opcodes.ACC_PRIVATE | Opcodes.ACC_FINAL, TARGET_FIELD_NAME, targetType.getDescriptor(), null, null);
 	}
 
-	@SuppressWarnings("deprecation")
 	public void createScriptMethodWrapper(String methodName, int methodIndex, IMethodExecutor executor) {
 
-		String generatedMethodName = methodName.replaceAll("[^A-Za-z0-9_]", "_") + "$" + Integer.toString(methodIndex);
+		final String generatedMethodName = methodName.replaceAll("[^A-Za-z0-9_]", "_") + "$" + Integer.toString(methodIndex);
 
-		MethodVisitor wrap = writer.visitMethod(Opcodes.ACC_PUBLIC | Opcodes.ACC_SYNTHETIC, generatedMethodName, WRAP_TYPE.getDescriptor(), null, null);
+		final MethodVisitor wrap = writer.visitMethod(Opcodes.ACC_PUBLIC | Opcodes.ACC_SYNTHETIC, generatedMethodName, WRAP_TYPE.getDescriptor(), null, null);
 
-		AnnotationVisitor av = wrap.visitAnnotation(CALLBACK_TYPE.getDescriptor(), true);
+		final Optional<String> returnSignal = executor.getReturnSignal();
+
+		final AnnotationVisitor av = wrap.visitAnnotation(CALLBACK_TYPE.getDescriptor(), true);
 		av.visit("value", methodName);
-		av.visit("direct", executor.isAsynchronous());
+		// functions with return signal always return immediately
+		av.visit("direct", executor.isAsynchronous() || returnSignal.isPresent());
 		av.visit("doc", DocUtils.doc(executor.description()));
 		av.visitEnd();
 		// TODO: getter/setter
@@ -105,7 +115,7 @@ public class CommonMethodsBuilder {
 		wrap.visitInsn(Opcodes.DUP); // this, target, target
 		wrap.visitJumpInsn(Opcodes.IFNONNULL, skip); // this, target
 		wrap.visitInsn(Opcodes.POP); // this
-		wrap.visitMethodInsn(Opcodes.INVOKEINTERFACE, BASE_TYPE.getInternalName(), "invalidState", INVALID_STATE_TYPE.getDescriptor()); // result
+		wrap.visitMethodInsn(Opcodes.INVOKEINTERFACE, BASE_TYPE.getInternalName(), "invalidState", INVALID_STATE_TYPE.getDescriptor(), true); // result
 		wrap.visitInsn(Opcodes.ARETURN);
 		wrap.visitLabel(skip);
 
@@ -113,9 +123,16 @@ public class CommonMethodsBuilder {
 		visitIntConst(wrap, methodIndex); // this, target, methods[], methodIndex
 		wrap.visitInsn(Opcodes.AALOAD); // this, target, executor
 
-		wrap.visitVarInsn(Opcodes.ALOAD, 1); // this, target, executor, context
-		wrap.visitVarInsn(Opcodes.ALOAD, 2); // this, target, executor, args
-		wrap.visitMethodInsn(Opcodes.INVOKEINTERFACE, BASE_TYPE.getInternalName(), "call", CALLER_METHOD_TYPE.getDescriptor());
+		if (returnSignal.isPresent()) wrap.visitLdcInsn(returnSignal.get());
+		wrap.visitVarInsn(Opcodes.ALOAD, 1); // this, target, executor, (returnSignal), context
+		wrap.visitVarInsn(Opcodes.ALOAD, 2); // this, target, executor, (returnSignal), context, args
+
+		if (returnSignal.isPresent()) {
+			final String baseCallName = executor.isAsynchronous()? "callSignallingAsync" : "callSignallingSync";
+			wrap.visitMethodInsn(Opcodes.INVOKEINTERFACE, SIGNALLING_BASE_TYPE.getInternalName(), baseCallName, SIGNALLING_CALLER_METHOD_TYPE.getDescriptor(), true);
+		} else {
+			wrap.visitMethodInsn(Opcodes.INVOKEINTERFACE, BASE_TYPE.getInternalName(), "call", CALLER_METHOD_TYPE.getDescriptor(), true);
+		}
 		wrap.visitInsn(Opcodes.ARETURN);
 
 		wrap.visitMaxs(0, 0);
@@ -123,7 +140,6 @@ public class CommonMethodsBuilder {
 		wrap.visitEnd();
 	}
 
-	@SuppressWarnings("deprecation")
 	public void addExposedMethodBypass(Method method, Type sourceInterface) {
 		MethodVisitor mv = writer.visitMethod(Opcodes.ACC_PUBLIC | Opcodes.ACC_SYNTHETIC, method.getName(), method.getDescriptor(), null, null);
 
@@ -136,7 +152,7 @@ public class CommonMethodsBuilder {
 		for (int i = 0; i < args.length; i++)
 			mv.visitVarInsn(args[i].getOpcode(Opcodes.ILOAD), i + 1);
 
-		mv.visitMethodInsn(Opcodes.INVOKEINTERFACE, sourceInterface.getInternalName(), method.getName(), method.getDescriptor());
+		mv.visitMethodInsn(Opcodes.INVOKEINTERFACE, sourceInterface.getInternalName(), method.getName(), method.getDescriptor(), true);
 		Type returnType = method.getReturnType();
 		mv.visitInsn(returnType.getOpcode(Opcodes.IRETURN));
 
@@ -144,14 +160,13 @@ public class CommonMethodsBuilder {
 		mv.visitEnd();
 	}
 
-	@SuppressWarnings("deprecation")
 	public void addClassInit(int methodsDropboxId) {
 		MethodVisitor mv = writer.visitMethod(Opcodes.ACC_PUBLIC | Opcodes.ACC_SYNTHETIC | Opcodes.ACC_STATIC, "<clinit>", CLINIT_TYPE.getDescriptor(), null, null);
 
 		mv.visitCode();
 
 		visitIntConst(mv, methodsDropboxId);
-		mv.visitMethodInsn(Opcodes.INVOKESTATIC, METHOD_STORE_TYPE.getInternalName(), "collect", METHOD_STORE_COLLECT_TYPE.getDescriptor());
+		mv.visitMethodInsn(Opcodes.INVOKESTATIC, METHOD_STORE_TYPE.getInternalName(), "collect", METHOD_STORE_COLLECT_TYPE.getDescriptor(), false);
 		mv.visitFieldInsn(Opcodes.PUTSTATIC, clsName, METHODS_FIELD_NAME, EXECUTORS_TYPE.getDescriptor());
 		mv.visitInsn(Opcodes.RETURN);
 

@@ -9,17 +9,22 @@ import openperipheral.adapter.IMethodDescription;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.method.MethodDeclaration;
 
+import com.google.common.base.Optional;
+
 public abstract class MethodExecutorBase implements IMethodExecutor {
 
 	private final MethodDeclaration decl;
 
 	private final boolean isAsynchronous;
 
+	private final Optional<String> returnSignal;
+
 	private final Set<String> excludedArchitectures;
 
 	public MethodExecutorBase(MethodDeclaration decl, Method method, MethodMetaExtractor info) {
 		this.decl = decl;
 		this.isAsynchronous = info.isAsync(method);
+		this.returnSignal = info.getReturnSignal(method);
 		this.excludedArchitectures = info.getExcludedArchitectures(method);
 	}
 
@@ -31,6 +36,11 @@ public abstract class MethodExecutorBase implements IMethodExecutor {
 	@Override
 	public boolean isAsynchronous() {
 		return isAsynchronous;
+	}
+
+	@Override
+	public Optional<String> getReturnSignal() {
+		return returnSignal;
 	}
 
 	@Override

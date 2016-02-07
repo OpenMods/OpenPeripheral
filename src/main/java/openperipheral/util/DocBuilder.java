@@ -27,9 +27,7 @@ import openperipheral.api.adapter.IScriptType;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import com.google.common.base.Objects;
-import com.google.common.base.Strings;
-import com.google.common.base.Throwables;
+import com.google.common.base.*;
 
 public class DocBuilder {
 	private final Document doc;
@@ -186,6 +184,8 @@ public class DocBuilder {
 
 	private void fillDocForMethod(Element result, IMethodExecutor method) {
 		result.setAttribute("asynchronous", Boolean.toString(method.isAsynchronous()));
+		final Optional<String> returnSignal = method.getReturnSignal();
+		if (returnSignal.isPresent()) result.setAttribute("returnSignal", returnSignal.get());
 		IMethodDescription description = method.description();
 		result.appendChild(createProperty("signature", DocUtils.signature(description)));
 		result.appendChild(createProperty("source", description.source()));

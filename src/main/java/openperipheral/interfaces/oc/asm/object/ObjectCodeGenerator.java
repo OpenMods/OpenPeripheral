@@ -56,11 +56,10 @@ public class ObjectCodeGenerator implements ICodeGenerator {
 		createDummyConstructor(writer, clsName, targetType);
 	}
 
-	@SuppressWarnings("deprecation")
 	private static void visitSuperCtor(MethodVisitor init) {
 		init.visitVarInsn(Opcodes.ALOAD, 0);
 		init.visitInsn(Opcodes.DUP);
-		init.visitMethodInsn(Opcodes.INVOKESPECIAL, BASE_TYPE.getInternalName(), "<init>", SUPER_CTOR_TYPE.getDescriptor());
+		init.visitMethodInsn(Opcodes.INVOKESPECIAL, BASE_TYPE.getInternalName(), "<init>", SUPER_CTOR_TYPE.getDescriptor(), false);
 	}
 
 	private static void createDefaultConstructor(ClassWriter writer, String clsName, Type targetType) {

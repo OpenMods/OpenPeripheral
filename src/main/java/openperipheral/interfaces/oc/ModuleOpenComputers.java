@@ -38,6 +38,7 @@ public class ModuleOpenComputers {
 
 	public static void init() {
 		final MethodSelector peripheralSelector = new MethodSelector(Constants.ARCH_OPEN_COMPUTERS)
+				.allowReturnSignal()
 				.addDefaultEnv()
 				.addProvidedEnv(Constants.ARG_ACCESS, IArchitectureAccess.class)
 				.addProvidedEnv(Constants.ARG_CONTEXT, Context.class)
@@ -52,6 +53,7 @@ public class ModuleOpenComputers {
 		InjectedClassesManager.instance.registerProvider(PERIPHERAL_CLASS_PREFIX, new EnvironmentClassBytesProvider<ManagedEnvironment>(PERIPHERAL_METHODS_FACTORY));
 
 		final MethodSelector objectSelector = new MethodSelector(Constants.ARCH_OPEN_COMPUTERS)
+				// .allowReturnSignal() // for symmetry with CC
 				.addDefaultEnv()
 				.addProvidedEnv(Constants.ARG_CONTEXT, Context.class);
 

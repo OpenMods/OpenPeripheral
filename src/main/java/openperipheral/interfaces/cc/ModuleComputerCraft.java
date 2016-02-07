@@ -34,6 +34,7 @@ public class ModuleComputerCraft {
 
 	public static void init() {
 		final MethodSelector peripheralSelector = new MethodSelector(Constants.ARCH_COMPUTER_CRAFT)
+				.allowReturnSignal()
 				.addDefaultEnv()
 				.addProvidedEnv(Constants.ARG_ACCESS, IArchitectureAccess.class)
 				.addProvidedEnv(Constants.ARG_COMPUTER, IComputerAccess.class)
@@ -46,6 +47,7 @@ public class ModuleComputerCraft {
 			}
 		};
 
+		// can't push events, so not allowing return signals
 		final MethodSelector objectSelector = new MethodSelector(Constants.ARCH_COMPUTER_CRAFT)
 				.addDefaultEnv()
 				.addProvidedEnv(Constants.ARG_CONTEXT, ILuaContext.class);

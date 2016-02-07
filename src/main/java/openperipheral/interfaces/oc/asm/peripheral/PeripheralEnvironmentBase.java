@@ -40,8 +40,12 @@ public class PeripheralEnvironmentBase extends ManagedEnvironment implements Nam
 	@Override
 	public Object[] call(Object target, IMethodExecutor executor, Context context, Arguments arguments) throws Exception {
 		Object[] args = arguments.toArray();
+		return prepareCall(target, executor, context).call(args);
+	}
+
+	protected IMethodCall prepareCall(Object target, IMethodExecutor executor, Context context) {
 		final IMethodCall call = executor.startCall(target);
-		return ModuleOpenComputers.ENV.addPeripheralArgs(call, node(), context).call(args);
+		return ModuleOpenComputers.ENV.addPeripheralArgs(call, node(), context);
 	}
 
 	protected void onConnect(IAttachable target, Node node) {
