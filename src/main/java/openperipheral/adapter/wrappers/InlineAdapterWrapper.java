@@ -44,7 +44,7 @@ public class InlineAdapterWrapper extends AdapterWrapper {
 
 		// non-fatal to avoid sideness annoyances
 		try {
-			PropertyListBuilder.buildPropertyList(rootClass, targetClass, source, result);
+			PropertyListBuilder.buildPropertyList(rootClass, targetClass, source, metaInfo, result);
 		} catch (Exception e) {
 			Log.warn(e, "Failed to get properties for class %s, skipping", targetClass);
 		}

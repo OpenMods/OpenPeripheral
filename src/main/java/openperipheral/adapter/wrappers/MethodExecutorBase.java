@@ -4,12 +4,11 @@ import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Set;
 
-import openperipheral.adapter.IMethodCall;
-import openperipheral.adapter.IMethodDescription;
-import openperipheral.adapter.IMethodExecutor;
+import openperipheral.adapter.*;
 import openperipheral.adapter.method.MethodDeclaration;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableSet;
 
 public abstract class MethodExecutorBase implements IMethodExecutor {
 
@@ -21,11 +20,11 @@ public abstract class MethodExecutorBase implements IMethodExecutor {
 
 	private final Set<String> excludedArchitectures;
 
-	public MethodExecutorBase(MethodDeclaration decl, Method method, MethodMetaExtractor info) {
+	public MethodExecutorBase(MethodDeclaration decl, Method method, AnnotationMetaExtractor info) {
 		this.decl = decl;
 		this.isAsynchronous = info.isAsync(method);
 		this.returnSignal = info.getReturnSignal(method);
-		this.excludedArchitectures = info.getExcludedArchitectures(method);
+		this.excludedArchitectures = ImmutableSet.copyOf(info.getExcludedArchitectures(method));
 	}
 
 	@Override

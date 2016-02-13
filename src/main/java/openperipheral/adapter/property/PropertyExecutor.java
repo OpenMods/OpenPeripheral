@@ -1,6 +1,7 @@
 package openperipheral.adapter.property;
 
 import java.util.Map;
+import java.util.Set;
 
 import openperipheral.adapter.IMethodCall;
 import openperipheral.adapter.IMethodDescription;
@@ -11,6 +12,7 @@ import openperipheral.api.converter.IConverter;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 
 public class PropertyExecutor implements IMethodExecutor {
 
@@ -20,9 +22,12 @@ public class PropertyExecutor implements IMethodExecutor {
 
 	private final IPropertyExecutor caller;
 
-	public PropertyExecutor(IMethodDescription description, IPropertyExecutor caller) {
+	private final Set<String> excludedArchitectures;
+
+	public PropertyExecutor(IMethodDescription description, IPropertyExecutor caller, Set<String> excludedArchitectures) {
 		this.description = description;
 		this.caller = caller;
+		this.excludedArchitectures = ImmutableSet.copyOf(excludedArchitectures);
 	}
 
 	@Override
@@ -61,7 +66,7 @@ public class PropertyExecutor implements IMethodExecutor {
 
 	@Override
 	public boolean canInclude(String architecture) {
-		return true;
+		return !this.excludedArchitectures.contains(architecture);
 	}
 
 	@Override

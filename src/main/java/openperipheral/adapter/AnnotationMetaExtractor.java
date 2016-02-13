@@ -1,7 +1,6 @@
-package openperipheral.adapter.wrappers;
+package openperipheral.adapter;
 
 import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Method;
 import java.util.Set;
 
 import openperipheral.api.adapter.Asynchronous;
@@ -11,7 +10,7 @@ import openperipheral.api.architecture.ExcludeArchitecture;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
 
-public class MethodMetaExtractor {
+public class AnnotationMetaExtractor {
 
 	private static final boolean DEFAULT_ASYNC = false;
 
@@ -41,7 +40,7 @@ public class MethodMetaExtractor {
 		return blacklist != null? ImmutableSet.copyOf(blacklist.value()) : defaultValue;
 	}
 
-	public MethodMetaExtractor(Class<?> cls) {
+	public AnnotationMetaExtractor(Class<?> cls) {
 		final Package pkg = cls.getPackage();
 
 		this.classIsAsync = isAsynchronous(cls, DEFAULT_ASYNC);
@@ -53,15 +52,15 @@ public class MethodMetaExtractor {
 
 	}
 
-	public boolean isAsync(Method method) {
+	public boolean isAsync(AnnotatedElement method) {
 		return isAsynchronous(method, classIsAsync);
 	}
 
-	public Optional<String> getReturnSignal(Method method) {
+	public Optional<String> getReturnSignal(AnnotatedElement method) {
 		return getReturnSignal(method, classReturnSignal);
 	}
 
-	public Set<String> getExcludedArchitectures(Method method) {
+	public Set<String> getExcludedArchitectures(AnnotatedElement method) {
 		return getArchBlacklist(method, classExcludedArchitectures);
 	}
 }

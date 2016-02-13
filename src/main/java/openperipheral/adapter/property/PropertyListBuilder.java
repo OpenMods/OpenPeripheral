@@ -3,8 +3,10 @@ package openperipheral.adapter.property;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.List;
+import java.util.Set;
 
 import openmods.reflection.TypeUtils;
+import openperipheral.adapter.AnnotationMetaExtractor;
 import openperipheral.adapter.IMethodDescription;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.types.TypeHelper;
@@ -16,6 +18,7 @@ import openperipheral.api.property.ISinglePropertyListener;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.common.collect.Sets;
 import com.google.common.reflect.TypeToken;
 
 public class PropertyListBuilder {
@@ -84,6 +87,8 @@ public class PropertyListBuilder {
 	private final ISinglePropertyAccessHandler singleAccessHandler;
 	private final IIndexedPropertyAccessHandler indexedAccessHandler;
 
+	private final Set<String> excludedArchitectures = Sets.newHashSet();
+
 	public PropertyListBuilder(Class<?> ownerClass, Field field, String source) {
 		Preconditions.checkArgument(field.getDeclaringClass().isAssignableFrom(ownerClass), "Field %s not usable on %s", field, ownerClass);
 		this.ownerClass = ownerClass;
@@ -137,6 +142,11 @@ public class PropertyListBuilder {
 		if (indexedProperty != null) addProperty(indexedProperty);
 		else if (indexedCallbackProperty != null) addProperty(indexedCallbackProperty);
 
+		return this;
+	}
+
+	public PropertyListBuilder configureFromFieldMeta(AnnotationMetaExtractor metaInfo) {
+		excludedArchitectures.addAll(metaInfo.getExcludedArchitectures(field));
 		return this;
 	}
 
@@ -196,7 +206,7 @@ public class PropertyListBuilder {
 		if (!Strings.isNullOrEmpty(params.getterDescription)) descriptionBuilder.overrideDescription(params.getterDescription);
 		final IMethodDescription description = descriptionBuilder.buildGetter();
 		final IPropertyExecutor caller = new GetterExecutor(field, fieldManipulator, singleAccessHandler);
-		return new PropertyExecutor(description, caller);
+		return new PropertyExecutor(description, caller, excludedArchitectures);
 	}
 
 	private IMethodExecutor createSinglePropertySetter(SingleParameters params, final IFieldManipulator fieldManipulator) {
@@ -205,7 +215,7 @@ public class PropertyListBuilder {
 		if (!Strings.isNullOrEmpty(params.setterDescription)) descriptionBuilder.overrideDescription(params.setterDescription);
 		final IMethodDescription description = descriptionBuilder.buildSetter();
 		final IPropertyExecutor caller = new SetterExecutor(field, fieldManipulator, params.typeInfo, singleAccessHandler, params.valueNullable);
-		return new PropertyExecutor(description, caller);
+		return new PropertyExecutor(description, caller, excludedArchitectures);
 	}
 
 	private IMethodExecutor createIndexedPropertyGetter(IndexedParameters params, final IIndexedFieldManipulator fieldManipulator) {
@@ -216,7 +226,7 @@ public class PropertyListBuilder {
 
 		final IMethodDescription description = descriptionBuilder.buildGetter();
 		final IPropertyExecutor caller = new IndexedGetterExecutor(field, fieldManipulator, params.typeInfo, indexedAccessHandler);
-		return new PropertyExecutor(description, caller);
+		return new PropertyExecutor(description, caller, excludedArchitectures);
 	}
 
 	private IMethodExecutor createIndexedPropertySetter(IndexedParameters params, final IIndexedFieldManipulator fieldManipulator) {
@@ -227,7 +237,7 @@ public class PropertyListBuilder {
 
 		final IMethodDescription description = descriptionBuilder.buildSetter();
 		final IPropertyExecutor caller = new IndexedSetterExecutor(field, fieldManipulator, params.typeInfo, indexedAccessHandler, params.valueNullable);
-		return new PropertyExecutor(description, caller);
+		return new PropertyExecutor(description, caller, excludedArchitectures);
 	}
 
 	private IMethodExecutor createMergedPropertyGetter(SingleParameters singleParameters, IFieldManipulator singleFieldManipulator, IndexedParameters indexedParameters, IIndexedFieldManipulator indexedFieldManipulator) {
@@ -240,7 +250,7 @@ public class PropertyListBuilder {
 
 		final IMethodDescription description = descriptionBuilder.buildGetter();
 		final IPropertyExecutor caller = new MergedGetterExecutor(field, singleFieldManipulator, singleAccessHandler, indexedFieldManipulator, indexedParameters.typeInfo, indexedAccessHandler);
-		return new PropertyExecutor(description, caller);
+		return new PropertyExecutor(description, caller, excludedArchitectures);
 	}
 
 	private IMethodExecutor createMergedPropertySetter(SingleParameters singleParameters, IFieldManipulator singleFieldManipulator, IndexedParameters indexedParameters, IIndexedFieldManipulator indexedFieldManipulator) {
@@ -251,7 +261,7 @@ public class PropertyListBuilder {
 		else if (!Strings.isNullOrEmpty(singleParameters.setterDescription)) descriptionBuilder.overrideDescription(singleParameters.setterDescription);
 		final IMethodDescription description = descriptionBuilder.buildSetter();
 		final IPropertyExecutor caller = new MergedSetterExecutor(field, singleParameters.valueNullable, singleFieldManipulator, singleParameters.typeInfo, singleAccessHandler, indexedParameters.valueNullable, indexedFieldManipulator, indexedParameters.typeInfo, indexedAccessHandler);
-		return new PropertyExecutor(description, caller);
+		return new PropertyExecutor(description, caller, excludedArchitectures);
 	}
 
 	private void precheckSingleField(SingleParameters params) {
@@ -275,9 +285,12 @@ public class PropertyListBuilder {
 		Preconditions.checkArgument(!params.isDelegating || IIndexedPropertyCallback.class.isAssignableFrom(ownerClass), "Only classes implementing IIndexedPropertyCallback can use @CallbackIndexedProperty");
 	}
 
-	public static void buildPropertyList(Class<?> rootClass, Class<?> targetCls, String source, List<IMethodExecutor> output) {
+	public static void buildPropertyList(Class<?> rootClass, Class<?> targetCls, String source, AnnotationMetaExtractor metaInfo, List<IMethodExecutor> output) {
 		for (Field f : targetCls.getDeclaredFields())
-			new PropertyListBuilder(rootClass, f, source).configureFromFieldProperties().addMethods(output);
+			new PropertyListBuilder(rootClass, f, source)
+					.configureFromFieldMeta(metaInfo)
+					.configureFromFieldProperties()
+					.addMethods(output);
 	}
 
 }
