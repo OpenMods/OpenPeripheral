@@ -11,6 +11,7 @@ import openmods.Log;
 import openmods.OpenMods;
 import openmods.utils.SidedCommand;
 import openperipheral.adapter.AdapterRegistry;
+import openperipheral.adapter.FeatureGroupManager;
 import openperipheral.adapter.composed.ComposedMethodsFactory;
 import openperipheral.adapter.composed.IMethodMap;
 import openperipheral.adapter.wrappers.AdapterWrapper;
@@ -75,10 +76,14 @@ public class CommandDump extends SidedCommand {
 			builder.setRootAttribute("generatedOn", getCurrentTime());
 			builder.setRootAttribute("generatedBy", sender.getCommandSenderName());
 
-			for (String architecture : ArchitectureChecker.INSTANCE.knownArchitectures()) {
+			final Set<String> knownArchitectures = ArchitectureChecker.INSTANCE.knownArchitectures();
+			for (String architecture : knownArchitectures) {
 				final boolean isEnabled = ArchitectureChecker.INSTANCE.isEnabled(architecture);
 				builder.createDocForArchitecture(architecture, isEnabled);
 			}
+
+			for (String fg : FeatureGroupManager.INSTANCE.knownFeatureGroups())
+				builder.createDocForFeatureGroup(fg, knownArchitectures, FeatureGroupManager.INSTANCE);
 
 			for (IArchSerializer serializer : archSerializers)
 				serializer.serialize(builder);

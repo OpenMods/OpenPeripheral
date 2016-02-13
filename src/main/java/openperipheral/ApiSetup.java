@@ -4,9 +4,7 @@ import openmods.Log;
 import openmods.access.ApiFactory;
 import openmods.access.ApiProviderBase;
 import openmods.access.ApiProviderRegistry;
-import openperipheral.adapter.AdapterRegistryWrapper;
-import openperipheral.adapter.PeripheralTypeProvider;
-import openperipheral.adapter.TileEntityBlacklist;
+import openperipheral.adapter.*;
 import openperipheral.adapter.types.classifier.TypeClassifier;
 import openperipheral.api.ApiHolder;
 import openperipheral.api.Constants;
@@ -38,6 +36,7 @@ public class ApiSetup {
 		registry.registerInstance(PeripheralTypeProvider.INSTANCE);
 		registry.registerInstance(TypeClassifier.INSTANCE);
 		registry.registerInstance(ArchitectureChecker.INSTANCE);
+		registry.registerInstance(FeatureGroupManager.INSTANCE);
 
 		if (ArchitectureChecker.INSTANCE.isEnabled(Constants.ARCH_COMPUTER_CRAFT)) ModuleComputerCraft.installAPI(registry);
 		if (ArchitectureChecker.INSTANCE.isEnabled(Constants.ARCH_OPEN_COMPUTERS)) ModuleOpenComputers.installAPI(registry);

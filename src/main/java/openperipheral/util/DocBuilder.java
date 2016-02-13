@@ -23,6 +23,7 @@ import openperipheral.adapter.types.TypeHelper;
 import openperipheral.adapter.wrappers.AdapterWrapper;
 import openperipheral.api.adapter.AdapterSourceName;
 import openperipheral.api.adapter.IScriptType;
+import openperipheral.api.architecture.IFeatureGroupManager;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -119,6 +120,16 @@ public class DocBuilder {
 		root.appendChild(result);
 	}
 
+	public void createDocForFeatureGroup(String id, Collection<String> architectures, IFeatureGroupManager fgm) {
+		Element result = doc.createElement("featureGroup");
+		result.setAttribute("id", id);
+
+		for (String arch : architectures)
+			if (fgm.isEnabled(id, arch)) result.appendChild(createProperty("architecture", arch));
+
+		root.appendChild(result);
+	}
+
 	public void createDocForAdapter(String type, String location, Class<?> targetClass, AdapterWrapper adapter) {
 		Element result = doc.createElement("adapter");
 		final Class<?> adapterClass = adapter.getAdapterClass();
@@ -199,6 +210,11 @@ public class DocBuilder {
 		result.appendChild(createProperty("source", description.source()));
 
 		addOptionalTag(result, "description", description.description());
+
+		{
+			for (String fg : method.featureGroups())
+				result.appendChild(createProperty("featureGroup", fg));
+		}
 
 		{
 			Element args = doc.createElement("arguments");

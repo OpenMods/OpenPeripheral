@@ -2,15 +2,13 @@ package openperipheral.adapter.wrappers;
 
 import java.lang.reflect.Method;
 import java.util.Map;
-import java.util.Set;
 
 import openperipheral.adapter.*;
 import openperipheral.adapter.method.MethodDeclaration;
 
 import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableSet;
 
-public abstract class MethodExecutorBase implements IMethodExecutor {
+public abstract class MethodExecutorBase extends RestrictedMethodExecutor {
 
 	private final MethodDeclaration decl;
 
@@ -18,13 +16,11 @@ public abstract class MethodExecutorBase implements IMethodExecutor {
 
 	private final Optional<String> returnSignal;
 
-	private final Set<String> excludedArchitectures;
-
 	public MethodExecutorBase(MethodDeclaration decl, Method method, AnnotationMetaExtractor info) {
+		super(info.getExcludedArchitectures(method), info.getFeatureGroups(method));
 		this.decl = decl;
 		this.isAsynchronous = info.isAsync(method);
 		this.returnSignal = info.getReturnSignal(method);
-		this.excludedArchitectures = ImmutableSet.copyOf(info.getExcludedArchitectures(method));
 	}
 
 	@Override
@@ -40,11 +36,6 @@ public abstract class MethodExecutorBase implements IMethodExecutor {
 	@Override
 	public Optional<String> getReturnSignal() {
 		return returnSignal;
-	}
-
-	@Override
-	public boolean canInclude(String architecture) {
-		return !this.excludedArchitectures.contains(architecture);
 	}
 
 	@Override

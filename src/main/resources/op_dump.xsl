@@ -38,6 +38,10 @@ body {
 .arguments {
             padding-left: 3em;
 }
+
+.center {
+  text-align: center;
+}
   </style>
   </head>
   <body>
@@ -57,6 +61,8 @@ body {
   </ul>
 
   <h3><a href="#architectures">Architectures</a></h3>
+  <h3><a href="#featureGroups">Feature Groups</a></h3>
+
   <xsl:for-each select="architecture[@enabled='true']" >
     <xsl:variable name="arch" select="id/text()"/>
     <h3><a href="#arch.{$arch}">Generated types for <xsl:value-of select="$arch" /></a></h3>
@@ -102,6 +108,12 @@ body {
       <xsl:if test="@returnSignal"><p><strong>Return signal: </strong><code><xsl:value-of select="@returnSignal" /></code></p></xsl:if>
       <xsl:if test="description"><p><xsl:value-of select="description/text()" /></p></xsl:if>
       <xsl:if test="source"><p>Source: <xsl:value-of select="source/text()" /></p></xsl:if>
+      <xsl:if test="featureGroup"><p>Feature groups:
+        <xsl:for-each select="featureGroup">
+          <xsl:value-of select="text()" />
+          <xsl:if test="position() != last()">, </xsl:if>
+        </xsl:for-each>
+      </p></xsl:if>
       <xsl:if test="arguments/arg">
         <p>Arguments:</p>
         <div class="arguments">
@@ -138,6 +150,33 @@ body {
     </xsl:for-each>
   </table>
 
+  <!-- Feature Groups -->
+  <h3 id="featureGroups">Feature Groups:</h3>
+  <table border="1" class="center">
+    <tr>
+      <th>Feature Group</th>
+      <xsl:for-each select="architecture[@enabled='true']">
+        <th><xsl:value-of select="id/text()" /></th>
+      </xsl:for-each>
+    </tr>
+    <xsl:for-each select="featureGroup">
+      <xsl:sort select="@id"/>
+      <tr>
+        <td><xsl:value-of select="@id" /></td>
+        <xsl:variable name="fg" select="."/>
+        <xsl:for-each select="/documentation/architecture[@enabled='true']">
+          <xsl:variable name="arch" select="id/text()"/>
+          <td>
+            <xsl:choose>
+              <xsl:when test="$fg/architecture/text()=$arch">&#x2714;</xsl:when>
+              <xsl:otherwise>&#x2718;</xsl:otherwise>
+            </xsl:choose>
+          </td>
+        </xsl:for-each>
+      </tr>
+    </xsl:for-each>
+  </table>
+
   <xsl:for-each select="architecture[@enabled='true']">
   <xsl:variable name="arch" select="id/text()"/>
 
@@ -167,6 +206,12 @@ body {
       <xsl:if test="@returnSignal"><p><strong>Return signal: </strong><code><xsl:value-of select="@returnSignal" /></code></p></xsl:if>
       <xsl:if test="description"><p><xsl:value-of select="description/text()" /></p></xsl:if>
       <xsl:if test="source"><p>Source: <xsl:value-of select="source/text()" /></p></xsl:if>
+      <xsl:if test="featureGroup"><p>Feature groups:
+        <xsl:for-each select="featureGroup">
+          <xsl:value-of select="text()" />
+          <xsl:if test="position() != last()">, </xsl:if>
+        </xsl:for-each>
+      </p></xsl:if>
        <xsl:if test="arguments/arg">
         <p>Arguments:</p>
         <div class="arguments">
@@ -205,6 +250,12 @@ body {
       <xsl:if test="@returnSignal"><p><strong>Return signal: </strong><code><xsl:value-of select="@returnSignal" /></code></p></xsl:if>
       <xsl:if test="description"><p><xsl:value-of select="description/text()" /></p></xsl:if>
       <xsl:if test="source"><p>Source: <xsl:value-of select="source/text()" /></p></xsl:if>
+      <xsl:if test="featureGroup"><p>Feature groups:
+        <xsl:for-each select="featureGroup">
+          <xsl:value-of select="text()" />
+          <xsl:if test="position() != last()">, </xsl:if>
+        </xsl:for-each>
+      </p></xsl:if>
       <xsl:if test="arguments/arg">
         <p>Arguments:</p>
         <div class="arguments">

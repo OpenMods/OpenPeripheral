@@ -6,9 +6,7 @@ import java.util.Set;
 
 import net.minecraft.tileentity.TileEntity;
 import openmods.Log;
-import openperipheral.adapter.AdapterRegistry;
-import openperipheral.adapter.IMethodDescription;
-import openperipheral.adapter.IMethodExecutor;
+import openperipheral.adapter.*;
 import openperipheral.adapter.wrappers.AdapterWrapper;
 import openperipheral.adapter.wrappers.InlineAdapterWrapper;
 import openperipheral.adapter.wrappers.TechnicalAdapterWrapper;
@@ -49,6 +47,10 @@ public class ClassMethodsListBuilder {
 	public void addMethods(AdapterWrapper wrapper) {
 		for (IMethodExecutor executor : wrapper.getMethods()) {
 			final IMethodDescription descriptable = executor.description();
+
+			for (String fg : executor.featureGroups())
+				FeatureGroupManager.INSTANCE.ensureExists(fg);
+
 			if (selector.apply(executor)) {
 				sources.add(descriptable.source());
 				for (String name : descriptable.getNames()) {

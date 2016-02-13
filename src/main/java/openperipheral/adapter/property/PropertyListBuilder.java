@@ -88,6 +88,7 @@ public class PropertyListBuilder {
 	private final IIndexedPropertyAccessHandler indexedAccessHandler;
 
 	private final Set<String> excludedArchitectures = Sets.newHashSet();
+	private final Set<String> featureGroups = Sets.newHashSet();
 
 	public PropertyListBuilder(Class<?> ownerClass, Field field, String source) {
 		Preconditions.checkArgument(field.getDeclaringClass().isAssignableFrom(ownerClass), "Field %s not usable on %s", field, ownerClass);
@@ -147,6 +148,7 @@ public class PropertyListBuilder {
 
 	public PropertyListBuilder configureFromFieldMeta(AnnotationMetaExtractor metaInfo) {
 		excludedArchitectures.addAll(metaInfo.getExcludedArchitectures(field));
+		featureGroups.addAll(metaInfo.getFeatureGroups(field));
 		return this;
 	}
 
@@ -200,13 +202,17 @@ public class PropertyListBuilder {
 		}
 	}
 
+	private PropertyExecutor createPropertyExecutor(IMethodDescription description, IPropertyExecutor caller) {
+		return new PropertyExecutor(description, caller, excludedArchitectures, featureGroups);
+	}
+
 	private IMethodExecutor createSinglePropertyGetter(SingleParameters params, final IFieldManipulator fieldManipulator) {
 		final PropertyDescriptionBuilder descriptionBuilder = new PropertyDescriptionBuilder(params.name, source);
 		descriptionBuilder.addSingleParameter(params.typeInfo);
 		if (!Strings.isNullOrEmpty(params.getterDescription)) descriptionBuilder.overrideDescription(params.getterDescription);
 		final IMethodDescription description = descriptionBuilder.buildGetter();
 		final IPropertyExecutor caller = new GetterExecutor(field, fieldManipulator, singleAccessHandler);
-		return new PropertyExecutor(description, caller, excludedArchitectures);
+		return createPropertyExecutor(description, caller);
 	}
 
 	private IMethodExecutor createSinglePropertySetter(SingleParameters params, final IFieldManipulator fieldManipulator) {
@@ -215,7 +221,7 @@ public class PropertyListBuilder {
 		if (!Strings.isNullOrEmpty(params.setterDescription)) descriptionBuilder.overrideDescription(params.setterDescription);
 		final IMethodDescription description = descriptionBuilder.buildSetter();
 		final IPropertyExecutor caller = new SetterExecutor(field, fieldManipulator, params.typeInfo, singleAccessHandler, params.valueNullable);
-		return new PropertyExecutor(description, caller, excludedArchitectures);
+		return createPropertyExecutor(description, caller);
 	}
 
 	private IMethodExecutor createIndexedPropertyGetter(IndexedParameters params, final IIndexedFieldManipulator fieldManipulator) {
@@ -226,7 +232,7 @@ public class PropertyListBuilder {
 
 		final IMethodDescription description = descriptionBuilder.buildGetter();
 		final IPropertyExecutor caller = new IndexedGetterExecutor(field, fieldManipulator, params.typeInfo, indexedAccessHandler);
-		return new PropertyExecutor(description, caller, excludedArchitectures);
+		return createPropertyExecutor(description, caller);
 	}
 
 	private IMethodExecutor createIndexedPropertySetter(IndexedParameters params, final IIndexedFieldManipulator fieldManipulator) {
@@ -237,7 +243,7 @@ public class PropertyListBuilder {
 
 		final IMethodDescription description = descriptionBuilder.buildSetter();
 		final IPropertyExecutor caller = new IndexedSetterExecutor(field, fieldManipulator, params.typeInfo, indexedAccessHandler, params.valueNullable);
-		return new PropertyExecutor(description, caller, excludedArchitectures);
+		return createPropertyExecutor(description, caller);
 	}
 
 	private IMethodExecutor createMergedPropertyGetter(SingleParameters singleParameters, IFieldManipulator singleFieldManipulator, IndexedParameters indexedParameters, IIndexedFieldManipulator indexedFieldManipulator) {
@@ -250,7 +256,7 @@ public class PropertyListBuilder {
 
 		final IMethodDescription description = descriptionBuilder.buildGetter();
 		final IPropertyExecutor caller = new MergedGetterExecutor(field, singleFieldManipulator, singleAccessHandler, indexedFieldManipulator, indexedParameters.typeInfo, indexedAccessHandler);
-		return new PropertyExecutor(description, caller, excludedArchitectures);
+		return createPropertyExecutor(description, caller);
 	}
 
 	private IMethodExecutor createMergedPropertySetter(SingleParameters singleParameters, IFieldManipulator singleFieldManipulator, IndexedParameters indexedParameters, IIndexedFieldManipulator indexedFieldManipulator) {
@@ -261,7 +267,7 @@ public class PropertyListBuilder {
 		else if (!Strings.isNullOrEmpty(singleParameters.setterDescription)) descriptionBuilder.overrideDescription(singleParameters.setterDescription);
 		final IMethodDescription description = descriptionBuilder.buildSetter();
 		final IPropertyExecutor caller = new MergedSetterExecutor(field, singleParameters.valueNullable, singleFieldManipulator, singleParameters.typeInfo, singleAccessHandler, indexedParameters.valueNullable, indexedFieldManipulator, indexedParameters.typeInfo, indexedAccessHandler);
-		return new PropertyExecutor(description, caller, excludedArchitectures);
+		return createPropertyExecutor(description, caller);
 	}
 
 	private void precheckSingleField(SingleParameters params) {

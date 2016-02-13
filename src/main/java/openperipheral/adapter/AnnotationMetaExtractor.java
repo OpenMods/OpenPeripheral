@@ -6,21 +6,27 @@ import java.util.Set;
 import openperipheral.api.adapter.Asynchronous;
 import openperipheral.api.adapter.ReturnSignal;
 import openperipheral.api.architecture.ExcludeArchitecture;
+import openperipheral.api.architecture.FeatureGroup;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 
 public class AnnotationMetaExtractor {
 
 	private static final boolean DEFAULT_ASYNC = false;
 
-	private static final ImmutableSet<String> DEFAULT_BLACKLIST = ImmutableSet.of();
+	private static final Set<String> DEFAULT_BLACKLIST = ImmutableSet.of();
+
+	private static final Set<String> DEFAULT_FEATURE_GROUPS = ImmutableSet.of();
 
 	private final boolean classIsAsync;
 
 	private final Optional<String> classReturnSignal;
 
 	private final Set<String> classExcludedArchitectures;
+
+	private final Set<String> classFeatureGroups;
 
 	private static boolean isAsynchronous(AnnotatedElement element, boolean defaultValue) {
 		if (element == null) return defaultValue;
@@ -40,6 +46,12 @@ public class AnnotationMetaExtractor {
 		return blacklist != null? ImmutableSet.copyOf(blacklist.value()) : defaultValue;
 	}
 
+	private static Set<String> getFeatureGroup(AnnotatedElement element, Set<String> prevValue) {
+		if (element == null) return prevValue;
+		FeatureGroup fg = element.getAnnotation(FeatureGroup.class);
+		return (fg != null)? Sets.union(prevValue, Sets.newHashSet(fg.value())) : prevValue;
+	}
+
 	public AnnotationMetaExtractor(Class<?> cls) {
 		final Package pkg = cls.getPackage();
 
@@ -50,17 +62,23 @@ public class AnnotationMetaExtractor {
 		Set<String> pkgExcludedArchitectures = getArchBlacklist(pkg, DEFAULT_BLACKLIST);
 		this.classExcludedArchitectures = getArchBlacklist(cls, pkgExcludedArchitectures);
 
+		Set<String> pkgFeatureGroups = getFeatureGroup(pkg, DEFAULT_FEATURE_GROUPS);
+		this.classFeatureGroups = getFeatureGroup(cls, pkgFeatureGroups);
 	}
 
-	public boolean isAsync(AnnotatedElement method) {
-		return isAsynchronous(method, classIsAsync);
+	public boolean isAsync(AnnotatedElement element) {
+		return isAsynchronous(element, classIsAsync);
 	}
 
-	public Optional<String> getReturnSignal(AnnotatedElement method) {
-		return getReturnSignal(method, classReturnSignal);
+	public Optional<String> getReturnSignal(AnnotatedElement element) {
+		return getReturnSignal(element, classReturnSignal);
 	}
 
-	public Set<String> getExcludedArchitectures(AnnotatedElement method) {
-		return getArchBlacklist(method, classExcludedArchitectures);
+	public Set<String> getExcludedArchitectures(AnnotatedElement element) {
+		return getArchBlacklist(element, classExcludedArchitectures);
+	}
+
+	public Set<String> getFeatureGroups(AnnotatedElement element) {
+		return getFeatureGroup(element, classFeatureGroups);
 	}
 }
