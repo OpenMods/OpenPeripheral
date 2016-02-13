@@ -75,6 +75,11 @@ public class CommandDump extends SidedCommand {
 			builder.setRootAttribute("generatedOn", getCurrentTime());
 			builder.setRootAttribute("generatedBy", sender.getCommandSenderName());
 
+			for (String architecture : ArchitectureChecker.INSTANCE.knownArchitectures()) {
+				final boolean isEnabled = ArchitectureChecker.INSTANCE.isEnabled(architecture);
+				builder.createDocForArchitecture(architecture, isEnabled);
+			}
+
 			for (IArchSerializer serializer : archSerializers)
 				serializer.serialize(builder);
 

@@ -14,4 +14,10 @@ public class Config {
 
 	@ConfigProperty(category = "performance", name = "threadPoolForSignallingCalls", comment = "Number of threads available to calls marked with @ReturnSignal")
 	public static int signallingPoolSize = 10;
+
+	@ConfigProperty(category = "interfaces", name = "ComputerCraft", comment = "Controls ComputerCraft integration")
+	public static boolean interfaceComputerCraft = true;
+
+	@ConfigProperty(category = "interfaces", name = "OpenComputers", comment = "Controls OpenComputers integration")
+	public static boolean interfaceOpenComputers = true;
 }

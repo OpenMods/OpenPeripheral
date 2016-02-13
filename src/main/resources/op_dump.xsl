@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 <xsl:output method="xml" indent="yes" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" />
-
-  <xsl:key name="architectures" match="/documentation/classMethods" use="@architecture" />
   <xsl:template match="/documentation">
   <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -50,7 +48,6 @@ body {
 
   <!-- Table of contents -->
   <h2>Table of Contents:</h2>
-
   <h3>External adapters:</h3>
   <ul>
     <xsl:for-each select="adapter">
@@ -59,21 +56,22 @@ body {
     </xsl:for-each>
   </ul>
 
-  <!-- Note: following line selects only first elements in key group. That way we can get unique architectures-->
-  <xsl:for-each select="classMethods[generate-id()=generate-id(key('architectures', @architecture)[1])]" >
-    <h3>Generated types for: <xsl:value-of select="@architecture" /></h3>
-      <h4>Peripherals:</h4>
+  <h3><a href="#architectures">Architectures</a></h3>
+  <xsl:for-each select="architecture[@enabled='true']" >
+    <xsl:variable name="arch" select="id/text()"/>
+    <h3><a href="#arch.{$arch}">Generated types for <xsl:value-of select="$arch" /></a></h3>
+      <h4><a href="#periph.{$arch}" >Peripherals:</a></h4>
       <ul>
-      <xsl:for-each select="key('architectures', @architecture)[@type='peripheral']">
+      <xsl:for-each select="/documentation/classMethods[@type='peripheral'][@architecture=$arch]">
         <xsl:sort select="name/text()"/>
-        <li><a href="#periph.{@architecture}.{@class}"><xsl:value-of select="name/text()" /></a></li>
+        <li><a href="#periph.{$arch}.{@class}"><xsl:value-of select="name/text()" /></a></li>
       </xsl:for-each>
       </ul>
-      <h4>Objects:</h4>
+      <h4><a href="#lua.{$arch}">Objects:</a></h4>
       <ul>
-      <xsl:for-each select="key('architectures', @architecture)[@type='object']">
+      <xsl:for-each select="/documentation/classMethods[@type='object'][@architecture=$arch]">
         <xsl:sort select="name/text()"/>
-        <li><a href="#lua.{@architecture}.{@class}"><xsl:value-of select="name/text()" /></a></li>
+        <li><a href="#lua.{$arch}.{@class}"><xsl:value-of select="name/text()" /></a></li>
       </xsl:for-each>
       </ul>
   </xsl:for-each>
@@ -96,8 +94,8 @@ body {
       <div class="method">
       <xsl:for-each select="names/name">
         <h2><code>
-        	<xsl:value-of select="text()"/><xsl:value-of select="../../signature/text()" />
-        	<xsl:if test="../../returns"> : <xsl:value-of select="../../returns/text()" /></xsl:if>
+          <xsl:value-of select="text()"/><xsl:value-of select="../../signature/text()" />
+          <xsl:if test="../../returns"> : <xsl:value-of select="../../returns/text()" /></xsl:if>
         </code></h2>
       </xsl:for-each>
       <xsl:if test="@asynchronous = 'false'"><p><strong>Synchronized</strong></p></xsl:if>
@@ -124,15 +122,35 @@ body {
     </div>
   </xsl:for-each>
 
-  <!-- classes -->
-  <h3>Peripherals:</h3>
-  <xsl:for-each select="classMethods[@type='peripheral']">
-    <xsl:sort select="@architecture"/>
-    <div class="major" id="periph.{@architecture}.{@class}">
+  <!-- Architectures -->
+  <h3 id="architectures">Architectures:</h3>
+  <table border="1">
+    <xsl:for-each select="architecture">
+    <tr>
+      <td><a href="#arch.{id/text()}"><xsl:value-of select="id/text()" /></a></td>
+      <td>
+      <xsl:choose>
+        <xsl:when test="@enabled = 'true'">Enabled</xsl:when>
+        <xsl:otherwise>Disabled</xsl:otherwise>
+      </xsl:choose>
+      </td>
+    </tr>
+    </xsl:for-each>
+  </table>
+
+  <xsl:for-each select="architecture[@enabled='true']">
+  <xsl:variable name="arch" select="id/text()"/>
+
+  <!-- architecture classes-->
+  <h3 id="arch.{$arch}">Generated types for <xsl:value-of select="$arch" /></h3>
+
+  <h4 id="periph.{$arch}">Peripherals:</h4>
+  <xsl:for-each select="/documentation/classMethods[@type='peripheral'][@architecture=$arch]">
+    <div class="major" id="periph.{$arch}.{@class}">
     <h1><xsl:value-of select="name/text()" /></h1>
     <p>A peripheral of type <code><xsl:value-of select="name/text()" /></code></p>
     <p>TileEntity id: <code><xsl:value-of select="teName/text()" /></code></p>
-    <p>Architecture: <xsl:value-of select="@architecture" /></p>
+    <p>Architecture: <xsl:value-of select="$arch" /></p>
     <p>Generated for class <code><xsl:value-of select="@class" /></code></p>
     <xsl:if test="docText">
       <p>Included documentation: </p>
@@ -142,8 +160,8 @@ body {
       <xsl:sort select="@name"/>
       <div class="method">
       <h2><code>
-      	<xsl:value-of select="@name" /><xsl:value-of select="signature/text()" />
-      	<xsl:if test="returns"> : <xsl:value-of select="returns/text()" /></xsl:if>
+        <xsl:value-of select="@name" /><xsl:value-of select="signature/text()" />
+        <xsl:if test="returns"> : <xsl:value-of select="returns/text()" /></xsl:if>
       </code></h2>
       <xsl:if test="@asynchronous = 'false'"><p><strong>Synchronized</strong></p></xsl:if>
       <xsl:if test="@returnSignal"><p><strong>Return signal: </strong><code><xsl:value-of select="@returnSignal" /></code></p></xsl:if>
@@ -167,22 +185,21 @@ body {
       </div>
     </xsl:for-each>
     </div>
-  </xsl:for-each>
+  </xsl:for-each> <!-- peripherals -->
 
-  <h3>Scripting Objects:</h3>
-  <xsl:for-each select="classMethods[@type='object']">
-    <xsl:sort select="@architecture"/>
-    <div class="major" id="lua.{@architecture}.{@class}">
+  <h4 id="lua.{$arch}">Scripting Objects:</h4>
+  <xsl:for-each select="/documentation/classMethods[@type='object'][@architecture=$arch]">
+    <div class="major" id="lua.{$arch}.{@class}">
     <h1><xsl:value-of select="name/text()" /></h1>
     <p>A Script Object of type <code><xsl:value-of select="name/text()" /></code></p>
-    <p>Architecture: <xsl:value-of select="@architecture" /></p>
+    <p>Architecture: <xsl:value-of select="$arch" /></p>
     <p>Generated for class <code><xsl:value-of select="@class" /></code></p>
     <xsl:for-each select="method">
       <xsl:sort select="@name"/>
       <div class="method">
       <h2><code>
-      	<xsl:value-of select="@name" /><xsl:value-of select="signature/text()" />
-      	<xsl:if test="returns"> : <xsl:value-of select="returns/text()" /></xsl:if>
+        <xsl:value-of select="@name" /><xsl:value-of select="signature/text()" />
+        <xsl:if test="returns"> : <xsl:value-of select="returns/text()" /></xsl:if>
       </code></h2>
       <xsl:if test="@asynchronous = 'false'"><p><strong>Synchronized</strong></p></xsl:if>
       <xsl:if test="@returnSignal"><p><strong>Return signal: </strong><code><xsl:value-of select="@returnSignal" /></code></p></xsl:if>
@@ -206,8 +223,8 @@ body {
       </div>
     </xsl:for-each>
     </div>
-  </xsl:for-each>
-
+  </xsl:for-each> <!-- objects -->
+  </xsl:for-each> <!-- architecture -->
   </body>
   </html>
   </xsl:template>

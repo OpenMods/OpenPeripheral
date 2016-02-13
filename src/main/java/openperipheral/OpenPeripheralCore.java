@@ -13,9 +13,10 @@ import openperipheral.adapter.types.classifier.MinecraftTypeClassifier;
 import openperipheral.adapter.types.classifier.TypeClassifier;
 import openperipheral.api.Constants;
 import openperipheral.api.peripheral.IOpenPeripheral;
+import openperipheral.interfaces.cc.ComputerCraftChecker;
 import openperipheral.interfaces.cc.ModuleComputerCraft;
 import openperipheral.interfaces.oc.ModuleOpenComputers;
-import cpw.mods.fml.common.Loader;
+import openperipheral.interfaces.oc.OpenComputersChecker;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.*;
@@ -27,11 +28,14 @@ public class OpenPeripheralCore {
 
 	@Mod.EventHandler
 	public void construct(FMLConstructionEvent evt) {
+		ArchitectureChecker.INSTANCE.register(Constants.ARCH_COMPUTER_CRAFT, new ComputerCraftChecker());
+		ArchitectureChecker.INSTANCE.register(Constants.ARCH_OPEN_COMPUTERS, new OpenComputersChecker());
+
 		apiSetup.setupApis();
 		apiSetup.installProviderAccess();
 
-		if (Loader.isModLoaded(Mods.OPENCOMPUTERS)) ModuleOpenComputers.init();
-		if (Loader.isModLoaded(Mods.COMPUTERCRAFT)) ModuleComputerCraft.init();
+		if (ArchitectureChecker.INSTANCE.isEnabled(Constants.ARCH_OPEN_COMPUTERS)) ModuleOpenComputers.init();
+		if (ArchitectureChecker.INSTANCE.isEnabled(Constants.ARCH_COMPUTER_CRAFT)) ModuleComputerCraft.init();
 	}
 
 	@Mod.EventHandler
@@ -53,13 +57,13 @@ public class OpenPeripheralCore {
 
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent evt) {
-		if (Loader.isModLoaded(Mods.OPENCOMPUTERS)) ModuleOpenComputers.registerProvider();
+		if (ArchitectureChecker.INSTANCE.isEnabled(Constants.ARCH_OPEN_COMPUTERS)) ModuleOpenComputers.registerProvider();
 	}
 
 	// this method should be called as late as possible, to make sure we are last on provider list
 	@Mod.EventHandler
 	public void loadComplete(FMLLoadCompleteEvent evt) {
-		if (Loader.isModLoaded(Mods.COMPUTERCRAFT)) ModuleComputerCraft.registerProvider();
+		if (ArchitectureChecker.INSTANCE.isEnabled(Constants.ARCH_COMPUTER_CRAFT)) ModuleComputerCraft.registerProvider();
 	}
 
 	@EventHandler

@@ -134,6 +134,14 @@ public class DocBuilder {
 		root.appendChild(result);
 	}
 
+	public void createDocForArchitecture(String id, boolean isEnabled) {
+		Element result = doc.createElement("architecture");
+		result.appendChild(createProperty("id", id));
+		result.setAttribute("enabled", Boolean.toString(isEnabled));
+
+		root.appendChild(result);
+	}
+
 	public void setRootAttribute(String name, String value) {
 		root.setAttribute(name, value);
 	}
