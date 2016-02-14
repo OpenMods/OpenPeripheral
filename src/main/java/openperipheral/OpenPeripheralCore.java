@@ -7,6 +7,7 @@ import net.minecraftforge.common.config.Configuration;
 import openmods.Log;
 import openmods.Mods;
 import openmods.config.properties.ConfigProcessing;
+import openperipheral.adapter.FeatureGroupManager;
 import openperipheral.adapter.PeripheralTypeProvider;
 import openperipheral.adapter.TileEntityBlacklist;
 import openperipheral.adapter.types.classifier.MinecraftTypeClassifier;
@@ -17,14 +18,29 @@ import openperipheral.interfaces.cc.ComputerCraftChecker;
 import openperipheral.interfaces.cc.ModuleComputerCraft;
 import openperipheral.interfaces.oc.ModuleOpenComputers;
 import openperipheral.interfaces.oc.OpenComputersChecker;
-import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.*;
 import cpw.mods.fml.common.Mod.EventHandler;
+import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.event.*;
 
-@Mod(modid = ModInfo.ID, name = ModInfo.NAME, version = ModInfo.VERSION, dependencies = ModInfo.DEPENDENCIES, acceptableRemoteVersions = "*")
+@Mod(modid = ModInfo.ID,
+		name = ModInfo.NAME,
+		version = ModInfo.VERSION,
+		dependencies = ModInfo.DEPENDENCIES,
+		acceptableRemoteVersions = "*",
+		guiFactory = "openperipheral.ConfigGuiFactory")
 public class OpenPeripheralCore {
 
 	private final ApiSetup apiSetup = new ApiSetup();
+
+	@Instance(ModInfo.ID)
+	public static OpenPeripheralCore instance;
+
+	private Configuration config;
+
+	Configuration config() {
+		return config;
+	}
 
 	@Mod.EventHandler
 	public void construct(FMLConstructionEvent evt) {
@@ -44,9 +60,12 @@ public class OpenPeripheralCore {
 		PeripheralTypeProvider.INSTANCE.initialize(evt.getModConfigurationDirectory());
 
 		final File configFile = evt.getSuggestedConfigurationFile();
-		Configuration config = new Configuration(configFile);
+		config = new Configuration(configFile);
 		ConfigProcessing.processAnnotations(ModInfo.ID, config, Config.class);
 		if (config.hasChanged()) config.save();
+
+		FeatureGroupManager.INSTANCE.loadBlacklist(Config.featureGroupsBlacklist);
+		FMLCommonHandler.instance().bus().register(new ConfigGuiFactory.ConfigChangeListener(config));
 
 		MinecraftForge.EVENT_BUS.register(TileEntityBlacklist.INSTANCE);
 

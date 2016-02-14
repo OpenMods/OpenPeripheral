@@ -1,11 +1,15 @@
 package openperipheral;
 
 import openmods.config.properties.ConfigProperty;
-import openmods.config.properties.OnLineModifiable;
 
 public class Config {
 
-	@OnLineModifiable
+	public static final String CATEGORY_FEATURE_GROUPS = "featureGroups";
+	public static final String FIELD_FEATURE_GROUPS = "blacklist";
+
+	@ConfigProperty(category = CATEGORY_FEATURE_GROUPS, name = FIELD_FEATURE_GROUPS, comment = "Blacklist for feature groups. Also configurable by GUI. Note: to get names of feature groups, wrap peripheral at least once and then use either /op_dump or config GUI")
+	public static String[] featureGroupsBlacklist = new String[0];
+
 	@ConfigProperty(category = "integration", name = "disableClasses", comment = "Don't register OpenPeripheral handler for those Tile Entitites (either name or class)")
 	public static String[] teBlacklist = new String[0];
 

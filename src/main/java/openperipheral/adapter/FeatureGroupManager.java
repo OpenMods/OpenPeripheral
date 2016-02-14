@@ -6,6 +6,7 @@ import java.util.Set;
 
 import openperipheral.api.architecture.IFeatureGroupManager;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
@@ -26,6 +27,12 @@ public class FeatureGroupManager implements IFeatureGroupManager {
 
 		public boolean isEnabled(String architecture) {
 			return !blacklistedArchitectures.contains(architecture);
+		}
+
+		public FeatureGroupProperties copy() {
+			FeatureGroupProperties result = new FeatureGroupProperties();
+			result.blacklistedArchitectures.addAll(this.blacklistedArchitectures);
+			return result;
 		}
 	}
 
@@ -63,6 +70,42 @@ public class FeatureGroupManager implements IFeatureGroupManager {
 	@Override
 	public boolean isEnabled(String featureGroup, String architecture) {
 		return getOrCreate(featureGroup).isEnabled(architecture);
+	}
+
+	public FeatureGroupManager copy() {
+		FeatureGroupManager result = new FeatureGroupManager();
+
+		for (Map.Entry<String, FeatureGroupProperties> e : this.featureGroups.entrySet())
+			result.featureGroups.put(e.getKey(), e.getValue().copy());
+
+		return result;
+	}
+
+	public String[] saveBlacklist() {
+		Set<String> result = Sets.newTreeSet();
+
+		for (Map.Entry<String, FeatureGroupProperties> e : featureGroups.entrySet())
+			for (String architecture : e.getValue().blacklistedArchitectures)
+				result.add(e.getKey() + ":" + architecture);
+
+		String[] tmp = new String[result.size()];
+		return result.toArray(tmp);
+	}
+
+	public void loadBlacklist(String[] blacklist) {
+		featureGroups.clear();
+
+		if (blacklist == null) return;
+
+		for (String entry : blacklist) {
+			final String[] split = entry.split(":");
+			Preconditions.checkArgument(split.length == 2, "Malformed config entry: %s", entry);
+
+			final String featureGroup = split[0];
+			final String architecture = split[1];
+
+			disable(featureGroup, architecture);
+		}
 	}
 
 }
