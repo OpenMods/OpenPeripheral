@@ -1,14 +1,16 @@
 package openperipheral.adapter;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
+import openperipheral.api.architecture.FeatureGroup;
 import openperipheral.api.architecture.IFeatureGroupManager;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+
+import cpw.mods.fml.common.discovery.ASMDataTable;
+import cpw.mods.fml.common.discovery.ASMDataTable.ASMData;
 
 public class FeatureGroupManager implements IFeatureGroupManager {
 
@@ -105,6 +107,15 @@ public class FeatureGroupManager implements IFeatureGroupManager {
 			final String architecture = split[1];
 
 			disable(featureGroup, architecture);
+		}
+	}
+
+	public void loadFeatureGroupsFromAnnotations(ASMDataTable asmData) {
+		for (ASMData fgAnnotation : asmData.getAll(FeatureGroup.class.getName())) {
+			@SuppressWarnings("unchecked")
+			final List<String> featureGroups = (List<String>)fgAnnotation.getAnnotationInfo().get("value");
+			for (String featureGroup : featureGroups)
+				ensureExists(featureGroup);
 		}
 	}
 

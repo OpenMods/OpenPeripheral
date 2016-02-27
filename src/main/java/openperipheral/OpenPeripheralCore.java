@@ -72,6 +72,8 @@ public class OpenPeripheralCore {
 		FMLInterModComms.sendMessage(Mods.OPENCOMPUTERS, "blacklistPeripheral", IOpenPeripheral.class.getName());
 
 		TypeClassifier.INSTANCE.registerClassifier(new MinecraftTypeClassifier());
+
+		FeatureGroupManager.INSTANCE.loadFeatureGroupsFromAnnotations(evt.getAsmData());
 	}
 
 	@Mod.EventHandler
