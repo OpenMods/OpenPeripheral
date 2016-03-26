@@ -31,16 +31,6 @@ apply plugin: 'forge'
 apply plugin: 'java'
 
 repositories {
-    mavenCentral()
-    jcenter()
-    maven {
-        name 'Forge'
-        url 'http://files.minecraftforge.net/maven'
-    }
-    maven {
-        name 'MinecraftS3'
-        url 'http://s3.amazonaws.com/Minecraft.Download/libraries'
-    }
     maven {
         name = "OC repo"
         url = "http://maven.cil.li/"
@@ -48,6 +38,8 @@ repositories {
 }
 
 dependencies {
+    compile project(":OpenModsLib")
+
     compile "li.cil.oc:OpenComputers:MC1.7.10-1.5.0.5:api"
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
