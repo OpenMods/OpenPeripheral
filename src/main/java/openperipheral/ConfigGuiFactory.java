@@ -1,8 +1,11 @@
 package openperipheral;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
+
+import javax.annotation.Nullable;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
@@ -12,8 +15,10 @@ import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
 import openperipheral.adapter.FeatureGroupManager;
 
+import com.google.common.base.Function;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Ordering;
 
 import cpw.mods.fml.client.IModGuiFactory;
 import cpw.mods.fml.client.config.*;
@@ -199,10 +204,22 @@ public class ConfigGuiFactory implements IModGuiFactory {
 			return new DummyCategoryElement("modConfig", "openperipheralcore.config.miscConfig", result);
 		}
 
+		private static Collection<String> sorted(Collection<String> c) {
+			List<String> results = Lists.newArrayList(c);
+			results.sort(Ordering.natural().onResultOf(new Function<String, String>() {
+				@Override
+				@Nullable
+				public String apply(@Nullable String input) {
+					return input != null? input.toLowerCase() : null;
+				}
+			}));
+			return results;
+		}
+
 		private static IConfigElement createFeatureGroupConfig() {
 			final List<IConfigElement> architecturesConfig = Lists.newArrayList();
 
-			for (String architecture : ArchitectureChecker.INSTANCE.knownArchitectures())
+			for (String architecture : sorted(ArchitectureChecker.INSTANCE.knownArchitectures()))
 				architecturesConfig.add(createArchitectureConfig(architecture));
 
 			return new DummyCategoryElement("featureGroups", "openperipheralcore.config.featureGroupConfig", architecturesConfig);
@@ -211,9 +228,8 @@ public class ConfigGuiFactory implements IModGuiFactory {
 		private static IConfigElement createArchitectureConfig(final String architecture) {
 			final List<IConfigElement> architectureConfig = Lists.newArrayList();
 
-			for (final String feature : FeatureGroupManager.INSTANCE.knownFeatureGroups()) {
+			for (String feature : sorted(FeatureGroupManager.INSTANCE.knownFeatureGroups()))
 				architectureConfig.add(new FeatureConfigElement(architecture, feature));
-			}
 
 			return new DummyCategoryElement(architecture, "openperipheralcore.config.architectureConfig", architectureConfig);
 		}
