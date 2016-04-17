@@ -1,8 +1,6 @@
 package openperipheral;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
@@ -205,8 +203,8 @@ public class ConfigGuiFactory implements IModGuiFactory {
 		}
 
 		private static Collection<String> sorted(Collection<String> c) {
-			List<String> results = Lists.newArrayList(c);
-			results.sort(Ordering.natural().onResultOf(new Function<String, String>() {
+			final List<String> results = Lists.newArrayList(c);
+			Collections.sort(results, Ordering.natural().onResultOf(new Function<String, String>() {
 				@Override
 				@Nullable
 				public String apply(@Nullable String input) {
