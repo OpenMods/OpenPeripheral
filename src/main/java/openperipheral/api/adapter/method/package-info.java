@@ -2,4 +2,3 @@
 package openperipheral.api.adapter.method;
 
 import cpw.mods.fml.common.API;
-

@@ -315,14 +315,12 @@ public class StructHandlerProvider {
 	private final CachedFactory<Class<?>, IStructHandler> handlers = new CachedFactory<Class<?>, IStructHandler>() {
 		@Override
 		protected IStructHandler create(Class<?> cls) {
-			if (cls.getEnclosingClass() != null && !Modifier.isStatic(cls.getModifiers())) {
-			throw new InvalidStructureException("Can't create serializer for not-static inner " + cls);
-			}
+			if (cls.getEnclosingClass() != null && !Modifier.isStatic(cls.getModifiers()))
+				throw new InvalidStructureException("Can't create serializer for not-static inner " + cls);
 
 			final ScriptStruct struct = cls.getAnnotation(ScriptStruct.class);
-			if (struct == null) {
-			throw new InvalidStructureException("Trying to generate serializer for unserializable " + cls);
-			}
+			if (struct == null)
+				throw new InvalidStructureException("Trying to generate serializer for unserializable " + cls);
 
 			try {
 				final Constructor<?> ctor = cls.getConstructor();

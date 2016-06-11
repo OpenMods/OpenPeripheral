@@ -2,4 +2,3 @@
 package openperipheral.api.architecture.cc;
 
 import cpw.mods.fml.common.API;
-

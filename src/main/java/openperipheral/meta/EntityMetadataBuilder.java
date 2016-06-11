@@ -133,7 +133,8 @@ public class EntityMetadataBuilder implements IEntityPartialMetaBuilder {
 		while (it.hasNext()) {
 			final IEntityMetaProvider<?> provider = it.next();
 			if ((provider instanceof IEntityCustomMetaProvider) &&
-					((IEntityCustomMetaProvider<Entity>)provider).canApply(entity)) it.remove();
+					((IEntityCustomMetaProvider<Entity>)provider).canApply(entity))
+				it.remove();
 		}
 	}
 

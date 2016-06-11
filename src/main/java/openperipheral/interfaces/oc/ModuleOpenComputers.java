@@ -64,8 +64,7 @@ public class ModuleOpenComputers {
 				AdapterRegistry.OBJECT_ADAPTERS,
 				objectSelector,
 				OBJECT_CLASS_PREFIX,
-				new ObjectCodeGenerator()
-				);
+				new ObjectCodeGenerator());
 
 		InjectedClassesManager.instance.registerProvider(OBJECT_CLASS_PREFIX, new EnvironmentClassBytesProvider<Value>(OBJECT_METHODS_FACTORY));
 

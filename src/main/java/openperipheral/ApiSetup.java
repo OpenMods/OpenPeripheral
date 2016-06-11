@@ -73,8 +73,7 @@ public class ApiSetup {
 
 		Preconditions.checkState(ModInfo.API_VERSION.equals(presentApiVersion),
 				"OpenPeripheralCore version mismatch, should be %s, is %s (ApiAccess source: %s)",
-				ModInfo.API_VERSION, presentApiVersion, apiSource
-				);
+				ModInfo.API_VERSION, presentApiVersion, apiSource);
 
 		try {
 			openperipheral.api.ApiAccess.init(new LegacyApiAccess(registry));

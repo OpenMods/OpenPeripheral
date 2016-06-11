@@ -376,8 +376,7 @@ public class MethodDeclaration implements IMethodDescription {
 			final Class<?> neededCls = needed.cls;
 			Preconditions.checkState(neededCls.isAssignableFrom(provided),
 					"Method needs argument named %s (position %s) of type %s, but %s was provided",
-					name, needed.index, neededCls, provided
-					);
+					name, needed.index, neededCls, provided);
 		}
 	}
 

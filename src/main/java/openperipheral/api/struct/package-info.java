@@ -2,4 +2,3 @@
 package openperipheral.api.struct;
 
 import cpw.mods.fml.common.API;
-

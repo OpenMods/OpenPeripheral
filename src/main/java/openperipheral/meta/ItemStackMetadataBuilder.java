@@ -142,7 +142,8 @@ public class ItemStackMetadataBuilder implements IItemStackPartialMetaBuilder {
 		while (it.hasNext()) {
 			final IItemStackMetaProvider<?> provider = it.next();
 			if ((provider instanceof IItemStackCustomMetaProvider) &&
-					!((IItemStackCustomMetaProvider<Item>)provider).canApply(item, stack)) it.remove();
+					!((IItemStackCustomMetaProvider<Item>)provider).canApply(item, stack))
+				it.remove();
 		}
 	}
 
