@@ -1,21 +1,31 @@
 package openperipheral.converter;
 
-import java.lang.reflect.*;
-import java.util.*;
-
+import com.google.common.base.Function;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Ordering;
+import com.google.common.collect.Sets;
+import com.google.common.reflect.TypeToken;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
 import javax.annotation.Nullable;
-
 import openmods.reflection.TypeUtils;
 import openmods.utils.CachedFactory;
 import openperipheral.api.converter.IConverter;
 import openperipheral.api.struct.ScriptStruct;
 import openperipheral.api.struct.ScriptStruct.Output;
 import openperipheral.api.struct.StructField;
-
-import com.google.common.base.Function;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.*;
-import com.google.common.reflect.TypeToken;
 
 public class StructHandlerProvider {
 

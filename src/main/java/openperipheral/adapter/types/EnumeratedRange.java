@@ -1,10 +1,12 @@
 package openperipheral.adapter.types;
 
-import java.util.*;
-
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 public class EnumeratedRange<T> implements IRange {
 

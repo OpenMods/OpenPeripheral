@@ -1,17 +1,15 @@
 package openperipheral.adapter.property;
 
+import com.google.common.base.Preconditions;
+import com.google.common.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
-
 import openperipheral.adapter.types.SingleArgType;
 import openperipheral.adapter.types.classifier.TypeClassifier;
 import openperipheral.api.adapter.IScriptType;
 import openperipheral.api.property.ISingleCustomProperty;
 import openperipheral.api.property.ISingleTypedCustomProperty;
 import openperipheral.api.property.PropertyValueDocType;
-
-import com.google.common.base.Preconditions;
-import com.google.common.reflect.TypeToken;
 
 public class SingleTypeInfoBuilder {
 	private static final TypeToken<?> CUSTOM_PROPERTY_TYPE = TypeToken.of(ISingleCustomProperty.class);

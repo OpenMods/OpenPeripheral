@@ -1,22 +1,38 @@
 package openperipheral.tests;
 
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.google.common.base.Optional;
+import com.google.common.base.Throwables;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Maps;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Set;
-
 import li.cil.oc.api.detail.Builder.ComponentBuilder;
 import li.cil.oc.api.detail.Builder.NodeBuilder;
 import li.cil.oc.api.detail.NetworkAPI;
-import li.cil.oc.api.machine.*;
-import li.cil.oc.api.network.*;
-import openperipheral.adapter.*;
+import li.cil.oc.api.machine.Arguments;
+import li.cil.oc.api.machine.Callback;
+import li.cil.oc.api.machine.Context;
+import li.cil.oc.api.machine.Value;
+import li.cil.oc.api.network.Component;
+import li.cil.oc.api.network.Environment;
+import li.cil.oc.api.network.ManagedEnvironment;
+import li.cil.oc.api.network.Node;
+import li.cil.oc.api.network.Visibility;
+import openperipheral.adapter.IMethodCall;
+import openperipheral.adapter.IMethodDescription;
 import openperipheral.adapter.IMethodDescription.IArgumentDescription;
+import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.composed.IndexedMethodMap;
 import openperipheral.adapter.types.SingleType;
 import openperipheral.api.Constants;
@@ -27,22 +43,18 @@ import openperipheral.api.converter.IConverter;
 import openperipheral.converter.TypeConvertersProvider;
 import openperipheral.interfaces.oc.ModuleOpenComputers;
 import openperipheral.interfaces.oc.OpenComputersEnv;
-import openperipheral.interfaces.oc.asm.*;
+import openperipheral.interfaces.oc.asm.ICallerBase;
+import openperipheral.interfaces.oc.asm.ICodeGenerator;
+import openperipheral.interfaces.oc.asm.ISignallingCallerBase;
+import openperipheral.interfaces.oc.asm.MethodsStore;
 import openperipheral.interfaces.oc.asm.object.ObjectCodeGenerator;
 import openperipheral.interfaces.oc.asm.peripheral.PeripheralCodeGenerator;
-
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-
-import com.google.common.base.Optional;
-import com.google.common.base.Throwables;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Maps;
 
 public class EnvironmentGeneratorTest {
 

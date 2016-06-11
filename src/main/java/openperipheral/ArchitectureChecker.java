@@ -1,13 +1,11 @@
 package openperipheral;
 
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Maps;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
-
 import openperipheral.api.architecture.IArchitectureChecker;
-
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Maps;
 
 public class ArchitectureChecker implements IArchitectureChecker {
 

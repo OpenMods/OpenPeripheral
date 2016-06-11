@@ -1,22 +1,26 @@
 package openperipheral.adapter.types.classifier;
 
+import com.google.common.collect.Lists;
+import com.google.common.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.UUID;
-
 import openmods.reflection.TypeUtils;
-import openperipheral.adapter.types.*;
+import openperipheral.adapter.types.EnumeratedRange;
+import openperipheral.adapter.types.ListType;
+import openperipheral.adapter.types.MapType;
+import openperipheral.adapter.types.NamedTupleType;
 import openperipheral.adapter.types.NamedTupleType.NamedTupleField;
 import openperipheral.adapter.types.NamedTupleType.TupleField;
+import openperipheral.adapter.types.SetType;
+import openperipheral.adapter.types.SingleArgType;
+import openperipheral.adapter.types.TypeHelper;
 import openperipheral.api.adapter.IScriptType;
 import openperipheral.api.adapter.ITypeClassifier;
 import openperipheral.api.adapter.ITypeClassifier.IGenericClassifier;
 import openperipheral.converter.StructHandlerProvider;
 import openperipheral.converter.StructHandlerProvider.IFieldHandler;
 import openperipheral.converter.StructHandlerProvider.IStructHandler;
-
-import com.google.common.collect.Lists;
-import com.google.common.reflect.TypeToken;
 
 public class DefaultTypeClassifier implements IGenericClassifier {
 

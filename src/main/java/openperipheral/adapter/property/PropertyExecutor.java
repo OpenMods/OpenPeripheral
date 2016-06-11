@@ -1,17 +1,15 @@
 package openperipheral.adapter.property;
 
+import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
 import java.util.Map;
 import java.util.Set;
-
 import openperipheral.adapter.IMethodCall;
 import openperipheral.adapter.IMethodDescription;
 import openperipheral.adapter.RestrictedMethodExecutor;
 import openperipheral.api.Constants;
 import openperipheral.api.converter.IConverter;
-
-import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
 
 public class PropertyExecutor extends RestrictedMethodExecutor {
 

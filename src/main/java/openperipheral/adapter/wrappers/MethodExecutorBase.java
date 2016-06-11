@@ -1,12 +1,13 @@
 package openperipheral.adapter.wrappers;
 
+import com.google.common.base.Optional;
 import java.lang.reflect.Method;
 import java.util.Map;
-
-import openperipheral.adapter.*;
+import openperipheral.adapter.AnnotationMetaExtractor;
+import openperipheral.adapter.IMethodCall;
+import openperipheral.adapter.IMethodDescription;
+import openperipheral.adapter.RestrictedMethodExecutor;
 import openperipheral.adapter.method.MethodDeclaration;
-
-import com.google.common.base.Optional;
 
 public abstract class MethodExecutorBase extends RestrictedMethodExecutor {
 

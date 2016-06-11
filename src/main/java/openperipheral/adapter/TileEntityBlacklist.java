@@ -1,17 +1,14 @@
 package openperipheral.adapter;
 
+import com.google.common.collect.Sets;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import java.util.Locale;
 import java.util.Set;
-
 import openmods.Log;
 import openmods.config.properties.ConfigurationChange;
 import openperipheral.Config;
 import openperipheral.api.peripheral.IPeripheralBlacklist;
 import openperipheral.api.peripheral.Ignore;
-
-import com.google.common.collect.Sets;
-
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class TileEntityBlacklist implements IPeripheralBlacklist {
 

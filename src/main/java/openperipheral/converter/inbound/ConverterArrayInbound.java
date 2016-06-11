@@ -1,13 +1,11 @@
 package openperipheral.converter.inbound;
 
+import com.google.common.reflect.TypeToken;
 import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.util.Map;
-
 import openperipheral.api.converter.IConverter;
 import openperipheral.api.converter.IGenericInboundTypeConverter;
-
-import com.google.common.reflect.TypeToken;
 
 public class ConverterArrayInbound implements IGenericInboundTypeConverter {
 

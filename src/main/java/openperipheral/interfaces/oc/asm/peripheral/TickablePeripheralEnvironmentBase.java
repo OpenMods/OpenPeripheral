@@ -1,9 +1,9 @@
 package openperipheral.interfaces.oc.asm.peripheral;
 
+import com.google.common.collect.Lists;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Context;
 import openmods.Log;
@@ -11,10 +11,7 @@ import openperipheral.adapter.IMethodCall;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.wrappers.SignallingGlobals;
 import openperipheral.interfaces.oc.asm.ISignallingCallerBase;
-
 import org.apache.logging.log4j.Level;
-
-import com.google.common.collect.Lists;
 
 public class TickablePeripheralEnvironmentBase extends PeripheralEnvironmentBase implements ISignallingCallerBase {
 

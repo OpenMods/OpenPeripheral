@@ -1,18 +1,16 @@
 package openperipheral.adapter;
 
+import com.google.common.base.Preconditions;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
-
 import openmods.Log;
 import openperipheral.adapter.wrappers.AdapterWrapper;
 import openperipheral.adapter.wrappers.ExternalAdapterWrapper;
 import openperipheral.api.adapter.IAdapter;
 import openperipheral.api.adapter.IAdapterWithConstraints;
-
-import com.google.common.base.Preconditions;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 
 public class AdapterRegistry {
 

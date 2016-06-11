@@ -1,7 +1,6 @@
 package openperipheral.adapter.property;
 
 import java.lang.reflect.Field;
-
 import openmods.utils.SneakyThrower;
 
 public class PropertyUtils {

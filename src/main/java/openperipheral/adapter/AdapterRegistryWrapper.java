@@ -1,6 +1,11 @@
 package openperipheral.adapter;
 
-import openperipheral.api.adapter.*;
+import openperipheral.api.adapter.IAdapter;
+import openperipheral.api.adapter.IAdapterRegistry;
+import openperipheral.api.adapter.IObjectAdapter;
+import openperipheral.api.adapter.IObjectAdapterRegistry;
+import openperipheral.api.adapter.IPeripheralAdapter;
+import openperipheral.api.adapter.IPeripheralAdapterRegistry;
 
 public class AdapterRegistryWrapper<T extends IAdapter> implements IAdapterRegistry<T> {
 

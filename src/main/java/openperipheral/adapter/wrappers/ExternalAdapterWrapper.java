@@ -2,7 +2,6 @@ package openperipheral.adapter.wrappers;
 
 import java.lang.reflect.Method;
 import java.util.Map;
-
 import openperipheral.adapter.IMethodCall;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.method.MethodDeclaration;

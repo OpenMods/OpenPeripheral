@@ -1,14 +1,12 @@
 package openperipheral.interfaces.cc;
 
+import com.google.common.collect.ImmutableSortedSet;
+import dan200.computercraft.api.filesystem.IMount;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Scanner;
 import java.util.SortedSet;
-
-import com.google.common.collect.ImmutableSortedSet;
-
-import dan200.computercraft.api.filesystem.IMount;
 
 public class UtilsResourceMount implements IMount {
 

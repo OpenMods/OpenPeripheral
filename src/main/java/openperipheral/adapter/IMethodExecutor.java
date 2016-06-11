@@ -1,9 +1,8 @@
 package openperipheral.adapter;
 
+import com.google.common.base.Optional;
 import java.util.Map;
 import java.util.Set;
-
-import com.google.common.base.Optional;
 
 public interface IMethodExecutor {
 	public IMethodDescription description();

@@ -1,7 +1,6 @@
 package openperipheral.api.meta;
 
 import java.util.Map;
-
 import net.minecraft.item.ItemStack;
 import openperipheral.api.IApiInterface;
 

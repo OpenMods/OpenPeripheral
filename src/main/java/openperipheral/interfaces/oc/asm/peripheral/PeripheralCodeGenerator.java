@@ -2,7 +2,6 @@ package openperipheral.interfaces.oc.asm.peripheral;
 
 import java.util.Map;
 import java.util.Set;
-
 import li.cil.oc.api.network.Node;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.composed.IndexedMethodMap;
@@ -11,8 +10,10 @@ import openperipheral.api.architecture.oc.IOpenComputersAttachable;
 import openperipheral.interfaces.oc.asm.CommonMethodsBuilder;
 import openperipheral.interfaces.oc.asm.ICodeGenerator;
 import openperipheral.interfaces.oc.asm.Utils;
-
-import org.objectweb.asm.*;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.Method;
 
 public class PeripheralCodeGenerator implements ICodeGenerator {

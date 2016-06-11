@@ -1,9 +1,8 @@
 package openperipheral.api.helpers;
 
+import com.google.common.reflect.TypeToken;
 import openperipheral.api.converter.IConverter;
 import openperipheral.api.converter.IOutboundTypeConverter;
-
-import com.google.common.reflect.TypeToken;
 
 public abstract class SimpleOutboundConverter<T> implements IOutboundTypeConverter {
 	@SuppressWarnings("serial")

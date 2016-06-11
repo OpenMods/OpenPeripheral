@@ -1,12 +1,10 @@
 package openperipheral.converter.inbound;
 
+import com.google.common.collect.Maps;
 import java.util.Map;
-
 import openperipheral.api.adapter.method.ScriptObject;
 import openperipheral.api.converter.IConverter;
 import openperipheral.api.converter.IOutboundTypeConverter;
-
-import com.google.common.collect.Maps;
 
 public abstract class ConverterCallable implements IOutboundTypeConverter {
 

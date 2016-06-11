@@ -1,7 +1,16 @@
 package openperipheral;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.Mod.EventHandler;
+import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.event.FMLConstructionEvent;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLInterModComms;
+import cpw.mods.fml.common.event.FMLLoadCompleteEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import java.io.File;
-
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import openmods.Log;
@@ -18,10 +27,6 @@ import openperipheral.interfaces.cc.ComputerCraftChecker;
 import openperipheral.interfaces.cc.ModuleComputerCraft;
 import openperipheral.interfaces.oc.ModuleOpenComputers;
 import openperipheral.interfaces.oc.OpenComputersChecker;
-import cpw.mods.fml.common.*;
-import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.event.*;
 
 @Mod(modid = ModInfo.ID,
 		name = ModInfo.NAME,

@@ -2,7 +2,6 @@ package openperipheral.adapter.wrappers;
 
 import java.lang.reflect.Method;
 import java.util.List;
-
 import openmods.Log;
 import openperipheral.adapter.IMethodCall;
 import openperipheral.adapter.IMethodExecutor;

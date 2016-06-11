@@ -1,10 +1,24 @@
 package openperipheral;
 
-import java.util.*;
+import com.google.common.base.Function;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Ordering;
+import cpw.mods.fml.client.IModGuiFactory;
+import cpw.mods.fml.client.config.ConfigGuiType;
+import cpw.mods.fml.client.config.DummyConfigElement.DummyCategoryElement;
+import cpw.mods.fml.client.config.GuiConfig;
+import cpw.mods.fml.client.config.GuiConfigEntries.IConfigEntry;
+import cpw.mods.fml.client.config.GuiEditArrayEntries.IArrayEntry;
+import cpw.mods.fml.client.config.IConfigElement;
+import cpw.mods.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
-
 import javax.annotation.Nullable;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
@@ -12,19 +26,6 @@ import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
 import openperipheral.adapter.FeatureGroupManager;
-
-import com.google.common.base.Function;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Ordering;
-
-import cpw.mods.fml.client.IModGuiFactory;
-import cpw.mods.fml.client.config.*;
-import cpw.mods.fml.client.config.DummyConfigElement.DummyCategoryElement;
-import cpw.mods.fml.client.config.GuiConfigEntries.IConfigEntry;
-import cpw.mods.fml.client.config.GuiEditArrayEntries.IArrayEntry;
-import cpw.mods.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class ConfigGuiFactory implements IModGuiFactory {

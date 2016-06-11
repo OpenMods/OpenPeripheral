@@ -1,8 +1,7 @@
 package openperipheral.adapter;
 
-import java.util.Set;
-
 import com.google.common.collect.ImmutableSet;
+import java.util.Set;
 
 public abstract class RestrictedMethodExecutor implements IMethodExecutor {
 

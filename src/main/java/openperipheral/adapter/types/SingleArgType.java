@@ -1,9 +1,8 @@
 package openperipheral.adapter.types;
 
+import com.google.common.base.Preconditions;
 import openperipheral.api.adapter.IScriptType;
 import openperipheral.api.adapter.method.ArgType;
-
-import com.google.common.base.Preconditions;
 
 public class SingleArgType implements IScriptType {
 

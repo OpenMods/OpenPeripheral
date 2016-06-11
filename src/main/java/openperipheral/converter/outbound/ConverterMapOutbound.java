@@ -1,11 +1,9 @@
 package openperipheral.converter.outbound;
 
+import com.google.common.collect.Maps;
 import java.util.Map;
-
 import openperipheral.api.converter.IConverter;
 import openperipheral.api.helpers.SimpleOutboundConverter;
-
-import com.google.common.collect.Maps;
 
 public class ConverterMapOutbound extends SimpleOutboundConverter<Map<?, ?>> {
 

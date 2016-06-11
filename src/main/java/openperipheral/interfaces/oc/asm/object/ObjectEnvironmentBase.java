@@ -1,5 +1,6 @@
 package openperipheral.interfaces.oc.asm.object;
 
+import com.google.common.base.Preconditions;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.prefab.AbstractValue;
@@ -7,8 +8,6 @@ import openperipheral.adapter.IMethodCall;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.interfaces.oc.ModuleOpenComputers;
 import openperipheral.interfaces.oc.asm.ICallerBase;
-
-import com.google.common.base.Preconditions;
 
 public class ObjectEnvironmentBase extends AbstractValue implements ICallerBase {
 

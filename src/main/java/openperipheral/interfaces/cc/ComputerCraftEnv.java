@@ -1,5 +1,7 @@
 package openperipheral.interfaces.cc;
 
+import dan200.computercraft.api.lua.ILuaContext;
+import dan200.computercraft.api.peripheral.IComputerAccess;
 import openmods.Log;
 import openperipheral.adapter.IMethodCall;
 import openperipheral.api.Constants;
@@ -8,11 +10,7 @@ import openperipheral.api.architecture.IArchitectureAccess;
 import openperipheral.api.converter.IConverter;
 import openperipheral.api.helpers.Index;
 import openperipheral.interfaces.cc.wrappers.LuaObjectWrapper;
-
 import org.apache.logging.log4j.Level;
-
-import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.peripheral.IComputerAccess;
 
 public class ComputerCraftEnv {
 

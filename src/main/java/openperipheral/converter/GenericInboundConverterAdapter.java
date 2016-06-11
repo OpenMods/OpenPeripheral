@@ -1,11 +1,9 @@
 package openperipheral.converter;
 
+import com.google.common.reflect.TypeToken;
 import java.lang.reflect.Type;
-
 import openperipheral.api.converter.IConverter;
 import openperipheral.api.converter.IGenericInboundTypeConverter;
-
-import com.google.common.reflect.TypeToken;
 
 public abstract class GenericInboundConverterAdapter implements IGenericInboundTypeConverter {
 

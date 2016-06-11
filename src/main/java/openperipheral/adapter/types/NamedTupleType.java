@@ -1,12 +1,10 @@
 package openperipheral.adapter.types;
 
-import java.util.Collection;
-import java.util.List;
-
-import openperipheral.api.adapter.IScriptType;
-
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
+import java.util.Collection;
+import java.util.List;
+import openperipheral.api.adapter.IScriptType;
 
 public class NamedTupleType implements IScriptType {
 

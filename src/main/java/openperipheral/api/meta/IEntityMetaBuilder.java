@@ -1,7 +1,6 @@
 package openperipheral.api.meta;
 
 import java.util.Map;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Vec3;
 import openperipheral.api.IApiInterface;

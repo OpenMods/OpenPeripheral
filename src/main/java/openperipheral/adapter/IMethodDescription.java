@@ -2,7 +2,6 @@ package openperipheral.adapter;
 
 import java.util.List;
 import java.util.Set;
-
 import openperipheral.api.adapter.IScriptType;
 
 public interface IMethodDescription {

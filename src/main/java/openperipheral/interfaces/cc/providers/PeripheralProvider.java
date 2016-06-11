@@ -1,10 +1,14 @@
 package openperipheral.interfaces.cc.providers;
 
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
+import dan200.computercraft.api.peripheral.IPeripheral;
+import dan200.computercraft.api.peripheral.IPeripheralProvider;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import java.util.Set;
-
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import openmods.Log;
@@ -19,13 +23,6 @@ import openperipheral.api.peripheral.IOpenPeripheral;
 import openperipheral.interfaces.cc.ModuleComputerCraft;
 import openperipheral.interfaces.cc.wrappers.AdapterPeripheral;
 import openperipheral.interfaces.cc.wrappers.ProxyAdapterPeripheral;
-
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
-
-import dan200.computercraft.api.peripheral.IPeripheral;
-import dan200.computercraft.api.peripheral.IPeripheralProvider;
 
 public class PeripheralProvider implements IPeripheralProvider {
 	private static final IPeripheralFactory<TileEntity> NULL_FACTORY = new IPeripheralFactory<TileEntity>() {

@@ -1,8 +1,7 @@
 package openperipheral.api.helpers;
 
-import openperipheral.api.architecture.IArchitecture;
-
 import com.google.common.primitives.Ints;
+import openperipheral.api.architecture.IArchitecture;
 
 /**
  * Simple class for easy handling of not-zero indexed collections.

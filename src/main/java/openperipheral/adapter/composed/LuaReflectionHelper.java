@@ -1,17 +1,15 @@
 package openperipheral.adapter.composed;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Map;
-
 import openperipheral.api.adapter.Asynchronous;
 import openperipheral.api.adapter.method.Env;
 import openperipheral.api.adapter.method.ReturnType;
 import openperipheral.api.adapter.method.ScriptCallable;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 @Asynchronous
 public class LuaReflectionHelper {

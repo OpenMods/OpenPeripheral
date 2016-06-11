@@ -1,6 +1,9 @@
 package openperipheral.api.adapter.method;
 
-import java.lang.annotation.*;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * This annotation is used to supply metadata about arguments in script methods.

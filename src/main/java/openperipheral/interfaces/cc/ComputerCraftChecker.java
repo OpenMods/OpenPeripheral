@@ -1,9 +1,9 @@
 package openperipheral.interfaces.cc;
 
+import cpw.mods.fml.common.Loader;
 import openmods.Mods;
 import openperipheral.ArchitectureChecker.IArchitecturePredicate;
 import openperipheral.Config;
-import cpw.mods.fml.common.Loader;
 
 public class ComputerCraftChecker implements IArchitecturePredicate {
 

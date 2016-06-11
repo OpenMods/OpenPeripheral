@@ -1,17 +1,14 @@
 package openperipheral.interfaces.cc.providers;
 
+import dan200.computercraft.api.lua.ILuaContext;
+import dan200.computercraft.api.peripheral.IComputerAccess;
+import dan200.computercraft.api.peripheral.IPeripheral;
 import java.util.Random;
-
 import net.minecraft.tileentity.TileEntity;
 import openmods.Log;
 import openperipheral.adapter.composed.ComposedMethodsFactory.InvalidClassException;
 import openperipheral.api.peripheral.IBrokenOpenPeripheral;
-
 import org.apache.commons.lang3.ArrayUtils;
-
-import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.peripheral.IComputerAccess;
-import dan200.computercraft.api.peripheral.IPeripheral;
 
 abstract class SafePeripheralFactory implements IPeripheralFactory<TileEntity> {
 

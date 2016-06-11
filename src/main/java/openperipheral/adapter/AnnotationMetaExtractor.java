@@ -1,16 +1,14 @@
 package openperipheral.adapter;
 
+import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 import java.lang.reflect.AnnotatedElement;
 import java.util.Set;
-
 import openperipheral.api.adapter.Asynchronous;
 import openperipheral.api.adapter.ReturnSignal;
 import openperipheral.api.architecture.ExcludeArchitecture;
 import openperipheral.api.architecture.FeatureGroup;
-
-import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
 
 public class AnnotationMetaExtractor {
 

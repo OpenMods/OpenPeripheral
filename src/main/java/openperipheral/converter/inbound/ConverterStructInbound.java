@@ -1,7 +1,6 @@
 package openperipheral.converter.inbound;
 
 import java.util.Map;
-
 import openperipheral.api.converter.IConverter;
 import openperipheral.converter.GenericInboundConverterAdapter;
 import openperipheral.converter.StructHandlerProvider;

@@ -1,14 +1,11 @@
 package openperipheral.adapter.property;
 
+import com.google.common.base.Preconditions;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
-
 import openperipheral.api.converter.IConverter;
 import openperipheral.converter.TypeConverter;
-
 import org.apache.commons.lang3.ArrayUtils;
-
-import com.google.common.base.Preconditions;
 
 public class SetterExecutor implements IPropertyExecutor {
 

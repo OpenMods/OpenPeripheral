@@ -1,10 +1,15 @@
 package openperipheral;
 
+import com.google.common.base.Preconditions;
+import cpw.mods.fml.common.discovery.ASMDataTable;
 import openmods.Log;
 import openmods.access.ApiFactory;
 import openmods.access.ApiProviderBase;
 import openmods.access.ApiProviderRegistry;
-import openperipheral.adapter.*;
+import openperipheral.adapter.AdapterRegistryWrapper;
+import openperipheral.adapter.FeatureGroupManager;
+import openperipheral.adapter.PeripheralTypeProvider;
+import openperipheral.adapter.TileEntityBlacklist;
 import openperipheral.adapter.types.classifier.TypeClassifier;
 import openperipheral.api.ApiHolder;
 import openperipheral.api.Constants;
@@ -14,10 +19,6 @@ import openperipheral.interfaces.cc.ModuleComputerCraft;
 import openperipheral.interfaces.oc.ModuleOpenComputers;
 import openperipheral.meta.EntityMetadataBuilder;
 import openperipheral.meta.ItemStackMetadataBuilder;
-
-import com.google.common.base.Preconditions;
-
-import cpw.mods.fml.common.discovery.ASMDataTable;
 
 public class ApiSetup {
 

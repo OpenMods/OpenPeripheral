@@ -1,7 +1,6 @@
 package openperipheral.tests;
 
 import openperipheral.adapter.types.IntegerRange;
-
 import org.junit.Assert;
 import org.junit.Test;
 

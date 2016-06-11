@@ -1,16 +1,16 @@
 package openperipheral.adapter;
 
-import java.util.*;
-
-import openperipheral.api.architecture.FeatureGroup;
-import openperipheral.api.architecture.IFeatureGroupManager;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-
 import cpw.mods.fml.common.discovery.ASMDataTable;
 import cpw.mods.fml.common.discovery.ASMDataTable.ASMData;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import openperipheral.api.architecture.FeatureGroup;
+import openperipheral.api.architecture.IFeatureGroupManager;
 
 public class FeatureGroupManager implements IFeatureGroupManager {
 

@@ -1,7 +1,6 @@
 package openperipheral.converter.inbound;
 
 import java.lang.reflect.Type;
-
 import openperipheral.api.converter.IConverter;
 import openperipheral.api.converter.IGenericInboundTypeConverter;
 

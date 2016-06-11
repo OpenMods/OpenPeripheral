@@ -1,16 +1,14 @@
 package openperipheral.adapter.types;
 
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
-
 import openperipheral.adapter.types.classifier.TypeClassifier;
 import openperipheral.api.adapter.IScriptType;
 import openperipheral.api.adapter.method.ArgType;
 import openperipheral.api.adapter.method.ReturnType;
-
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 
 public class TypeHelper {
 

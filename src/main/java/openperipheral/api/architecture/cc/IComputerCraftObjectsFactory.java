@@ -1,9 +1,9 @@
 package openperipheral.api.architecture.cc;
 
-import openperipheral.api.IApiInterface;
-import openperipheral.api.adapter.GenerationFailedException;
 import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import openperipheral.api.IApiInterface;
+import openperipheral.api.adapter.GenerationFailedException;
 
 /**
  * API interface for wrapping Java objects to ComputerCraft structures.

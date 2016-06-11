@@ -1,9 +1,8 @@
 package openperipheral.adapter.method;
 
-import openperipheral.api.adapter.IScriptType;
-
 import com.google.common.base.Preconditions;
 import com.google.common.reflect.TypeToken;
+import openperipheral.api.adapter.IScriptType;
 
 public class NullableVarArgument extends VarArgument {
 

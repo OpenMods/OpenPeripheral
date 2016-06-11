@@ -1,18 +1,25 @@
 package openperipheral.tests;
 
-import java.lang.reflect.Method;
-import java.util.*;
-
-import openperipheral.adapter.method.MethodDeclaration;
-import openperipheral.api.adapter.method.*;
-import openperipheral.api.helpers.MultiReturn;
-
-import org.junit.Assert;
-import org.junit.Test;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import openperipheral.adapter.method.MethodDeclaration;
+import openperipheral.api.adapter.method.Alias;
+import openperipheral.api.adapter.method.Arg;
+import openperipheral.api.adapter.method.Env;
+import openperipheral.api.adapter.method.IMultiReturn;
+import openperipheral.api.adapter.method.MultipleReturn;
+import openperipheral.api.adapter.method.Optionals;
+import openperipheral.api.adapter.method.ReturnType;
+import openperipheral.api.adapter.method.ScriptCallable;
+import openperipheral.api.helpers.MultiReturn;
+import org.junit.Assert;
+import org.junit.Test;
 
 public class MethodDescriptionTest {
 

@@ -1,14 +1,12 @@
 package openperipheral.converter.inbound;
 
-import java.lang.reflect.Type;
-import java.util.Map;
-
-import openperipheral.api.converter.IConverter;
-import openperipheral.converter.TypeConverter;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.google.common.reflect.TypeToken;
+import java.lang.reflect.Type;
+import java.util.Map;
+import openperipheral.api.converter.IConverter;
+import openperipheral.converter.TypeConverter;
 
 public abstract class ContainerConverterHelper<R> {
 	private final int offset;

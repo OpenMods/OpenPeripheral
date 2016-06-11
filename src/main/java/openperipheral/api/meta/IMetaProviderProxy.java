@@ -2,7 +2,6 @@ package openperipheral.api.meta;
 
 import java.util.Map;
 import java.util.Set;
-
 import openperipheral.api.adapter.AdapterSourceName;
 import openperipheral.api.adapter.Asynchronous;
 import openperipheral.api.adapter.method.Arg;

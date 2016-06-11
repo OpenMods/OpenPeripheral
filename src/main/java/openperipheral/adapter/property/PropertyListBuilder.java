@@ -1,25 +1,28 @@
 package openperipheral.adapter.property;
 
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
+import com.google.common.collect.Sets;
+import com.google.common.reflect.TypeToken;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Set;
-
 import openmods.reflection.TypeUtils;
 import openperipheral.adapter.AnnotationMetaExtractor;
 import openperipheral.adapter.IMethodDescription;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.types.TypeHelper;
-import openperipheral.api.adapter.*;
+import openperipheral.api.adapter.CallbackProperty;
+import openperipheral.api.adapter.IIndexedPropertyCallback;
+import openperipheral.api.adapter.IPropertyCallback;
+import openperipheral.api.adapter.IndexedCallbackProperty;
+import openperipheral.api.adapter.IndexedProperty;
+import openperipheral.api.adapter.Property;
 import openperipheral.api.adapter.method.ArgType;
 import openperipheral.api.property.GetTypeFromField;
 import openperipheral.api.property.IIndexedPropertyListener;
 import openperipheral.api.property.ISinglePropertyListener;
-
-import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
-import com.google.common.collect.Sets;
-import com.google.common.reflect.TypeToken;
 
 public class PropertyListBuilder {
 

@@ -1,11 +1,14 @@
 package openperipheral.util;
 
+import com.google.common.base.Objects;
+import com.google.common.base.Optional;
+import com.google.common.base.Strings;
+import com.google.common.base.Throwables;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import java.security.ProtectionDomain;
 import java.util.Collection;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
@@ -13,10 +16,11 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-
 import openmods.Log;
-import openperipheral.adapter.*;
+import openperipheral.adapter.IMethodDescription;
 import openperipheral.adapter.IMethodDescription.IArgumentDescription;
+import openperipheral.adapter.IMethodExecutor;
+import openperipheral.adapter.PeripheralTypeProvider;
 import openperipheral.adapter.composed.IMethodMap;
 import openperipheral.adapter.composed.IMethodMap.IMethodVisitor;
 import openperipheral.adapter.types.TypeHelper;
@@ -24,11 +28,8 @@ import openperipheral.adapter.wrappers.AdapterWrapper;
 import openperipheral.api.adapter.AdapterSourceName;
 import openperipheral.api.adapter.IScriptType;
 import openperipheral.api.architecture.IFeatureGroupManager;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
-import com.google.common.base.*;
 
 public class DocBuilder {
 	private final Document doc;

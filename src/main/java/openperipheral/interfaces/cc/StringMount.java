@@ -1,12 +1,10 @@
 package openperipheral.interfaces.cc;
 
+import com.google.common.base.Charsets;
+import dan200.computercraft.api.filesystem.IMount;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.List;
-
-import com.google.common.base.Charsets;
-
-import dan200.computercraft.api.filesystem.IMount;
 
 public class StringMount implements IMount {
 

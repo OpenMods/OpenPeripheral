@@ -2,14 +2,15 @@ package openperipheral.interfaces.oc.asm.object;
 
 import java.util.Map;
 import java.util.Set;
-
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.composed.IndexedMethodMap;
 import openperipheral.interfaces.oc.asm.CommonMethodsBuilder;
 import openperipheral.interfaces.oc.asm.ICodeGenerator;
 import openperipheral.interfaces.oc.asm.Utils;
-
-import org.objectweb.asm.*;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.Method;
 
 public class ObjectCodeGenerator implements ICodeGenerator {

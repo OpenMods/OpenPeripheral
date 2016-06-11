@@ -1,16 +1,14 @@
 package openperipheral.adapter.wrappers;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import java.lang.reflect.Method;
 import java.util.List;
-
 import openmods.Log;
 import openperipheral.adapter.AnnotationMetaExtractor;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.method.MethodDeclaration;
 import openperipheral.api.adapter.method.ScriptCallable;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 
 public abstract class AdapterWrapper {
 

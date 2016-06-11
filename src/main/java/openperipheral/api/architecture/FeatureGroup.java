@@ -1,6 +1,9 @@
 package openperipheral.api.architecture;
 
-import java.lang.annotation.*;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * Feature groups allow to control what methods will be visible to architecture.

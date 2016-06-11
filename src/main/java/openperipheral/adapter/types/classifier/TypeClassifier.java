@@ -1,13 +1,11 @@
 package openperipheral.adapter.types.classifier;
 
-import java.lang.reflect.Type;
-import java.util.List;
-
-import openperipheral.api.adapter.IScriptType;
-import openperipheral.api.adapter.ITypeClassifier;
-
 import com.google.common.collect.Lists;
 import com.google.common.reflect.TypeToken;
+import java.lang.reflect.Type;
+import java.util.List;
+import openperipheral.api.adapter.IScriptType;
+import openperipheral.api.adapter.ITypeClassifier;
 
 public class TypeClassifier implements ITypeClassifier {
 

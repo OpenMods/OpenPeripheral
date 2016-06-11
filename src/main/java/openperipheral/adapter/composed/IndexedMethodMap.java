@@ -1,7 +1,6 @@
 package openperipheral.adapter.composed;
 
 import java.util.Map;
-
 import openperipheral.adapter.IMethodExecutor;
 
 public class IndexedMethodMap implements IMethodMap {

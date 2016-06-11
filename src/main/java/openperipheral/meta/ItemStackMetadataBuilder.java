@@ -1,18 +1,21 @@
 package openperipheral.meta;
 
-import java.util.*;
-
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import openperipheral.api.adapter.method.ScriptObject;
-import openperipheral.api.meta.*;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
-
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import openperipheral.api.adapter.method.ScriptObject;
+import openperipheral.api.meta.IItemStackCustomMetaProvider;
+import openperipheral.api.meta.IItemStackMetaProvider;
+import openperipheral.api.meta.IItemStackPartialMetaBuilder;
+import openperipheral.api.meta.IMetaProviderProxy;
 
 public class ItemStackMetadataBuilder implements IItemStackPartialMetaBuilder {
 

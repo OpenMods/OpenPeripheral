@@ -1,12 +1,10 @@
 package openperipheral.interfaces.cc;
 
-import openperipheral.adapter.AdapterLogicException;
-
 import com.google.common.base.Throwables;
-
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.ILuaTask;
 import dan200.computercraft.api.lua.LuaException;
+import openperipheral.adapter.AdapterLogicException;
 
 // CC still needs it, since default .executeInMainThread() incorrectly converts ILuaObjects
 public class SynchronousExecutor {

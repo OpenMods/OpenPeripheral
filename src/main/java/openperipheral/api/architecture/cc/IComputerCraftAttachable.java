@@ -1,7 +1,7 @@
 package openperipheral.api.architecture.cc;
 
-import openperipheral.api.architecture.IAttachable;
 import dan200.computercraft.api.peripheral.IComputerAccess;
+import openperipheral.api.architecture.IAttachable;
 
 /**
  * Tile Entities marked with this annotation will be informed when computer is attached.

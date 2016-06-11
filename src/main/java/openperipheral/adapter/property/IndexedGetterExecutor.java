@@ -1,12 +1,9 @@
 package openperipheral.adapter.property;
 
-import java.lang.reflect.Field;
-
-import openperipheral.api.converter.IConverter;
-
-import org.apache.commons.lang3.ArrayUtils;
-
 import com.google.common.base.Preconditions;
+import java.lang.reflect.Field;
+import openperipheral.api.converter.IConverter;
+import org.apache.commons.lang3.ArrayUtils;
 
 public class IndexedGetterExecutor implements IPropertyExecutor {
 

@@ -1,9 +1,16 @@
 package openperipheral;
 
+import com.google.common.collect.Lists;
+import cpw.mods.fml.common.Loader;
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.*;
-
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TimeZone;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
@@ -17,10 +24,6 @@ import openperipheral.adapter.composed.IMethodMap;
 import openperipheral.adapter.wrappers.AdapterWrapper;
 import openperipheral.util.DocBuilder;
 import openperipheral.util.DocBuilder.IClassDecorator;
-
-import com.google.common.collect.Lists;
-
-import cpw.mods.fml.common.Loader;
 
 public class CommandDump extends SidedCommand {
 

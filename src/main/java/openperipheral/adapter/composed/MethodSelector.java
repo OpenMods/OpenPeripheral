@@ -1,14 +1,12 @@
 package openperipheral.adapter.composed;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Maps;
 import java.util.Map;
-
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.api.Constants;
 import openperipheral.api.architecture.IArchitecture;
 import openperipheral.api.converter.IConverter;
-
-import com.google.common.base.Predicate;
-import com.google.common.collect.Maps;
 
 public class MethodSelector implements Predicate<IMethodExecutor> {
 

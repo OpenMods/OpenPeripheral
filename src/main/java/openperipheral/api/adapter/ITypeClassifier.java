@@ -1,7 +1,6 @@
 package openperipheral.api.adapter;
 
 import java.lang.reflect.Type;
-
 import openperipheral.api.IApiInterface;
 import openperipheral.api.adapter.method.ArgType;
 

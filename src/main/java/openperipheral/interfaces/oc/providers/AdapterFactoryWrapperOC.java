@@ -1,13 +1,12 @@
 package openperipheral.interfaces.oc.providers;
 
+import com.google.common.base.Preconditions;
 import li.cil.oc.api.machine.Value;
 import li.cil.oc.api.network.ManagedEnvironment;
 import openperipheral.adapter.composed.ComposedMethodsFactory;
 import openperipheral.api.adapter.GenerationFailedException;
 import openperipheral.api.architecture.oc.IOpenComputersObjectsFactory;
 import openperipheral.interfaces.oc.ModuleOpenComputers;
-
-import com.google.common.base.Preconditions;
 
 public class AdapterFactoryWrapperOC implements IOpenComputersObjectsFactory {
 
