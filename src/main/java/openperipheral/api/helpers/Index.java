@@ -9,25 +9,30 @@ import openperipheral.api.architecture.IArchitecture;
  * For example, in Lua value 3 will become {@code Index(value = 2, offset = 1}.
  *
  * To create index with proper offset for given architecture use {@link IArchitecture#createIndex(int)}.
+ *
+ * Idea: Index(2,1) and Index(1,0) represent same index, but different numeric values
  */
 public class Index extends Number implements Comparable<Index> {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 2L;
 
-	public int offset;
-
+	/**
+	 * Zero-based value of index
+	 */
 	public final int value;
 
-	public Index(int value, int offset) {
-		this.value = value - offset;
+	public final int offset;
+
+	private Index(int value, int offset) {
+		this.value = value;
 		this.offset = offset;
 	}
 
-	public Integer box() {
-		return Integer.valueOf(value);
+	public static Index fromJava(int zeroBasedValue, int offset) {
+		return new Index(zeroBasedValue, offset);
 	}
 
-	public int unbox() {
-		return value;
+	public static Index toJava(int nonZeroBasedValue, int offset) {
+		return new Index(nonZeroBasedValue - offset, offset);
 	}
 
 	@Override
@@ -37,17 +42,17 @@ public class Index extends Number implements Comparable<Index> {
 
 	@Override
 	public long longValue() {
-		return intValue();
+		return (long)value + offset;
 	}
 
 	@Override
 	public float floatValue() {
-		return intValue();
+		return (float)value + offset;
 	}
 
 	@Override
 	public double doubleValue() {
-		return intValue();
+		return (double)value + offset;
 	}
 
 	@Override

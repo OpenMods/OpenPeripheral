@@ -15,8 +15,8 @@ import openperipheral.converter.StructHandlerProvider.IStructHandler;
 public class IndexedManipulatorProvider {
 
 	public static int getIndex(Object index) {
-		Preconditions.checkArgument(index instanceof Index, "Invalid index type, expecting number");
-		return ((Index)index).unbox();
+		Preconditions.checkArgument(index instanceof Index, "Invalid index type, got %s", index.getClass());
+		return ((Index)index).value;
 	}
 
 	private abstract static class GenericFieldManipulator<T> implements IIndexedFieldManipulator {

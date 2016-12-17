@@ -31,7 +31,7 @@ public class OpenComputersEnv {
 
 		@Override
 		public Index createIndex(int value) {
-			return new Index(value + 1, 1);
+			return Index.fromJava(value, 1);
 		}
 
 		@Override

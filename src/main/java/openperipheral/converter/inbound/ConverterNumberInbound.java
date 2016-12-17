@@ -37,7 +37,7 @@ public class ConverterNumberInbound extends GenericInboundConverterAdapter {
 
 		if (required == Boolean.class || required == boolean.class) return d != 0;
 
-		if (required == Index.class) return new Index(d.intValue(), offset);
+		if (required == Index.class) return Index.toJava(d.intValue(), offset);
 
 		return null;
 	}

@@ -36,7 +36,7 @@ public class FieldManipulatorsTest {
 	}
 
 	public static Index index(int index) {
-		return new Index(index, 1);
+		return Index.toJava(index, 1);
 	}
 
 	public <T> T testSetField(IIndexedFieldManipulator manipulator, T container, Object index, Object value) {
