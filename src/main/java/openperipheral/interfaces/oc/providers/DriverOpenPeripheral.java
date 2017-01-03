@@ -4,12 +4,13 @@ import com.google.common.collect.Maps;
 import java.util.Map;
 import li.cil.oc.api.network.ManagedEnvironment;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import openmods.Log;
 import openperipheral.adapter.TileEntityBlacklist;
 import openperipheral.interfaces.oc.ModuleOpenComputers;
 
+// TODO use SidedBlock...
 public class DriverOpenPeripheral implements li.cil.oc.api.driver.Block {
 
 	private final Map<Class<?>, Boolean> cache = Maps.newHashMap();
@@ -41,7 +42,7 @@ public class DriverOpenPeripheral implements li.cil.oc.api.driver.Block {
 	public ManagedEnvironment createEnvironment(World world, BlockPos pos) {
 		TileEntity te = world.getTileEntity(pos);
 		if (te == null) {
-			Log.warn("Trying to provide environment for %s in world %d, but TE not found", pos, world.provider.getDimensionId());
+			Log.warn("Trying to provide environment for %s in world %d, but TE not found", pos, world.provider.getDimension());
 			return null;
 		}
 

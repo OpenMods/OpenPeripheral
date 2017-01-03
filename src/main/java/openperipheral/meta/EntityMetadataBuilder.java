@@ -3,11 +3,12 @@ package openperipheral.meta;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 import openperipheral.api.adapter.method.ScriptObject;
 import openperipheral.api.meta.IEntityCustomMetaProvider;
 import openperipheral.api.meta.IEntityMetaProvider;
@@ -19,10 +20,10 @@ public class EntityMetadataBuilder implements IEntityPartialMetaBuilder {
 	@ScriptObject
 	private static class Proxy implements IMetaProviderProxy {
 		private final Map<String, IEntityMetaProvider<?>> providers;
-		private final Vec3 relativePos;
+		private final Vec3d relativePos;
 		private final Entity entity;
 
-		private Proxy(Map<String, IEntityMetaProvider<?>> providers, Vec3 relativePos, Entity entity) {
+		private Proxy(Map<String, IEntityMetaProvider<?>> providers, Vec3d relativePos, Entity entity) {
 			this.providers = ImmutableMap.copyOf(providers);
 			this.relativePos = relativePos;
 			this.entity = entity;
@@ -67,7 +68,7 @@ public class EntityMetadataBuilder implements IEntityPartialMetaBuilder {
 		}
 	}
 
-	private static void fillCustomProperties(Map<String, Object> map, final Iterable<IEntityMetaProvider<?>> providers, Entity entity, Vec3 relativePos) {
+	private static void fillCustomProperties(Map<String, Object> map, final Iterable<IEntityMetaProvider<?>> providers, Entity entity, Vec3d relativePos) {
 		for (IEntityMetaProvider<?> provider : providers) {
 			Object converted = getProperty(entity, relativePos, provider);
 			if (converted != null) {
@@ -77,24 +78,26 @@ public class EntityMetadataBuilder implements IEntityPartialMetaBuilder {
 		}
 	}
 
-	private static Map<String, Object> createBasicProperties(Entity entity, Vec3 relativePos) {
+	private static Map<String, Object> createBasicProperties(Entity entity, Vec3d relativePos) {
 		Map<String, Object> map = Maps.newHashMap();
 		addPositionInfo(map, entity, relativePos);
 		map.put("name", entity.getName());
 		map.put("id", entity.getEntityId());
 		map.put("uuid", entity.getUniqueID());
 
-		if (entity.riddenByEntity != null) {
-			map.put("riddenBy", entity.riddenByEntity.getEntityId());
-		}
+		final Set<Integer> riders = Sets.newHashSet();
 
-		if (entity.ridingEntity != null) {
-			map.put("ridingEntity", entity.ridingEntity.getEntityId());
+		for (Entity e : entity.getPassengers())
+			riders.add(e.getEntityId());
+		map.put("riders", riders);
+
+		if (entity.getRidingEntity() != null) {
+			map.put("ridingEntity", entity.getRidingEntity().getEntityId());
 		}
 		return map;
 	}
 
-	private static void addPositionInfo(Map<String, Object> map, Entity entity, Vec3 relativePos) {
+	private static void addPositionInfo(Map<String, Object> map, Entity entity, Vec3d relativePos) {
 		Map<String, Double> position = (relativePos != null)
 				? addRelativePos(entity, relativePos)
 				: addAbsolutePos(entity);
@@ -106,7 +109,7 @@ public class EntityMetadataBuilder implements IEntityPartialMetaBuilder {
 		return createPosition(entity.posX, entity.posY, entity.posZ);
 	}
 
-	private static Map<String, Double> addRelativePos(Entity entity, Vec3 relativePos) {
+	private static Map<String, Double> addRelativePos(Entity entity, Vec3d relativePos) {
 		return createPosition(entity.posX - relativePos.xCoord, entity.posY - relativePos.yCoord, entity.posZ - relativePos.zCoord);
 	}
 
@@ -115,7 +118,7 @@ public class EntityMetadataBuilder implements IEntityPartialMetaBuilder {
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private static Object getProperty(Entity entity, Vec3 relativePos, IEntityMetaProvider provider) {
+	private static Object getProperty(Entity entity, Vec3d relativePos, IEntityMetaProvider provider) {
 		return provider.getMeta(entity, relativePos);
 	}
 
@@ -139,18 +142,18 @@ public class EntityMetadataBuilder implements IEntityPartialMetaBuilder {
 	}
 
 	@Override
-	public IMetaProviderProxy createProxy(Entity entity, Vec3 relativePos) {
+	public IMetaProviderProxy createProxy(Entity entity, Vec3d relativePos) {
 		final Map<String, IEntityMetaProvider<?>> providers = getProviders(entity);
 		return new Proxy(providers, relativePos, entity);
 	}
 
 	@Override
-	public Map<String, Object> getBasicEntityMetadata(Entity entity, Vec3 relativePos) {
+	public Map<String, Object> getBasicEntityMetadata(Entity entity, Vec3d relativePos) {
 		return createBasicProperties(entity, relativePos);
 	}
 
 	@Override
-	public Map<String, Object> getEntityMetadata(Entity entity, Vec3 relativePos) {
+	public Map<String, Object> getEntityMetadata(Entity entity, Vec3d relativePos) {
 		Map<String, Object> map = createBasicProperties(entity, relativePos);
 
 		final Iterable<IEntityMetaProvider<?>> providers = getProviders(entity).values();
@@ -159,7 +162,7 @@ public class EntityMetadataBuilder implements IEntityPartialMetaBuilder {
 	}
 
 	@Override
-	public Object getEntityMetadata(String key, Entity entity, Vec3 relativePos) {
+	public Object getEntityMetadata(String key, Entity entity, Vec3d relativePos) {
 		Map<String, IEntityMetaProvider<?>> providers = getProviders(entity);
 
 		IEntityMetaProvider<?> provider = providers.get(key);

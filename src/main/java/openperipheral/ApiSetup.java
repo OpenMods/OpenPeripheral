@@ -15,7 +15,6 @@ import openperipheral.api.ApiHolder;
 import openperipheral.api.Constants;
 import openperipheral.api.IApiInterface;
 import openperipheral.converter.TypeConvertersProvider;
-import openperipheral.interfaces.cc.ModuleComputerCraft;
 import openperipheral.interfaces.oc.ModuleOpenComputers;
 import openperipheral.meta.EntityMetadataBuilder;
 import openperipheral.meta.ItemStackMetadataBuilder;
@@ -39,7 +38,7 @@ public class ApiSetup {
 		registry.registerInstance(ArchitectureChecker.INSTANCE);
 		registry.registerInstance(FeatureGroupManager.INSTANCE);
 
-		if (ArchitectureChecker.INSTANCE.isEnabled(Constants.ARCH_COMPUTER_CRAFT)) ModuleComputerCraft.installAPI(registry);
+		// if (ArchitectureChecker.INSTANCE.isEnabled(Constants.ARCH_COMPUTER_CRAFT)) ModuleComputerCraft.installAPI(registry);
 		if (ArchitectureChecker.INSTANCE.isEnabled(Constants.ARCH_OPEN_COMPUTERS)) ModuleOpenComputers.installAPI(registry);
 
 		registry.freeze();

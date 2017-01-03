@@ -11,9 +11,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fml.common.Loader;
 import openmods.Log;
 import openmods.OpenMods;
@@ -62,7 +63,7 @@ public class CommandDump extends SidedCommand {
 	}
 
 	@Override
-	public void processCommand(ICommandSender sender, String[] args) {
+	public void execute(MinecraftServer server, ICommandSender sender, String[] args) {
 		final String format = (args.length >= 1)? args[0] : "xhtml";
 		final String name = (args.length >= 2)? args[1] : "openperipheral_docs";
 		final String filename = name + '.' + format;
@@ -98,15 +99,15 @@ public class CommandDump extends SidedCommand {
 			if (format.equalsIgnoreCase("xhtml")) builder.dumpXml(output, true);
 			else if (format.equalsIgnoreCase("xml")) builder.dumpXml(output, false);
 			else {
-				sender.addChatMessage(new ChatComponentText("Invalid format: " + format));
+				sender.addChatMessage(new TextComponentString("Invalid format: " + format));
 				return;
 			}
 
 			long duration = System.currentTimeMillis() - start;
-			sender.addChatMessage(new ChatComponentTranslation("openperipheralcore.dump.done", format, output.getAbsolutePath(), duration));
+			sender.addChatMessage(new TextComponentTranslation("openperipheralcore.dump.done", format, output.getAbsolutePath(), duration));
 		} catch (Throwable t) {
 			Log.warn(t, "Failed to execute dump command");
-			sender.addChatMessage(new ChatComponentTranslation("openperipheralcore.dump.fail"));
+			sender.addChatMessage(new TextComponentTranslation("openperipheralcore.dump.fail"));
 		}
 	}
 
@@ -127,7 +128,7 @@ public class CommandDump extends SidedCommand {
 	}
 
 	@Override
-	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos) {
+	public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
 		if (args.length == 1) return Lists.newArrayList("xml", "xhtml");
 		return null;
 	}

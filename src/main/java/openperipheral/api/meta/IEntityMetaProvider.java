@@ -1,6 +1,6 @@
 package openperipheral.api.meta;
 
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 
 /**
  * This interface is used to return information about in-game entities. It can be registered in {@link IEntityMetaBuilder#register(IEntityMetaProvider)}.
@@ -8,6 +8,6 @@ import net.minecraft.util.Vec3;
  */
 public interface IEntityMetaProvider<C> extends IMetaProvider<C> {
 
-	public Object getMeta(C target, Vec3 relativePos);
+	public Object getMeta(C target, Vec3d relativePos);
 
 }

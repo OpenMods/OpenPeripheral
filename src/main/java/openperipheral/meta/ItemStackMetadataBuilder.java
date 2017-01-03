@@ -10,7 +10,6 @@ import java.util.Set;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.GameData;
 import openperipheral.api.adapter.method.ScriptObject;
 import openperipheral.api.meta.IItemStackCustomMetaProvider;
 import openperipheral.api.meta.IItemStackMetaProvider;
@@ -83,7 +82,7 @@ public class ItemStackMetadataBuilder implements IItemStackPartialMetaBuilder {
 
 	private static Map<String, Object> createBasicProperties(Item item, ItemStack itemstack) {
 		Map<String, Object> map = Maps.newHashMap();
-		final ResourceLocation id = GameData.getItemRegistry().getNameForObject(item);
+		final ResourceLocation id = Item.REGISTRY.getNameForObject(item);
 
 		map.put("id", id != null? id.toString() : "?");
 		map.put("name", id != null? id.getResourcePath() : "?");

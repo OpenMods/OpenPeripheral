@@ -243,7 +243,7 @@ public class ConfigGuiFactory implements IModGuiFactory {
 
 		@SubscribeEvent
 		public void onConfigChange(OnConfigChangedEvent evt) {
-			if (ModInfo.ID.equals(evt.modID)) {
+			if (ModInfo.ID.equals(evt.getModID())) {
 				final String[] blacklist = CONFIG_FEATURE_GROUP_MANAGER.saveBlacklist();
 				config.get(Config.CATEGORY_FEATURE_GROUPS, Config.FIELD_FEATURE_GROUPS, blacklist).set(blacklist);
 				config.save();
@@ -266,6 +266,7 @@ public class ConfigGuiFactory implements IModGuiFactory {
 		return ImmutableSet.of();
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public RuntimeOptionGuiHandler getHandlerFor(RuntimeOptionCategoryElement element) {
 		return null;

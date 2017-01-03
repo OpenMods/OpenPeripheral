@@ -1,6 +1,6 @@
 package openperipheral.api.adapter;
 
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 
 /**
  * This interface is no longer used by OpenPeripheralCore, but is still used by some child mods (like OpenPeriperal-Integration)
