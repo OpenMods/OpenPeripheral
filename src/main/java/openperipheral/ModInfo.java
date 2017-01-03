@@ -8,5 +8,5 @@ public class ModInfo {
 	public static final String API_VERSION = "$OP-API-VERSION$";
 	public static final String PROXY_SERVER = "openperipheral.core.CommonProxy";
 	public static final String PROXY_CLIENT = "openperipheral.core.client.ClientProxy";
-	public static final String DEPENDENCIES = "required-after:OpenMods@[$LIB-VERSION$,$NEXT-LIB-VERSION$);after:ComputerCraft@[1.77,];after:OpenComputers@[1.5.0,];";
+	public static final String DEPENDENCIES = "required-after:OpenMods@[$LIB-VERSION$,$NEXT-LIB-VERSION$);after:ComputerCraft@[1.80,];after:OpenComputers@[1.6.0,];";
 }
