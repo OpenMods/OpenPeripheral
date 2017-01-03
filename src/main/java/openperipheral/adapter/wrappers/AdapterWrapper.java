@@ -1,15 +1,14 @@
 package openperipheral.adapter.wrappers;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import java.lang.reflect.Method;
 import java.util.List;
-
 import openmods.Log;
+import openperipheral.adapter.AnnotationMetaExtractor;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.method.MethodDeclaration;
 import openperipheral.api.adapter.method.ScriptCallable;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 
 public abstract class AdapterWrapper {
 
@@ -26,14 +25,14 @@ public abstract class AdapterWrapper {
 	protected final Class<?> adapterClass;
 	protected final Class<?> rootClass;
 	protected final String source;
-	protected final MethodMetaExtractor metaInfo;
+	protected final AnnotationMetaExtractor metaInfo;
 
 	protected AdapterWrapper(Class<?> adapterClass, Class<?> targetClass, Class<?> rootClass, String source) {
 		this.adapterClass = adapterClass;
 		this.targetClass = targetClass;
 		this.rootClass = rootClass;
 		this.source = source;
-		this.metaInfo = new MethodMetaExtractor(adapterClass);
+		this.metaInfo = new AnnotationMetaExtractor(adapterClass);
 		this.methods = ImmutableList.copyOf(buildMethodList());
 	}
 

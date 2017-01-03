@@ -1,18 +1,16 @@
 package openperipheral.converter.inbound;
 
+import com.google.common.base.Strings;
+import com.google.common.collect.Sets;
+import com.google.common.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
-
 import openperipheral.api.converter.IConverter;
 import openperipheral.api.converter.IGenericInboundTypeConverter;
 import openperipheral.converter.TypeConverter;
-
-import com.google.common.base.Strings;
-import com.google.common.collect.Sets;
-import com.google.common.reflect.TypeToken;
 
 public class ConverterSetInbound implements IGenericInboundTypeConverter {
 

@@ -1,12 +1,16 @@
 package openperipheral.adapter.composed;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
-
 import net.minecraft.tileentity.TileEntity;
 import openmods.Log;
 import openperipheral.adapter.AdapterRegistry;
+import openperipheral.adapter.FeatureGroupManager;
 import openperipheral.adapter.IMethodDescription;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.wrappers.AdapterWrapper;
@@ -14,11 +18,6 @@ import openperipheral.adapter.wrappers.InlineAdapterWrapper;
 import openperipheral.adapter.wrappers.TechnicalAdapterWrapper;
 import openperipheral.api.adapter.AdapterSourceName;
 import openperipheral.api.peripheral.PeripheralTypeId;
-
-import com.google.common.base.Predicate;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
 public class ClassMethodsListBuilder {
 	private final AdapterRegistry manager;
@@ -49,6 +48,10 @@ public class ClassMethodsListBuilder {
 	public void addMethods(AdapterWrapper wrapper) {
 		for (IMethodExecutor executor : wrapper.getMethods()) {
 			final IMethodDescription descriptable = executor.description();
+
+			for (String fg : executor.featureGroups())
+				FeatureGroupManager.INSTANCE.ensureExists(fg);
+
 			if (selector.apply(executor)) {
 				sources.add(descriptable.source());
 				for (String name : descriptable.getNames()) {

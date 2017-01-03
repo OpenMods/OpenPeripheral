@@ -1,11 +1,15 @@
 package openperipheral.converter;
 
-import java.util.Map;
-
-import openperipheral.api.converter.*;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
+import java.util.Map;
+import openperipheral.api.converter.IConverter;
+import openperipheral.api.converter.IConverterManager;
+import openperipheral.api.converter.IGenericInboundTypeConverter;
+import openperipheral.api.converter.IGenericTypeConverter;
+import openperipheral.api.converter.IInboundTypeConverter;
+import openperipheral.api.converter.IOutboundTypeConverter;
+import openperipheral.api.converter.ITypeConverter;
 
 public class TypeConvertersProvider implements IConverterManager {
 

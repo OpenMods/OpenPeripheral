@@ -1,7 +1,6 @@
 package openperipheral.api.property;
 
 import java.lang.reflect.Field;
-
 import openperipheral.api.adapter.CallbackProperty;
 import openperipheral.api.adapter.Property;
 

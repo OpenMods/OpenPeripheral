@@ -1,7 +1,7 @@
 package openperipheral.interfaces.oc.providers;
 
+import com.google.common.collect.Maps;
 import java.util.Map;
-
 import li.cil.oc.api.network.ManagedEnvironment;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
@@ -9,8 +9,6 @@ import net.minecraft.world.World;
 import openmods.Log;
 import openperipheral.adapter.TileEntityBlacklist;
 import openperipheral.interfaces.oc.ModuleOpenComputers;
-
-import com.google.common.collect.Maps;
 
 public class DriverOpenPeripheral implements li.cil.oc.api.driver.Block {
 

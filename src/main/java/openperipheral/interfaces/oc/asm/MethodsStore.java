@@ -1,11 +1,9 @@
 package openperipheral.interfaces.oc.asm;
 
-import java.util.Map;
-
-import openperipheral.adapter.IMethodExecutor;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
+import java.util.Map;
+import openperipheral.adapter.IMethodExecutor;
 
 public class MethodsStore {
 

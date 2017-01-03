@@ -1,15 +1,13 @@
 package openperipheral.adapter.composed;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
-
-import openperipheral.adapter.AdapterRegistry;
-import openperipheral.adapter.IMethodExecutor;
-
 import com.google.common.base.Predicate;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
+import openperipheral.adapter.AdapterRegistry;
+import openperipheral.adapter.IMethodExecutor;
 
 public abstract class ComposedMethodsFactory<T extends IMethodMap> {
 

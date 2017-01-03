@@ -1,9 +1,13 @@
 package openperipheral.interfaces.oc.providers;
 
+import com.google.common.base.Preconditions;
+import com.google.common.base.Predicate;
+import com.google.common.base.Throwables;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Maps;
 import java.lang.reflect.Constructor;
 import java.util.Map;
 import java.util.Set;
-
 import openmods.Log;
 import openmods.injector.InjectedClassesManager;
 import openperipheral.adapter.AdapterRegistry;
@@ -14,12 +18,6 @@ import openperipheral.api.peripheral.ExposeInterface;
 import openperipheral.interfaces.oc.asm.ICodeGenerator;
 import openperipheral.interfaces.oc.asm.MethodsStore;
 import openperipheral.util.NameUtils;
-
-import com.google.common.base.Preconditions;
-import com.google.common.base.Predicate;
-import com.google.common.base.Throwables;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Maps;
 
 public class EnvironmentMethodsFactory<T> extends ComposedMethodsFactory<IEnviromentInstanceWrapper<T>> {
 

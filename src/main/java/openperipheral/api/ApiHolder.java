@@ -1,7 +1,9 @@
 package openperipheral.api;
 
-import java.lang.annotation.*;
-
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import openperipheral.api.adapter.IObjectAdapterRegistry;
 import openperipheral.api.adapter.IPeripheralAdapterRegistry;
 import openperipheral.api.architecture.cc.IComputerCraftObjectsFactory;

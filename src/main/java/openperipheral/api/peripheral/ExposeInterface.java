@@ -1,6 +1,9 @@
 package openperipheral.api.peripheral;
 
-import java.lang.annotation.*;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * This annotations marks classes that want to expose some of interfaces when wrapped by proxy.

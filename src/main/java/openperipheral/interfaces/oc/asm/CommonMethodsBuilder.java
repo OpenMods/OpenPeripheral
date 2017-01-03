@@ -1,15 +1,18 @@
 package openperipheral.interfaces.oc.asm;
 
+import com.google.common.base.Optional;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.util.DocUtils;
-
-import org.objectweb.asm.*;
+import org.objectweb.asm.AnnotationVisitor;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Label;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.Method;
-
-import com.google.common.base.Optional;
 
 public class CommonMethodsBuilder {
 

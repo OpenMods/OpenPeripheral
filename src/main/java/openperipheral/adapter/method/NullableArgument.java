@@ -1,12 +1,10 @@
 package openperipheral.adapter.method;
 
-import java.util.Iterator;
-
-import openperipheral.api.adapter.IScriptType;
-import openperipheral.api.converter.IConverter;
-
 import com.google.common.base.Preconditions;
 import com.google.common.reflect.TypeToken;
+import java.util.Iterator;
+import openperipheral.api.adapter.IScriptType;
+import openperipheral.api.converter.IConverter;
 
 public class NullableArgument extends Argument {
 

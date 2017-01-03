@@ -1,19 +1,23 @@
 package openperipheral.tests;
 
-import java.lang.annotation.*;
+import com.google.common.base.Preconditions;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
-import java.util.*;
-
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import openperipheral.adapter.types.classifier.TypeClassifier;
 import openperipheral.api.adapter.IScriptType;
 import openperipheral.api.struct.ScriptStruct;
 import openperipheral.api.struct.StructField;
-
 import org.junit.Assert;
 import org.junit.Test;
-
-import com.google.common.base.Preconditions;
 
 public class TypeQualifierTest {
 

@@ -1,19 +1,45 @@
 package openperipheral.converter;
 
-import java.lang.reflect.Type;
-import java.util.Deque;
-import java.util.List;
-import java.util.Set;
-
-import openmods.Log;
-import openperipheral.api.converter.*;
-import openperipheral.converter.inbound.*;
-import openperipheral.converter.outbound.*;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.common.reflect.TypeToken;
+import java.lang.reflect.Type;
+import java.util.Deque;
+import java.util.List;
+import java.util.Set;
+import openmods.Log;
+import openperipheral.api.converter.IConverter;
+import openperipheral.api.converter.IGenericInboundTypeConverter;
+import openperipheral.api.converter.IGenericTypeConverter;
+import openperipheral.api.converter.IInboundTypeConverter;
+import openperipheral.api.converter.IOutboundTypeConverter;
+import openperipheral.api.converter.ITypeConverter;
+import openperipheral.converter.inbound.ConverterArrayInbound;
+import openperipheral.converter.inbound.ConverterBypass;
+import openperipheral.converter.inbound.ConverterEnumInbound;
+import openperipheral.converter.inbound.ConverterItemStackInbound;
+import openperipheral.converter.inbound.ConverterListInbound;
+import openperipheral.converter.inbound.ConverterMapInbound;
+import openperipheral.converter.inbound.ConverterNumberInbound;
+import openperipheral.converter.inbound.ConverterRawInbound;
+import openperipheral.converter.inbound.ConverterSetInbound;
+import openperipheral.converter.inbound.ConverterStringInbound;
+import openperipheral.converter.inbound.ConverterStructInbound;
+import openperipheral.converter.inbound.ConverterUuid;
+import openperipheral.converter.outbound.ConverterArrayOutbound;
+import openperipheral.converter.outbound.ConverterBoolean;
+import openperipheral.converter.outbound.ConverterEnumOutbound;
+import openperipheral.converter.outbound.ConverterFluidStackOutbound;
+import openperipheral.converter.outbound.ConverterFluidTankInfoOutbound;
+import openperipheral.converter.outbound.ConverterGameProfileOutbound;
+import openperipheral.converter.outbound.ConverterItemStackOutbound;
+import openperipheral.converter.outbound.ConverterListOutbound;
+import openperipheral.converter.outbound.ConverterMapOutbound;
+import openperipheral.converter.outbound.ConverterNumberOutbound;
+import openperipheral.converter.outbound.ConverterSetOutbound;
+import openperipheral.converter.outbound.ConverterStringOutbound;
+import openperipheral.converter.outbound.ConverterStructOutbound;
 
 public abstract class TypeConverter implements IConverter {
 

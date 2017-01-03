@@ -1,6 +1,9 @@
 package openperipheral.api.adapter;
 
-import java.lang.annotation.*;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * Method marked with this annotation will be called inside computer thread (instead of being called inside main thread, after world tick).

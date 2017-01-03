@@ -1,10 +1,9 @@
 package openperipheral.interfaces.oc.providers;
 
+import com.google.common.base.Throwables;
 import openmods.injector.IClassBytesProvider;
 import openperipheral.adapter.composed.ComposedMethodsFactory;
 import openperipheral.util.NameUtils;
-
-import com.google.common.base.Throwables;
 
 public class EnvironmentClassBytesProvider<T> implements IClassBytesProvider {
 

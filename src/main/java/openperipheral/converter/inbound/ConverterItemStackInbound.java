@@ -1,14 +1,12 @@
 package openperipheral.converter.inbound;
 
+import com.google.common.base.Preconditions;
 import java.util.Map;
-
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import openperipheral.api.converter.IConverter;
 import openperipheral.converter.GenericInboundConverterAdapter;
-
-import com.google.common.base.Preconditions;
 
 public class ConverterItemStackInbound extends GenericInboundConverterAdapter {
 	@Override

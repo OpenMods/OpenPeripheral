@@ -1,11 +1,9 @@
 package openperipheral.adapter;
 
+import com.google.common.collect.Sets;
 import java.util.Set;
-
 import openperipheral.adapter.IMethodDescription.IArgumentDescription;
 import openperipheral.api.adapter.IScriptType;
-
-import com.google.common.collect.Sets;
 
 public class ArgumentDescriptionBase implements IArgumentDescription {
 

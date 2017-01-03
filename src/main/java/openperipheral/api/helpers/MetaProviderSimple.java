@@ -1,8 +1,7 @@
 package openperipheral.api.helpers;
 
-import openperipheral.api.meta.IMetaProvider;
-
 import com.google.common.reflect.TypeToken;
+import openperipheral.api.meta.IMetaProvider;
 
 @SuppressWarnings("serial")
 public abstract class MetaProviderSimple<C> implements IMetaProvider<C> {

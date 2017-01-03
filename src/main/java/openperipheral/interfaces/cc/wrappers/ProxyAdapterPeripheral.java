@@ -1,11 +1,10 @@
 package openperipheral.interfaces.cc.wrappers;
 
+import dan200.computercraft.api.peripheral.IPeripheral;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
 import openperipheral.adapter.composed.IndexedMethodMap;
-import dan200.computercraft.api.peripheral.IPeripheral;
 
 public class ProxyAdapterPeripheral extends AdapterPeripheral implements InvocationHandler {
 

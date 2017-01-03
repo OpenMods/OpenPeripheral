@@ -1,2 +1,9 @@
 openperipheralcore.dump.done=Done! Created %s file in %s (%s ms)
 openperipheralcore.dump.fail=Failed to execute! Check logs
+
+openperipheralcore.config.miscConfig=Misc. configuration
+openperipheralcore.config.miscConfig.tooltip=Misc. configuration
+openperipheralcore.config.featureGroupConfig=Feature Groups
+openperipheralcore.config.featureGroupConfig.tooltip=Enable or disable features for different computer mods
+openperipheralcore.config.architectureConfig.tooltip=Enable of disable features for this architecture
+openperipheralcore.config.featureGroupToggle.tooltip=If false, feature will be disabled for selected architecture

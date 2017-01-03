@@ -1,7 +1,6 @@
 package openperipheral.adapter.property;
 
 import java.lang.reflect.Type;
-
 import openperipheral.api.adapter.IScriptType;
 
 public abstract class SingleTypeInfo {

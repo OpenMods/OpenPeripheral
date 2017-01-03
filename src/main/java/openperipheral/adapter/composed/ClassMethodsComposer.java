@@ -1,15 +1,17 @@
 package openperipheral.adapter.composed;
 
-import java.util.*;
-
-import openperipheral.Config;
-import openperipheral.adapter.AdapterRegistry;
-import openperipheral.adapter.IMethodExecutor;
-
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
+import openperipheral.Config;
+import openperipheral.adapter.AdapterRegistry;
+import openperipheral.adapter.IMethodExecutor;
 
 public class ClassMethodsComposer {
 

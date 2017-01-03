@@ -1,13 +1,11 @@
 package openperipheral.converter.outbound;
 
+import com.google.common.collect.Maps;
 import java.util.Map;
-
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import openperipheral.api.converter.IConverter;
 import openperipheral.api.helpers.SimpleOutboundConverter;
-
-import com.google.common.collect.Maps;
 
 public class ConverterFluidStackOutbound extends SimpleOutboundConverter<FluidStack> {
 

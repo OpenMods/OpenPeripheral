@@ -1,5 +1,6 @@
 package openperipheral.interfaces.oc;
 
+import com.google.common.base.Preconditions;
 import li.cil.oc.api.Driver;
 import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.machine.Value;
@@ -20,10 +21,12 @@ import openperipheral.api.converter.IConverter;
 import openperipheral.converter.TypeConvertersProvider;
 import openperipheral.interfaces.oc.asm.object.ObjectCodeGenerator;
 import openperipheral.interfaces.oc.asm.peripheral.PeripheralCodeGenerator;
-import openperipheral.interfaces.oc.providers.*;
+import openperipheral.interfaces.oc.providers.AdapterFactoryWrapperOC;
+import openperipheral.interfaces.oc.providers.DriverOpenPeripheral;
+import openperipheral.interfaces.oc.providers.EnvironmentClassBytesProvider;
+import openperipheral.interfaces.oc.providers.EnvironmentMethodsFactory;
+import openperipheral.interfaces.oc.providers.IEnviromentInstanceWrapper;
 import openperipheral.util.DocBuilder;
-
-import com.google.common.base.Preconditions;
 
 public class ModuleOpenComputers {
 
@@ -61,8 +64,7 @@ public class ModuleOpenComputers {
 				AdapterRegistry.OBJECT_ADAPTERS,
 				objectSelector,
 				OBJECT_CLASS_PREFIX,
-				new ObjectCodeGenerator()
-				);
+				new ObjectCodeGenerator());
 
 		InjectedClassesManager.instance.registerProvider(OBJECT_CLASS_PREFIX, new EnvironmentClassBytesProvider<Value>(OBJECT_METHODS_FACTORY));
 

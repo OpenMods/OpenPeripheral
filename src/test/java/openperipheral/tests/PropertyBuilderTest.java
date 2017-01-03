@@ -2,15 +2,21 @@ package openperipheral.tests;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
+import com.google.common.base.Throwables;
+import com.google.common.collect.Lists;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
-
-import openperipheral.adapter.*;
+import openperipheral.adapter.IMethodCall;
+import openperipheral.adapter.IMethodDescription;
 import openperipheral.adapter.IMethodDescription.IArgumentDescription;
+import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.property.PropertyListBuilder;
 import openperipheral.adapter.types.TypeHelper;
 import openperipheral.api.Constants;
@@ -22,13 +28,9 @@ import openperipheral.api.helpers.Index;
 import openperipheral.api.property.GetTypeFromField;
 import openperipheral.api.struct.ScriptStruct;
 import openperipheral.api.struct.StructField;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
-
-import com.google.common.base.Throwables;
-import com.google.common.collect.Lists;
 
 public class PropertyBuilderTest {
 

@@ -1,23 +1,24 @@
 package openperipheral.adapter.property;
 
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Sets;
+import com.google.common.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.Set;
-
 import openmods.reflection.TypeUtils;
 import openperipheral.adapter.types.SingleArgType;
 import openperipheral.adapter.types.SingleType;
 import openperipheral.adapter.types.classifier.TypeClassifier;
 import openperipheral.api.adapter.IScriptType;
 import openperipheral.api.helpers.Index;
-import openperipheral.api.property.*;
+import openperipheral.api.property.IIndexedCustomProperty;
+import openperipheral.api.property.IIndexedTypedCustomProperty;
+import openperipheral.api.property.PropertyKeyDocType;
+import openperipheral.api.property.PropertyValueDocType;
 import openperipheral.converter.StructHandlerProvider;
 import openperipheral.converter.StructHandlerProvider.IFieldHandler;
 import openperipheral.converter.StructHandlerProvider.IStructHandler;
-
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Sets;
-import com.google.common.reflect.TypeToken;
 
 public class IndexedTypeInfoBuilder {
 	private static final TypeToken<?> CUSTOM_PROPERTY_TYPE = TypeToken.of(IIndexedCustomProperty.class);

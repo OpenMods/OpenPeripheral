@@ -1,12 +1,10 @@
 package openperipheral.converter.outbound;
 
+import com.google.common.collect.Maps;
 import java.lang.reflect.Array;
 import java.util.Map;
-
 import openperipheral.api.converter.IConverter;
 import openperipheral.api.converter.IOutboundTypeConverter;
-
-import com.google.common.collect.Maps;
 
 public class ConverterArrayOutbound implements IOutboundTypeConverter {
 

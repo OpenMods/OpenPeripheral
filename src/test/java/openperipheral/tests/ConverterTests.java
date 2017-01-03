@@ -1,26 +1,33 @@
 package openperipheral.tests;
 
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
-
-import java.lang.reflect.Type;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import openperipheral.api.converter.IConverter;
-import openperipheral.converter.inbound.*;
-
-import org.junit.Assert;
-import org.junit.Test;
-import org.mockito.ArgumentMatcher;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.argThat;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.notNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.reflect.TypeToken;
+import java.lang.reflect.Type;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import openperipheral.api.converter.IConverter;
+import openperipheral.converter.inbound.ConverterArrayInbound;
+import openperipheral.converter.inbound.ConverterListInbound;
+import openperipheral.converter.inbound.ConverterMapInbound;
+import openperipheral.converter.inbound.ConverterSetInbound;
+import org.junit.Assert;
+import org.junit.Test;
+import org.mockito.ArgumentMatcher;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 public class ConverterTests {
 

@@ -1,12 +1,10 @@
 package openperipheral.converter.outbound;
 
+import com.google.common.collect.Maps;
 import java.util.Map;
-
 import net.minecraftforge.fluids.FluidTankInfo;
 import openperipheral.api.converter.IConverter;
 import openperipheral.api.helpers.SimpleOutboundConverter;
-
-import com.google.common.collect.Maps;
 
 public class ConverterFluidTankInfoOutbound extends SimpleOutboundConverter<FluidTankInfo> {
 

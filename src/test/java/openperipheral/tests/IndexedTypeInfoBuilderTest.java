@@ -1,25 +1,25 @@
 package openperipheral.tests;
 
+import com.google.common.base.Throwables;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
-
 import openperipheral.adapter.property.IndexedTypeInfo;
 import openperipheral.adapter.property.IndexedTypeInfoBuilder;
 import openperipheral.adapter.types.SingleType;
 import openperipheral.api.adapter.IScriptType;
 import openperipheral.api.adapter.method.ArgType;
 import openperipheral.api.helpers.Index;
-import openperipheral.api.property.*;
+import openperipheral.api.property.IIndexedCustomProperty;
+import openperipheral.api.property.IIndexedTypedCustomProperty;
+import openperipheral.api.property.PropertyKeyDocType;
+import openperipheral.api.property.PropertyValueDocType;
 import openperipheral.api.struct.ScriptStruct;
 import openperipheral.api.struct.StructField;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
-
-import com.google.common.base.Throwables;
 
 public class IndexedTypeInfoBuilderTest {
 

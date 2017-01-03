@@ -1,13 +1,11 @@
 package openperipheral.adapter.property;
 
-import java.util.List;
-import java.util.Set;
-
-import openperipheral.adapter.IMethodDescription;
-import openperipheral.api.adapter.IScriptType;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Sets;
+import java.util.List;
+import java.util.Set;
+import openperipheral.adapter.IMethodDescription;
+import openperipheral.api.adapter.IScriptType;
 
 public class SimpleMethodDescription implements IMethodDescription {
 	private final List<String> names;

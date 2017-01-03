@@ -1,18 +1,17 @@
 package openperipheral.adapter.property;
 
-import java.util.Map;
-
-import openperipheral.adapter.IMethodCall;
-import openperipheral.adapter.IMethodDescription;
-import openperipheral.adapter.IMethodExecutor;
-import openperipheral.api.Constants;
-import openperipheral.api.converter.IConverter;
-
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
+import java.util.Map;
+import java.util.Set;
+import openperipheral.adapter.IMethodCall;
+import openperipheral.adapter.IMethodDescription;
+import openperipheral.adapter.RestrictedMethodExecutor;
+import openperipheral.api.Constants;
+import openperipheral.api.converter.IConverter;
 
-public class PropertyExecutor implements IMethodExecutor {
+public class PropertyExecutor extends RestrictedMethodExecutor {
 
 	public static final Map<String, Class<?>> NEEDED_ENV = ImmutableMap.<String, Class<?>> of(Constants.ARG_CONVERTER, IConverter.class);
 
@@ -20,7 +19,8 @@ public class PropertyExecutor implements IMethodExecutor {
 
 	private final IPropertyExecutor caller;
 
-	public PropertyExecutor(IMethodDescription description, IPropertyExecutor caller) {
+	public PropertyExecutor(IMethodDescription description, IPropertyExecutor caller, Set<String> excludedArchitectures, Set<String> featureGroups) {
+		super(excludedArchitectures, featureGroups);
 		this.description = description;
 		this.caller = caller;
 	}
@@ -57,11 +57,6 @@ public class PropertyExecutor implements IMethodExecutor {
 	@Override
 	public Optional<String> getReturnSignal() {
 		return Optional.absent();
-	}
-
-	@Override
-	public boolean canInclude(String architecture) {
-		return true;
 	}
 
 	@Override

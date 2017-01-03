@@ -1,7 +1,6 @@
 package openperipheral.tests;
 
 import java.lang.reflect.Type;
-
 import openperipheral.adapter.property.SingleTypeInfo;
 import openperipheral.adapter.property.SingleTypeInfoBuilder;
 import openperipheral.adapter.types.SingleType;
@@ -10,7 +9,6 @@ import openperipheral.api.adapter.method.ArgType;
 import openperipheral.api.property.ISingleCustomProperty;
 import openperipheral.api.property.ISingleTypedCustomProperty;
 import openperipheral.api.property.PropertyValueDocType;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;

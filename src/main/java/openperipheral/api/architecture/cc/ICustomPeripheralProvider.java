@@ -1,7 +1,7 @@
 package openperipheral.api.architecture.cc;
 
-import net.minecraft.util.EnumFacing;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import net.minecraft.util.EnumFacing;
 
 /**
  *

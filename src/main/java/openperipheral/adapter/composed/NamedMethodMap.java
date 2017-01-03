@@ -1,10 +1,8 @@
 package openperipheral.adapter.composed;
 
-import java.util.Map;
-
-import openperipheral.adapter.IMethodExecutor;
-
 import com.google.common.collect.ImmutableMap;
+import java.util.Map;
+import openperipheral.adapter.IMethodExecutor;
 
 public class NamedMethodMap implements IMethodMap {
 

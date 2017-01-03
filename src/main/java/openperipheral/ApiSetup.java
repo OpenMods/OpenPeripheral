@@ -1,25 +1,24 @@
 package openperipheral;
 
-import net.minecraftforge.fml.common.Loader;
+import com.google.common.base.Preconditions;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import openmods.Log;
-import openmods.Mods;
 import openmods.access.ApiFactory;
 import openmods.access.ApiProviderBase;
 import openmods.access.ApiProviderRegistry;
 import openperipheral.adapter.AdapterRegistryWrapper;
+import openperipheral.adapter.FeatureGroupManager;
 import openperipheral.adapter.PeripheralTypeProvider;
 import openperipheral.adapter.TileEntityBlacklist;
 import openperipheral.adapter.types.classifier.TypeClassifier;
 import openperipheral.api.ApiHolder;
+import openperipheral.api.Constants;
 import openperipheral.api.IApiInterface;
 import openperipheral.converter.TypeConvertersProvider;
 import openperipheral.interfaces.cc.ModuleComputerCraft;
 import openperipheral.interfaces.oc.ModuleOpenComputers;
 import openperipheral.meta.EntityMetadataBuilder;
 import openperipheral.meta.ItemStackMetadataBuilder;
-
-import com.google.common.base.Preconditions;
 
 public class ApiSetup {
 
@@ -37,9 +36,11 @@ public class ApiSetup {
 		registry.registerInstance(TileEntityBlacklist.INSTANCE);
 		registry.registerInstance(PeripheralTypeProvider.INSTANCE);
 		registry.registerInstance(TypeClassifier.INSTANCE);
+		registry.registerInstance(ArchitectureChecker.INSTANCE);
+		registry.registerInstance(FeatureGroupManager.INSTANCE);
 
-		if (Loader.isModLoaded(Mods.COMPUTERCRAFT)) ModuleComputerCraft.installAPI(registry);
-		if (Loader.isModLoaded(Mods.OPENCOMPUTERS)) ModuleOpenComputers.installAPI(registry);
+		if (ArchitectureChecker.INSTANCE.isEnabled(Constants.ARCH_COMPUTER_CRAFT)) ModuleComputerCraft.installAPI(registry);
+		if (ArchitectureChecker.INSTANCE.isEnabled(Constants.ARCH_OPEN_COMPUTERS)) ModuleOpenComputers.installAPI(registry);
 
 		registry.freeze();
 	}
@@ -72,8 +73,7 @@ public class ApiSetup {
 
 		Preconditions.checkState(ModInfo.API_VERSION.equals(presentApiVersion),
 				"OpenPeripheralCore version mismatch, should be %s, is %s (ApiAccess source: %s)",
-				ModInfo.API_VERSION, presentApiVersion, apiSource
-				);
+				ModInfo.API_VERSION, presentApiVersion, apiSource);
 
 		try {
 			openperipheral.api.ApiAccess.init(new LegacyApiAccess(registry));

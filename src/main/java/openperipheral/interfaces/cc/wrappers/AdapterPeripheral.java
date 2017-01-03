@@ -1,30 +1,32 @@
 package openperipheral.interfaces.cc.wrappers;
 
-import java.util.Arrays;
-
-import openmods.Log;
-import openmods.utils.CachedFactory;
-import openperipheral.adapter.*;
-import openperipheral.adapter.composed.IndexedMethodMap;
-import openperipheral.adapter.wrappers.SignallingGlobals;
-import openperipheral.api.architecture.IArchitectureAccess;
-import openperipheral.api.architecture.IAttachable;
-import openperipheral.api.architecture.cc.IComputerCraftAttachable;
-import openperipheral.api.peripheral.IOpenPeripheral;
-import openperipheral.interfaces.cc.*;
-import openperipheral.util.DocUtils;
-
-import org.apache.logging.log4j.Level;
-
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
-
 import dan200.computercraft.api.filesystem.IMount;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.ILuaTask;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import java.util.Arrays;
+import openmods.Log;
+import openmods.utils.CachedFactory;
+import openperipheral.adapter.AdapterLogicException;
+import openperipheral.adapter.IMethodCall;
+import openperipheral.adapter.IMethodExecutor;
+import openperipheral.adapter.PeripheralTypeProvider;
+import openperipheral.adapter.composed.IndexedMethodMap;
+import openperipheral.adapter.wrappers.SignallingGlobals;
+import openperipheral.api.architecture.IArchitectureAccess;
+import openperipheral.api.architecture.IAttachable;
+import openperipheral.api.architecture.cc.IComputerCraftAttachable;
+import openperipheral.api.peripheral.IOpenPeripheral;
+import openperipheral.interfaces.cc.ModuleComputerCraft;
+import openperipheral.interfaces.cc.StringMount;
+import openperipheral.interfaces.cc.SynchronousExecutor;
+import openperipheral.interfaces.cc.UtilsResourceMount;
+import openperipheral.util.DocUtils;
+import org.apache.logging.log4j.Level;
 
 public class AdapterPeripheral implements IPeripheral, IOpenPeripheral {
 

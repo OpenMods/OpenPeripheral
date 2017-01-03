@@ -1,7 +1,6 @@
 package openperipheral.api.adapter.method;
 
 import java.util.Locale;
-
 import openperipheral.api.adapter.ITypeClassifier;
 
 public enum ArgType {

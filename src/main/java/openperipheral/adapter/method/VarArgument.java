@@ -1,15 +1,13 @@
 package openperipheral.adapter.method;
 
-import java.lang.reflect.Array;
-import java.util.Iterator;
-import java.util.List;
-
-import openperipheral.api.adapter.IScriptType;
-import openperipheral.api.converter.IConverter;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.reflect.TypeToken;
+import java.lang.reflect.Array;
+import java.util.Iterator;
+import java.util.List;
+import openperipheral.api.adapter.IScriptType;
+import openperipheral.api.converter.IConverter;
 
 public class VarArgument extends Argument {
 

@@ -2,4 +2,3 @@
 package openperipheral.api.struct;
 
 import net.minecraftforge.fml.common.API;
-

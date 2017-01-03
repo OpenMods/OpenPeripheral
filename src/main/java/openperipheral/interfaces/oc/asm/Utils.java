@@ -1,13 +1,11 @@
 package openperipheral.interfaces.oc.asm;
 
+import com.google.common.collect.Maps;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
-
 import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.Method;
-
-import com.google.common.collect.Maps;
 
 public class Utils {
 

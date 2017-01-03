@@ -1,10 +1,10 @@
 package openperipheral.adapter.property;
 
+import com.google.common.base.Preconditions;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
-
 import openperipheral.api.adapter.IIndexedPropertyCallback;
 import openperipheral.api.helpers.Index;
 import openperipheral.api.property.IIndexedCustomProperty;
@@ -12,13 +12,11 @@ import openperipheral.converter.StructHandlerProvider;
 import openperipheral.converter.StructHandlerProvider.IFieldHandler;
 import openperipheral.converter.StructHandlerProvider.IStructHandler;
 
-import com.google.common.base.Preconditions;
-
 public class IndexedManipulatorProvider {
 
 	public static int getIndex(Object index) {
-		Preconditions.checkArgument(index instanceof Index, "Invalid index type, expecting number");
-		return ((Index)index).unbox();
+		Preconditions.checkArgument(index instanceof Index, "Invalid index type, got %s", index.getClass());
+		return ((Index)index).value;
 	}
 
 	private abstract static class GenericFieldManipulator<T> implements IIndexedFieldManipulator {

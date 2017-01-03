@@ -1,17 +1,21 @@
 package openperipheral.meta;
 
-import java.util.*;
-
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Maps;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameData;
 import openperipheral.api.adapter.method.ScriptObject;
-import openperipheral.api.meta.*;
-
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Maps;
+import openperipheral.api.meta.IItemStackCustomMetaProvider;
+import openperipheral.api.meta.IItemStackMetaProvider;
+import openperipheral.api.meta.IItemStackPartialMetaBuilder;
+import openperipheral.api.meta.IMetaProviderProxy;
 
 public class ItemStackMetadataBuilder implements IItemStackPartialMetaBuilder {
 
@@ -138,7 +142,8 @@ public class ItemStackMetadataBuilder implements IItemStackPartialMetaBuilder {
 		while (it.hasNext()) {
 			final IItemStackMetaProvider<?> provider = it.next();
 			if ((provider instanceof IItemStackCustomMetaProvider) &&
-					!((IItemStackCustomMetaProvider<Item>)provider).canApply(item, stack)) it.remove();
+					!((IItemStackCustomMetaProvider<Item>)provider).canApply(item, stack))
+				it.remove();
 		}
 	}
 

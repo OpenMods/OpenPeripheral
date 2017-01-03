@@ -1,11 +1,10 @@
 package openperipheral.adapter.method;
 
+import com.google.common.base.Preconditions;
+import com.google.common.reflect.TypeToken;
 import openperipheral.adapter.types.TypeHelper;
 import openperipheral.api.adapter.IScriptType;
 import openperipheral.api.adapter.method.ArgType;
-
-import com.google.common.base.Preconditions;
-import com.google.common.reflect.TypeToken;
 
 public class ArgumentBuilder {
 

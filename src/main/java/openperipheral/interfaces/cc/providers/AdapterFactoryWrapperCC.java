@@ -1,9 +1,9 @@
 package openperipheral.interfaces.cc.providers;
 
-import openperipheral.api.architecture.cc.IComputerCraftObjectsFactory;
-import openperipheral.interfaces.cc.wrappers.LuaObjectWrapper;
 import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import openperipheral.api.architecture.cc.IComputerCraftObjectsFactory;
+import openperipheral.interfaces.cc.wrappers.LuaObjectWrapper;
 
 public class AdapterFactoryWrapperCC implements IComputerCraftObjectsFactory {
 

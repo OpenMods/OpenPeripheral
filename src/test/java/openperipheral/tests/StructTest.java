@@ -3,28 +3,25 @@ package openperipheral.tests;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
 import openperipheral.api.converter.IConverter;
 import openperipheral.api.struct.ScriptStruct;
 import openperipheral.api.struct.ScriptStruct.Output;
 import openperipheral.api.struct.StructField;
-import openperipheral.converter.*;
+import openperipheral.converter.StructHandlerProvider;
 import openperipheral.converter.StructHandlerProvider.IFieldHandler;
 import openperipheral.converter.StructHandlerProvider.IStructHandler;
 import openperipheral.converter.StructHandlerProvider.InvalidStructureException;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 @RunWith(MockitoJUnitRunner.class)
 public class StructTest {

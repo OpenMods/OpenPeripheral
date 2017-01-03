@@ -1,11 +1,9 @@
 package openperipheral.adapter.property;
 
+import com.google.common.base.Preconditions;
 import java.lang.reflect.Field;
-
 import openperipheral.api.adapter.IPropertyCallback;
 import openperipheral.api.property.ISingleCustomProperty;
-
-import com.google.common.base.Preconditions;
 
 public class SingleManipulatorProvider {
 

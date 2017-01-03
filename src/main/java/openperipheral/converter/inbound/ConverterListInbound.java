@@ -1,15 +1,13 @@
 package openperipheral.converter.inbound;
 
+import com.google.common.collect.Lists;
+import com.google.common.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
-
 import openmods.reflection.TypeUtils;
 import openperipheral.api.converter.IConverter;
 import openperipheral.api.converter.IGenericInboundTypeConverter;
-
-import com.google.common.collect.Lists;
-import com.google.common.reflect.TypeToken;
 
 public class ConverterListInbound implements IGenericInboundTypeConverter {
 

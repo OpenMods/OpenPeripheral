@@ -1,7 +1,10 @@
 package openperipheral.interfaces.cc;
 
+import dan200.computercraft.api.ComputerCraftAPI;
+import dan200.computercraft.api.lua.ILuaContext;
+import dan200.computercraft.api.lua.ILuaObject;
+import dan200.computercraft.api.peripheral.IComputerAccess;
 import java.util.Map;
-
 import openmods.access.ApiProviderRegistry;
 import openperipheral.CommandDump;
 import openperipheral.adapter.AdapterRegistry;
@@ -19,10 +22,6 @@ import openperipheral.converter.TypeConvertersProvider;
 import openperipheral.interfaces.cc.providers.AdapterFactoryWrapperCC;
 import openperipheral.interfaces.cc.providers.PeripheralProvider;
 import openperipheral.util.DocBuilder;
-import dan200.computercraft.api.ComputerCraftAPI;
-import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.lua.ILuaObject;
-import dan200.computercraft.api.peripheral.IComputerAccess;
 
 public class ModuleComputerCraft {
 

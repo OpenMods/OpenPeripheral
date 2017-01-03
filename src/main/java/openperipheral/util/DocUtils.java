@@ -1,8 +1,10 @@
 package openperipheral.util;
 
+import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import java.util.List;
 import java.util.Map;
-
 import joptsimple.internal.Strings;
 import openmods.utils.CachedFactory;
 import openperipheral.adapter.IMethodDescription;
@@ -13,10 +15,6 @@ import openperipheral.adapter.composed.IMethodMap.IMethodVisitor;
 import openperipheral.adapter.types.TypeHelper;
 import openperipheral.api.adapter.Doc;
 import openperipheral.api.adapter.IScriptType;
-
-import com.google.common.base.Joiner;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 public class DocUtils {
 

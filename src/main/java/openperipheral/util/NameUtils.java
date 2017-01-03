@@ -1,7 +1,6 @@
 package openperipheral.util;
 
 import java.util.Map;
-
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 

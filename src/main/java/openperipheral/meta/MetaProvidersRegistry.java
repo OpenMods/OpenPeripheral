@@ -1,16 +1,22 @@
 package openperipheral.meta;
 
-import java.util.*;
-
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Sets;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import openmods.Log;
 import openperipheral.api.meta.IEntityMetaProvider;
 import openperipheral.api.meta.IItemStackMetaProvider;
 import openperipheral.api.meta.IMetaProvider;
-
-import com.google.common.base.Preconditions;
-import com.google.common.collect.*;
 
 public class MetaProvidersRegistry<P extends IMetaProvider<?>> {
 

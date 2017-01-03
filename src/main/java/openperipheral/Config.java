@@ -1,11 +1,15 @@
 package openperipheral;
 
 import openmods.config.properties.ConfigProperty;
-import openmods.config.properties.OnLineModifiable;
 
 public class Config {
 
-	@OnLineModifiable
+	public static final String CATEGORY_FEATURE_GROUPS = "featureGroups";
+	public static final String FIELD_FEATURE_GROUPS = "blacklist";
+
+	@ConfigProperty(category = CATEGORY_FEATURE_GROUPS, name = FIELD_FEATURE_GROUPS, comment = "Blacklist for feature groups, in format 'feature:architecture (e.g. 'vanilla:ComputerCraft'). Note: to get names of feature groups use either /op_dump or config GUI")
+	public static String[] featureGroupsBlacklist = new String[0];
+
 	@ConfigProperty(category = "integration", name = "disableClasses", comment = "Don't register OpenPeripheral handler for those Tile Entitites (either name or class)")
 	public static String[] teBlacklist = new String[0];
 
@@ -14,4 +18,10 @@ public class Config {
 
 	@ConfigProperty(category = "performance", name = "threadPoolForSignallingCalls", comment = "Number of threads available to calls marked with @ReturnSignal")
 	public static int signallingPoolSize = 10;
+
+	@ConfigProperty(category = "interfaces", name = "ComputerCraft", comment = "Controls ComputerCraft integration")
+	public static boolean interfaceComputerCraft = true;
+
+	@ConfigProperty(category = "interfaces", name = "OpenComputers", comment = "Controls OpenComputers integration")
+	public static boolean interfaceOpenComputers = true;
 }

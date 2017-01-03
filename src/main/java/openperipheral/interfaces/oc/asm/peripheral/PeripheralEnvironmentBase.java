@@ -32,9 +32,9 @@ public class PeripheralEnvironmentBase extends ManagedEnvironment implements Nam
 	public PeripheralEnvironmentBase(Object target) {
 		this.type = PeripheralTypeProvider.INSTANCE.generateType(target);
 
-		setNode(Network.newNode(this, Visibility.Network).
-				withComponent(this.type).
-				create());
+		setNode(Network.newNode(this, Visibility.Network)
+				.withComponent(this.type)
+				.create());
 	}
 
 	@Override

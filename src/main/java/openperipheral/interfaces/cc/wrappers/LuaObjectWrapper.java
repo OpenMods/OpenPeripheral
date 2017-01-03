@@ -1,7 +1,10 @@
 package openperipheral.interfaces.cc.wrappers;
 
+import com.google.common.base.Preconditions;
+import dan200.computercraft.api.lua.ILuaContext;
+import dan200.computercraft.api.lua.ILuaObject;
+import dan200.computercraft.api.lua.LuaException;
 import java.util.Arrays;
-
 import openmods.Log;
 import openperipheral.adapter.AdapterLogicException;
 import openperipheral.adapter.IMethodCall;
@@ -10,14 +13,7 @@ import openperipheral.adapter.composed.IndexedMethodMap;
 import openperipheral.api.adapter.GenerationFailedException;
 import openperipheral.interfaces.cc.ModuleComputerCraft;
 import openperipheral.interfaces.cc.SynchronousExecutor;
-
 import org.apache.logging.log4j.Level;
-
-import com.google.common.base.Preconditions;
-
-import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.lua.ILuaObject;
-import dan200.computercraft.api.lua.LuaException;
 
 public class LuaObjectWrapper {
 

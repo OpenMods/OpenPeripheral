@@ -1,7 +1,7 @@
 package openperipheral.interfaces.cc;
 
-import openperipheral.converter.TypeConverter;
 import dan200.computercraft.api.lua.ILuaObject;
+import openperipheral.converter.TypeConverter;
 
 public class TypeConversionRegistryCC extends TypeConverter {
 

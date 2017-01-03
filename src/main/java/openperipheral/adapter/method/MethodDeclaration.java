@@ -1,9 +1,23 @@
 package openperipheral.adapter.method;
 
+import com.google.common.base.Preconditions;
+import com.google.common.base.Throwables;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterators;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import com.google.common.reflect.TypeToken;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.*;
-import java.util.*;
-
+import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import openmods.reflection.TypeUtils;
 import openmods.utils.AnnotationMap;
 import openperipheral.adapter.AdapterLogicException;
@@ -12,13 +26,15 @@ import openperipheral.adapter.IMethodDescription;
 import openperipheral.adapter.types.TypeHelper;
 import openperipheral.api.Constants;
 import openperipheral.api.adapter.IScriptType;
-import openperipheral.api.adapter.method.*;
+import openperipheral.api.adapter.method.Alias;
+import openperipheral.api.adapter.method.Arg;
+import openperipheral.api.adapter.method.Env;
+import openperipheral.api.adapter.method.IMultiReturn;
+import openperipheral.api.adapter.method.MultipleReturn;
+import openperipheral.api.adapter.method.Optionals;
+import openperipheral.api.adapter.method.ReturnType;
+import openperipheral.api.adapter.method.ScriptCallable;
 import openperipheral.api.converter.IConverter;
-
-import com.google.common.base.Preconditions;
-import com.google.common.base.Throwables;
-import com.google.common.collect.*;
-import com.google.common.reflect.TypeToken;
 
 public class MethodDeclaration implements IMethodDescription {
 
@@ -360,8 +376,7 @@ public class MethodDeclaration implements IMethodDescription {
 			final Class<?> neededCls = needed.cls;
 			Preconditions.checkState(neededCls.isAssignableFrom(provided),
 					"Method needs argument named %s (position %s) of type %s, but %s was provided",
-					name, needed.index, neededCls, provided
-					);
+					name, needed.index, neededCls, provided);
 		}
 	}
 

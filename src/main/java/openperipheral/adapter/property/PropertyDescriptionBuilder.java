@@ -1,7 +1,8 @@
 package openperipheral.adapter.property;
 
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import java.util.List;
-
 import openperipheral.adapter.ArgumentDescriptionBase;
 import openperipheral.adapter.IMethodDescription;
 import openperipheral.adapter.IMethodDescription.IArgumentDescription;
@@ -9,11 +10,7 @@ import openperipheral.adapter.types.AlternativeType;
 import openperipheral.adapter.types.SingleType;
 import openperipheral.adapter.types.TypeHelper;
 import openperipheral.api.adapter.IScriptType;
-
 import org.apache.commons.lang3.StringUtils;
-
-import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
 
 public class PropertyDescriptionBuilder {
 	private static final String ARG_VALUE = "value";

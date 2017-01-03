@@ -1,9 +1,15 @@
 package openperipheral;
 
+import com.google.common.collect.Lists;
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.*;
-
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TimeZone;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
@@ -13,13 +19,12 @@ import openmods.Log;
 import openmods.OpenMods;
 import openmods.utils.SidedCommand;
 import openperipheral.adapter.AdapterRegistry;
+import openperipheral.adapter.FeatureGroupManager;
 import openperipheral.adapter.composed.ComposedMethodsFactory;
 import openperipheral.adapter.composed.IMethodMap;
 import openperipheral.adapter.wrappers.AdapterWrapper;
 import openperipheral.util.DocBuilder;
 import openperipheral.util.DocBuilder.IClassDecorator;
-
-import com.google.common.collect.Lists;
 
 public class CommandDump extends SidedCommand {
 
@@ -74,6 +79,15 @@ public class CommandDump extends SidedCommand {
 
 			builder.setRootAttribute("generatedOn", getCurrentTime());
 			builder.setRootAttribute("generatedBy", sender.getName());
+
+			final Set<String> knownArchitectures = ArchitectureChecker.INSTANCE.knownArchitectures();
+			for (String architecture : knownArchitectures) {
+				final boolean isEnabled = ArchitectureChecker.INSTANCE.isEnabled(architecture);
+				builder.createDocForArchitecture(architecture, isEnabled);
+			}
+
+			for (String fg : FeatureGroupManager.INSTANCE.knownFeatureGroups())
+				builder.createDocForFeatureGroup(fg, knownArchitectures, FeatureGroupManager.INSTANCE);
 
 			for (IArchSerializer serializer : archSerializers)
 				serializer.serialize(builder);
