@@ -1,21 +1,23 @@
 [
 {
-  "modid" : "OpenPeripheralCore",
+  "modid" : "openperipheralcore",
   "name" : "OpenPeripheralCore",
   "version" : "${version}",
-  "url" : "http://www.openmods.info",
+  "mcversion": "${mc_version}",
+  "url" : "https://www.openmods.info",
   "credits" : "Everyone in #ComputerCraft, #OpenMods",
-  "authors": [
+  "authorList": [
     "Mikeemoo",
     "boq",
     "theoriginalbit",
     "Foone",
     "SinZ"
   ],
-  "description": "Converts many blocks into ComputerCraft peripherals!",
+  "description": "Common API for interaction with ComputerCraft and OpenComputers",
   "logoFile" : "",
   "updateUrl" : "",
   "parent" : "",
   "screenshots": [
   ]
-}]
+}
+]

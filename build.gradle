@@ -107,8 +107,8 @@ minecraft {
     replaceIn "openperipheral/api/ApiAccess.java"
     replace '$VERSION$', mod_version
     replace '$OP-API-VERSION$', api_version
-    //replace '$LIB-VERSION$', project(':OpenModsLib').mod_version
-    //replace '$NEXT-LIB-VERSION$', project(':OpenModsLib').next_mod_version
+    replace '$LIB-VERSION$', project(':OpenModsLib').mod_version
+    replace '$NEXT-LIB-VERSION$', project(':OpenModsLib').next_mod_version
 }
 
 processResources {
@@ -117,7 +117,7 @@ processResources {
     // Process mcmod.info
     from(sourceSets.main.resources.srcDirs) {
         include '**/*.info'
-        expand 'version':mod_version,'MCVersion':mc_ver
+        expand 'version':mod_version, 'mc_version':mc_ver
     }
 
     // Copy anything else directly
@@ -134,10 +134,8 @@ javadoc {
     }
 }
 
-// Generate FML Coremod manifest
 ext.fmlManifest = manifest {}
 
-// Merge Jenkins and Git manifests to form final manifest in final release jar
 jar {
     manifest {
         from jenkinsManifest, gitManifest, fmlManifest
