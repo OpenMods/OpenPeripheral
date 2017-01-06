@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 import openmods.Log;
 import openperipheral.adapter.AnnotationMetaExtractor;
+import openperipheral.adapter.IMethodCaller;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.method.MethodWrapperBuilder;
 import openperipheral.api.adapter.method.ScriptCallable;
@@ -20,8 +21,8 @@ public abstract class AdapterWrapper {
 		}
 	}
 
-	protected interface ExecutorFactory {
-		public IMethodExecutor createExecutor(AnnotationMetaExtractor.Bound metaInfo, MethodWrapperBuilder decl);
+	protected interface MethodCallerFactory {
+		public IMethodCaller createCaller(MethodWrapperBuilder decl);
 	}
 
 	protected final List<IMethodExecutor> methods;
@@ -29,7 +30,7 @@ public abstract class AdapterWrapper {
 	protected final Class<?> adapterClass;
 	protected final String source;
 
-	protected AdapterWrapper(Class<?> adapterClass, Class<?> targetClass, Class<?> rootClass, String source, ExecutorFactory executorFactory) {
+	protected AdapterWrapper(Class<?> adapterClass, Class<?> targetClass, Class<?> rootClass, String source, MethodCallerFactory executorFactory) {
 		this.adapterClass = adapterClass;
 		this.targetClass = targetClass;
 		this.source = source;
@@ -58,7 +59,7 @@ public abstract class AdapterWrapper {
 
 	public abstract String describe();
 
-	protected List<IMethodExecutor> buildMethodList(Class<?> rootClass, AnnotationMetaExtractor metaInfo, ExecutorFactory executorFactory) {
+	protected List<IMethodExecutor> buildMethodList(Class<?> rootClass, AnnotationMetaExtractor metaInfo, MethodCallerFactory executorFactory) {
 		List<IMethodExecutor> result = Lists.newArrayList();
 
 		Method[] clsMethods;
@@ -76,7 +77,8 @@ public abstract class AdapterWrapper {
 				if (callableAnn == null) continue;
 
 				final MethodWrapperBuilder decl = new MethodWrapperBuilder(rootClass, method, callableAnn, source);
-				final IMethodExecutor exec = executorFactory.createExecutor(metaInfo.forElement(method), decl);
+				final IMethodCaller caller = executorFactory.createCaller(decl);
+				final IMethodExecutor exec = new MethodExecutor(decl.getMethodDescription(), caller, metaInfo.forElement(method));
 				result.add(exec);
 			} catch (Throwable e) {
 				throw new MethodWrapException(method, e);

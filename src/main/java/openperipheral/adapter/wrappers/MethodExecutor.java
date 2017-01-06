@@ -8,7 +8,7 @@ import openperipheral.adapter.IMethodCaller;
 import openperipheral.adapter.IMethodDescription;
 import openperipheral.adapter.RestrictedMethodExecutor;
 
-public class MethodExecutorBase extends RestrictedMethodExecutor {
+public class MethodExecutor extends RestrictedMethodExecutor {
 
 	private final IMethodDescription methodDescription;
 
@@ -18,7 +18,7 @@ public class MethodExecutorBase extends RestrictedMethodExecutor {
 
 	private final Optional<String> returnSignal;
 
-	public MethodExecutorBase(IMethodDescription methodDescription, IMethodCaller methodCaller, AnnotationMetaExtractor.Bound info) {
+	public MethodExecutor(IMethodDescription methodDescription, IMethodCaller methodCaller, AnnotationMetaExtractor.Bound info) {
 		super(info.getExcludedArchitectures(), info.getFeatureGroups());
 		this.methodDescription = methodDescription;
 		this.methodCaller = methodCaller;

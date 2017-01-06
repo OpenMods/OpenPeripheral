@@ -1,7 +1,6 @@
 package openperipheral.adapter.wrappers;
 
-import openperipheral.adapter.AnnotationMetaExtractor;
-import openperipheral.adapter.IMethodExecutor;
+import openperipheral.adapter.IMethodCaller;
 import openperipheral.adapter.method.MethodWrapperBuilder;
 import openperipheral.api.adapter.IAdapter;
 import openperipheral.api.adapter.IAdapterWithConstraints;
@@ -33,12 +32,12 @@ public class ExternalAdapterWrapper extends AdapterWrapper {
 				createExecutionFactory(adapter));
 	}
 
-	private static ExecutorFactory createExecutionFactory(final IAdapter adapter) {
-		return new ExecutorFactory() {
+	private static MethodCallerFactory createExecutionFactory(final IAdapter adapter) {
+		return new MethodCallerFactory() {
 			@Override
-			public IMethodExecutor createExecutor(AnnotationMetaExtractor.Bound metaInfo, MethodWrapperBuilder decl) {
+			public IMethodCaller createCaller(MethodWrapperBuilder decl) {
 				decl.defineTargetArg(0, adapter.getTargetClass());
-				return new MethodExecutorBase(decl.getMethodDescription(), decl.createBoundMethodCaller(adapter), metaInfo);
+				return decl.createBoundMethodCaller(adapter);
 			}
 		};
 	}

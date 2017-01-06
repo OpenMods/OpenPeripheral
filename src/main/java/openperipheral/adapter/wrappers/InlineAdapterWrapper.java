@@ -3,6 +3,7 @@ package openperipheral.adapter.wrappers;
 import java.util.List;
 import openmods.Log;
 import openperipheral.adapter.AnnotationMetaExtractor;
+import openperipheral.adapter.IMethodCaller;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.method.MethodWrapperBuilder;
 import openperipheral.adapter.property.PropertyListBuilder;
@@ -13,11 +14,11 @@ public class InlineAdapterWrapper extends AdapterWrapper {
 		super(targetClass, targetClass, rootClass, source, createExecutorFactory(rootClass));
 	}
 
-	private static ExecutorFactory createExecutorFactory(final Class<?> rootClass) {
-		return new ExecutorFactory() {
+	private static MethodCallerFactory createExecutorFactory(final Class<?> rootClass) {
+		return new MethodCallerFactory() {
 			@Override
-			public IMethodExecutor createExecutor(AnnotationMetaExtractor.Bound metaInfo, MethodWrapperBuilder decl) {
-				return new MethodExecutorBase(decl.getMethodDescription(), decl.createUnboundMethodCaller(), metaInfo);
+			public IMethodCaller createCaller(MethodWrapperBuilder decl) {
+				return decl.createUnboundMethodCaller();
 			}
 		};
 	}
@@ -33,7 +34,7 @@ public class InlineAdapterWrapper extends AdapterWrapper {
 	}
 
 	@Override
-	protected List<IMethodExecutor> buildMethodList(Class<?> rootClass, AnnotationMetaExtractor metaInfo, ExecutorFactory executorFactory) {
+	protected List<IMethodExecutor> buildMethodList(Class<?> rootClass, AnnotationMetaExtractor metaInfo, MethodCallerFactory executorFactory) {
 		List<IMethodExecutor> result = super.buildMethodList(rootClass, metaInfo, executorFactory);
 
 		// non-fatal to avoid sideness annoyances
