@@ -1,16 +1,15 @@
 package openperipheral.adapter.composed;
 
 import com.google.common.base.Predicate;
-import com.google.common.collect.Maps;
-import java.util.Map;
+import com.google.common.collect.Sets;
+import java.util.Set;
 import openperipheral.adapter.IMethodExecutor;
-import openperipheral.api.Constants;
 import openperipheral.api.architecture.IArchitecture;
 import openperipheral.api.converter.IConverter;
 
 public class MethodSelector implements Predicate<IMethodExecutor> {
 
-	private final Map<String, Class<?>> providedEnv = Maps.newHashMap();
+	private final Set<Class<?>> providedEnv = Sets.newHashSet();
 
 	private final String architecture;
 
@@ -21,13 +20,13 @@ public class MethodSelector implements Predicate<IMethodExecutor> {
 	}
 
 	public MethodSelector addDefaultEnv() {
-		providedEnv.put(Constants.ARG_CONVERTER, IConverter.class);
-		providedEnv.put(Constants.ARG_ARCHITECTURE, IArchitecture.class);
+		providedEnv.add(IConverter.class);
+		providedEnv.add(IArchitecture.class);
 		return this;
 	}
 
-	public MethodSelector addProvidedEnv(String name, Class<?> cls) {
-		providedEnv.put(name, cls);
+	public MethodSelector addProvidedEnv(Class<?> cls) {
+		providedEnv.add(cls);
 		return this;
 	}
 
@@ -39,19 +38,8 @@ public class MethodSelector implements Predicate<IMethodExecutor> {
 	@Override
 	public boolean apply(IMethodExecutor executor) {
 		if (!executor.canInclude(architecture)) return false;
-
 		if (!allowReturnSignal && executor.getReturnSignal().isPresent()) return false;
-
-		Map<String, Class<?>> requiredEnv = executor.requiredEnv();
-
-		for (Map.Entry<String, Class<?>> e : requiredEnv.entrySet()) {
-			final String name = e.getKey();
-			final Class<?> required = e.getValue();
-			final Class<?> provided = providedEnv.get(name);
-			if (provided == null || !required.isAssignableFrom(provided)) return false;
-		}
-
-		return true;
+		return Sets.difference(executor.requiredEnv(), providedEnv).isEmpty();
 	}
 
 	@Override

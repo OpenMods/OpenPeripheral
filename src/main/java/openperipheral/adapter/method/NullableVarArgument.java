@@ -2,17 +2,19 @@ package openperipheral.adapter.method;
 
 import com.google.common.base.Preconditions;
 import com.google.common.reflect.TypeToken;
-import openperipheral.api.adapter.IScriptType;
+import openperipheral.adapter.DefaultAttributeProperty;
+import openperipheral.adapter.IAttributeProperty;
+import openperipheral.api.adapter.method.ArgType;
 
 public class NullableVarArgument extends VarArgument {
 
-	public NullableVarArgument(String name, String description, IScriptType luaType, TypeToken<?> javaType, int javaArgIndex) {
+	public NullableVarArgument(String name, String description, ArgType luaType, TypeToken<?> javaType, int javaArgIndex) {
 		super(name, description, luaType, javaType, javaArgIndex);
 	}
 
 	@Override
-	protected TypeToken<?> getArgType(TypeToken<?> javaArgClass) {
-		TypeToken<?> elementType = super.getArgType(javaArgClass);
+	protected TypeToken<?> getValueType(TypeToken<?> javaArgClass) {
+		TypeToken<?> elementType = super.getValueType(javaArgClass);
 		Preconditions.checkArgument(!elementType.isPrimitive(), "Nullable arguments can't be primitive");
 		return elementType;
 	}
@@ -21,8 +23,8 @@ public class NullableVarArgument extends VarArgument {
 	protected void checkArgument(Object value) {}
 
 	@Override
-	public boolean nullable() {
-		return true;
+	public boolean is(IAttributeProperty property) {
+		return property == DefaultAttributeProperty.NULLABLE || super.is(property);
 	}
 
 }

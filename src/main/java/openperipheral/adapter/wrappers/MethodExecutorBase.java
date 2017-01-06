@@ -1,32 +1,34 @@
 package openperipheral.adapter.wrappers;
 
 import com.google.common.base.Optional;
-import java.lang.reflect.Method;
-import java.util.Map;
+import java.util.Set;
 import openperipheral.adapter.AnnotationMetaExtractor;
 import openperipheral.adapter.IMethodCall;
+import openperipheral.adapter.IMethodCaller;
 import openperipheral.adapter.IMethodDescription;
 import openperipheral.adapter.RestrictedMethodExecutor;
-import openperipheral.adapter.method.MethodDeclaration;
 
-public abstract class MethodExecutorBase extends RestrictedMethodExecutor {
+public class MethodExecutorBase extends RestrictedMethodExecutor {
 
-	private final MethodDeclaration decl;
+	private final IMethodDescription methodDescription;
+
+	private final IMethodCaller methodCaller;
 
 	private final boolean isAsynchronous;
 
 	private final Optional<String> returnSignal;
 
-	public MethodExecutorBase(MethodDeclaration decl, Method method, AnnotationMetaExtractor info) {
-		super(info.getExcludedArchitectures(method), info.getFeatureGroups(method));
-		this.decl = decl;
-		this.isAsynchronous = info.isAsync(method);
-		this.returnSignal = info.getReturnSignal(method);
+	public MethodExecutorBase(IMethodDescription methodDescription, IMethodCaller methodCaller, AnnotationMetaExtractor.Bound info) {
+		super(info.getExcludedArchitectures(), info.getFeatureGroups());
+		this.methodDescription = methodDescription;
+		this.methodCaller = methodCaller;
+		this.isAsynchronous = info.isAsync();
+		this.returnSignal = info.getReturnSignal();
 	}
 
 	@Override
 	public IMethodDescription description() {
-		return decl;
+		return methodDescription;
 	}
 
 	@Override
@@ -40,13 +42,13 @@ public abstract class MethodExecutorBase extends RestrictedMethodExecutor {
 	}
 
 	@Override
-	public Map<String, Class<?>> requiredEnv() {
-		return decl.getOptionalArgs();
+	public Set<Class<?>> requiredEnv() {
+		return methodCaller.requiredEnvArgs();
 	}
 
 	@Override
 	public IMethodCall startCall(Object target) {
-		return decl.startCall(target);
+		return methodCaller.startCall(target);
 	}
 
 }

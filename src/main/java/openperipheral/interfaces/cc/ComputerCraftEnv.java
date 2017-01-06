@@ -95,20 +95,20 @@ public class ComputerCraftEnv {
 
 	private IMethodCall addCommonArgs(IMethodCall call, ILuaContext context) {
 		return call
-				.setEnv(Constants.ARG_CONVERTER, converter)
-				.setEnv(Constants.ARG_CONTEXT, context);
+				.setEnv(IConverter.class, converter)
+				.setEnv(ILuaContext.class, context);
 	}
 
 	public IMethodCall addObjectArgs(IMethodCall call, ILuaContext context) {
 		return addCommonArgs(call, context)
-				.setEnv(Constants.ARG_ARCHITECTURE, new CCArchitecture(converter));
+				.setEnv(IArchitecture.class, new CCArchitecture(converter));
 	}
 
 	public IMethodCall addPeripheralArgs(IMethodCall call, IComputerAccess access, ILuaContext context) {
 		final CCArchitectureAccess wrapper = new CCArchitectureAccess(access, converter);
 		return addCommonArgs(call, context)
-				.setEnv(Constants.ARG_ARCHITECTURE, wrapper)
-				.setEnv(Constants.ARG_ACCESS, wrapper)
-				.setEnv(Constants.ARG_COMPUTER, access);
+				.setEnv(IArchitecture.class, wrapper)
+				.setEnv(IArchitectureAccess.class, wrapper)
+				.setEnv(IComputerAccess.class, access);
 	}
 }

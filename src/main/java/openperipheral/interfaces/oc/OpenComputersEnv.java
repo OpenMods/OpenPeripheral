@@ -83,20 +83,20 @@ public class OpenComputersEnv {
 
 	private IMethodCall addCommonArgs(IMethodCall call, Context context) {
 		return call
-				.setEnv(Constants.ARG_CONVERTER, converter)
-				.setEnv(Constants.ARG_CONTEXT, context);
+				.setEnv(IConverter.class, converter)
+				.setEnv(Context.class, context);
 	}
 
 	public IMethodCall addObjectArgs(IMethodCall call, Context context) {
 		return addCommonArgs(call, context)
-				.setEnv(Constants.ARG_ARCHITECTURE, new OCArchitecture(converter));
+				.setEnv(IArchitecture.class, new OCArchitecture(converter));
 	}
 
 	public IMethodCall addPeripheralArgs(IMethodCall call, Node node, Context context) {
 		final OCArchitectureAccess wrapper = new OCArchitectureAccess(node, context, converter);
 		return addCommonArgs(call, context)
-				.setEnv(Constants.ARG_ARCHITECTURE, wrapper)
-				.setEnv(Constants.ARG_ACCESS, wrapper)
-				.setEnv(Constants.ARG_NODE, node);
+				.setEnv(IArchitecture.class, wrapper)
+				.setEnv(IArchitectureAccess.class, wrapper)
+				.setEnv(Node.class, node);
 	}
 }

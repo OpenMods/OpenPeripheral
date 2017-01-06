@@ -6,8 +6,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * This annotation is used to supply metadata about arguments in script methods.
- * Every argument that is supposed to be filled by caller in script should be marked with this one.
+ * <p>
+ * This annotation is used to mark arguments that should receive values provided in method call on script side.
+ * Values will be converted to type of the argument.
+ * </p>
+ *
+ * <p>
+ * This annotation is also used for providing metadata for documentation
+ * </p>
  *
  * @see Env
  */
@@ -37,5 +43,5 @@ public @interface Arg {
 	 * If this value is true, argument accepts {@code null} values ({@code nil} on scripting side).
 	 * When nullable values are allowed, Java type of argument must not be primitive.
 	 */
-	boolean isNullable() default false;
+	boolean nullable() default false;
 }

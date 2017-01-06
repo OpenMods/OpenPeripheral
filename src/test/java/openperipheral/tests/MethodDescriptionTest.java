@@ -1,499 +1,518 @@
 package openperipheral.tests;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.google.common.reflect.TypeToken;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
-import openperipheral.adapter.method.MethodDeclaration;
-import openperipheral.api.adapter.method.Alias;
+import java.util.Set;
+import openperipheral.adapter.DefaultAttributeProperty;
+import openperipheral.adapter.IAttributeProperty;
+import openperipheral.adapter.method.ArgVisitor;
+import openperipheral.adapter.method.ArgWrapper;
+import openperipheral.adapter.method.Argument;
+import openperipheral.adapter.method.ArgumentDefinitionException;
 import openperipheral.api.adapter.method.Arg;
 import openperipheral.api.adapter.method.Env;
-import openperipheral.api.adapter.method.IMultiReturn;
-import openperipheral.api.adapter.method.MultipleReturn;
 import openperipheral.api.adapter.method.Optionals;
 import openperipheral.api.adapter.method.ReturnType;
 import openperipheral.api.adapter.method.ScriptCallable;
-import openperipheral.api.helpers.MultiReturn;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class MethodDescriptionTest {
 
-	private static final ImmutableMap<String, Class<?>> NO_OPTIONALS = ImmutableMap.<String, Class<?>> of();
+	private static class TargetA {}
 
-	public static class A {}
-
-	public static class B extends A {}
-
-	public static class C {}
-
-	public static class D {
-		public String test() {
-			return "out";
-		}
-	}
+	private static class TargetB extends TargetA {}
 
 	private static Method getMethod(Class<?> cls) {
 		for (Method m : cls.getMethods())
 			if (m.getName().equals("test")) return m;
 
-		throw new IllegalArgumentException();
+		throw new AssertionError();
 	}
 
-	private static void checkNoArgs(MethodDeclaration decl) {
-		decl.validateUnnamedEnvArgs();
-		decl.validateEnvArgs(NO_OPTIONALS);
+	private final List<TestableArgVisitor> allTests = Lists.newArrayList();
+
+	@After
+	public void ensureAllDone() {
+		for (TestableArgVisitor v : allTests)
+			Assert.assertTrue(v.isDone());
+
+		allTests.clear();
 	}
 
-	private static void checkTargetOnly(MethodDeclaration decl) {
-		decl.validateUnnamedEnvArgs(B.class);
-		decl.validateEnvArgs(NO_OPTIONALS);
+	private static class TestableArgVisitor extends ArgVisitor {
+		private final Map<Integer, Argument> luaArgs = Maps.newHashMap();
+
+		private final Map<Integer, Class<?>> unnamedArg = Maps.newHashMap();
+
+		private final Map<Integer, Class<?>> envArgs = Maps.newHashMap();
+
+		private final Set<Integer> checkedArgs = Sets.newHashSet();
+
+		private boolean done;
+
+		@Override
+		protected void visitScriptArg(int argIndex, Argument arg) {
+			final Argument prev = luaArgs.put(argIndex, arg);
+			Assert.assertNull(prev);
+		}
+
+		@Override
+		protected void visitUnnamedArg(int argIndex, TypeToken<?> type) {
+			final Class<?> prev = unnamedArg.put(argIndex, type.getRawType());
+			Assert.assertNull(prev);
+		}
+
+		@Override
+		protected void visitEnvArg(int argIndex, TypeToken<?> type) {
+			final Class<?> prev = envArgs.put(argIndex, type.getRawType());
+			Assert.assertNull(prev);
+		}
+
+		public TestableArgVisitor checkLuaArg(int index, String name, String desc, String type, DefaultAttributeProperty... props) {
+			final Argument arg = luaArgs.get(index);
+			Assert.assertNotNull(arg);
+
+			Assert.assertEquals(name, arg.name());
+			Assert.assertEquals(desc, arg.description());
+
+			for (IAttributeProperty prop : props)
+				Assert.assertTrue(arg.is(prop));
+
+			final Collection<? extends IAttributeProperty> notProps;
+			if (props.length == 0)
+				notProps = EnumSet.allOf(DefaultAttributeProperty.class);
+			else
+				notProps = EnumSet.complementOf(EnumSet.copyOf(Arrays.asList(props)));
+
+			for (IAttributeProperty prop : notProps)
+				Assert.assertFalse(arg.is(prop));
+
+			Assert.assertEquals(type, arg.type().describe());
+
+			checkedArgs.add(index);
+			return this;
+		}
+
+		public TestableArgVisitor checkEnvArg(int index, Class<?> cls) {
+			Assert.assertEquals(cls, envArgs.get(index));
+			checkedArgs.add(index);
+			return this;
+		}
+
+		public TestableArgVisitor checkUnnamedArg(int index, Class<?> cls) {
+			Assert.assertEquals(cls, unnamedArg.get(index));
+			checkedArgs.add(index);
+			return this;
+		}
+
+		public void done() {
+			Set<Integer> allArgs = Sets.newHashSet();
+
+			for (Integer i : luaArgs.keySet())
+				Assert.assertTrue(allArgs.add(i));
+
+			for (Integer i : envArgs.keySet())
+				Assert.assertTrue(allArgs.add(i));
+
+			for (Integer i : unnamedArg.keySet())
+				Assert.assertTrue(allArgs.add(i));
+
+			Assert.assertEquals(allArgs, checkedArgs);
+
+			this.done = true;
+		}
+
+		public boolean isDone() {
+			return this.done;
+		}
 	}
 
-	private static MethodDeclaration createMethodDecl(Class<?> cls) {
+	protected TestableArgVisitor wrapMethod(Class<?> cls) {
 		final Method m = getMethod(cls);
-		return new MethodDeclaration(cls, m, m.getAnnotation(ScriptCallable.class), "test");
+		return wrapMethod(cls, m);
 	}
 
-	private static Map<String, Class<?>> singleArg(String name, Class<?> cls) {
-		return ImmutableMap.<String, Class<?>> of(name, cls);
+	protected TestableArgVisitor wrapMethod(Class<?> cls, Method method) {
+		final Method m = getMethod(cls);
+		final List<ArgWrapper> args = ArgWrapper.fromMethod(cls, m);
+		final TestableArgVisitor testableArgVisitor = new TestableArgVisitor();
+		testableArgVisitor.visitArgs(args, m.isVarArgs());
+		allTests.add(testableArgVisitor);
+		return testableArgVisitor;
 	}
 
-	private static Map<String, Class<?>> twoArgs(String name1, Class<?> cls1, String name2, Class<?> cls2) {
-		return ImmutableMap.<String, Class<?>> of(name1, cls1, name2, cls2);
+	protected TestableArgVisitor wrapMethodFail(Class<?> cls) {
+		final Method m = getMethod(cls);
+		return wrapMethod(cls, m);
 	}
 
-	public static class BaseTargetOnly {
-		@ScriptCallable(returnTypes = ReturnType.BOOLEAN)
-		public boolean test(A target, @Env("env1") A e) {
-			return true;
-		}
-	}
-
-	@Test
-	public void testBaseTargetOnly() {
-		MethodDeclaration decl = createMethodDecl(BaseTargetOnly.class);
-		decl.validateUnnamedEnvArgs(B.class);
-		decl.validateEnvArgs(singleArg("env1", B.class));
-	}
-
-	public static class TargetOnly {
-		@Alias({ "aliasA", "aliasB" })
-		@ScriptCallable(returnTypes = ReturnType.BOOLEAN)
-		public boolean test(B target) {
-			return true;
-		}
-	}
-
-	@Test
-	public void testTargetOnly() {
-		MethodDeclaration decl = createMethodDecl(TargetOnly.class);
-		Assert.assertEquals(Sets.newHashSet(decl.getNames()), Sets.newHashSet("test", "aliasA", "aliasB"));
-		checkTargetOnly(decl);
-	}
-
-	public static class SingleLuaArg {
-		@ScriptCallable(returnTypes = ReturnType.BOOLEAN)
-		public boolean test(B target, @Arg(name = "a") int a) {
-			return true;
-		}
-	}
-
-	@Test
-	public void testSingleLuaArg() {
-		MethodDeclaration decl = createMethodDecl(SingleLuaArg.class);
-		checkTargetOnly(decl);
-	}
-
-	public static class SingleEnv {
-		@ScriptCallable(returnTypes = ReturnType.STRING)
-		public String test(B target, @Env("env1") D access) {
-			return access.test();
-		}
-	}
-
-	@Test
-	public void testSingleEnv() {
-		MethodDeclaration decl = createMethodDecl(SingleEnv.class);
-		decl.validateUnnamedEnvArgs(B.class);
-		decl.validateEnvArgs(singleArg("env1", D.class));
-	}
-
-	@Test(expected = Exception.class)
-	public void testMissingEnvName() {
-		MethodDeclaration decl = createMethodDecl(SingleEnv.class);
-		decl.validateUnnamedEnvArgs(B.class);
-		decl.validateEnvArgs(singleArg("env2", D.class));
-	}
-
-	@Test(expected = Exception.class)
-	public void testMissingEnvType() {
-		MethodDeclaration decl = createMethodDecl(SingleEnv.class);
-		decl.validateUnnamedEnvArgs(B.class);
-		decl.validateEnvArgs(singleArg("env1", B.class));
-	}
-
-	@Test(expected = Exception.class)
-	public void testMissingPositioned() {
-		MethodDeclaration decl = createMethodDecl(SingleEnv.class);
-		decl.validateUnnamedEnvArgs(B.class, B.class);
-	}
-
-	@Test(expected = Exception.class)
-	public void testInvalidTypePositioned() {
-		MethodDeclaration decl = createMethodDecl(SingleEnv.class);
-		decl.validateUnnamedEnvArgs(D.class);
-	}
-
-	public static class Empty {
-		@ScriptCallable(returnTypes = ReturnType.STRING)
-		public String test() {
-			return "oops";
-		}
-	}
-
-	@Test
-	public void testEmpty() {
-		MethodDeclaration decl = createMethodDecl(Empty.class);
-		checkNoArgs(decl);
-	}
-
-	public static class TwoEnvOnly {
-		@ScriptCallable(returnTypes = ReturnType.STRING)
-		public String test(@Env("env1") D access, @Env("target") Object target) {
-			return access.toString();
-		}
-	}
-
-	@Test
-	public void testTwoEnvOnly() {
-		MethodDeclaration decl = createMethodDecl(TwoEnvOnly.class);
-		decl.validateUnnamedEnvArgs();
-		decl.validateEnvArgs(twoArgs("env1", D.class, "target", Object.class));
-	}
-
-	public static class SingleEnvOnly {
-		@ScriptCallable(returnTypes = ReturnType.STRING)
-		public String test(@Env("env1") D access) {
-			return access.toString();
-		}
-	}
-
-	@Test
-	public void testSingleEnvOnly() {
-		MethodDeclaration decl = createMethodDecl(SingleEnvOnly.class);
-		decl.validateUnnamedEnvArgs();
-		decl.validateEnvArgs(singleArg("env1", D.class));
-	}
-
-	public static class SingleLuaOnly {
-		@ScriptCallable(returnTypes = ReturnType.STRING)
-		public String test(@Arg(name = "a") int a) {
-			return "" + a;
-		}
+	protected void wrapMethodFail(Class<?> cls, Method method) {
+		final Method m = getMethod(cls);
+		final List<ArgWrapper> args = ArgWrapper.fromMethod(cls, m);
+		new TestableArgVisitor().visitArgs(args, m.isVarArgs());
 	}
 
 	@Test
 	public void testSingleLuaOnly() {
-		MethodDeclaration decl = createMethodDecl(SingleLuaOnly.class);
-		checkNoArgs(decl);
-	}
-
-	public static class SingleOptionalLuaOnly {
-		@ScriptCallable(returnTypes = ReturnType.STRING)
-		public String test(@Optionals @Arg(name = "a") Integer a) {
-			return "" + a;
+		class SingleLuaOnly {
+			@ScriptCallable(returnTypes = ReturnType.STRING)
+			public String test(@Arg(name = "b", description = "test") int a) {
+				return "" + a;
+			}
 		}
+
+		wrapMethod(SingleLuaOnly.class)
+				.checkLuaArg(0, "b", "test", "number")
+				.done();
 	}
 
 	@Test
 	public void testSingleOptionalLuaOnly() {
-		MethodDeclaration decl = createMethodDecl(SingleOptionalLuaOnly.class);
-		checkNoArgs(decl);
-	}
-
-	public static class VarargLuaStart {
-		@ScriptCallable(returnTypes = ReturnType.STRING)
-		public String test(@Arg(name = "a") int... a) {
-			return Arrays.toString(a);
+		class SingleOptionalLuaOnly {
+			@ScriptCallable(returnTypes = ReturnType.STRING)
+			public String test(@Optionals @Arg(name = "a") Integer a) {
+				return "" + a;
+			}
 		}
+
+		wrapMethod(SingleOptionalLuaOnly.class)
+				.checkLuaArg(0, "a", "", "number", DefaultAttributeProperty.OPTIONAL)
+				.done();
 	}
 
 	@Test
 	public void testVarargLuaStart() {
-		MethodDeclaration decl = createMethodDecl(VarargLuaStart.class);
-		checkNoArgs(decl);
-	}
-
-	public static class OptionalVararg {
-		@ScriptCallable(returnTypes = ReturnType.STRING)
-		public String test(@Optionals @Arg(name = "a") Integer... a) {
-			return Arrays.toString(a);
+		class VarargLuaStart {
+			@ScriptCallable(returnTypes = ReturnType.STRING)
+			public String test(@Arg(name = "a") int... a) {
+				return Arrays.toString(a);
+			}
 		}
-	}
 
-	@Test
-	public void testOptionalVararg() {
-		MethodDeclaration decl = createMethodDecl(OptionalVararg.class);
-		checkNoArgs(decl);
-	}
-
-	public static class EnvLua {
-		@ScriptCallable(returnTypes = ReturnType.STRING)
-		public String test(B target, @Env("env1") D access, @Arg(name = "a") Integer a) {
-			return access.toString();
-		}
-	}
-
-	@Test
-	public void testEnvLua() {
-		MethodDeclaration decl = createMethodDecl(EnvLua.class);
-		decl.validateUnnamedEnvArgs(B.class);
-		decl.validateEnvArgs(singleArg("env1", D.class));
-	}
-
-	public static class FullOptional {
-		@ScriptCallable(returnTypes = ReturnType.STRING)
-		public String test(B target, @Arg(name = "a") int a, @Optionals @Arg(name = "b") String b) {
-			return "A";
-		}
-	}
-
-	@Test
-	public void testFullOptional() {
-		MethodDeclaration decl = createMethodDecl(FullOptional.class);
-		checkTargetOnly(decl);
-	}
-
-	public static class SingleOptional {
-		@ScriptCallable(returnTypes = ReturnType.STRING)
-		public String test(B target, @Optionals @Arg(name = "a") String b) {
-			return "A";
-		}
+		wrapMethod(VarargLuaStart.class)
+				.checkLuaArg(0, "a", "", "number", DefaultAttributeProperty.VARIADIC)
+				.done();
 	}
 
 	@Test
 	public void testSingleOptional() {
-		MethodDeclaration decl = createMethodDecl(SingleOptional.class);
-		checkTargetOnly(decl);
+		class SingleOptional {
+			@ScriptCallable(returnTypes = ReturnType.STRING)
+			public String test(TargetB target, @Optionals @Arg(name = "a") String b) {
+				return "A";
+			}
+		}
+
+		wrapMethod(SingleOptional.class)
+				.checkUnnamedArg(0, TargetB.class)
+				.checkLuaArg(1, "a", "", "string", DefaultAttributeProperty.OPTIONAL)
+				.done();
 	}
 
-	public static class Vararg {
-		@ScriptCallable(returnTypes = ReturnType.STRING)
-		public String test(B target, @Arg(name = "a") int... a) {
-			return Arrays.toString(a);
+	@Test
+	public void testDoubleOptionals() {
+		class DoubleOptionals {
+			@ScriptCallable(returnTypes = ReturnType.STRING)
+			public String test(TargetB target, @Optionals @Arg(name = "a") String a, @Arg(name = "b") Double b) {
+				return "A";
+			}
 		}
+
+		wrapMethod(DoubleOptionals.class)
+				.checkUnnamedArg(0, TargetB.class)
+				.checkLuaArg(1, "a", "", "string", DefaultAttributeProperty.OPTIONAL)
+				.checkLuaArg(2, "b", "", "number", DefaultAttributeProperty.OPTIONAL)
+				.done();
+	}
+
+	@Test
+	public void testFullOptional() {
+		class NormalBeforeOptional {
+			@ScriptCallable(returnTypes = ReturnType.STRING)
+			public String test(TargetB target, @Arg(name = "a") int a, @Optionals @Arg(name = "b") String b) {
+				return "A";
+			}
+		}
+
+		wrapMethod(NormalBeforeOptional.class)
+				.checkUnnamedArg(0, TargetB.class)
+				.checkLuaArg(1, "a", "", "number")
+				.checkLuaArg(2, "b", "", "string", DefaultAttributeProperty.OPTIONAL)
+				.done();
 	}
 
 	@Test
 	public void testVararg() {
-		MethodDeclaration decl = createMethodDecl(Vararg.class);
-		checkTargetOnly(decl);
+		class Vararg {
+			@ScriptCallable(returnTypes = ReturnType.STRING)
+			public String test(TargetB target, @Arg(name = "a") int... a) {
+				return Arrays.toString(a);
+			}
+		}
+
+		wrapMethod(Vararg.class)
+				.checkUnnamedArg(0, TargetB.class)
+				.checkLuaArg(1, "a", "", "number", DefaultAttributeProperty.VARIADIC)
+				.done();
 	}
 
-	public static class Everything {
-		@ScriptCallable(returnTypes = ReturnType.STRING)
-		public String test(B target, @Env("env1") D access, @Arg(name = "a") int a, @Optionals @Arg(name = "b") String b, @Arg(name = "var") Integer... v) {
-			return access.test();
+	@Test
+	public void testNonVarargArray() {
+		class NonVarargArray {
+			@ScriptCallable(returnTypes = ReturnType.STRING)
+			public String test(TargetB target, @Arg(name = "a") int[] a) {
+				return Arrays.toString(a);
+			}
 		}
+
+		wrapMethod(NonVarargArray.class)
+				.checkUnnamedArg(0, TargetB.class)
+				.checkLuaArg(1, "a", "", "[number]")
+				.done();
+	}
+
+	@Test
+	public void testOptionalVararg() {
+		class OptionalVararg {
+			@ScriptCallable(returnTypes = ReturnType.STRING)
+			public String test(@Optionals @Arg(name = "a") Integer... a) {
+				return Arrays.toString(a);
+			}
+		}
+
+		wrapMethod(OptionalVararg.class)
+				.checkLuaArg(0, "a", "", "number", DefaultAttributeProperty.VARIADIC)
+				.done();
+	}
+
+	private interface EnvA {}
+
+	private interface EnvB {}
+
+	@Test
+	public void testSingleEnv() {
+		class SingleEnv {
+			@ScriptCallable(returnTypes = ReturnType.STRING)
+			public String test(@Env EnvA access) {
+				return access.toString();
+			}
+		}
+
+		wrapMethod(SingleEnv.class)
+				.checkEnvArg(0, EnvA.class)
+				.done();
+	}
+
+	@Test
+	public void testDoubleEnv() {
+		class DoubleEnv {
+			@ScriptCallable(returnTypes = ReturnType.STRING)
+			public String test(@Env EnvA access, @Env EnvB accessB) {
+				return access.toString();
+			}
+		}
+
+		wrapMethod(DoubleEnv.class)
+				.checkEnvArg(0, EnvA.class)
+				.checkEnvArg(1, EnvB.class)
+				.done();
+	}
+
+	@Test
+	public void testTargetEnv() {
+		class TargetEnv {
+			@ScriptCallable(returnTypes = ReturnType.STRING)
+			public String test(TargetB target, @Env EnvA access) {
+				return access.toString();
+			}
+		}
+
+		wrapMethod(TargetEnv.class)
+				.checkUnnamedArg(0, TargetB.class)
+				.checkEnvArg(1, EnvA.class)
+				.done();
+	}
+
+	@Test
+	public void testEnvLua() {
+		class TargetEnvLua {
+			@ScriptCallable(returnTypes = ReturnType.STRING)
+			public String test(TargetB target, @Env EnvA access, @Arg(name = "z") Integer a) {
+				return access.toString();
+			}
+		}
+
+		wrapMethod(TargetEnvLua.class)
+				.checkUnnamedArg(0, TargetB.class)
+				.checkEnvArg(1, EnvA.class)
+				.checkLuaArg(2, "z", "", "number")
+				.done();
 	}
 
 	@Test
 	public void testEverything() {
-		MethodDeclaration decl = createMethodDecl(Everything.class);
-		decl.validateUnnamedEnvArgs(B.class);
-		decl.validateEnvArgs(singleArg("env1", D.class));
-	}
-
-	public static class GenericBase<T, E, P> {
-		@ScriptCallable(returnTypes = ReturnType.STRING)
-		public String test(T target, @Env("env1") E access, @Arg(name = "a") P a) {
-			return String.valueOf(a);
+		class Everything {
+			@ScriptCallable(returnTypes = ReturnType.STRING)
+			public String test(TargetB target, @Env EnvA access, @Arg(name = "a") int a, @Optionals @Arg(name = "b") String b, @Arg(name = "var") Integer... v) {
+				return "test";
+			}
 		}
-	}
 
-	public static class GenericDerrived extends GenericBase<B, D, Float> {}
+		wrapMethod(Everything.class)
+				.checkUnnamedArg(0, TargetB.class)
+				.checkEnvArg(1, EnvA.class)
+				.checkLuaArg(2, "a", "", "number")
+				.checkLuaArg(3, "b", "", "string", DefaultAttributeProperty.OPTIONAL)
+				.checkLuaArg(4, "var", "", "number", DefaultAttributeProperty.VARIADIC)
+				.done();
+	}
 
 	@Test
 	public void testGeneric() {
-		MethodDeclaration decl = createMethodDecl(GenericDerrived.class);
-		decl.validateUnnamedEnvArgs(B.class);
-		decl.validateEnvArgs(singleArg("env1", D.class));
-	}
-
-	public static class MultiDirect {
-		@ScriptCallable(returnTypes = { ReturnType.NUMBER, ReturnType.NUMBER })
-		public IMultiReturn test(B target, @Arg(name = "a") int a) {
-			return MultiReturn.wrap(a, a + 1);
+		class GenericBase<T, E, P> {
+			@ScriptCallable(returnTypes = ReturnType.STRING)
+			public String test(T target, @Env E access, @Arg(name = "a") P a) {
+				return String.valueOf(a);
+			}
 		}
+
+		class GenericDerrived extends GenericBase<TargetB, EnvA, Float> {}
+
+		wrapMethod(GenericDerrived.class)
+				.checkUnnamedArg(0, TargetB.class)
+				.checkEnvArg(1, EnvA.class)
+				.checkLuaArg(2, "a", "", "number")
+				.done();
 	}
 
 	@Test
-	public void testMultiDirect() {
-		createMethodDecl(MultiDirect.class);
-	}
-
-	public static class MultiArray {
-		@MultipleReturn
-		@ScriptCallable(returnTypes = { ReturnType.NUMBER, ReturnType.NUMBER })
-		public int[] test(B target, @Arg(name = "a") int a) {
-			return new int[] { a, a + 1 };
+	public void testNullableLuaArg() {
+		class TargetEnv {
+			@ScriptCallable(returnTypes = ReturnType.STRING)
+			public String test(TargetB target, @Arg(name = "a", nullable = true) Boolean a) {
+				return a.toString();
+			}
 		}
+
+		wrapMethod(TargetEnv.class)
+				.checkUnnamedArg(0, TargetB.class)
+				.checkLuaArg(1, "a", "", "boolean", DefaultAttributeProperty.NULLABLE)
+				.done();
 	}
 
 	@Test
-	public void testMultiArray() {
-		createMethodDecl(MultiArray.class);
-	}
-
-	public static class NonMultiArray {
-		@ScriptCallable(returnTypes = ReturnType.TABLE)
-		public int[] test(B target, @Arg(name = "a") int a) {
-			return new int[] { a, a + 1 };
+	public void testNullableLuaVarArg() {
+		class TargetEnv {
+			@ScriptCallable(returnTypes = ReturnType.STRING)
+			public String test(TargetB target, @Arg(name = "a", nullable = true) Boolean... a) {
+				return a.toString();
+			}
 		}
+
+		wrapMethod(TargetEnv.class)
+				.checkUnnamedArg(0, TargetB.class)
+				.checkLuaArg(1, "a", "", "boolean", DefaultAttributeProperty.NULLABLE, DefaultAttributeProperty.VARIADIC)
+				.done();
 	}
 
-	@Test
-	public void testNonMultiArray() {
-		createMethodDecl(NonMultiArray.class);
-	}
-
-	public static class MultiCollection {
-		@MultipleReturn
-		@ScriptCallable(returnTypes = { ReturnType.NUMBER, ReturnType.NUMBER })
-		public List<Integer> test(B target, @Arg(name = "a") int a) {
-			return Lists.newArrayList(a, a + 1);
+	@Test(expected = IllegalStateException.class)
+	public void testOptionalNullable() {
+		class TargetEnv {
+			@ScriptCallable(returnTypes = ReturnType.STRING)
+			public String test(TargetB target, @Optionals @Arg(name = "a", nullable = true) Boolean a) {
+				return a.toString();
+			}
 		}
-	}
 
-	@Test
-	public void testMultiCollection() {
-		createMethodDecl(MultiCollection.class);
-	}
-
-	public static class NonMultiCollection {
-		@ScriptCallable(returnTypes = ReturnType.TABLE)
-		public Collection<Integer> test(B target, @Arg(name = "a") int a) {
-			return Sets.newHashSet(a, a + a);
-		}
-	}
-
-	@Test
-	public void testNonMultiCollection() {
-		createMethodDecl(NonMultiCollection.class);
-	}
-
-	public static class MultiCollectionVoid {
-		@MultipleReturn
-		@ScriptCallable(returnTypes = {})
-		public Collection<Integer> test(B target, @Arg(name = "a") int a) {
-			return Sets.newHashSet(a, a + a);
-		}
-	}
-
-	@Test(expected = Exception.class)
-	public void testMultiCollectionVoid() {
-		createMethodDecl(MultiCollectionVoid.class);
-	}
-
-	public static class MultiReturnVoid {
-		@ScriptCallable(returnTypes = {})
-		public IMultiReturn test(B target, @Arg(name = "a") int a) {
-			return null;
-		}
-	}
-
-	@Test(expected = Exception.class)
-	public void testMultiReturnVoid() {
-		createMethodDecl(MultiReturnVoid.class);
-	}
-
-	public static class TwoUnnamed {
-		@ScriptCallable(returnTypes = ReturnType.BOOLEAN)
-		public boolean test(B target, Object target2) {
-			return true;
-		}
+		wrapMethod(TargetEnv.class)
+				.checkUnnamedArg(0, TargetB.class)
+				.checkLuaArg(1, "a", "", "boolean", DefaultAttributeProperty.NULLABLE)
+				.done();
 	}
 
 	@Test
 	public void testTwoUnnamed() {
-		createMethodDecl(TwoUnnamed.class);
-	}
-
-	public static class UnnamedAfterLua {
-		@ScriptCallable(returnTypes = ReturnType.BOOLEAN)
-		public boolean test(@Arg(name = "foo") String arg, B target) {
-			return true;
+		class TwoUnnamed {
+			@ScriptCallable(returnTypes = ReturnType.BOOLEAN)
+			public boolean test(TargetB target, TargetA target2) {
+				return true;
+			}
 		}
+
+		wrapMethod(TwoUnnamed.class)
+				.checkUnnamedArg(0, TargetB.class)
+				.checkUnnamedArg(1, TargetA.class)
+				.done();
 	}
 
-	@Test(expected = MethodDeclaration.ArgumentDefinitionException.class)
+	@Test(expected = ArgumentDefinitionException.class)
 	public void testUnnamedAfterLua() {
-		createMethodDecl(UnnamedAfterLua.class);
-	}
-
-	public static class EnvAfterLua {
-		@ScriptCallable(returnTypes = ReturnType.BOOLEAN)
-		public boolean test(@Arg(name = "foo") String arg, @Env("env1") D target) {
-			return true;
+		class UnnamedAfterLua {
+			@ScriptCallable(returnTypes = ReturnType.BOOLEAN)
+			public boolean test(@Arg(name = "foo") String arg, TargetB target) {
+				return true;
+			}
 		}
+
+		wrapMethodFail(UnnamedAfterLua.class);
 	}
 
-	@Test(expected = MethodDeclaration.ArgumentDefinitionException.class)
+	@Test(expected = ArgumentDefinitionException.class)
 	public void testEnvAfterLua() {
-		createMethodDecl(EnvAfterLua.class);
-	}
-
-	public static class UnamedAfterEnv {
-		@ScriptCallable(returnTypes = ReturnType.BOOLEAN)
-		public boolean test(@Env("env1") D e1, B target) {
-			return true;
+		class EnvAfterLua {
+			@ScriptCallable(returnTypes = ReturnType.BOOLEAN)
+			public boolean test(@Arg(name = "foo") String arg, @Env EnvA target) {
+				return true;
+			}
 		}
+
+		wrapMethodFail(EnvAfterLua.class);
 	}
 
-	@Test(expected = MethodDeclaration.ArgumentDefinitionException.class)
+	@Test(expected = ArgumentDefinitionException.class)
 	public void testUnamedAfterEnv() {
-		createMethodDecl(UnamedAfterEnv.class);
-	}
-
-	public static class OptionalUnnnamed {
-		@ScriptCallable(returnTypes = ReturnType.BOOLEAN)
-		public boolean test(@Optionals B target) {
-			return true;
+		class UnamedAfterEnv {
+			@ScriptCallable(returnTypes = ReturnType.BOOLEAN)
+			public boolean test(@Env EnvA e1, EnvB target) {
+				return true;
+			}
 		}
+
+		wrapMethodFail(UnamedAfterEnv.class);
 	}
 
-	@Test(expected = MethodDeclaration.ArgumentDefinitionException.class)
+	@Test(expected = ArgumentDefinitionException.class)
 	public void testOptionalUnnnamed() {
-		createMethodDecl(OptionalUnnnamed.class);
-	}
-
-	public static class OptionalEnv {
-		@ScriptCallable(returnTypes = ReturnType.BOOLEAN)
-		public boolean test(@Optionals @Env("target") B target) {
-			return true;
+		class OptionalUnnnamed {
+			@ScriptCallable(returnTypes = ReturnType.BOOLEAN)
+			public boolean test(@Optionals EnvA target) {
+				return true;
+			}
 		}
+
+		wrapMethodFail(OptionalUnnnamed.class);
 	}
 
-	@Test(expected = MethodDeclaration.ArgumentDefinitionException.class)
+	@Test(expected = ArgumentDefinitionException.class)
 	public void testOptionalEnv() {
-		createMethodDecl(OptionalEnv.class);
-	}
-
-	public static class SameNamedEnv {
-		@ScriptCallable(returnTypes = ReturnType.BOOLEAN)
-		public boolean test(@Env("target") B target, @Env("target") B target2) {
-			return true;
+		class OptionalEnv {
+			@ScriptCallable(returnTypes = ReturnType.BOOLEAN)
+			public boolean test(@Optionals @Env EnvA target) {
+				return true;
+			}
 		}
-	}
 
-	@Test(expected = MethodDeclaration.ArgumentDefinitionException.class)
-	public void testSameNamedEnv() {
-		createMethodDecl(SameNamedEnv.class);
+		wrapMethodFail(OptionalEnv.class);
 	}
 
 }

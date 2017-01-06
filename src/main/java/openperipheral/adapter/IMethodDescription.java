@@ -1,10 +1,10 @@
 package openperipheral.adapter;
 
 import java.util.List;
-import java.util.Set;
 import openperipheral.api.adapter.IScriptType;
 
 public interface IMethodDescription {
+
 	public interface IArgumentDescription {
 		public String name();
 
@@ -12,13 +12,7 @@ public interface IMethodDescription {
 
 		public String description();
 
-		public boolean nullable();
-
-		public boolean optional();
-
-		public boolean variadic();
-
-		public Set<String> attributes();
+		public boolean is(IAttributeProperty property);
 	}
 
 	public String source();
@@ -30,6 +24,4 @@ public interface IMethodDescription {
 	public List<IArgumentDescription> arguments();
 
 	public IScriptType returnTypes();
-
-	public Set<String> attributes();
 }

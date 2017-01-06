@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 import openmods.reflection.TypeUtils;
 import openperipheral.adapter.AnnotationMetaExtractor;
+import openperipheral.adapter.AnnotationMetaExtractor.Bound;
 import openperipheral.adapter.IMethodDescription;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.types.TypeHelper;
@@ -150,8 +151,9 @@ public class PropertyListBuilder {
 	}
 
 	public PropertyListBuilder configureFromFieldMeta(AnnotationMetaExtractor metaInfo) {
-		excludedArchitectures.addAll(metaInfo.getExcludedArchitectures(field));
-		featureGroups.addAll(metaInfo.getFeatureGroups(field));
+		final Bound fieldMetaInfo = metaInfo.forElement(field);
+		excludedArchitectures.addAll(fieldMetaInfo.getExcludedArchitectures());
+		featureGroups.addAll(fieldMetaInfo.getFeatureGroups());
 		return this;
 	}
 

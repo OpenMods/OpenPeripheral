@@ -14,8 +14,8 @@ import openperipheral.adapter.FeatureGroupManager;
 import openperipheral.adapter.IMethodDescription;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.wrappers.AdapterWrapper;
+import openperipheral.adapter.wrappers.HelperAdapterWrapper;
 import openperipheral.adapter.wrappers.InlineAdapterWrapper;
-import openperipheral.adapter.wrappers.TechnicalAdapterWrapper;
 import openperipheral.api.adapter.AdapterSourceName;
 import openperipheral.api.peripheral.PeripheralTypeId;
 
@@ -80,7 +80,7 @@ public class ClassMethodsListBuilder {
 	}
 
 	public void addMethodsFromObject(Object obj, Class<?> targetCls, String source) {
-		addMethods(new TechnicalAdapterWrapper(obj, targetCls, source));
+		addMethods(new HelperAdapterWrapper(obj, targetCls, source));
 	}
 
 	private static String getSourceId(Class<?> cls) {

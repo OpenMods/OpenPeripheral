@@ -8,18 +8,21 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import com.google.common.base.Throwables;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import openperipheral.adapter.DefaultAttributeProperty;
 import openperipheral.adapter.IMethodCall;
 import openperipheral.adapter.IMethodDescription;
 import openperipheral.adapter.IMethodDescription.IArgumentDescription;
 import openperipheral.adapter.IMethodExecutor;
 import openperipheral.adapter.property.PropertyListBuilder;
 import openperipheral.adapter.types.TypeHelper;
-import openperipheral.api.Constants;
 import openperipheral.api.adapter.IIndexedPropertyCallback;
 import openperipheral.api.adapter.IPropertyCallback;
 import openperipheral.api.adapter.method.ArgType;
@@ -148,9 +151,10 @@ public class PropertyBuilderTest {
 		return executor;
 	}
 
+	private static final Set<Class<?>> PROVIDED_ENV = ImmutableSet.<Class<?>> of(IConverter.class);
+
 	private static void checkMethodEnv(IMethodExecutor executor) {
-		Assert.assertTrue(executor.requiredEnv().containsKey(Constants.ARG_CONVERTER));
-		Assert.assertTrue(executor.requiredEnv().get(Constants.ARG_CONVERTER).equals(IConverter.class));
+		Assert.assertTrue(Sets.difference(executor.requiredEnv(), PROVIDED_ENV).isEmpty());
 	}
 
 	private static void checkDescription(IMethodExecutor executor, String returnType, ArgType... args) {
@@ -175,14 +179,14 @@ public class PropertyBuilderTest {
 
 	private static void checkParamOptionality(IMethodExecutor executor, int index, boolean isOptional) {
 		final List<IArgumentDescription> arguments = executor.description().arguments();
-		Assert.assertEquals(isOptional, arguments.get(index).optional());
+		Assert.assertEquals(isOptional, arguments.get(index).is(DefaultAttributeProperty.OPTIONAL));
 	}
 
 	private static void verifySingleGetterExecution(IMethodExecutor executor, Field targetField) {
 		final IPropertyCallback target = mock(SingleCallbackSource.class);
 		final IConverter converter = mock(IConverter.class);
 		final IMethodCall call = executor.startCall(target);
-		call.setEnv(Constants.ARG_CONVERTER, converter);
+		call.setEnv(IConverter.class, converter);
 
 		final Value markerValue = new Value();
 		when(target.getField(any(Field.class))).thenReturn(markerValue);
@@ -209,7 +213,7 @@ public class PropertyBuilderTest {
 		final IPropertyCallback target = mock(SingleCallbackSource.class);
 		final IConverter converter = Mockito.mock(IConverter.class);
 		final IMethodCall call = executor.startCall(target);
-		call.setEnv(Constants.ARG_CONVERTER, converter);
+		call.setEnv(IConverter.class, converter);
 
 		final ConvertedValue markerConvertedValue = new ConvertedValue();
 		when(converter.toJava(any(), any(Type.class))).thenReturn(markerConvertedValue);
@@ -230,7 +234,7 @@ public class PropertyBuilderTest {
 		final IPropertyCallback target = mock(SingleCallbackSource.class);
 		final IConverter converter = Mockito.mock(IConverter.class);
 		final IMethodCall call = executor.startCall(target);
-		call.setEnv(Constants.ARG_CONVERTER, converter);
+		call.setEnv(IConverter.class, converter);
 
 		try {
 			final Object[] result = call.call((Object)null);
@@ -305,7 +309,7 @@ public class PropertyBuilderTest {
 		final IIndexedPropertyCallback target = mock(IndexedCallbackSource.class);
 		final IConverter converter = mock(IConverter.class);
 		final IMethodCall call = executor.startCall(target);
-		call.setEnv(Constants.ARG_CONVERTER, converter);
+		call.setEnv(IConverter.class, converter);
 
 		final ConvertedKey convertedIndexValue = new ConvertedKey();
 		when(converter.toJava(any(), any(Type.class))).thenReturn(convertedIndexValue);
@@ -334,7 +338,7 @@ public class PropertyBuilderTest {
 		final IIndexedPropertyCallback target = mock(IndexedCallbackSource.class);
 		final IConverter converter = Mockito.mock(IConverter.class);
 		final IMethodCall call = executor.startCall(target);
-		call.setEnv(Constants.ARG_CONVERTER, converter);
+		call.setEnv(IConverter.class, converter);
 
 		final ConvertedKey markerConvertedKey = new ConvertedKey();
 		when(converter.toJava(any(), eq(keyType))).thenReturn(markerConvertedKey);
@@ -361,7 +365,7 @@ public class PropertyBuilderTest {
 		final IIndexedPropertyCallback target = mock(IndexedCallbackSource.class);
 		final IConverter converter = Mockito.mock(IConverter.class);
 		final IMethodCall call = executor.startCall(target);
-		call.setEnv(Constants.ARG_CONVERTER, converter);
+		call.setEnv(IConverter.class, converter);
 
 		final ConvertedKey markerConvertedKey = new ConvertedKey();
 		when(converter.toJava(any(), eq(keyType))).thenReturn(markerConvertedKey);

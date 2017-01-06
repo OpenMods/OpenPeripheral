@@ -26,7 +26,7 @@ public class AnnotationMetaExtractor {
 
 	private final Set<String> classFeatureGroups;
 
-	private static boolean isAsynchronous(AnnotatedElement element, boolean defaultValue) {
+	private static boolean isAsync(AnnotatedElement element, boolean defaultValue) {
 		if (element == null) return defaultValue;
 		Asynchronous async = element.getAnnotation(Asynchronous.class);
 		return async != null? async.value() : defaultValue;
@@ -38,13 +38,13 @@ public class AnnotationMetaExtractor {
 		return ret != null? Optional.of(ret.value()) : defaultValue;
 	}
 
-	private static Set<String> getArchBlacklist(AnnotatedElement element, Set<String> defaultValue) {
+	private static Set<String> getExcludedArchitectures(AnnotatedElement element, Set<String> defaultValue) {
 		if (element == null) return defaultValue;
 		ExcludeArchitecture blacklist = element.getAnnotation(ExcludeArchitecture.class);
 		return blacklist != null? ImmutableSet.copyOf(blacklist.value()) : defaultValue;
 	}
 
-	private static Set<String> getFeatureGroup(AnnotatedElement element, Set<String> prevValue) {
+	private static Set<String> getFeatureGroups(AnnotatedElement element, Set<String> prevValue) {
 		if (element == null) return prevValue;
 		FeatureGroup fg = element.getAnnotation(FeatureGroup.class);
 		return (fg != null)? Sets.union(prevValue, Sets.newHashSet(fg.value())) : prevValue;
@@ -53,30 +53,43 @@ public class AnnotationMetaExtractor {
 	public AnnotationMetaExtractor(Class<?> cls) {
 		final Package pkg = cls.getPackage();
 
-		this.classIsAsync = isAsynchronous(cls, DEFAULT_ASYNC);
+		this.classIsAsync = isAsync(cls, DEFAULT_ASYNC);
 
 		this.classReturnSignal = getReturnSignal(cls, Optional.<String> absent());
 
-		Set<String> pkgExcludedArchitectures = getArchBlacklist(pkg, DEFAULT_BLACKLIST);
-		this.classExcludedArchitectures = getArchBlacklist(cls, pkgExcludedArchitectures);
+		Set<String> pkgExcludedArchitectures = getExcludedArchitectures(pkg, DEFAULT_BLACKLIST);
+		this.classExcludedArchitectures = getExcludedArchitectures(cls, pkgExcludedArchitectures);
 
-		Set<String> pkgFeatureGroups = getFeatureGroup(pkg, DEFAULT_FEATURE_GROUPS);
-		this.classFeatureGroups = getFeatureGroup(cls, pkgFeatureGroups);
+		Set<String> pkgFeatureGroups = getFeatureGroups(pkg, DEFAULT_FEATURE_GROUPS);
+		this.classFeatureGroups = getFeatureGroups(cls, pkgFeatureGroups);
 	}
 
-	public boolean isAsync(AnnotatedElement element) {
-		return isAsynchronous(element, classIsAsync);
+	public Bound forElement(AnnotatedElement e) {
+		return new Bound(e);
 	}
 
-	public Optional<String> getReturnSignal(AnnotatedElement element) {
-		return getReturnSignal(element, classReturnSignal);
-	}
+	public class Bound {
+		private final AnnotatedElement element;
 
-	public Set<String> getExcludedArchitectures(AnnotatedElement element) {
-		return getArchBlacklist(element, classExcludedArchitectures);
-	}
+		public Bound(AnnotatedElement element) {
+			this.element = element;
+		}
 
-	public Set<String> getFeatureGroups(AnnotatedElement element) {
-		return getFeatureGroup(element, classFeatureGroups);
+		public boolean isAsync() {
+			return AnnotationMetaExtractor.isAsync(element, classIsAsync);
+		}
+
+		public Optional<String> getReturnSignal() {
+			return AnnotationMetaExtractor.getReturnSignal(element, classReturnSignal);
+		}
+
+		public Set<String> getExcludedArchitectures() {
+			return AnnotationMetaExtractor.getExcludedArchitectures(element, classExcludedArchitectures);
+		}
+
+		public Set<String> getFeatureGroups() {
+			return AnnotationMetaExtractor.getFeatureGroups(element, classFeatureGroups);
+		}
+
 	}
 }

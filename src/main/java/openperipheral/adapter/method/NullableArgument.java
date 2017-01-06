@@ -3,19 +3,21 @@ package openperipheral.adapter.method;
 import com.google.common.base.Preconditions;
 import com.google.common.reflect.TypeToken;
 import java.util.Iterator;
-import openperipheral.api.adapter.IScriptType;
+import openperipheral.adapter.DefaultAttributeProperty;
+import openperipheral.adapter.IAttributeProperty;
+import openperipheral.api.adapter.method.ArgType;
 import openperipheral.api.converter.IConverter;
 
 public class NullableArgument extends Argument {
 
-	public NullableArgument(String name, String description, IScriptType luaType, TypeToken<?> javaType, int javaArgIndex) {
+	public NullableArgument(String name, String description, ArgType luaType, TypeToken<?> javaType, int javaArgIndex) {
 		super(name, description, luaType, javaType, javaArgIndex);
 	}
 
 	@Override
-	protected TypeToken<?> getArgType(TypeToken<?> javaArgClass) {
+	protected TypeToken<?> getValueType(TypeToken<?> javaArgClass) {
 		Preconditions.checkArgument(!javaArgClass.isPrimitive(), "Nullable arguments can't be primitive");
-		return super.getArgType(javaArgClass);
+		return super.getValueType(javaArgClass);
 	}
 
 	@Override
@@ -26,8 +28,8 @@ public class NullableArgument extends Argument {
 	}
 
 	@Override
-	public boolean nullable() {
-		return true;
+	public boolean is(IAttributeProperty property) {
+		return property == DefaultAttributeProperty.NULLABLE || super.is(property);
 	}
 
 }

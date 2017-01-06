@@ -6,17 +6,19 @@ import com.google.common.reflect.TypeToken;
 import java.lang.reflect.Array;
 import java.util.Iterator;
 import java.util.List;
-import openperipheral.api.adapter.IScriptType;
+import openperipheral.adapter.DefaultAttributeProperty;
+import openperipheral.adapter.IAttributeProperty;
+import openperipheral.api.adapter.method.ArgType;
 import openperipheral.api.converter.IConverter;
 
 public class VarArgument extends Argument {
 
-	public VarArgument(String name, String description, IScriptType luaType, TypeToken<?> javaType, int javaArgIndex) {
+	public VarArgument(String name, String description, ArgType luaType, TypeToken<?> javaType, int javaArgIndex) {
 		super(name, description, luaType, javaType, javaArgIndex);
 	}
 
 	@Override
-	protected TypeToken<?> getArgType(TypeToken<?> javaArgClass) {
+	protected TypeToken<?> getValueType(TypeToken<?> javaArgClass) {
 		// something went terribly wrong
 		Preconditions.checkArgument(javaArgClass.isArray(), "Vararg type must be array");
 		return javaArgClass.getComponentType();
@@ -48,8 +50,8 @@ public class VarArgument extends Argument {
 	}
 
 	@Override
-	public boolean variadic() {
-		return true;
+	public boolean is(IAttributeProperty property) {
+		return property == DefaultAttributeProperty.VARIADIC || super.is(property);
 	}
 
 }

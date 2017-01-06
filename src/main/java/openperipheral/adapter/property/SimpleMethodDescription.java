@@ -1,9 +1,7 @@
 package openperipheral.adapter.property;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Sets;
 import java.util.List;
-import java.util.Set;
 import openperipheral.adapter.IMethodDescription;
 import openperipheral.api.adapter.IScriptType;
 
@@ -35,11 +33,6 @@ public class SimpleMethodDescription implements IMethodDescription {
 	@Override
 	public String description() {
 		return description;
-	}
-
-	@Override
-	public Set<String> attributes() {
-		return Sets.newHashSet();
 	}
 
 	@Override

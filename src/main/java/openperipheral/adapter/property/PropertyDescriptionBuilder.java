@@ -4,6 +4,8 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import java.util.List;
 import openperipheral.adapter.ArgumentDescriptionBase;
+import openperipheral.adapter.DefaultAttributeProperty;
+import openperipheral.adapter.IAttributeProperty;
 import openperipheral.adapter.IMethodDescription;
 import openperipheral.adapter.IMethodDescription.IArgumentDescription;
 import openperipheral.adapter.types.AlternativeType;
@@ -16,17 +18,18 @@ public class PropertyDescriptionBuilder {
 	private static final String ARG_VALUE = "value";
 	private static final String ARG_INDEX = "index";
 
-	private static class IndexArgumentDescription extends ArgumentDescriptionBase {
+	private static class IndexArgumentDescription extends ArgumentDescriptionBase.Simple {
 		private final boolean isOptional;
 
 		private IndexArgumentDescription(String name, IScriptType type, String description, boolean isOptional) {
-			super(name, type, description);
+			super(name, description, type);
 			this.isOptional = isOptional;
 		}
 
 		@Override
-		public boolean optional() {
-			return isOptional;
+		public boolean is(IAttributeProperty property) {
+			if (isOptional && (property == DefaultAttributeProperty.OPTIONAL)) return true;
+			return super.is(property);
 		}
 	}
 
@@ -79,7 +82,7 @@ public class PropertyDescriptionBuilder {
 
 		final IScriptType valueType = calculateValueType();
 
-		arguments.add(new ArgumentDescriptionBase(ARG_VALUE, valueType, ""));
+		arguments.add(new ArgumentDescriptionBase.Simple(ARG_VALUE, "", valueType));
 		if (buildIndexedProperty) arguments.add(createIndexArgument());
 
 		return new SimpleMethodDescription(methodName, description, source, arguments, SingleType.VOID);

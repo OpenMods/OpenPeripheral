@@ -4,21 +4,25 @@ import com.google.common.base.Preconditions;
 import com.google.common.reflect.TypeToken;
 import java.util.Iterator;
 import openperipheral.adapter.ArgumentDescriptionBase;
+import openperipheral.adapter.types.TypeHelper;
 import openperipheral.api.adapter.IScriptType;
+import openperipheral.api.adapter.method.ArgType;
 import openperipheral.api.converter.IConverter;
 
 public class Argument extends ArgumentDescriptionBase {
 
-	public final TypeToken<?> javaType;
-	final int javaArgIndex;
+	private final IScriptType scriptType;
+	protected final TypeToken<?> javaType;
+	public final int javaArgIndex;
 
-	public Argument(String name, String description, IScriptType type, TypeToken<?> javaType, int javaArgIndex) {
-		super(name, type, description);
+	public Argument(String name, String description, ArgType typeSuggestion, TypeToken<?> argJavaType, int javaArgIndex) {
+		super(name, description);
 		this.javaArgIndex = javaArgIndex;
-		this.javaType = getArgType(javaType);
+		this.javaType = getValueType(argJavaType);
+		this.scriptType = TypeHelper.interpretArgType(typeSuggestion, this.javaType.getType());
 	}
 
-	protected TypeToken<?> getArgType(TypeToken<?> javaArgClass) {
+	protected TypeToken<?> getValueType(TypeToken<?> javaArgClass) {
 		return javaArgClass;
 	}
 
@@ -35,6 +39,11 @@ public class Argument extends ArgumentDescriptionBase {
 		} catch (Exception e) {
 			throw new IllegalArgumentException(String.format("Failed to convert arg '%s', cause: '%s'", name, e.getMessage()));
 		}
+	}
+
+	@Override
+	public IScriptType type() {
+		return scriptType;
 	}
 
 	@Override

@@ -17,6 +17,8 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import openmods.Log;
+import openperipheral.adapter.DefaultAttributeProperty;
+import openperipheral.adapter.IAttributeProperty;
 import openperipheral.adapter.IMethodDescription;
 import openperipheral.adapter.IMethodDescription.IArgumentDescription;
 import openperipheral.adapter.IMethodExecutor;
@@ -240,9 +242,8 @@ public class DocBuilder {
 
 		addOptionalTag(result, "description", arg.description());
 
-		result.setAttribute("nullable", Boolean.toString(arg.nullable()));
-		result.setAttribute("optional", Boolean.toString(arg.optional()));
-		result.setAttribute("variadic", Boolean.toString(arg.variadic()));
+		for (IAttributeProperty prop : DefaultAttributeProperty.values())
+			result.setAttribute(prop.id(), Boolean.toString(arg.is(prop)));
 
 		return result;
 	}

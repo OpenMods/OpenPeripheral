@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import joptsimple.internal.Strings;
 import openmods.utils.CachedFactory;
+import openperipheral.adapter.DefaultAttributeProperty;
+import openperipheral.adapter.IAttributeProperty;
 import openperipheral.adapter.IMethodDescription;
 import openperipheral.adapter.IMethodDescription.IArgumentDescription;
 import openperipheral.adapter.IMethodExecutor;
@@ -56,9 +58,8 @@ public class DocUtils {
 		result.put(NAME, arg.name());
 		result.put(DESCRIPTION, arg.description());
 
-		if (arg.nullable()) result.put("nullable", true);
-		if (arg.optional()) result.put("optional", true);
-		if (arg.variadic()) result.put("vararg", true);
+		for (IAttributeProperty prop : DefaultAttributeProperty.values())
+			if (arg.is(prop)) result.put(prop.id(), true);
 
 		return result;
 	}
@@ -94,8 +95,8 @@ public class DocUtils {
 	}
 
 	private static String decorate(String id, IArgumentDescription arg) {
-		if (arg.optional()) return id + "?";
-		if (arg.variadic()) return id + "...";
+		if (arg.is(DefaultAttributeProperty.OPTIONAL)) return id + "?";
+		if (arg.is(DefaultAttributeProperty.VARIADIC)) return id + "...";
 		return id;
 	}
 

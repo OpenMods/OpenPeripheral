@@ -1,21 +1,31 @@
 package openperipheral.adapter;
 
-import com.google.common.collect.Sets;
-import java.util.Set;
 import openperipheral.adapter.IMethodDescription.IArgumentDescription;
 import openperipheral.api.adapter.IScriptType;
 
-public class ArgumentDescriptionBase implements IArgumentDescription {
+public abstract class ArgumentDescriptionBase implements IArgumentDescription {
+
+	public static class Simple extends ArgumentDescriptionBase {
+		private IScriptType type;
+
+		public Simple(String name, String description, IScriptType type) {
+			super(name, description);
+			this.type = type;
+		}
+
+		@Override
+		public IScriptType type() {
+			return type;
+		}
+
+	}
 
 	protected final String name;
 
-	protected final IScriptType type;
-
 	protected String description;
 
-	public ArgumentDescriptionBase(String name, IScriptType type, String description) {
+	public ArgumentDescriptionBase(String name, String description) {
 		this.name = name;
-		this.type = type;
 		this.description = description;
 	}
 
@@ -25,33 +35,13 @@ public class ArgumentDescriptionBase implements IArgumentDescription {
 	}
 
 	@Override
-	public IScriptType type() {
-		return type;
-	}
-
-	@Override
 	public String description() {
 		return description;
 	}
 
 	@Override
-	public boolean nullable() {
+	public boolean is(IAttributeProperty property) {
 		return false;
-	}
-
-	@Override
-	public boolean optional() {
-		return false;
-	}
-
-	@Override
-	public boolean variadic() {
-		return false;
-	}
-
-	@Override
-	public Set<String> attributes() {
-		return Sets.newHashSet();
 	}
 
 }

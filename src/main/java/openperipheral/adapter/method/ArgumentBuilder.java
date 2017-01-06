@@ -2,8 +2,6 @@ package openperipheral.adapter.method;
 
 import com.google.common.base.Preconditions;
 import com.google.common.reflect.TypeToken;
-import openperipheral.adapter.types.TypeHelper;
-import openperipheral.api.adapter.IScriptType;
 import openperipheral.api.adapter.method.ArgType;
 
 public class ArgumentBuilder {
@@ -25,20 +23,18 @@ public class ArgumentBuilder {
 	}
 
 	public Argument build(String name, String description, ArgType luaType, TypeToken<?> javaType, int javaArgIndex) {
-		final IScriptType wrappedType = TypeHelper.interpretArgType(luaType, javaType.getType());
-
 		if (isVararg) {
-			if (isNullable) return new NullableVarArgument(name, description, wrappedType, javaType, javaArgIndex);
-			else return new VarArgument(name, description, wrappedType, javaType, javaArgIndex);
+			if (isNullable) return new NullableVarArgument(name, description, luaType, javaType, javaArgIndex);
+			else return new VarArgument(name, description, luaType, javaType, javaArgIndex);
 		}
 
 		if (isOptional) {
-			Preconditions.checkState(!isNullable, "Conflicting annotations on argument '%s'", name);
-			return new OptionalArgument(name, description, wrappedType, javaType, javaArgIndex);
+			Preconditions.checkState(!isNullable, "Conflicting annotations on argument '%s: optional cannot be nullable'", name);
+			return new OptionalArgument(name, description, luaType, javaType, javaArgIndex);
 		}
 
-		if (isNullable) return new NullableArgument(name, description, wrappedType, javaType, javaArgIndex);
+		if (isNullable) return new NullableArgument(name, description, luaType, javaType, javaArgIndex);
 
-		return new Argument(name, description, wrappedType, javaType, javaArgIndex);
+		return new Argument(name, description, luaType, javaType, javaArgIndex);
 	}
 }

@@ -1,11 +1,8 @@
 package openperipheral.adapter.wrappers;
 
-import java.lang.reflect.Method;
-import java.util.Map;
-import openperipheral.adapter.IMethodCall;
+import openperipheral.adapter.AnnotationMetaExtractor;
 import openperipheral.adapter.IMethodExecutor;
-import openperipheral.adapter.method.MethodDeclaration;
-import openperipheral.api.Constants;
+import openperipheral.adapter.method.MethodWrapperBuilder;
 import openperipheral.api.adapter.IAdapter;
 import openperipheral.api.adapter.IAdapterWithConstraints;
 
@@ -31,11 +28,19 @@ public class ExternalAdapterWrapper extends AdapterWrapper {
 		}
 	}
 
-	private final IAdapter adapter;
+	public ExternalAdapterWrapper(final IAdapter adapter) {
+		super(adapter.getClass(), adapter.getTargetClass(), adapter.getClass(), adapter.getSourceId(),
+				createExecutionFactory(adapter));
+	}
 
-	public ExternalAdapterWrapper(IAdapter adapter) {
-		super(adapter.getClass(), adapter.getTargetClass(), adapter.getClass(), adapter.getSourceId());
-		this.adapter = adapter;
+	private static ExecutorFactory createExecutionFactory(final IAdapter adapter) {
+		return new ExecutorFactory() {
+			@Override
+			public IMethodExecutor createExecutor(AnnotationMetaExtractor.Bound metaInfo, MethodWrapperBuilder decl) {
+				decl.defineTargetArg(0, adapter.getTargetClass());
+				return new MethodExecutorBase(decl.getMethodDescription(), decl.createBoundMethodCaller(adapter), metaInfo);
+			}
+		};
 	}
 
 	@Override
@@ -46,27 +51,5 @@ public class ExternalAdapterWrapper extends AdapterWrapper {
 	@Override
 	public String describe() {
 		return "external (source: " + adapterClass.toString() + ")";
-	}
-
-	@Override
-	protected void prepareDeclaration(MethodDeclaration decl) {
-		decl.nameEnv(0, Constants.ARG_TARGET, targetClass);
-	}
-
-	@Override
-	public IMethodExecutor createExecutor(Method method, MethodDeclaration decl) {
-		return new MethodExecutorBase(decl, method, metaInfo) {
-			@Override
-			public IMethodCall startCall(Object target) {
-				return super.startCall(adapter).setEnv(Constants.ARG_TARGET, target);
-			}
-
-			@Override
-			public Map<String, Class<?>> requiredEnv() {
-				final Map<String, Class<?>> requiredEnv = super.requiredEnv();
-				requiredEnv.remove(Constants.ARG_TARGET);
-				return requiredEnv;
-			}
-		};
 	}
 }

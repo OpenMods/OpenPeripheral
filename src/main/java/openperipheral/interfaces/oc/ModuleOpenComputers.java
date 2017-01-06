@@ -43,9 +43,9 @@ public class ModuleOpenComputers {
 		final MethodSelector peripheralSelector = new MethodSelector(Constants.ARCH_OPEN_COMPUTERS)
 				.allowReturnSignal()
 				.addDefaultEnv()
-				.addProvidedEnv(Constants.ARG_ACCESS, IArchitectureAccess.class)
-				.addProvidedEnv(Constants.ARG_CONTEXT, Context.class)
-				.addProvidedEnv(Constants.ARG_NODE, Node.class);
+				.addProvidedEnv(IArchitectureAccess.class)
+				.addProvidedEnv(Context.class)
+				.addProvidedEnv(Node.class);
 
 		PERIPHERAL_METHODS_FACTORY = new EnvironmentMethodsFactory<ManagedEnvironment>(
 				AdapterRegistry.PERIPHERAL_ADAPTERS,
@@ -58,7 +58,7 @@ public class ModuleOpenComputers {
 		final MethodSelector objectSelector = new MethodSelector(Constants.ARCH_OPEN_COMPUTERS)
 				// .allowReturnSignal() // for symmetry with CC
 				.addDefaultEnv()
-				.addProvidedEnv(Constants.ARG_CONTEXT, Context.class);
+				.addProvidedEnv(Context.class);
 
 		OBJECT_METHODS_FACTORY = new EnvironmentMethodsFactory<Value>(
 				AdapterRegistry.OBJECT_ADAPTERS,

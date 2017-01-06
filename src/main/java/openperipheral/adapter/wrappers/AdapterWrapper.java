@@ -7,7 +7,7 @@ import java.util.List;
 import openmods.Log;
 import openperipheral.adapter.AnnotationMetaExtractor;
 import openperipheral.adapter.IMethodExecutor;
-import openperipheral.adapter.method.MethodDeclaration;
+import openperipheral.adapter.method.MethodWrapperBuilder;
 import openperipheral.api.adapter.method.ScriptCallable;
 
 public abstract class AdapterWrapper {
@@ -20,20 +20,22 @@ public abstract class AdapterWrapper {
 		}
 	}
 
+	protected interface ExecutorFactory {
+		public IMethodExecutor createExecutor(AnnotationMetaExtractor.Bound metaInfo, MethodWrapperBuilder decl);
+	}
+
 	protected final List<IMethodExecutor> methods;
 	protected final Class<?> targetClass;
 	protected final Class<?> adapterClass;
-	protected final Class<?> rootClass;
 	protected final String source;
-	protected final AnnotationMetaExtractor metaInfo;
 
-	protected AdapterWrapper(Class<?> adapterClass, Class<?> targetClass, Class<?> rootClass, String source) {
+	protected AdapterWrapper(Class<?> adapterClass, Class<?> targetClass, Class<?> rootClass, String source, ExecutorFactory executorFactory) {
 		this.adapterClass = adapterClass;
 		this.targetClass = targetClass;
-		this.rootClass = rootClass;
 		this.source = source;
-		this.metaInfo = new AnnotationMetaExtractor(adapterClass);
-		this.methods = ImmutableList.copyOf(buildMethodList());
+
+		final AnnotationMetaExtractor metaInfo = new AnnotationMetaExtractor(adapterClass);
+		this.methods = ImmutableList.copyOf(buildMethodList(rootClass, metaInfo, executorFactory));
 	}
 
 	public String source() {
@@ -56,11 +58,7 @@ public abstract class AdapterWrapper {
 
 	public abstract String describe();
 
-	public abstract IMethodExecutor createExecutor(Method method, MethodDeclaration decl);
-
-	protected abstract void prepareDeclaration(MethodDeclaration decl);
-
-	protected List<IMethodExecutor> buildMethodList() {
+	protected List<IMethodExecutor> buildMethodList(Class<?> rootClass, AnnotationMetaExtractor metaInfo, ExecutorFactory executorFactory) {
 		List<IMethodExecutor> result = Lists.newArrayList();
 
 		Method[] clsMethods;
@@ -77,11 +75,8 @@ public abstract class AdapterWrapper {
 				ScriptCallable callableAnn = method.getAnnotation(ScriptCallable.class);
 				if (callableAnn == null) continue;
 
-				final MethodDeclaration decl = new MethodDeclaration(rootClass, method, callableAnn, source);
-				prepareDeclaration(decl);
-				decl.verifyAllParamsNamed();
-
-				IMethodExecutor exec = createExecutor(method, decl);
+				final MethodWrapperBuilder decl = new MethodWrapperBuilder(rootClass, method, callableAnn, source);
+				final IMethodExecutor exec = executorFactory.createExecutor(metaInfo.forElement(method), decl);
 				result.add(exec);
 			} catch (Throwable e) {
 				throw new MethodWrapException(method, e);

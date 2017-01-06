@@ -35,9 +35,9 @@ public class ModuleComputerCraft {
 		final MethodSelector peripheralSelector = new MethodSelector(Constants.ARCH_COMPUTER_CRAFT)
 				.allowReturnSignal()
 				.addDefaultEnv()
-				.addProvidedEnv(Constants.ARG_ACCESS, IArchitectureAccess.class)
-				.addProvidedEnv(Constants.ARG_COMPUTER, IComputerAccess.class)
-				.addProvidedEnv(Constants.ARG_CONTEXT, ILuaContext.class);
+				.addProvidedEnv(IArchitectureAccess.class)
+				.addProvidedEnv(IComputerAccess.class)
+				.addProvidedEnv(ILuaContext.class);
 
 		PERIPHERAL_METHODS_FACTORY = new ComposedMethodsFactory<IndexedMethodMap>(AdapterRegistry.PERIPHERAL_ADAPTERS, peripheralSelector) {
 			@Override
@@ -49,7 +49,7 @@ public class ModuleComputerCraft {
 		// can't push events, so not allowing return signals
 		final MethodSelector objectSelector = new MethodSelector(Constants.ARCH_COMPUTER_CRAFT)
 				.addDefaultEnv()
-				.addProvidedEnv(Constants.ARG_CONTEXT, ILuaContext.class);
+				.addProvidedEnv(ILuaContext.class);
 
 		OBJECT_METHODS_FACTORY = new ComposedMethodsFactory<IndexedMethodMap>(AdapterRegistry.OBJECT_ADAPTERS, objectSelector) {
 			@Override

@@ -7,7 +7,6 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Map;
 import openperipheral.api.adapter.Asynchronous;
-import openperipheral.api.adapter.method.Env;
 import openperipheral.api.adapter.method.ReturnType;
 import openperipheral.api.adapter.method.ScriptCallable;
 
@@ -36,17 +35,17 @@ public class LuaReflectionHelper {
 	}
 
 	@ScriptCallable(returnTypes = ReturnType.STRING)
-	public String getClass(@Env("target") Object owner) {
+	public String getClass(Object owner) {
 		return owner.getClass().toString();
 	}
 
 	@ScriptCallable(returnTypes = ReturnType.STRING)
-	public String getSuperclass(@Env("target") Object owner) {
+	public String getSuperclass(Object owner) {
 		return owner.getClass().getSuperclass().toString();
 	}
 
 	@ScriptCallable(returnTypes = ReturnType.TABLE)
-	public List<String> getInterfaces(@Env("target") Object owner) {
+	public List<String> getInterfaces(Object owner) {
 		List<String> results = Lists.newArrayList();
 		for (Class<?> cls : owner.getClass().getInterfaces())
 			results.add(cls.toString());
@@ -54,12 +53,12 @@ public class LuaReflectionHelper {
 	}
 
 	@ScriptCallable(returnTypes = ReturnType.TABLE)
-	public Map<String, Map<String, Object>> getMethods(@Env("target") Object owner) {
+	public Map<String, Map<String, Object>> getMethods(Object owner) {
 		return describe(owner.getClass().getMethods());
 	}
 
 	@ScriptCallable(returnTypes = ReturnType.TABLE)
-	public Map<String, Map<String, Object>> getDeclaredMethods(@Env("target") Object owner) {
+	public Map<String, Map<String, Object>> getDeclaredMethods(Object owner) {
 		return describe(owner.getClass().getDeclaredMethods());
 	}
 }

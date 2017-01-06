@@ -1,17 +1,25 @@
 package openperipheral.adapter.wrappers;
 
-import java.lang.reflect.Method;
 import java.util.List;
 import openmods.Log;
-import openperipheral.adapter.IMethodCall;
+import openperipheral.adapter.AnnotationMetaExtractor;
 import openperipheral.adapter.IMethodExecutor;
-import openperipheral.adapter.method.MethodDeclaration;
+import openperipheral.adapter.method.MethodWrapperBuilder;
 import openperipheral.adapter.property.PropertyListBuilder;
 
 public class InlineAdapterWrapper extends AdapterWrapper {
 
-	public InlineAdapterWrapper(Class<?> rootClass, Class<?> targetClass, String source) {
-		super(targetClass, targetClass, rootClass, source);
+	public InlineAdapterWrapper(final Class<?> rootClass, Class<?> targetClass, String source) {
+		super(targetClass, targetClass, rootClass, source, createExecutorFactory(rootClass));
+	}
+
+	private static ExecutorFactory createExecutorFactory(final Class<?> rootClass) {
+		return new ExecutorFactory() {
+			@Override
+			public IMethodExecutor createExecutor(AnnotationMetaExtractor.Bound metaInfo, MethodWrapperBuilder decl) {
+				return new MethodExecutorBase(decl.getMethodDescription(), decl.createUnboundMethodCaller(), metaInfo);
+			}
+		};
 	}
 
 	@Override
@@ -25,21 +33,8 @@ public class InlineAdapterWrapper extends AdapterWrapper {
 	}
 
 	@Override
-	protected void prepareDeclaration(MethodDeclaration decl) {}
-
-	@Override
-	public IMethodExecutor createExecutor(Method method, MethodDeclaration decl) {
-		return new MethodExecutorBase(decl, method, metaInfo) {
-			@Override
-			public IMethodCall startCall(Object target) {
-				return super.startCall(target);
-			}
-		};
-	}
-
-	@Override
-	protected List<IMethodExecutor> buildMethodList() {
-		List<IMethodExecutor> result = super.buildMethodList();
+	protected List<IMethodExecutor> buildMethodList(Class<?> rootClass, AnnotationMetaExtractor metaInfo, ExecutorFactory executorFactory) {
+		List<IMethodExecutor> result = super.buildMethodList(rootClass, metaInfo, executorFactory);
 
 		// non-fatal to avoid sideness annoyances
 		try {
