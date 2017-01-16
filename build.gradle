@@ -34,6 +34,7 @@ buildscript {
 
 apply plugin: 'forge'
 apply plugin: 'java'
+apply plugin: "maven"
 
 repositories {
     maven {
@@ -42,20 +43,19 @@ repositories {
     }
 }
 
+configurations {
+    apiReleaseCompile
+    compile.extendsFrom apiReleaseCompile
+}
+
 dependencies {
     compile project(":OpenModsLib")
 
-    compile "li.cil.oc:OpenComputers:MC1.7.10-1.5.0.5:api"
+    // apiCompile "info.computercraft:ComputerCraft-API:???"
+    apiReleaseCompile "li.cil.oc:OpenComputers:MC1.7.10-1.5.0.5:api"
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
     testCompile "org.mockito:mockito-core:1.10.19"
-}
-
-//================================================
-// Dependencies
-
-dependencies {
-    compile project(":OpenModsLib") // Load OpenModsLib from submodule
 }
 
 //================================================
@@ -184,8 +184,10 @@ task sourcesJar(type: Jar, dependsOn: classes) {
     }
 }
 
+def API_NAME = "OpenPeripheralCore-API"
+
 task apiJar(type: Jar) {
-    baseName "OpenPeripheralCore-API"
+    baseName API_NAME
     version api_version
 
     from sourceSets.main.output
@@ -199,7 +201,7 @@ task apiJar(type: Jar) {
 }
 
 task apiSrcJar(type: Jar) {
-    baseName "OpenPeripheralCore-API"
+    baseName API_NAME
     version api_version
     classifier 'sources'
 
@@ -213,7 +215,7 @@ task apiSrcJar(type: Jar) {
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
-    baseName "OpenPeripheralCore-API"
+    baseName API_NAME
     version api_version
     classifier 'javadoc'
 
@@ -243,4 +245,74 @@ task checkTranslations(type: net.thesilkminer.gradle.plugin.translationchecker.t
 
 task wrapper (type: Wrapper) {
     gradleVersion = "2.12"
+}
+
+uploadArchives {
+    repositories.mavenDeployer {
+
+        dependsOn 'build'
+        repository(url: 'file://localhost/' + project.file('repo').getAbsolutePath())
+
+        addFilter('api') {artifact, file ->
+                artifact.name == API_NAME
+        }
+
+        pom('api') {
+            groupId = "info.openmods"
+            version = api_version
+            artifactId = API_NAME
+
+            scopeMappings.mappings.clear()
+            scopeMappings.addMapping(0, configurations.apiReleaseCompile, Conf2ScopeMappingContainer.COMPILE)
+
+            project {
+                name API_NAME
+                packaging 'jar'
+                description 'OpenPeripheralCore API'
+                url 'https://github.com/OpenMods/OpenPeripheral'
+
+                scm {
+                    url 'https://github.com/OpenMods/OpenPeripheral'
+                    connection 'scm:git:git@github.com:OpenMods/OpenPeripheral.git'
+                    developerConnection 'scm:git:git@github.com:OpenMods/OpenPeripheral.git'
+                }
+
+                issueManagement {
+                    system 'github'
+                    url 'https://github.com/OpenMods/OpenPeripheral/issues'
+                }
+
+                licenses {
+                    license {
+                        name 'MIT'
+                        url 'https://github.com/OpenMods/OpenPeripheral/blob/master/LICENSE'
+                        distribution 'repo'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'boq'
+                        name 'boq'
+                        roles { role 'developer' }
+                    }
+                    developer {
+                        id 'mikemoo'
+                        name 'Mikemoo'
+                        roles { role 'developer' }
+                    }
+                    developer {
+                        id 'sinz'
+                        name 'SinZ'
+                        roles { role 'developer' }
+                    }
+                    developer {
+                        id 'theoriginalbit'
+                        name 'theoriginalbit'
+                        roles { role 'developer' }
+                    }
+                }
+            }
+        }
+    }
 }
