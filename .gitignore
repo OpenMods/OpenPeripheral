@@ -17,6 +17,7 @@ build/
 run/
 bin/
 *.launch
+repo/
 
 # Eclipse
 .classpath

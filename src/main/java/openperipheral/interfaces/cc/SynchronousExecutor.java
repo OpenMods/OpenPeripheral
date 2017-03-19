@@ -15,6 +15,7 @@ public class SynchronousExecutor {
 	}
 
 	private static class Responder implements ILuaTask {
+		private static final String CALLBACK_EVENT_ID = "task_complete";
 		private final ILuaContext context;
 		private final Task task;
 		private boolean nobodyLovesMe;
@@ -28,10 +29,10 @@ public class SynchronousExecutor {
 
 		public void waitForEvent(long transactionId) throws LuaException, InterruptedException {
 			while (!nobodyLovesMe) {
-				Object[] result;
+				final Object[] result;
 				try {
 					// internal CC event
-					result = context.pullEvent("task_complete");
+					result = context.pullEvent(CALLBACK_EVENT_ID);
 				} catch (LuaException e) {
 					nobodyLovesMe = true;
 					throw e;
@@ -42,6 +43,9 @@ public class SynchronousExecutor {
 					nobodyLovesMe = true;
 					throw Throwables.propagate(t);
 				}
+
+				if (!result[0].equals(CALLBACK_EVENT_ID))
+					throw new LuaException("pullEvent failed, expected '" + CALLBACK_EVENT_ID + "', got: " + result[0]);
 
 				long receivedTransactionId = ((Number)result[1]).longValue();
 				if (transactionId == receivedTransactionId) {
