@@ -32,7 +32,7 @@ public class TypeQualifierTest {
 		testQualifier("boolean", Boolean.class);
 
 		testQualifier("string", String.class);
-		testQualifier("string", UUID.class);
+		testQualifier("uuid", UUID.class);
 
 		testQualifier("void", void.class);
 		testQualifier("void", Void.class);

@@ -4,7 +4,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import openperipheral.api.adapter.method.ArgType;
 import openperipheral.api.property.GetTypeFromField;
 
 /**
@@ -17,11 +16,6 @@ import openperipheral.api.property.GetTypeFromField;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface CallbackProperty {
-
-	/**
-	 * Type of setter parameter and getter result. Used only for documentation
-	 */
-	public ArgType type() default ArgType.AUTO;
 
 	/**
 	 * Type used for conversion of value from script to callback

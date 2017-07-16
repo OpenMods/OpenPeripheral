@@ -12,7 +12,7 @@ import openperipheral.CommandDump;
 import openperipheral.adapter.AdapterRegistry;
 import openperipheral.adapter.composed.ComposedMethodsFactory;
 import openperipheral.adapter.composed.MethodSelector;
-import openperipheral.adapter.types.SingleArgType;
+import openperipheral.adapter.types.SingleType;
 import openperipheral.adapter.types.classifier.TypeClassifier;
 import openperipheral.api.Constants;
 import openperipheral.api.IApiInterface;
@@ -74,7 +74,7 @@ public class ModuleOpenComputers {
 		final IConverter converter = new TypeConversionRegistryOC();
 		TypeConvertersProvider.INSTANCE.registerConverter(Constants.ARCH_OPEN_COMPUTERS, converter);
 
-		TypeClassifier.INSTANCE.registerType(Value.class, SingleArgType.OBJECT);
+		TypeClassifier.INSTANCE.registerType(Value.class, SingleType.OBJECT);
 
 		ENV = new OpenComputersEnv(converter);
 	}

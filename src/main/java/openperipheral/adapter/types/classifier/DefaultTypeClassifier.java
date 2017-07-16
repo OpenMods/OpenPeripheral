@@ -13,7 +13,7 @@ import openperipheral.adapter.types.NamedTupleType;
 import openperipheral.adapter.types.NamedTupleType.NamedTupleField;
 import openperipheral.adapter.types.NamedTupleType.TupleField;
 import openperipheral.adapter.types.SetType;
-import openperipheral.adapter.types.SingleArgType;
+import openperipheral.adapter.types.SingleType;
 import openperipheral.adapter.types.TypeHelper;
 import openperipheral.api.adapter.IScriptType;
 import openperipheral.api.adapter.ITypeClassifier;
@@ -31,13 +31,13 @@ public class DefaultTypeClassifier implements IGenericClassifier {
 		{
 			Class<?> cls = TypeUtils.toObjectType(typeToken.getRawType());
 
-			if (cls == String.class) return SingleArgType.STRING;
-			if (cls == UUID.class) return SingleArgType.STRING;
-			if (cls == Boolean.class) return SingleArgType.BOOLEAN;
-			if (cls == Void.class) return SingleArgType.VOID;
-			if (Number.class.isAssignableFrom(cls)) return SingleArgType.NUMBER;
+			if (cls == String.class) return SingleType.STRING;
+			if (cls == UUID.class) return SingleType.UUID;
+			if (cls == Boolean.class) return SingleType.BOOLEAN;
+			if (cls == Void.class) return SingleType.VOID;
+			if (Number.class.isAssignableFrom(cls)) return SingleType.NUMBER;
 
-			if (cls.isEnum()) return TypeHelper.bounded(SingleArgType.STRING, EnumeratedRange.create(cls.getEnumConstants()));
+			if (cls.isEnum()) return TypeHelper.bounded(SingleType.STRING, EnumeratedRange.create(cls.getEnumConstants()));
 			if (StructHandlerProvider.instance.isStruct(cls)) return classifyStruct(classifier, cls);
 		}
 
@@ -52,13 +52,13 @@ public class DefaultTypeClassifier implements IGenericClassifier {
 	private static IScriptType createListType(ITypeClassifier classifier, TypeToken<?> type) {
 		return (type.getRawType() != Object.class)
 				? new ListType(classifier.classifyType(type.getType()))
-				: SingleArgType.TABLE;
+				: SingleType.TABLE;
 	}
 
 	private static IScriptType createSetType(ITypeClassifier classifier, TypeToken<?> type) {
 		return (type.getRawType() != Object.class)
 				? new SetType(classifier.classifyType(type.getType()))
-				: SingleArgType.TABLE;
+				: SingleType.TABLE;
 	}
 
 	private static IScriptType classifyArrayType(ITypeClassifier classifier, TypeToken<?> typeToken) {
@@ -80,7 +80,7 @@ public class DefaultTypeClassifier implements IGenericClassifier {
 		final TypeToken<?> keyType = typeToken.resolveType(TypeUtils.MAP_KEY_PARAM);
 		final TypeToken<?> valueType = typeToken.resolveType(TypeUtils.MAP_VALUE_PARAM);
 
-		if (keyType.getRawType() == Object.class || valueType.getRawType() == Object.class) return SingleArgType.TABLE;
+		if (keyType.getRawType() == Object.class || valueType.getRawType() == Object.class) return SingleType.TABLE;
 
 		final IScriptType qualifiedKeyType = classifier.classifyType(keyType.getType());
 		final IScriptType qualifiedValueType = classifier.classifyType(valueType.getType());

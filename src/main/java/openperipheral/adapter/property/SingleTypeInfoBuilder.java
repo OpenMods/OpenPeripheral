@@ -4,12 +4,10 @@ import com.google.common.base.Preconditions;
 import com.google.common.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
-import openperipheral.adapter.types.SingleArgType;
 import openperipheral.adapter.types.classifier.TypeClassifier;
 import openperipheral.api.adapter.IScriptType;
 import openperipheral.api.property.ISingleCustomProperty;
 import openperipheral.api.property.ISingleTypedCustomProperty;
-import openperipheral.api.property.PropertyValueDocType;
 
 public class SingleTypeInfoBuilder {
 	private static final TypeToken<?> CUSTOM_PROPERTY_TYPE = TypeToken.of(ISingleCustomProperty.class);
@@ -57,18 +55,15 @@ public class SingleTypeInfoBuilder {
 	};
 
 	private abstract static class CustomPropertyProviderBase implements ITypesProvider {
-		private final Class<?> fieldType;
 		protected final Type valueType;
 
 		public CustomPropertyProviderBase(TypeToken<?> fieldType, TypeVariable<?> var) {
-			this.fieldType = fieldType.getRawType();
 			this.valueType = fieldType.resolveType(var).getType();
 		}
 
 		@Override
 		public IScriptType getValueDocType() {
-			final PropertyValueDocType customValueDoc = fieldType.getAnnotation(PropertyValueDocType.class);
-			return (customValueDoc == null)? TypeClassifier.INSTANCE.classifyType(valueType) : SingleArgType.valueOf(customValueDoc.value());
+			return TypeClassifier.INSTANCE.classifyType(valueType);
 		}
 	}
 
@@ -96,20 +91,22 @@ public class SingleTypeInfoBuilder {
 
 	private static class DefaultPropertyTypesProvider implements ITypesProvider {
 
-		private final Type fieldType;
+		private final ITypeProvider typeProvider;
+		private final IScriptType docType;
 
 		public DefaultPropertyTypesProvider(Type fieldType) {
-			this.fieldType = fieldType;
+			this.typeProvider = createConstantTypeProvider(fieldType);
+			this.docType = TypeClassifier.INSTANCE.classifyType(fieldType);
 		}
 
 		@Override
 		public ITypeProvider getValueType() {
-			return createConstantTypeProvider(fieldType);
+			return typeProvider;
 		}
 
 		@Override
 		public IScriptType getValueDocType() {
-			return TypeClassifier.INSTANCE.classifyType(fieldType);
+			return docType;
 		}
 
 	}

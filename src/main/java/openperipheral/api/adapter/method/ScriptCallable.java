@@ -23,7 +23,7 @@ import openperipheral.api.adapter.IAdapter;
  * <li>Argument annotated with {@link Arg} - for Lua visible arguments</li>
  * </ul>
  *
- * @see MultipleReturn
+ * @see VarReturn
  * @see Asynchronous
  * @see Arg
  * @see Env
@@ -40,13 +40,4 @@ public @interface ScriptCallable {
 
 	String description() default "";
 
-	/**
-	 * List of types expected to be returned from call. Empty list marks no results. Using {@link ReturnType#VOID} in this list will cause error
-	 */
-	ReturnType[] returnTypes() default {};
-
-	/**
-	 * Should return values be validated using types from {@link #returnTypes()}
-	 */
-	boolean validateReturn() default true;
 }

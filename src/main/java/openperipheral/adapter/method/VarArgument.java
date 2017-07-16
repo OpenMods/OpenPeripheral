@@ -8,13 +8,12 @@ import java.util.Iterator;
 import java.util.List;
 import openperipheral.adapter.DefaultAttributeProperty;
 import openperipheral.adapter.IAttributeProperty;
-import openperipheral.api.adapter.method.ArgType;
 import openperipheral.api.converter.IConverter;
 
 public class VarArgument extends Argument {
 
-	public VarArgument(String name, String description, ArgType luaType, TypeToken<?> javaType, int javaArgIndex) {
-		super(name, description, luaType, javaType, javaArgIndex);
+	public VarArgument(String name, String description, TypeToken<?> javaType, int javaArgIndex) {
+		super(name, description, javaType, javaArgIndex);
 	}
 
 	@Override

@@ -5,13 +5,12 @@ import com.google.common.reflect.TypeToken;
 import java.util.Iterator;
 import openperipheral.adapter.DefaultAttributeProperty;
 import openperipheral.adapter.IAttributeProperty;
-import openperipheral.api.adapter.method.ArgType;
 import openperipheral.api.converter.IConverter;
 
 public class NullableArgument extends Argument {
 
-	public NullableArgument(String name, String description, ArgType luaType, TypeToken<?> javaType, int javaArgIndex) {
-		super(name, description, luaType, javaType, javaArgIndex);
+	public NullableArgument(String name, String description, TypeToken<?> javaType, int javaArgIndex) {
+		super(name, description, javaType, javaArgIndex);
 	}
 
 	@Override

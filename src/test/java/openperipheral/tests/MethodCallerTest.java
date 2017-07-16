@@ -11,7 +11,6 @@ import openperipheral.adapter.method.MethodWrapperBuilder;
 import openperipheral.api.adapter.method.Alias;
 import openperipheral.api.adapter.method.Arg;
 import openperipheral.api.adapter.method.Env;
-import openperipheral.api.adapter.method.ReturnType;
 import openperipheral.api.adapter.method.ScriptCallable;
 import openperipheral.api.converter.IConverter;
 import org.junit.Assert;
@@ -69,7 +68,7 @@ public class MethodCallerTest {
 	}
 
 	public interface UnboundMethodVoidReturn {
-		@ScriptCallable(returnTypes = {})
+		@ScriptCallable
 		public void test(TargetA target);
 	}
 
@@ -87,7 +86,7 @@ public class MethodCallerTest {
 	}
 
 	public interface BoundMethodVoidReturn {
-		@ScriptCallable(returnTypes = {})
+		@ScriptCallable
 		public void test();
 	}
 
@@ -104,7 +103,7 @@ public class MethodCallerTest {
 	}
 
 	public interface UnboundMethod {
-		@ScriptCallable(returnTypes = ReturnType.NUMBER)
+		@ScriptCallable
 		public int test(TargetA target);
 	}
 
@@ -134,7 +133,7 @@ public class MethodCallerTest {
 	}
 
 	public interface BoundMethod {
-		@ScriptCallable(returnTypes = ReturnType.NUMBER)
+		@ScriptCallable
 		public int test();
 	}
 
@@ -156,7 +155,7 @@ public class MethodCallerTest {
 	}
 
 	public interface UnboundMethodWithSingleLuaArg {
-		@ScriptCallable(returnTypes = ReturnType.STRING)
+		@ScriptCallable
 		public String test(TargetA target, @Arg(name = "a") String a);
 	}
 
@@ -181,7 +180,7 @@ public class MethodCallerTest {
 	}
 
 	public interface BoundMethodWithSingleLuaArg {
-		@ScriptCallable(returnTypes = ReturnType.STRING)
+		@ScriptCallable
 		public String test(TargetA target, @Arg(name = "a") Number a);
 	}
 
@@ -207,7 +206,7 @@ public class MethodCallerTest {
 	}
 
 	public interface UnboundMethodWithSingleEnvArg {
-		@ScriptCallable(returnTypes = {})
+		@ScriptCallable
 		public void test(TargetA target, @Env EnvA env);
 	}
 
@@ -227,7 +226,7 @@ public class MethodCallerTest {
 	}
 
 	public interface BoundMethodWithSingleEnvArg {
-		@ScriptCallable(returnTypes = {})
+		@ScriptCallable
 		public void test(@Env EnvA env);
 	}
 
@@ -246,7 +245,7 @@ public class MethodCallerTest {
 	}
 
 	public interface UnboundMethodWithTwoEnvArg {
-		@ScriptCallable(returnTypes = {})
+		@ScriptCallable
 		public void test(TargetA target, @Env EnvB envB, @Env EnvA envA);
 	}
 
@@ -267,7 +266,7 @@ public class MethodCallerTest {
 	}
 
 	public interface BoundMethodWithTwoEnvArg {
-		@ScriptCallable(returnTypes = {})
+		@ScriptCallable
 		public void test(@Env EnvB envB, @Env EnvA env);
 	}
 
@@ -288,14 +287,14 @@ public class MethodCallerTest {
 
 	public static class TargetOnly {
 		@Alias({ "aliasA", "aliasB" })
-		@ScriptCallable(returnTypes = ReturnType.BOOLEAN)
+		@ScriptCallable
 		public boolean test(TargetB target) {
 			return true;
 		}
 	}
 
 	public interface UnboundMethodWithEnvAndLuaArg {
-		@ScriptCallable(returnTypes = ReturnType.STRING)
+		@ScriptCallable
 		public String test(TargetA target, @Env EnvA env, @Arg(name = "a") String a);
 	}
 
@@ -321,7 +320,7 @@ public class MethodCallerTest {
 	}
 
 	public interface BoundMethodWithEnvAndLuaArg {
-		@ScriptCallable(returnTypes = ReturnType.STRING)
+		@ScriptCallable
 		public String test(@Env EnvA env, @Arg(name = "a") Number a);
 	}
 

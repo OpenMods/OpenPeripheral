@@ -4,7 +4,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import openperipheral.api.adapter.method.ArgType;
 
 /**
  * This annotation is used to mark class fields that should be exposed in Lua as get/set accessors.
@@ -15,11 +14,6 @@ import openperipheral.api.adapter.method.ArgType;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface Property {
-
-	/**
-	 * Type of setter parameter and getter result. Used only for documentation
-	 */
-	public ArgType type() default ArgType.AUTO;
 
 	/**
 	 * Field name used for naming get/set methods. If empty, original field name will be used.

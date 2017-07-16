@@ -13,7 +13,6 @@ import openperipheral.adapter.IMethodExecutor;
 import openperipheral.api.adapter.Asynchronous;
 import openperipheral.api.adapter.method.Arg;
 import openperipheral.api.adapter.method.Optionals;
-import openperipheral.api.adapter.method.ReturnType;
 import openperipheral.api.adapter.method.ScriptCallable;
 import openperipheral.util.DocUtils;
 
@@ -27,7 +26,7 @@ public class MethodsListerHelper {
 		this.sources = sources;
 	}
 
-	@ScriptCallable(returnTypes = ReturnType.STRING, description = "List all the methods available")
+	@ScriptCallable(description = "List all the methods available")
 	public String listMethods(@Optionals @Arg(name = "filterSource") String source) {
 		List<String> info = Lists.newArrayList();
 		for (Map.Entry<String, IMethodExecutor> e : methods.entrySet()) {
@@ -41,7 +40,7 @@ public class MethodsListerHelper {
 		return Joiner.on(", ").join(info);
 	}
 
-	@ScriptCallable(returnTypes = ReturnType.TABLE, description = "List all method sources")
+	@ScriptCallable(description = "List all method sources")
 	public Map<String, Boolean> listSources() {
 		Map<String, Boolean> result = Maps.newTreeMap();
 		for (String source : sources)
@@ -49,14 +48,14 @@ public class MethodsListerHelper {
 		return result;
 	}
 
-	@ScriptCallable(returnTypes = ReturnType.STRING, description = "Brief description of method")
+	@ScriptCallable(description = "Brief description of method")
 	public String doc(@Arg(name = "method") String methodName) {
 		IMethodExecutor method = methods.get(methodName);
 		Preconditions.checkArgument(method != null, "Method not found");
 		return DocUtils.doc(method.description());
 	}
 
-	@ScriptCallable(returnTypes = ReturnType.TABLE, description = "Get a complete table of information about all available methods")
+	@ScriptCallable(description = "Get a complete table of information about all available methods")
 	public Map<?, ?> getAdvancedMethodsData(@Optionals @Arg(name = "method") String methodName) {
 		if (methodName != null) {
 			IMethodExecutor method = methods.get(methodName);

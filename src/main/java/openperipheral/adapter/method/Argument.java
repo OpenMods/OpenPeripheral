@@ -4,9 +4,8 @@ import com.google.common.base.Preconditions;
 import com.google.common.reflect.TypeToken;
 import java.util.Iterator;
 import openperipheral.adapter.ArgumentDescriptionBase;
-import openperipheral.adapter.types.TypeHelper;
+import openperipheral.adapter.types.classifier.TypeClassifier;
 import openperipheral.api.adapter.IScriptType;
-import openperipheral.api.adapter.method.ArgType;
 import openperipheral.api.converter.IConverter;
 
 public class Argument extends ArgumentDescriptionBase {
@@ -15,11 +14,11 @@ public class Argument extends ArgumentDescriptionBase {
 	protected final TypeToken<?> javaType;
 	public final int javaArgIndex;
 
-	public Argument(String name, String description, ArgType typeSuggestion, TypeToken<?> argJavaType, int javaArgIndex) {
+	public Argument(String name, String description, TypeToken<?> argJavaType, int javaArgIndex) {
 		super(name, description);
 		this.javaArgIndex = javaArgIndex;
 		this.javaType = getValueType(argJavaType);
-		this.scriptType = TypeHelper.interpretArgType(typeSuggestion, this.javaType.getType());
+		this.scriptType = TypeClassifier.INSTANCE.classifyType(this.javaType.getType());
 	}
 
 	protected TypeToken<?> getValueType(TypeToken<?> javaArgClass) {

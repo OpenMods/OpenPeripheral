@@ -9,44 +9,30 @@ import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.reflect.TypeToken;
-import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import openmods.reflection.TypeUtils;
 import openperipheral.adapter.AdapterLogicException;
 import openperipheral.adapter.IMethodCall;
 import openperipheral.adapter.IMethodCaller;
 import openperipheral.adapter.IMethodDescription;
-import openperipheral.adapter.types.TypeHelper;
 import openperipheral.api.adapter.IScriptType;
 import openperipheral.api.adapter.method.Alias;
-import openperipheral.api.adapter.method.IMultiReturn;
-import openperipheral.api.adapter.method.MultipleReturn;
-import openperipheral.api.adapter.method.ReturnType;
 import openperipheral.api.adapter.method.ScriptCallable;
+import openperipheral.api.adapter.method.VarReturn;
 import openperipheral.api.converter.IConverter;
 
 public class MethodWrapperBuilder {
-
-	private static final Object[] NO_RETURNS = new Object[0];
 
 	private final List<String> names;
 	private final String source;
 	private final Method method;
 	private final String description;
-	private final List<ReturnType> returnTypes;
-	private final IScriptType wrappedReturn;
 
-	private final boolean validateReturn;
-
-	private final boolean multipleReturn;
-
-	private final boolean voidReturn;
+	private final ReturnValueConverter returnConverter;
 
 	private final boolean requiresConverter;
 
@@ -90,16 +76,8 @@ public class MethodWrapperBuilder {
 		this.names = getNames(method, meta);
 
 		this.description = meta.description();
-		this.returnTypes = ImmutableList.copyOf(meta.returnTypes());
-		this.validateReturn = meta.validateReturn();
 
-		this.multipleReturn = method.isAnnotationPresent(MultipleReturn.class);
-		this.voidReturn = method.getReturnType() == void.class;
-		Preconditions.checkState(!(this.multipleReturn && this.voidReturn), "Conflict: multiple return methods cannot return void");
-
-		this.wrappedReturn = TypeHelper.createFromReturn(returnTypes);
-
-		if (validateReturn) validateResultCount();
+		this.returnConverter = ReturnValueConverter.create(method.getGenericReturnType(), method.isAnnotationPresent(VarReturn.class));
 
 		final List<ArgWrapper> args = ArgWrapper.fromMethod(rootClass, method);
 
@@ -123,92 +101,9 @@ public class MethodWrapperBuilder {
 
 		}.visitArgs(args, method.isVarArgs());
 
-		this.requiresConverter = !convertedArgs.isEmpty() || !this.voidReturn;
+		this.requiresConverter = !convertedArgs.isEmpty() || returnConverter.hasReturn();
 		this.argCount = unnamedEnvArg.size() + envArgsIndices.size() + convertedArgs.size();
 		Preconditions.checkState(this.argCount == args.size(), "Internal error for method %s", method);
-	}
-
-	private void validateResultCount() {
-		Class<?> javaReturn = method.getReturnType();
-
-		final int returnLength = returnTypes.size();
-
-		for (ReturnType t : returnTypes) {
-			Preconditions.checkArgument(t != ReturnType.VOID, "Method '%s' declares Void as return type. Use empty list instead.", method);
-		}
-
-		if (javaReturn == void.class) {
-			Preconditions.checkArgument(returnLength == 0, "Method '%s' returns nothing, but declares at least one Lua result", method);
-		}
-
-		if (returnLength == 0) {
-			Preconditions.checkArgument(javaReturn == void.class, "Method '%s' returns '%s', but declares no Lua results", method, javaReturn);
-		}
-
-		if (multipleReturn) {
-			Preconditions.checkArgument(IMultiReturn.class.isAssignableFrom(javaReturn) || Collection.class.isAssignableFrom(javaReturn) || javaReturn.isArray(), "Method '%s' declared more than one Lua result, but returns single '%s' instead of array, collection or IMultiReturn", method, javaReturn);
-		}
-
-		if (returnLength > 1) {
-			Preconditions.checkArgument(IMultiReturn.class.isAssignableFrom(javaReturn) || multipleReturn, "Method '%s' declared more than one Lua result, but returns single '%s' instead of array, collection or IMultiReturn", method, javaReturn);
-		}
-	}
-
-	private static void checkReturnType(int argIndex, ReturnType expected, Object actual) {
-		final Class<?> expectedJava = expected.getJavaType();
-		Preconditions.checkArgument(actual == null || expectedJava.isInstance(actual) || TypeUtils.compareTypes(expectedJava, actual.getClass()), "Invalid type of return value %s: expected %s, got '%s'", argIndex, expected, actual);
-	}
-
-	private void validateResult(Object... result) {
-		if (returnTypes.isEmpty()) {
-			Preconditions.checkArgument(result.length == 1 && result[0] == null, "Returning value from null method");
-		} else {
-			Preconditions.checkArgument(result.length == returnTypes.size(), "Returning invalid number of values from method %s, expected %s, got %s", method, returnTypes.size(), result.length);
-			for (int i = 0; i < result.length; i++)
-				checkReturnType(i, returnTypes.get(i), result[i]);
-		}
-	}
-
-	private static Object[] convertMultiResult(IConverter converter, IMultiReturn result) {
-		return convertVarResult(converter, result.getObjects());
-	}
-
-	private static Object[] convertCollectionResult(IConverter converter, Collection<?> result) {
-		Object[] tmp = new Object[result.size()];
-		int i = 0;
-		for (Object o : result)
-			tmp[i++] = converter.fromJava(o);
-
-		return tmp;
-	}
-
-	private static Object[] convertArrayResult(IConverter converter, Object array) {
-		int length = Array.getLength(array);
-		Object[] result = new Object[length];
-
-		for (int i = 0; i < length; i++)
-			result[i] = converter.fromJava(Array.get(array, i));
-
-		return result;
-	}
-
-	private static Object[] convertVarResult(IConverter converter, Object... result) {
-		for (int i = 0; i < result.length; i++)
-			result[i] = converter.fromJava(result[i]);
-
-		return result;
-	}
-
-	private Object[] convertResult(IConverter converter, Object result) {
-		Preconditions.checkState(converter != null, "Converter not set!");
-		if (result instanceof IMultiReturn) return convertMultiResult(converter, (IMultiReturn)result);
-
-		if (multipleReturn) {
-			if (result != null && result.getClass().isArray()) return convertArrayResult(converter, result);
-			if (result instanceof Collection) return convertCollectionResult(converter, (Collection<?>)result);
-		}
-
-		return convertVarResult(converter, result);
 	}
 
 	private class CallWrap implements IMethodCall {
@@ -277,10 +172,7 @@ public class MethodWrapperBuilder {
 				throw Throwables.propagate(wrapper != null? wrapper : e);
 			}
 
-			if (voidReturn) return NO_RETURNS;
-			final Object[] converted = convertResult(converter, result);
-			if (validateReturn) validateResult(converted);
-			return converted;
+			return returnConverter.convertReturns(converter, result);
 		}
 
 		@Override
@@ -397,7 +289,7 @@ public class MethodWrapperBuilder {
 
 			@Override
 			public IScriptType returnTypes() {
-				return wrappedReturn;
+				return returnConverter.getDocType();
 			}
 
 			@Override

@@ -19,6 +19,7 @@ import openperipheral.interfaces.cc.ModuleComputerCraft;
 import openperipheral.interfaces.oc.ModuleOpenComputers;
 import openperipheral.meta.EntityMetadataBuilder;
 import openperipheral.meta.ItemStackMetadataBuilder;
+import openperipheral.util.ReturnTupleProvider;
 
 public class ApiSetup {
 
@@ -31,6 +32,7 @@ public class ApiSetup {
 		registry.registerClass(AdapterRegistryWrapper.Objects.class);
 		registry.registerClass(EntityMetadataBuilder.class);
 		registry.registerClass(ItemStackMetadataBuilder.class);
+		registry.registerClass(ReturnTupleProvider.class);
 
 		registry.registerInstance(TypeConvertersProvider.INSTANCE);
 		registry.registerInstance(TileEntityBlacklist.INSTANCE);

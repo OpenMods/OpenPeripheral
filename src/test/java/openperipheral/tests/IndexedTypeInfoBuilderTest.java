@@ -9,12 +9,9 @@ import openperipheral.adapter.property.IndexedTypeInfo;
 import openperipheral.adapter.property.IndexedTypeInfoBuilder;
 import openperipheral.adapter.types.SingleType;
 import openperipheral.api.adapter.IScriptType;
-import openperipheral.api.adapter.method.ArgType;
 import openperipheral.api.helpers.Index;
 import openperipheral.api.property.IIndexedCustomProperty;
 import openperipheral.api.property.IIndexedTypedCustomProperty;
-import openperipheral.api.property.PropertyKeyDocType;
-import openperipheral.api.property.PropertyValueDocType;
 import openperipheral.api.struct.ScriptStruct;
 import openperipheral.api.struct.StructField;
 import org.junit.Assert;
@@ -75,16 +72,6 @@ public class IndexedTypeInfoBuilderTest {
 	public abstract static class DefaultCustom implements IIndexedCustomProperty<Boolean, Short> {}
 
 	public abstract static class ProviderCustom implements IIndexedTypedCustomProperty<Short, String> {}
-
-	@PropertyKeyDocType(ArgType.TABLE)
-	public abstract static class KeyAnnotatedCustom implements IIndexedCustomProperty<Boolean, Float> {}
-
-	@PropertyValueDocType(ArgType.VOID)
-	public abstract static class ValueAnnotatedCustom implements IIndexedCustomProperty<Short, Long> {}
-
-	@PropertyKeyDocType(ArgType.OBJECT)
-	@PropertyValueDocType(ArgType.TABLE)
-	public abstract static class AllAnnotatedCustom implements IIndexedCustomProperty<String, String> {}
 
 	private static void matchKeyType(IndexedTypeInfo result, Class<?> keyType) {
 		Assert.assertEquals(keyType, result.keyType);
@@ -210,32 +197,6 @@ public class IndexedTypeInfoBuilderTest {
 	}
 
 	@Test
-	public void testKeyAnnotatedCustomProperty() {
-		IndexedTypeInfoBuilder builder = new IndexedTypeInfoBuilder(KeyAnnotatedCustom.class);
-		final IndexedTypeInfo result = builder.build();
-		matchDocTypes(result, "table", "number");
-		matchConstantValue(result, Float.class);
-	}
-
-	@Test
-	public void testValueAnnotatedCustomProperty() {
-		IndexedTypeInfoBuilder builder = new IndexedTypeInfoBuilder(ValueAnnotatedCustom.class);
-		final IndexedTypeInfo result = builder.build();
-		matchDocTypes(result, "number", "void");
-		matchKeyType(result, Short.class);
-		matchConstantValue(result, Long.class);
-	}
-
-	@Test
-	public void testAllAnnotatedCustomProperty() {
-		IndexedTypeInfoBuilder builder = new IndexedTypeInfoBuilder(AllAnnotatedCustom.class);
-		final IndexedTypeInfo result = builder.build();
-		matchDocTypes(result, "object", "table");
-		matchKeyType(result, String.class);
-		matchConstantValue(result, String.class);
-	}
-
-	@Test
 	public void testOverrideDocTypesSimple() {
 		IndexedTypeInfoBuilder builder = new IndexedTypeInfoBuilder(MAP_TYPE);
 		builder.overrideKeyDocType(TYPE_A);
@@ -259,18 +220,6 @@ public class IndexedTypeInfoBuilderTest {
 	}
 
 	@Test
-	public void testOverrideDocTypesCustomProperty() {
-		IndexedTypeInfoBuilder builder = new IndexedTypeInfoBuilder(AllAnnotatedCustom.class);
-		builder.overrideKeyDocType(TYPE_A);
-		builder.overrideValueDocType(TYPE_B);
-
-		final IndexedTypeInfo result = builder.build();
-		matchDocTypes(result, TYPE_A_DESCRIPTION, TYPE_B_DESCRIPTION);
-		matchKeyType(result, String.class);
-		matchConstantValue(result, String.class);
-	}
-
-	@Test
 	public void testOverrideKeyTypeSimple() {
 		IndexedTypeInfoBuilder builder = new IndexedTypeInfoBuilder(MAP_TYPE);
 		builder.overrideKeyType(Boolean.class);
@@ -290,16 +239,6 @@ public class IndexedTypeInfoBuilderTest {
 		matchFieldValue(result, "a", int.class);
 		matchFieldValue(result, "b", String.class);
 		matchFieldValue(result, "c", boolean.class);
-	}
-
-	@Test
-	public void testOverrideKeyTypeCustomProperty() {
-		IndexedTypeInfoBuilder builder = new IndexedTypeInfoBuilder(AllAnnotatedCustom.class);
-		builder.overrideKeyType(Long.class);
-		final IndexedTypeInfo result = builder.build();
-		matchDocTypes(result, "number", "table");
-		matchKeyType(result, Long.class);
-		matchConstantValue(result, String.class);
 	}
 
 	@Test
@@ -332,16 +271,6 @@ public class IndexedTypeInfoBuilderTest {
 		matchFieldValue(result, "a", boolean.class);
 		matchFieldValue(result, "b", boolean.class);
 		matchFieldValue(result, "c", boolean.class);
-	}
-
-	@Test
-	public void testOverrideValueTypeCustomProperty() {
-		IndexedTypeInfoBuilder builder = new IndexedTypeInfoBuilder(AllAnnotatedCustom.class);
-		builder.overrideValueType(Integer.class);
-		final IndexedTypeInfo result = builder.build();
-		matchDocTypes(result, "object", "number");
-		matchKeyType(result, String.class);
-		matchConstantValue(result, Integer.class);
 	}
 
 	@Test

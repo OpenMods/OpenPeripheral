@@ -4,12 +4,11 @@ import com.google.common.base.Preconditions;
 import com.google.common.reflect.TypeToken;
 import openperipheral.adapter.DefaultAttributeProperty;
 import openperipheral.adapter.IAttributeProperty;
-import openperipheral.api.adapter.method.ArgType;
 
 public class NullableVarArgument extends VarArgument {
 
-	public NullableVarArgument(String name, String description, ArgType luaType, TypeToken<?> javaType, int javaArgIndex) {
-		super(name, description, luaType, javaType, javaArgIndex);
+	public NullableVarArgument(String name, String description, TypeToken<?> javaType, int javaArgIndex) {
+		super(name, description, javaType, javaArgIndex);
 	}
 
 	@Override

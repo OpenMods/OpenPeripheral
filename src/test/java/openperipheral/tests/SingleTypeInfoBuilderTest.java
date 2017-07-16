@@ -5,10 +5,8 @@ import openperipheral.adapter.property.SingleTypeInfo;
 import openperipheral.adapter.property.SingleTypeInfoBuilder;
 import openperipheral.adapter.types.SingleType;
 import openperipheral.api.adapter.IScriptType;
-import openperipheral.api.adapter.method.ArgType;
 import openperipheral.api.property.ISingleCustomProperty;
 import openperipheral.api.property.ISingleTypedCustomProperty;
-import openperipheral.api.property.PropertyValueDocType;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -94,64 +92,6 @@ public class SingleTypeInfoBuilderTest {
 	@Test
 	public void testTypedPropertyDocOverride() {
 		SingleTypeInfoBuilder builder = new SingleTypeInfoBuilder(TypedProperty.class);
-		builder.overrideValueDocType(DUMMY_TYPE);
-		final SingleTypeInfo result = builder.build();
-		matchDocType(result, DUMMY_TYPE_DESCRIPTION);
-		matchDelegatingType(result);
-	}
-
-	@PropertyValueDocType(ArgType.TABLE)
-	public abstract static class AnnotatedProperty implements ISingleCustomProperty<Short> {}
-
-	@Test
-	public void testAnnotatedProperty() {
-		SingleTypeInfoBuilder builder = new SingleTypeInfoBuilder(AnnotatedProperty.class);
-		final SingleTypeInfo result = builder.build();
-		matchDocType(result, "table");
-		matchConstantType(result, Short.class);
-	}
-
-	@Test
-	public void testAnnotatedPropertyTypeOverride() {
-		SingleTypeInfoBuilder builder = new SingleTypeInfoBuilder(AnnotatedProperty.class);
-		builder.overrideValueType(String.class);
-		final SingleTypeInfo result = builder.build();
-		matchDocType(result, "string");
-		matchConstantType(result, String.class);
-	}
-
-	@Test
-	public void testAnnotatedPropertyDocOverride() {
-		SingleTypeInfoBuilder builder = new SingleTypeInfoBuilder(AnnotatedProperty.class);
-		builder.overrideValueDocType(DUMMY_TYPE);
-		final SingleTypeInfo result = builder.build();
-		matchDocType(result, DUMMY_TYPE_DESCRIPTION);
-		matchConstantType(result, Short.class);
-	}
-
-	@PropertyValueDocType(ArgType.VOID)
-	public abstract static class TypedAnnotatedProperty implements ISingleTypedCustomProperty<Long> {}
-
-	@Test
-	public void testTypedAnnotatedProperty() {
-		SingleTypeInfoBuilder builder = new SingleTypeInfoBuilder(TypedAnnotatedProperty.class);
-		final SingleTypeInfo result = builder.build();
-		matchDocType(result, "void");
-		matchDelegatingType(result);
-	}
-
-	@Test
-	public void testTypedAnnotatedPropertyTypeOverride() {
-		SingleTypeInfoBuilder builder = new SingleTypeInfoBuilder(TypedAnnotatedProperty.class);
-		builder.overrideValueType(Boolean.class);
-		final SingleTypeInfo result = builder.build();
-		matchDocType(result, "boolean");
-		matchConstantType(result, Boolean.class);
-	}
-
-	@Test
-	public void testTypedAnnotatedPropertyDocOverride() {
-		SingleTypeInfoBuilder builder = new SingleTypeInfoBuilder(TypedAnnotatedProperty.class);
 		builder.overrideValueDocType(DUMMY_TYPE);
 		final SingleTypeInfo result = builder.build();
 		matchDocType(result, DUMMY_TYPE_DESCRIPTION);

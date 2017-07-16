@@ -4,7 +4,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import openperipheral.api.adapter.method.ArgType;
 import openperipheral.api.struct.ScriptStruct;
 
 /**
@@ -52,13 +51,4 @@ public @interface IndexedProperty {
 	 */
 	public boolean expandable() default true;
 
-	/**
-	 * Type of key parameter in script documentation
-	 */
-	public ArgType keyType() default ArgType.AUTO;
-
-	/**
-	 * Type of value parameter in script documentation
-	 */
-	public ArgType valueType() default ArgType.AUTO;
 }

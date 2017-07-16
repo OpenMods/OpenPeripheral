@@ -20,7 +20,6 @@ import openperipheral.adapter.method.ArgumentDefinitionException;
 import openperipheral.api.adapter.method.Arg;
 import openperipheral.api.adapter.method.Env;
 import openperipheral.api.adapter.method.Optionals;
-import openperipheral.api.adapter.method.ReturnType;
 import openperipheral.api.adapter.method.ScriptCallable;
 import org.junit.After;
 import org.junit.Assert;
@@ -165,7 +164,7 @@ public class MethodDescriptionTest {
 	@Test
 	public void testSingleLuaOnly() {
 		class SingleLuaOnly {
-			@ScriptCallable(returnTypes = ReturnType.STRING)
+			@ScriptCallable
 			public String test(@Arg(name = "b", description = "test") int a) {
 				return "" + a;
 			}
@@ -179,7 +178,7 @@ public class MethodDescriptionTest {
 	@Test
 	public void testSingleOptionalLuaOnly() {
 		class SingleOptionalLuaOnly {
-			@ScriptCallable(returnTypes = ReturnType.STRING)
+			@ScriptCallable
 			public String test(@Optionals @Arg(name = "a") Integer a) {
 				return "" + a;
 			}
@@ -193,7 +192,7 @@ public class MethodDescriptionTest {
 	@Test
 	public void testVarargLuaStart() {
 		class VarargLuaStart {
-			@ScriptCallable(returnTypes = ReturnType.STRING)
+			@ScriptCallable
 			public String test(@Arg(name = "a") int... a) {
 				return Arrays.toString(a);
 			}
@@ -207,7 +206,7 @@ public class MethodDescriptionTest {
 	@Test
 	public void testSingleOptional() {
 		class SingleOptional {
-			@ScriptCallable(returnTypes = ReturnType.STRING)
+			@ScriptCallable
 			public String test(TargetB target, @Optionals @Arg(name = "a") String b) {
 				return "A";
 			}
@@ -222,7 +221,7 @@ public class MethodDescriptionTest {
 	@Test
 	public void testDoubleOptionals() {
 		class DoubleOptionals {
-			@ScriptCallable(returnTypes = ReturnType.STRING)
+			@ScriptCallable
 			public String test(TargetB target, @Optionals @Arg(name = "a") String a, @Arg(name = "b") Double b) {
 				return "A";
 			}
@@ -238,7 +237,7 @@ public class MethodDescriptionTest {
 	@Test
 	public void testFullOptional() {
 		class NormalBeforeOptional {
-			@ScriptCallable(returnTypes = ReturnType.STRING)
+			@ScriptCallable
 			public String test(TargetB target, @Arg(name = "a") int a, @Optionals @Arg(name = "b") String b) {
 				return "A";
 			}
@@ -254,7 +253,7 @@ public class MethodDescriptionTest {
 	@Test
 	public void testVararg() {
 		class Vararg {
-			@ScriptCallable(returnTypes = ReturnType.STRING)
+			@ScriptCallable
 			public String test(TargetB target, @Arg(name = "a") int... a) {
 				return Arrays.toString(a);
 			}
@@ -269,7 +268,7 @@ public class MethodDescriptionTest {
 	@Test
 	public void testNonVarargArray() {
 		class NonVarargArray {
-			@ScriptCallable(returnTypes = ReturnType.STRING)
+			@ScriptCallable
 			public String test(TargetB target, @Arg(name = "a") int[] a) {
 				return Arrays.toString(a);
 			}
@@ -284,7 +283,7 @@ public class MethodDescriptionTest {
 	@Test
 	public void testOptionalVararg() {
 		class OptionalVararg {
-			@ScriptCallable(returnTypes = ReturnType.STRING)
+			@ScriptCallable
 			public String test(@Optionals @Arg(name = "a") Integer... a) {
 				return Arrays.toString(a);
 			}
@@ -302,7 +301,7 @@ public class MethodDescriptionTest {
 	@Test
 	public void testSingleEnv() {
 		class SingleEnv {
-			@ScriptCallable(returnTypes = ReturnType.STRING)
+			@ScriptCallable
 			public String test(@Env EnvA access) {
 				return access.toString();
 			}
@@ -316,7 +315,7 @@ public class MethodDescriptionTest {
 	@Test
 	public void testDoubleEnv() {
 		class DoubleEnv {
-			@ScriptCallable(returnTypes = ReturnType.STRING)
+			@ScriptCallable
 			public String test(@Env EnvA access, @Env EnvB accessB) {
 				return access.toString();
 			}
@@ -331,7 +330,7 @@ public class MethodDescriptionTest {
 	@Test
 	public void testTargetEnv() {
 		class TargetEnv {
-			@ScriptCallable(returnTypes = ReturnType.STRING)
+			@ScriptCallable
 			public String test(TargetB target, @Env EnvA access) {
 				return access.toString();
 			}
@@ -346,7 +345,7 @@ public class MethodDescriptionTest {
 	@Test
 	public void testEnvLua() {
 		class TargetEnvLua {
-			@ScriptCallable(returnTypes = ReturnType.STRING)
+			@ScriptCallable
 			public String test(TargetB target, @Env EnvA access, @Arg(name = "z") Integer a) {
 				return access.toString();
 			}
@@ -362,7 +361,7 @@ public class MethodDescriptionTest {
 	@Test
 	public void testEverything() {
 		class Everything {
-			@ScriptCallable(returnTypes = ReturnType.STRING)
+			@ScriptCallable
 			public String test(TargetB target, @Env EnvA access, @Arg(name = "a") int a, @Optionals @Arg(name = "b") String b, @Arg(name = "var") Integer... v) {
 				return "test";
 			}
@@ -380,7 +379,7 @@ public class MethodDescriptionTest {
 	@Test
 	public void testGeneric() {
 		class GenericBase<T, E, P> {
-			@ScriptCallable(returnTypes = ReturnType.STRING)
+			@ScriptCallable
 			public String test(T target, @Env E access, @Arg(name = "a") P a) {
 				return String.valueOf(a);
 			}
@@ -398,7 +397,7 @@ public class MethodDescriptionTest {
 	@Test
 	public void testNullableLuaArg() {
 		class TargetEnv {
-			@ScriptCallable(returnTypes = ReturnType.STRING)
+			@ScriptCallable
 			public String test(TargetB target, @Arg(name = "a", nullable = true) Boolean a) {
 				return a.toString();
 			}
@@ -413,7 +412,7 @@ public class MethodDescriptionTest {
 	@Test
 	public void testNullableLuaVarArg() {
 		class TargetEnv {
-			@ScriptCallable(returnTypes = ReturnType.STRING)
+			@ScriptCallable
 			public String test(TargetB target, @Arg(name = "a", nullable = true) Boolean... a) {
 				return a.toString();
 			}
@@ -428,7 +427,7 @@ public class MethodDescriptionTest {
 	@Test(expected = IllegalStateException.class)
 	public void testOptionalNullable() {
 		class TargetEnv {
-			@ScriptCallable(returnTypes = ReturnType.STRING)
+			@ScriptCallable
 			public String test(TargetB target, @Optionals @Arg(name = "a", nullable = true) Boolean a) {
 				return a.toString();
 			}
@@ -443,7 +442,7 @@ public class MethodDescriptionTest {
 	@Test
 	public void testTwoUnnamed() {
 		class TwoUnnamed {
-			@ScriptCallable(returnTypes = ReturnType.BOOLEAN)
+			@ScriptCallable
 			public boolean test(TargetB target, TargetA target2) {
 				return true;
 			}
@@ -458,7 +457,7 @@ public class MethodDescriptionTest {
 	@Test(expected = ArgumentDefinitionException.class)
 	public void testUnnamedAfterLua() {
 		class UnnamedAfterLua {
-			@ScriptCallable(returnTypes = ReturnType.BOOLEAN)
+			@ScriptCallable
 			public boolean test(@Arg(name = "foo") String arg, TargetB target) {
 				return true;
 			}
@@ -470,7 +469,7 @@ public class MethodDescriptionTest {
 	@Test(expected = ArgumentDefinitionException.class)
 	public void testEnvAfterLua() {
 		class EnvAfterLua {
-			@ScriptCallable(returnTypes = ReturnType.BOOLEAN)
+			@ScriptCallable
 			public boolean test(@Arg(name = "foo") String arg, @Env EnvA target) {
 				return true;
 			}
@@ -482,7 +481,7 @@ public class MethodDescriptionTest {
 	@Test(expected = ArgumentDefinitionException.class)
 	public void testUnamedAfterEnv() {
 		class UnamedAfterEnv {
-			@ScriptCallable(returnTypes = ReturnType.BOOLEAN)
+			@ScriptCallable
 			public boolean test(@Env EnvA e1, EnvB target) {
 				return true;
 			}
@@ -494,7 +493,7 @@ public class MethodDescriptionTest {
 	@Test(expected = ArgumentDefinitionException.class)
 	public void testOptionalUnnnamed() {
 		class OptionalUnnnamed {
-			@ScriptCallable(returnTypes = ReturnType.BOOLEAN)
+			@ScriptCallable
 			public boolean test(@Optionals EnvA target) {
 				return true;
 			}
@@ -506,7 +505,7 @@ public class MethodDescriptionTest {
 	@Test(expected = ArgumentDefinitionException.class)
 	public void testOptionalEnv() {
 		class OptionalEnv {
-			@ScriptCallable(returnTypes = ReturnType.BOOLEAN)
+			@ScriptCallable
 			public boolean test(@Optionals @Env EnvA target) {
 				return true;
 			}

@@ -34,12 +34,6 @@ public @interface Arg {
 	String description() default "";
 
 	/**
-	 * Hint about type of value, displayed by documentation program.
-	 * This value is not used for validation, but please keep it correct
-	 */
-	ArgType type() default ArgType.AUTO;
-
-	/**
 	 * If this value is true, argument accepts {@code null} values ({@code nil} on scripting side).
 	 * When nullable values are allowed, Java type of argument must not be primitive.
 	 */

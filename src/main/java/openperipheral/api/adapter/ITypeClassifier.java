@@ -2,12 +2,9 @@ package openperipheral.api.adapter;
 
 import java.lang.reflect.Type;
 import openperipheral.api.IApiInterface;
-import openperipheral.api.adapter.method.ArgType;
 
 /**
  * Simple utility for converting Java types into script types.
- *
- * @see ArgType#AUTO
  */
 public interface ITypeClassifier extends IApiInterface {
 

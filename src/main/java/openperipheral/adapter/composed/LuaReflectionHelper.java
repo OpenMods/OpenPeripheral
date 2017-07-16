@@ -7,7 +7,6 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Map;
 import openperipheral.api.adapter.Asynchronous;
-import openperipheral.api.adapter.method.ReturnType;
 import openperipheral.api.adapter.method.ScriptCallable;
 
 @Asynchronous
@@ -34,17 +33,17 @@ public class LuaReflectionHelper {
 		return results;
 	}
 
-	@ScriptCallable(returnTypes = ReturnType.STRING)
+	@ScriptCallable
 	public String getClass(Object owner) {
 		return owner.getClass().toString();
 	}
 
-	@ScriptCallable(returnTypes = ReturnType.STRING)
+	@ScriptCallable
 	public String getSuperclass(Object owner) {
 		return owner.getClass().getSuperclass().toString();
 	}
 
-	@ScriptCallable(returnTypes = ReturnType.TABLE)
+	@ScriptCallable
 	public List<String> getInterfaces(Object owner) {
 		List<String> results = Lists.newArrayList();
 		for (Class<?> cls : owner.getClass().getInterfaces())
@@ -52,12 +51,12 @@ public class LuaReflectionHelper {
 		return results;
 	}
 
-	@ScriptCallable(returnTypes = ReturnType.TABLE)
+	@ScriptCallable
 	public Map<String, Map<String, Object>> getMethods(Object owner) {
 		return describe(owner.getClass().getMethods());
 	}
 
-	@ScriptCallable(returnTypes = ReturnType.TABLE)
+	@ScriptCallable
 	public Map<String, Map<String, Object>> getDeclaredMethods(Object owner) {
 		return describe(owner.getClass().getDeclaredMethods());
 	}

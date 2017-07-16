@@ -4,7 +4,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import openperipheral.api.adapter.method.ArgType;
 import openperipheral.api.property.GetTypeFromField;
 import openperipheral.api.struct.ScriptStruct;
 
@@ -57,17 +56,8 @@ public @interface IndexedCallbackProperty {
 	public Class<?> keyType() default GetTypeFromField.class;
 
 	/**
-	 * Type of key parameter in script documentation
-	 */
-	public ArgType keyDocType() default ArgType.AUTO;
-
-	/**
 	 * Java type of value (used of conversion of {@code value} in {@link IIndexedPropertyCallback#setField(java.lang.reflect.Field, Object, Object)}. May be used if normal deduction fails.
 	 */
 	public Class<?> valueType() default GetTypeFromField.class;
 
-	/**
-	 * Type of value parameter in script documentation
-	 */
-	public ArgType valueDocType() default ArgType.AUTO;
 }

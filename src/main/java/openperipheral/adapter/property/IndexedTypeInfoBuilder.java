@@ -7,15 +7,12 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.Set;
 import openmods.reflection.TypeUtils;
-import openperipheral.adapter.types.SingleArgType;
 import openperipheral.adapter.types.SingleType;
 import openperipheral.adapter.types.classifier.TypeClassifier;
 import openperipheral.api.adapter.IScriptType;
 import openperipheral.api.helpers.Index;
 import openperipheral.api.property.IIndexedCustomProperty;
 import openperipheral.api.property.IIndexedTypedCustomProperty;
-import openperipheral.api.property.PropertyKeyDocType;
-import openperipheral.api.property.PropertyValueDocType;
 import openperipheral.converter.StructHandlerProvider;
 import openperipheral.converter.StructHandlerProvider.IFieldHandler;
 import openperipheral.converter.StructHandlerProvider.IStructHandler;
@@ -159,7 +156,7 @@ public class IndexedTypeInfoBuilder {
 
 		@Override
 		public IScriptType getKeyDocType() {
-			return SingleArgType.STRING;
+			return SingleType.STRING;
 		}
 
 		@Override
@@ -181,12 +178,10 @@ public class IndexedTypeInfoBuilder {
 	};
 
 	private abstract static class CustomPropertyTypesProviderBase implements ITypesProvider {
-		private final Class<?> fieldType;
 		private final Type keyType;
 		protected final Type valueType;
 
 		public CustomPropertyTypesProviderBase(TypeToken<?> fieldType, TypeVariable<?> keyVar, TypeVariable<?> valueVar) {
-			this.fieldType = fieldType.getRawType();
 			this.keyType = fieldType.resolveType(keyVar).getType();
 			this.valueType = fieldType.resolveType(valueVar).getType();
 		}
@@ -198,14 +193,12 @@ public class IndexedTypeInfoBuilder {
 
 		@Override
 		public IScriptType getKeyDocType() {
-			final PropertyKeyDocType customKeyDoc = fieldType.getAnnotation(PropertyKeyDocType.class);
-			return (customKeyDoc == null)? classifyType(keyType) : SingleArgType.valueOf(customKeyDoc.value());
+			return classifyType(keyType);
 		}
 
 		@Override
 		public IScriptType getValueDocType() {
-			final PropertyValueDocType customValueDoc = fieldType.getAnnotation(PropertyValueDocType.class);
-			return (customValueDoc == null)? classifyType(valueType) : SingleArgType.valueOf(customValueDoc.value());
+			return classifyType(valueType);
 		}
 	}
 

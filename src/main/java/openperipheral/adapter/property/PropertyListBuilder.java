@@ -13,14 +13,12 @@ import openperipheral.adapter.AnnotationMetaExtractor;
 import openperipheral.adapter.AnnotationMetaExtractor.Bound;
 import openperipheral.adapter.IMethodDescription;
 import openperipheral.adapter.IMethodExecutor;
-import openperipheral.adapter.types.TypeHelper;
 import openperipheral.api.adapter.CallbackProperty;
 import openperipheral.api.adapter.IIndexedPropertyCallback;
 import openperipheral.api.adapter.IPropertyCallback;
 import openperipheral.api.adapter.IndexedCallbackProperty;
 import openperipheral.api.adapter.IndexedProperty;
 import openperipheral.api.adapter.Property;
-import openperipheral.api.adapter.method.ArgType;
 import openperipheral.api.property.GetTypeFromField;
 import openperipheral.api.property.IIndexedPropertyListener;
 import openperipheral.api.property.ISinglePropertyListener;
@@ -48,15 +46,13 @@ public class PropertyListBuilder {
 	private class SingleParameters extends Parameters {
 		public final SingleTypeInfo typeInfo;
 
-		public SingleParameters(String name, String getterDescription, String setterDescription, boolean isDelegating, boolean readOnly, boolean valueNullable, Class<?> valueType, ArgType valueDocType) {
+		public SingleParameters(String name, String getterDescription, String setterDescription, boolean isDelegating, boolean readOnly, boolean valueNullable, Class<?> valueType) {
 			super(name, getterDescription, setterDescription, isDelegating, readOnly, valueNullable);
 
 			final TypeToken<?> fieldType = TypeUtils.resolveFieldType(ownerClass, field);
 			SingleTypeInfoBuilder typeInfoBuilder = new SingleTypeInfoBuilder(fieldType.getType());
 
 			if (valueType != GetTypeFromField.class) typeInfoBuilder.overrideValueType(valueType);
-			if (valueDocType != ArgType.AUTO) typeInfoBuilder.overrideValueDocType(TypeHelper.single(valueDocType));
-
 			this.typeInfo = typeInfoBuilder.build();
 		}
 	}
@@ -65,7 +61,7 @@ public class PropertyListBuilder {
 		public final boolean expandable;
 		public final IndexedTypeInfo typeInfo;
 
-		public IndexedParameters(String name, String getterDescription, String setterDescription, boolean isDelegating, boolean readOnly, boolean valueNullable, boolean expandable, Class<?> keyType, ArgType keyDocType, Class<?> valueType, ArgType valueDocType) {
+		public IndexedParameters(String name, String getterDescription, String setterDescription, boolean isDelegating, boolean readOnly, boolean valueNullable, boolean expandable, Class<?> keyType, Class<?> valueType) {
 			super(name, getterDescription, setterDescription, isDelegating, readOnly, valueNullable);
 			this.expandable = expandable;
 
@@ -73,11 +69,7 @@ public class PropertyListBuilder {
 			final IndexedTypeInfoBuilder typeInfoBuilder = new IndexedTypeInfoBuilder(fieldType.getType());
 
 			if (keyType != GetTypeFromField.class) typeInfoBuilder.overrideKeyType(keyType);
-			if (keyDocType != ArgType.AUTO) typeInfoBuilder.overrideKeyDocType(TypeHelper.single(keyDocType));
-
 			if (valueType != GetTypeFromField.class) typeInfoBuilder.overrideValueType(valueType);
-			if (valueDocType != ArgType.AUTO) typeInfoBuilder.overrideValueDocType(TypeHelper.single(valueDocType));
-
 			this.typeInfo = typeInfoBuilder.build();
 		}
 	}
@@ -112,28 +104,28 @@ public class PropertyListBuilder {
 		return (IIndexedPropertyListener.class.isAssignableFrom(ownerClass))? IIndexedPropertyAccessHandler.DELEGATE_TO_OWNER : IIndexedPropertyAccessHandler.IGNORE;
 	}
 
-	public void addSingle(String name, String getterDescription, String setterDescription, boolean isDelegating, boolean readOnly, boolean valueNullable, Class<?> valueType, ArgType docType) {
-		this.singleParameters = new SingleParameters(name, getterDescription, setterDescription, isDelegating, readOnly, valueNullable, valueType, docType);
+	public void addSingle(String name, String getterDescription, String setterDescription, boolean isDelegating, boolean readOnly, boolean valueNullable, Class<?> valueType) {
+		this.singleParameters = new SingleParameters(name, getterDescription, setterDescription, isDelegating, readOnly, valueNullable, valueType);
 	}
 
 	public void addProperty(Property property) {
-		addSingle(property.name(), property.getterDesc(), property.setterDesc(), false, property.readOnly(), property.nullable(), GetTypeFromField.class, property.type());
+		addSingle(property.name(), property.getterDesc(), property.setterDesc(), false, property.readOnly(), property.nullable(), GetTypeFromField.class);
 	}
 
 	public void addProperty(CallbackProperty property) {
-		addSingle(property.name(), property.getterDesc(), property.setterDesc(), true, property.readOnly(), property.nullable(), property.javaType(), property.type());
+		addSingle(property.name(), property.getterDesc(), property.setterDesc(), true, property.readOnly(), property.nullable(), property.javaType());
 	}
 
-	public void addIndexed(String name, String getterDescription, String setterDescription, boolean isDelegating, boolean readOnly, boolean valueNullable, boolean expandable, Class<?> keyType, ArgType keyDocType, Class<?> valueType, ArgType valueDocType) {
-		this.indexedParameters = new IndexedParameters(name, getterDescription, setterDescription, isDelegating, readOnly, valueNullable, expandable, keyType, keyDocType, valueType, valueDocType);
+	public void addIndexed(String name, String getterDescription, String setterDescription, boolean isDelegating, boolean readOnly, boolean valueNullable, boolean expandable, Class<?> keyType, Class<?> valueType) {
+		this.indexedParameters = new IndexedParameters(name, getterDescription, setterDescription, isDelegating, readOnly, valueNullable, expandable, keyType, valueType);
 	}
 
 	public void addProperty(IndexedProperty property) {
-		addIndexed(property.name(), property.getterDesc(), property.setterDesc(), false, property.readOnly(), property.nullable(), property.expandable(), GetTypeFromField.class, property.keyType(), GetTypeFromField.class, ArgType.AUTO);
+		addIndexed(property.name(), property.getterDesc(), property.setterDesc(), false, property.readOnly(), property.nullable(), property.expandable(), GetTypeFromField.class, GetTypeFromField.class);
 	}
 
 	public void addProperty(IndexedCallbackProperty property) {
-		addIndexed(property.name(), property.getterDesc(), property.setterDesc(), true, property.readOnly(), property.nullable(), false, property.keyType(), property.keyDocType(), property.valueType(), property.valueDocType());
+		addIndexed(property.name(), property.getterDesc(), property.setterDesc(), true, property.readOnly(), property.nullable(), false, property.keyType(), property.valueType());
 	}
 
 	public PropertyListBuilder configureFromFieldProperties() {

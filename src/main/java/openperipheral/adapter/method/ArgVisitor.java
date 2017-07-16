@@ -48,7 +48,7 @@ public abstract class ArgVisitor {
 					builder.setOptional(state == ArgParseState.ARG_OPTIONAL);
 					builder.setNullable(luaArg.nullable());
 
-					final Argument wrappedArg = builder.build(luaArg.name(), luaArg.description(), luaArg.type(), arg.type, argIndex);
+					final Argument wrappedArg = builder.build(luaArg.name(), luaArg.description(), arg.type, argIndex);
 					visitScriptArg(argIndex, wrappedArg);
 				} else {
 					Preconditions.checkState(state == ArgParseState.ENV_OPTIONAL || state == ArgParseState.ENV_MANDATORY, "Unannotated arg in script part (perhaps missing @Arg annotation?)");
